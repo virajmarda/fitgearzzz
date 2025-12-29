@@ -1,0 +1,151 @@
+{
+  "identity": {
+    "persona": "E1: The Anti-AI Designer",
+    "mission": "Create a fitness e-commerce experience that feels like a high-end gym at night—intense, focused, and premium. Avoid generic 'health store' vibes.",
+    "principles": [
+      "Fusion: Brutalism meets High-Tech",
+      "Emotion: Discipline & Power",
+      "Contrast: Deep Darks vs. Kinetic Neons"
+    ]
+  },
+  "typography": {
+    "fonts": {
+      "primary": {
+        "name": "Oswald",
+        "type": "sans-serif",
+        "usage": "Headings, Hero Text, Price Tags",
+        "weights": ["400", "500", "700"],
+        "import_url": "https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Manrope:wght@400;500;700&display=swap"
+      },
+      "secondary": {
+        "name": "Manrope",
+        "type": "sans-serif",
+        "usage": "Body text, UI elements, Descriptions",
+        "weights": ["400", "500", "700"]
+      }
+    },
+    "rules": [
+      "Headings MUST use 'Oswald'. Letter-spacing: 'tracking-tight' for large text.",
+      "Body text MUST use 'Manrope'.",
+      "Use uppercase for labels and small headers (tracking-widest)."
+    ]
+  },
+  "colors": {
+    "theme": "dark",
+    "palette": {
+      "background": {
+        "default": "#09090b",
+        "paper": "#18181b",
+        "subtle": "#27272a"
+      },
+      "primary": {
+        "main": "#f97316",
+        "hover": "#ea580c",
+        "foreground": "#ffffff",
+        "description": "Kinetic Orange - Use for primary CTAs, Buy Buttons, Sale Tags"
+      },
+      "secondary": {
+        "main": "#3b82f6",
+        "hover": "#2563eb",
+        "foreground": "#ffffff",
+        "description": "Cooling Blue - Use for trust signals, info badges, secondary actions"
+      },
+      "text": {
+        "primary": "#fafafa",
+        "secondary": "#a1a1aa",
+        "muted": "#52525b"
+      },
+      "border": {
+        "default": "#27272a",
+        "active": "#f97316"
+      }
+    },
+    "gradients": {
+      "hero_overlay": "linear-gradient(to top, #09090b 0%, transparent 100%)",
+      "glow": "radial-gradient(circle at center, rgba(249, 115, 22, 0.15) 0%, transparent 70%)"
+    }
+  },
+  "layout": {
+    "grid_system": {
+      "marketing": "The Tetris Grid (Grid Cols 12) - Use for Landing Page & Categories",
+      "dashboard": "The Control Room (Grid Cols 4) - Use for Admin Panel",
+      "product_list": "Responsive Grid (1 -> 2 -> 3 -> 4 cols)"
+    },
+    "spacing": {
+      "container_padding": "px-4 md:px-8 lg:px-12",
+      "section_gap": "py-20 md:py-32",
+      "element_gap": "gap-6 or gap-8"
+    },
+    "radius": {
+      "default": "rounded-none",
+      "buttons": "rounded-sm",
+      "cards": "rounded-sm",
+      "inputs": "rounded-none"
+    }
+  },
+  "components": {
+    "buttons": {
+      "style": "Sharp edges, uppercase text, tracking-wide.",
+      "primary": "bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider",
+      "secondary": "border border-zinc-700 hover:border-orange-500 hover:text-orange-500 bg-transparent text-white font-oswald uppercase"
+    },
+    "cards": {
+      "style": "Glassmorphism with noise texture. 1px border.",
+      "classes": "bg-zinc-900/40 backdrop-blur-md border border-white/10 hover:border-orange-500/50 transition-colors duration-300"
+    },
+    "inputs": {
+      "style": "Minimalist, bottom border only or flat background.",
+      "classes": "bg-zinc-900/50 border-zinc-800 focus:border-orange-500 focus:ring-orange-500/20"
+    }
+  },
+  "assets": {
+    "images": {
+      "hero": {
+        "url": "https://images.unsplash.com/photo-1561570121-c8219daec12b?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Intense female boxer in dark gym",
+        "position": "Hero Section Background"
+      },
+      "categories": {
+        "equipment": {
+          "url": "https://images.unsplash.com/photo-1734630341082-0fec0e10126c?crop=entropy&cs=srgb&fm=jpg&q=85",
+          "title": "Gym Equipment"
+        },
+        "supplements": {
+          "url": "https://images.unsplash.com/photo-1693996045899-7cf0ac0229c7?crop=entropy&cs=srgb&fm=jpg&q=85",
+          "title": "Supplements"
+        },
+        "apparel": {
+          "url": "https://images.unsplash.com/photo-1760879946075-ddb8432a322d?crop=entropy&cs=srgb&fm=jpg&q=85",
+          "title": "Apparel"
+        },
+        "accessories": {
+          "url": "https://images.unsplash.com/photo-1592999641298-434e28c11d14?crop=entropy&cs=srgb&fm=jpg&q=85",
+          "title": "Accessories"
+        }
+      },
+      "placeholders": {
+        "product_default": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80"
+      }
+    },
+    "icons": "Use 'lucide-react' for all UI icons. Use 'Dumbbell', 'Activity', 'ShoppingBag', 'User' icons."
+  },
+  "motion": {
+    "library": "framer-motion",
+    "guidelines": [
+      "Use 'easeOut' for entrances.",
+      "Stagger children in lists (0.1s delay).",
+      "Hover effects should be snappy (duration: 0.2s).",
+      "Page transitions: Simple opacity fade."
+    ]
+  },
+  "universal_guidelines": [
+    "DO NOT use gradients for text unless it's a very subtle shine.",
+    "DO NOT use rounded-xl or rounded-2xl. Keep it sharp (rounded-sm or rounded-none) for the 'tough' aesthetic.",
+    "Ensure all text has sufficient contrast against the dark background.",
+    "Use 'data-testid' on all interactive elements.",
+    "Images must have 'object-cover' to fill their containers.",
+    "Use 'sonner' for toast notifications.",
+    "Forms must use 'react-hook-form' with 'zod' validation."
+  ],
+  "instructions_to_main_agent": "You are building a high-performance fitness e-commerce app. Focus on the 'Dark Mode' aesthetic defined in colors. Use the provided image URLs for the landing page. Implement the 'Tetris Grid' for the hero/featured section. Ensure the Admin Panel uses the 'Control Room' dense layout. Use Shadcn components but override the radius to 'rounded-sm' to match the brand."
+}

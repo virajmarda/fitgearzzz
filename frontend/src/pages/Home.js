@@ -85,7 +85,7 @@ const Home = () => {
             <Link to="/products">
               <Button
                 size="lg"
-                className="bg-orange-500 hover:bg-orange-600 text-white font-oswald text-lg uppercase tracking-wider rounded-2xl px-8 py-6"
+                className="bg-orange-500 hover:bg-orange-600 text-white font-oswald text-lg uppercase tracking-wider rounded-full px-10 py-7 shadow-2xl hover:shadow-orange-500/20"
                 data-testid="shop-now-button"
               >
                 Shop Now

@@ -197,7 +197,7 @@ const Products = () => {
                 <p className="text-zinc-400 mb-4">No products found</p>
                 <Button
                   onClick={clearFilters}
-                  className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-2xl"
+                  className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full"
                 >
                   Clear Filters
                 </Button>

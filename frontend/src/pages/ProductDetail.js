@@ -193,7 +193,7 @@ const ProductDetail = () => {
                                                                                                                           className="w-full bg-blue-600 hover:bg-blue-700 text-white font-oswald text-lg uppercase tracking-wider rounded-none"
                                                                                                                                               data-testid="buy-now-shopify-button"
                                                                                                                                                                 >
-                                                                                                                                                                  Buy Now on Shopify
+                                                                                                                                                                  Buy Now
                                                                                                                                                                 </Button>
                                                                                                                                                               </a>
                                                                                                                                                             )}

@@ -195,7 +195,7 @@ const ProductDetail = () => {
             ) : (
               <div className="space-y-4">
                 {product.reviews.map((review, index) => (
-                  <div key={index} className="glass-card rounded-2xl p-6" data-testid={`review-${index}`}>
+                  <div key={index} className="glass-card rounded-2xl p-6 shadow-md" data-testid={`review-${index}`}>
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-manrope font-semibold text-white">{review.user_name}</span>
                       <div className="flex">

@@ -237,7 +237,7 @@ const Admin = () => {
               </Button>
             </div>
 
-            <div className="glass-card rounded-2xl overflow-hidden">
+            <div className="glass-card rounded-3xl overflow-hidden shadow-lg">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-zinc-800 border-b border-zinc-700">

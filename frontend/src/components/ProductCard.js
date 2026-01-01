@@ -24,7 +24,7 @@ const ProductCard = ({ product }) => {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
           {product.stock < 10 && product.stock > 0 && (
-            <div className="absolute top-2 right-2 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-2xl" data-testid="low-stock-badge">
+            <div className="absolute top-2 right-2 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full" data-testid="low-stock-badge">
               Only {product.stock} left
             </div>
           )}

@@ -158,7 +158,7 @@ const Navbar = () => {
                   <Button
                     onClick={logout}
                     variant="outline"
-                    className="w-full border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-2xl"
+                    className="w-full border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-full"
                     data-testid="mobile-logout-button"
                   >
                     Logout

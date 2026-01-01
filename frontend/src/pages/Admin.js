@@ -356,7 +356,7 @@ const Admin = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {discountCodes.map((code) => (
-                <div key={code.id} className="glass-card rounded-2xl p-6" data-testid={`discount-code-${code.id}`}>
+                <div key={code.id} className="glass-card rounded-3xl p-6 shadow-lg" data-testid={`discount-code-${code.id}`}>
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-oswald text-xl font-bold text-orange-500">{code.code}</span>
                     <span className={`text-xs px-2 py-1 rounded-2xl ${code.is_active ? 'bg-green-500' : 'bg-zinc-700'} text-white`}>

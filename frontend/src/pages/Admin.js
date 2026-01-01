@@ -170,7 +170,7 @@ const Admin = () => {
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="glass-card rounded-2xl p-6">
+          <div className="glass-card rounded-3xl p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-zinc-400 text-sm">Total Products</p>
@@ -179,7 +179,7 @@ const Admin = () => {
               <ShoppingBag className="w-12 h-12 text-orange-500" />
             </div>
           </div>
-          <div className="glass-card rounded-2xl p-6">
+          <div className="glass-card rounded-3xl p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-zinc-400 text-sm">Total Orders</p>
@@ -188,7 +188,7 @@ const Admin = () => {
               <Package className="w-12 h-12 text-blue-500" />
             </div>
           </div>
-          <div className="glass-card rounded-2xl p-6">
+          <div className="glass-card rounded-3xl p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-zinc-400 text-sm">Discount Codes</p>

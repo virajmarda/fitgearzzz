@@ -140,7 +140,7 @@ const Home = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="relative group overflow-hidden rounded-2xl h-64 glass-card"
+                  className="relative group overflow-hidden rounded-3xl h-64 glass-card shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                   <img
                     src={category.image}

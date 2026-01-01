@@ -492,7 +492,7 @@ const Admin = () => {
       </Dialog>
 
       <Dialog open={showDiscountDialog} onOpenChange={setShowDiscountDialog}>
-        <DialogContent className="bg-zinc-900 border-zinc-800 text-white rounded-2xl" data-testid="discount-dialog">
+        <DialogContent className="bg-zinc-900 border-zinc-800 text-white rounded-3xl shadow-2xl" data-testid="discount-dialog">
           <DialogHeader>
             <DialogTitle className="font-oswald text-2xl">Create Discount Code</DialogTitle>
           </DialogHeader>

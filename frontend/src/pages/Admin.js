@@ -376,7 +376,7 @@ const Admin = () => {
       </div>
 
       <Dialog open={showProductDialog} onOpenChange={setShowProductDialog}>
-        <DialogContent className="bg-zinc-900 border-zinc-800 text-white rounded-2xl max-w-2xl max-h-[80vh] overflow-y-auto" data-testid="product-dialog">
+        <DialogContent className="bg-zinc-900 border-zinc-800 text-white rounded-3xl max-w-2xl max-h-[80vh] overflow-y-auto shadow-2xl" data-testid="product-dialog">
           <DialogHeader>
             <DialogTitle className="font-oswald text-2xl">
               {editingProduct ? 'Edit Product' : 'Add New Product'}

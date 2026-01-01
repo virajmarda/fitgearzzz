@@ -229,7 +229,7 @@ const Checkout = () => {
           </div>
 
           <div>
-            <div className="glass-card rounded-2xl p-6 sticky top-24">
+            <div className="glass-card rounded-3xl p-6 sticky top-24 shadow-xl">
               <h2 className="font-oswald text-2xl font-bold text-white mb-6 uppercase">Order Summary</h2>
 
               <div className="space-y-4 mb-6">

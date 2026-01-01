@@ -256,7 +256,7 @@ const ProductDetail = () => {
 
               <Button
                 type="submit"
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-2xl"
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full py-3"
                 data-testid="submit-review-button"
               >
                 Submit Review

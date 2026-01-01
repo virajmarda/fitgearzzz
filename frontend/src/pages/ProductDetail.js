@@ -181,6 +181,22 @@ const ProductDetail = () => {
                 <ShoppingCart className="w-5 h-5 mr-2" />
                 Add to Cart
               </Button>
+
+                              {product.shopifyUrl && (
+                                              <a
+                                                href={product.shopifyUrl}
+                                                                  target="_blank"
+                                                                                    rel="noopener noreferrer"
+                                                                                                      className="block mt-3"
+                                                                                                                      >
+                                                                                                                        <Button
+                                                                                                                          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-oswald text-lg uppercase tracking-wider rounded-none"
+                                                                                                                                              data-testid="buy-now-shopify-button"
+                                                                                                                                                                >
+                                                                                                                                                                  Buy Now on Shopify
+                                                                                                                                                                </Button>
+                                                                                                                                                              </a>
+                                                                                                                                                            )}
             </div>
           </div>
         </motion.div>

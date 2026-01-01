@@ -82,7 +82,7 @@ const Products = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className={`md:block ${showFilters ? 'block' : 'hidden'} space-y-6`} data-testid="filters-panel">
-            <div className="glass-card rounded-2xl p-6 space-y-6">
+            <div className="glass-card rounded-3xl p-6 space-y-6 shadow-lg">
               <div className="flex items-center justify-between">
                 <h2 className="font-oswald text-xl font-bold text-white uppercase">Filters</h2>
                 <Button

@@ -221,7 +221,7 @@ const ProductDetail = () => {
 
           <div>
             <h2 className="font-oswald text-3xl font-bold text-white mb-6 uppercase">Write a Review</h2>
-            <form onSubmit={handleSubmitReview} className="glass-card rounded-2xl p-6 space-y-4" data-testid="review-form">
+            <form onSubmit={handleSubmitReview} className="glass-card rounded-3xl p-6 space-y-4 shadow-lg" data-testid="review-form">
               <div>
                 <label className="text-zinc-300 mb-2 block">Rating</label>
                 <div className="flex space-x-2">

@@ -72,7 +72,7 @@ const Products = () => {
           <Button
             onClick={() => setShowFilters(!showFilters)}
             variant="outline"
-            className="md:hidden border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-2xl"
+            className="md:hidden border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-full"
             data-testid="toggle-filters-button"
           >
             <Filter className="w-4 h-4 mr-2" />

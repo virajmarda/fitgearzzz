@@ -65,7 +65,7 @@ const CartDrawer = ({ open, onClose }) => {
                 return (
                   <div
                     key={item.id}
-                    className="flex space-x-4 glass-card rounded-2xl p-3"
+                    className="flex space-x-4 glass-card rounded-2xl p-4"
                     data-testid={`cart-item-${item.id}`}
                   >
                     <img

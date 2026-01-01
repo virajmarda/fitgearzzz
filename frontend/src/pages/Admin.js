@@ -229,7 +229,7 @@ const Admin = () => {
                   });
                   setShowProductDialog(true);
                 }}
-                className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-2xl"
+                className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full px-6"
                 data-testid="add-product-button"
               >
                 <Plus className="w-4 h-4 mr-2" />

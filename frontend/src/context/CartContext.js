@@ -32,20 +32,22 @@ export const CartProvider = ({ children }) => {
 
   const fetchCartProducts = async (cartItems) => {
     const productIds = [...new Set(cartItems.map((item) => item.product_id))];
-    const productData = {};
+    
+    if (productIds.length === 0) {
+      setProducts({});
+      return;
+    }
 
-    await Promise.all(
-      productIds.map(async (id) => {
-        try {
-          const response = await api.get(`/products/${id}`);
-          productData[id] = response.data;
-        } catch (error) {
-          console.error(`Error fetching product ${id}:`, error);
-        }
-      })
-    );
-
-    setProducts(productData);
+    try {
+      const response = await api.get(`/products?ids=${productIds.join(',')}`);
+      const productData = {};
+      response.data.forEach((product) => {
+        productData[product.id] = product;
+      });
+      setProducts(productData);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
   };
 
   const addToCart = async (productId, quantity = 1) => {

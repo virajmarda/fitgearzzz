@@ -297,7 +297,7 @@ const Checkout = () => {
                 </div>
               </div>
 
-              <div className="text-sm text-zinc-400 bg-zinc-800/50 p-3 rounded-2xl">
+              <div className="text-sm text-zinc-400 bg-zinc-800/50 p-4 rounded-2xl shadow-md">
                 <p className="mb-2">💳 Payment Method: Cash on Delivery</p>
                 <p>🚚 Free shipping on orders over $100</p>
               </div>

@@ -121,7 +121,7 @@ const Profile = () => {
             ) : (
               <div className="space-y-4">
                 {orders.map((order) => (
-                  <div key={order.id} className="glass-card rounded-2xl p-6" data-testid={`order-${order.id}`}>
+                  <div key={order.id} className="glass-card rounded-3xl p-6 shadow-lg" data-testid={`order-${order.id}`}>
                     <div className="flex items-start justify-between mb-4">
                       <div>
                         <p className="text-zinc-400 text-sm">Order ID</p>

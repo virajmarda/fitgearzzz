@@ -126,7 +126,7 @@ const Products = () => {
                     <button
                       key={cat}
                       onClick={() => setFilters({ ...filters, category: cat })}
-                      className={`w-full text-left px-3 py-2 rounded-2xl transition-colors ${
+                      className={`w-full text-left px-4 py-3 rounded-full transition-all duration-200 ${
                         filters.category === cat
                           ? 'bg-orange-500 text-white'
                           : 'bg-zinc-800/50 text-zinc-300 hover:bg-zinc-800'

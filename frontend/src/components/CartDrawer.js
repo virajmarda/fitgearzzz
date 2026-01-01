@@ -124,7 +124,7 @@ const CartDrawer = ({ open, onClose }) => {
             </div>
             <Link to="/checkout" onClick={onClose}>
               <Button
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-2xl"
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full py-3"
                 data-testid="checkout-button"
               >
                 Proceed to Checkout

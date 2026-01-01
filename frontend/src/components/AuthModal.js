@@ -36,7 +36,7 @@ const AuthModal = ({ open, onClose }) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-zinc-900 border-zinc-800 text-white rounded-sm" data-testid="auth-modal">
+      <DialogContent className="bg-zinc-900 border-zinc-800 text-white rounded-2xl" data-testid="auth-modal">
         <DialogHeader>
           <DialogTitle className="font-oswald text-2xl">
             {isLogin ? 'Login' : 'Sign Up'}
@@ -52,7 +52,7 @@ const AuthModal = ({ open, onClose }) => {
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-sm"
+                className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
                 required={!isLogin}
                 data-testid="name-input"
               />
@@ -66,7 +66,7 @@ const AuthModal = ({ open, onClose }) => {
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-sm"
+              className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
               required
               data-testid="email-input"
             />
@@ -79,7 +79,7 @@ const AuthModal = ({ open, onClose }) => {
               type="password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-sm"
+              className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
               required
               data-testid="password-input"
             />
@@ -88,7 +88,7 @@ const AuthModal = ({ open, onClose }) => {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-sm"
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-2xl"
             data-testid="auth-submit-button"
           >
             {loading ? 'Please wait...' : isLogin ? 'Login' : 'Sign Up'}

@@ -85,7 +85,7 @@ const Home = () => {
             <Link to="/products">
               <Button
                 size="lg"
-                className="bg-orange-500 hover:bg-orange-600 text-white font-oswald text-lg uppercase tracking-wider rounded-sm px-8 py-6"
+                className="bg-orange-500 hover:bg-orange-600 text-white font-oswald text-lg uppercase tracking-wider rounded-2xl px-8 py-6"
                 data-testid="shop-now-button"
               >
                 Shop Now
@@ -100,21 +100,21 @@ const Home = () => {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-orange-500/10 rounded-sm flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-orange-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <TrendingUp className="w-8 h-8 text-orange-500" />
               </div>
               <h3 className="font-oswald text-xl font-bold text-white mb-2">Premium Quality</h3>
               <p className="text-zinc-400 font-manrope">Top-tier equipment from trusted brands</p>
             </div>
             <div className="text-center">
-              <div className="w-16 h-16 bg-blue-500/10 rounded-sm flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Award className="w-8 h-8 text-blue-500" />
               </div>
               <h3 className="font-oswald text-xl font-bold text-white mb-2">Expert Approved</h3>
               <p className="text-zinc-400 font-manrope">Recommended by fitness professionals</p>
             </div>
             <div className="text-center">
-              <div className="w-16 h-16 bg-orange-500/10 rounded-sm flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-orange-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Truck className="w-8 h-8 text-orange-500" />
               </div>
               <h3 className="font-oswald text-xl font-bold text-white mb-2">Fast Shipping</h3>
@@ -140,7 +140,7 @@ const Home = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="relative group overflow-hidden rounded-sm h-64 glass-card"
+                  className="relative group overflow-hidden rounded-2xl h-64 glass-card"
                 >
                   <img
                     src={category.image}
@@ -169,7 +169,7 @@ const Home = () => {
             <Link to="/products">
               <Button
                 variant="outline"
-                className="border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-sm"
+                className="border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-2xl"
                 data-testid="view-all-button"
               >
                 View All

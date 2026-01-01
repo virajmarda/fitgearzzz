@@ -50,7 +50,7 @@ const CartDrawer = ({ open, onClose }) => {
               <p className="text-zinc-400 mb-4">Your cart is empty</p>
               <Button
                 onClick={onClose}
-                className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-sm"
+                className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-2xl"
                 data-testid="continue-shopping-button"
               >
                 Continue Shopping
@@ -65,13 +65,13 @@ const CartDrawer = ({ open, onClose }) => {
                 return (
                   <div
                     key={item.id}
-                    className="flex space-x-4 glass-card rounded-sm p-3"
+                    className="flex space-x-4 glass-card rounded-2xl p-3"
                     data-testid={`cart-item-${item.id}`}
                   >
                     <img
                       src={product.images[0]}
                       alt={product.name}
-                      className="w-20 h-20 object-cover rounded-sm"
+                      className="w-20 h-20 object-cover rounded-2xl"
                     />
                     <div className="flex-1">
                       <h3 className="font-manrope font-semibold text-white text-sm" data-testid="cart-item-name">
@@ -83,7 +83,7 @@ const CartDrawer = ({ open, onClose }) => {
                       <div className="flex items-center space-x-2 mt-2">
                         <button
                           onClick={() => updateCartItem(item.id, Math.max(1, item.quantity - 1))}
-                          className="w-6 h-6 flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 text-white rounded-sm transition-colors"
+                          className="w-6 h-6 flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 text-white rounded-2xl transition-colors"
                           data-testid="decrease-quantity-button"
                         >
                           <Minus className="w-3 h-3" />
@@ -93,7 +93,7 @@ const CartDrawer = ({ open, onClose }) => {
                         </span>
                         <button
                           onClick={() => updateCartItem(item.id, item.quantity + 1)}
-                          className="w-6 h-6 flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 text-white rounded-sm transition-colors"
+                          className="w-6 h-6 flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 text-white rounded-2xl transition-colors"
                           data-testid="increase-quantity-button"
                         >
                           <Plus className="w-3 h-3" />
@@ -124,7 +124,7 @@ const CartDrawer = ({ open, onClose }) => {
             </div>
             <Link to="/checkout" onClick={onClose}>
               <Button
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-sm"
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-2xl"
                 data-testid="checkout-button"
               >
                 Proceed to Checkout

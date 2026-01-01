@@ -170,7 +170,7 @@ const Admin = () => {
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="glass-card rounded-sm p-6">
+          <div className="glass-card rounded-2xl p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-zinc-400 text-sm">Total Products</p>
@@ -179,7 +179,7 @@ const Admin = () => {
               <ShoppingBag className="w-12 h-12 text-orange-500" />
             </div>
           </div>
-          <div className="glass-card rounded-sm p-6">
+          <div className="glass-card rounded-2xl p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-zinc-400 text-sm">Total Orders</p>
@@ -188,7 +188,7 @@ const Admin = () => {
               <Package className="w-12 h-12 text-blue-500" />
             </div>
           </div>
-          <div className="glass-card rounded-sm p-6">
+          <div className="glass-card rounded-2xl p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-zinc-400 text-sm">Discount Codes</p>
@@ -229,7 +229,7 @@ const Admin = () => {
                   });
                   setShowProductDialog(true);
                 }}
-                className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-sm"
+                className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-2xl"
                 data-testid="add-product-button"
               >
                 <Plus className="w-4 h-4 mr-2" />
@@ -237,7 +237,7 @@ const Admin = () => {
               </Button>
             </div>
 
-            <div className="glass-card rounded-sm overflow-hidden">
+            <div className="glass-card rounded-2xl overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-zinc-800 border-b border-zinc-700">
@@ -254,7 +254,7 @@ const Admin = () => {
                       <tr key={product.id} data-testid={`product-row-${product.id}`}>
                         <td className="px-4 py-3">
                           <div className="flex items-center space-x-3">
-                            <img src={product.images[0]} alt={product.name} className="w-12 h-12 object-cover rounded-sm" />
+                            <img src={product.images[0]} alt={product.name} className="w-12 h-12 object-cover rounded-2xl" />
                             <div>
                               <p className="text-white font-semibold text-sm">{product.name}</p>
                               <p className="text-zinc-400 text-xs">{product.brand}</p>
@@ -298,7 +298,7 @@ const Admin = () => {
             <h2 className="font-oswald text-2xl font-bold text-white uppercase mb-6">Manage Orders</h2>
             <div className="space-y-4">
               {orders.map((order) => (
-                <div key={order.id} className="glass-card rounded-sm p-6" data-testid={`order-row-${order.id}`}>
+                <div key={order.id} className="glass-card rounded-2xl p-6" data-testid={`order-row-${order.id}`}>
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <p className="text-zinc-400 text-sm">Order ID</p>
@@ -307,7 +307,7 @@ const Admin = () => {
                     <select
                       value={order.status}
                       onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
-                      className="bg-zinc-800 border border-zinc-700 text-white rounded-sm px-3 py-1 text-sm"
+                      className="bg-zinc-800 border border-zinc-700 text-white rounded-2xl px-3 py-1 text-sm"
                       data-testid={`order-status-select-${order.id}`}
                     >
                       <option value="pending">Pending</option>
@@ -346,7 +346,7 @@ const Admin = () => {
               <h2 className="font-oswald text-2xl font-bold text-white uppercase">Manage Discount Codes</h2>
               <Button
                 onClick={() => setShowDiscountDialog(true)}
-                className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-sm"
+                className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-2xl"
                 data-testid="add-discount-button"
               >
                 <Plus className="w-4 h-4 mr-2" />
@@ -356,10 +356,10 @@ const Admin = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {discountCodes.map((code) => (
-                <div key={code.id} className="glass-card rounded-sm p-6" data-testid={`discount-code-${code.id}`}>
+                <div key={code.id} className="glass-card rounded-2xl p-6" data-testid={`discount-code-${code.id}`}>
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-oswald text-xl font-bold text-orange-500">{code.code}</span>
-                    <span className={`text-xs px-2 py-1 rounded-sm ${code.is_active ? 'bg-green-500' : 'bg-zinc-700'} text-white`}>
+                    <span className={`text-xs px-2 py-1 rounded-2xl ${code.is_active ? 'bg-green-500' : 'bg-zinc-700'} text-white`}>
                       {code.is_active ? 'Active' : 'Inactive'}
                     </span>
                   </div>
@@ -376,7 +376,7 @@ const Admin = () => {
       </div>
 
       <Dialog open={showProductDialog} onOpenChange={setShowProductDialog}>
-        <DialogContent className="bg-zinc-900 border-zinc-800 text-white rounded-sm max-w-2xl max-h-[80vh] overflow-y-auto" data-testid="product-dialog">
+        <DialogContent className="bg-zinc-900 border-zinc-800 text-white rounded-2xl max-w-2xl max-h-[80vh] overflow-y-auto" data-testid="product-dialog">
           <DialogHeader>
             <DialogTitle className="font-oswald text-2xl">
               {editingProduct ? 'Edit Product' : 'Add New Product'}
@@ -388,7 +388,7 @@ const Admin = () => {
               <Input
                 value={productData.name}
                 onChange={(e) => setProductData({ ...productData, name: e.target.value })}
-                className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-sm"
+                className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
                 required
                 data-testid="product-name-input"
               />
@@ -399,7 +399,7 @@ const Admin = () => {
                 value={productData.description}
                 onChange={(e) => setProductData({ ...productData, description: e.target.value })}
                 rows={3}
-                className="w-full bg-zinc-800/50 border border-zinc-700 text-white rounded-sm px-3 py-2 focus:border-orange-500 focus:outline-none"
+                className="w-full bg-zinc-800/50 border border-zinc-700 text-white rounded-2xl px-3 py-2 focus:border-orange-500 focus:outline-none"
                 required
                 data-testid="product-description-input"
               />
@@ -412,7 +412,7 @@ const Admin = () => {
                   step="0.01"
                   value={productData.price}
                   onChange={(e) => setProductData({ ...productData, price: e.target.value })}
-                  className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-sm"
+                  className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
                   required
                   data-testid="product-price-input"
                 />
@@ -423,7 +423,7 @@ const Admin = () => {
                   type="number"
                   value={productData.stock}
                   onChange={(e) => setProductData({ ...productData, stock: e.target.value })}
-                  className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-sm"
+                  className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
                   required
                   data-testid="product-stock-input"
                 />
@@ -435,7 +435,7 @@ const Admin = () => {
                 <select
                   value={productData.category}
                   onChange={(e) => setProductData({ ...productData, category: e.target.value })}
-                  className="w-full bg-zinc-800/50 border border-zinc-700 text-white rounded-sm px-3 py-2"
+                  className="w-full bg-zinc-800/50 border border-zinc-700 text-white rounded-2xl px-3 py-2"
                   data-testid="product-category-input"
                 >
                   <option>Gym Equipment</option>
@@ -449,7 +449,7 @@ const Admin = () => {
                 <Input
                   value={productData.brand}
                   onChange={(e) => setProductData({ ...productData, brand: e.target.value })}
-                  className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-sm"
+                  className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
                   required
                   data-testid="product-brand-input"
                 />
@@ -466,7 +466,7 @@ const Admin = () => {
                     newImages[index] = e.target.value;
                     setProductData({ ...productData, images: newImages });
                   }}
-                  className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-sm mb-2"
+                  className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl mb-2"
                   placeholder="https://example.com/image.jpg"
                   data-testid={`product-image-input-${index}`}
                 />
@@ -475,14 +475,14 @@ const Admin = () => {
                 type="button"
                 onClick={() => setProductData({ ...productData, images: [...productData.images, ''] })}
                 variant="outline"
-                className="border-zinc-700 text-white hover:border-orange-500 rounded-sm"
+                className="border-zinc-700 text-white hover:border-orange-500 rounded-2xl"
               >
                 Add Another Image
               </Button>
             </div>
             <Button
               type="submit"
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-sm"
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-2xl"
               data-testid="save-product-button"
             >
               {editingProduct ? 'Update Product' : 'Create Product'}
@@ -492,7 +492,7 @@ const Admin = () => {
       </Dialog>
 
       <Dialog open={showDiscountDialog} onOpenChange={setShowDiscountDialog}>
-        <DialogContent className="bg-zinc-900 border-zinc-800 text-white rounded-sm" data-testid="discount-dialog">
+        <DialogContent className="bg-zinc-900 border-zinc-800 text-white rounded-2xl" data-testid="discount-dialog">
           <DialogHeader>
             <DialogTitle className="font-oswald text-2xl">Create Discount Code</DialogTitle>
           </DialogHeader>
@@ -502,7 +502,7 @@ const Admin = () => {
               <Input
                 value={discountData.code}
                 onChange={(e) => setDiscountData({ ...discountData, code: e.target.value.toUpperCase() })}
-                className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-sm"
+                className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
                 required
                 data-testid="discount-code-input"
               />
@@ -512,7 +512,7 @@ const Admin = () => {
               <select
                 value={discountData.discount_type}
                 onChange={(e) => setDiscountData({ ...discountData, discount_type: e.target.value })}
-                className="w-full bg-zinc-800/50 border border-zinc-700 text-white rounded-sm px-3 py-2"
+                className="w-full bg-zinc-800/50 border border-zinc-700 text-white rounded-2xl px-3 py-2"
                 data-testid="discount-type-input"
               >
                 <option value="percentage">Percentage</option>
@@ -528,14 +528,14 @@ const Admin = () => {
                 step="0.01"
                 value={discountData.discount_value}
                 onChange={(e) => setDiscountData({ ...discountData, discount_value: e.target.value })}
-                className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-sm"
+                className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
                 required
                 data-testid="discount-value-input"
               />
             </div>
             <Button
               type="submit"
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-sm"
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-2xl"
               data-testid="save-discount-button"
             >
               Create Code

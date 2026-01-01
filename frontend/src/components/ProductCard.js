@@ -13,7 +13,7 @@ const ProductCard = ({ product }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="glass-card rounded-sm overflow-hidden group"
+      className="glass-card rounded-2xl overflow-hidden group"
       data-testid={`product-card-${product.id}`}
     >
       <Link to={`/products/${product.id}`}>
@@ -24,7 +24,7 @@ const ProductCard = ({ product }) => {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
           {product.stock < 10 && product.stock > 0 && (
-            <div className="absolute top-2 right-2 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-sm" data-testid="low-stock-badge">
+            <div className="absolute top-2 right-2 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-2xl" data-testid="low-stock-badge">
               Only {product.stock} left
             </div>
           )}
@@ -67,7 +67,7 @@ const ProductCard = ({ product }) => {
           <Button
             onClick={() => addToCart(product.id)}
             disabled={product.stock === 0}
-            className="bg-orange-500 hover:bg-orange-600 text-white rounded-sm px-4"
+            className="bg-orange-500 hover:bg-orange-600 text-white rounded-2xl px-4"
             data-testid="add-to-cart-button"
           >
             <ShoppingCart className="w-4 h-4 mr-2" />

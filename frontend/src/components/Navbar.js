@@ -56,7 +56,7 @@ const Navbar = () => {
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-64 bg-zinc-800/50 border-zinc-700 text-white placeholder-zinc-500 focus:border-orange-500 rounded-sm"
+                  className="w-64 bg-zinc-800/50 border-zinc-700 text-white placeholder-zinc-500 focus:border-orange-500 rounded-2xl"
                   data-testid="search-input"
                 />
                 <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2" data-testid="search-button">
@@ -88,7 +88,7 @@ const Navbar = () => {
                   <Button
                     onClick={logout}
                     variant="outline"
-                    className="border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-sm"
+                    className="border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-2xl"
                     data-testid="logout-button"
                   >
                     Logout
@@ -97,7 +97,7 @@ const Navbar = () => {
               ) : (
                 <Button
                   onClick={() => setShowAuth(true)}
-                  className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-sm"
+                  className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-2xl"
                   data-testid="login-button"
                 >
                   Login
@@ -124,7 +124,7 @@ const Navbar = () => {
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-zinc-800/50 border-zinc-700 text-white placeholder-zinc-500 focus:border-orange-500 rounded-sm"
+                  className="w-full bg-zinc-800/50 border-zinc-700 text-white placeholder-zinc-500 focus:border-orange-500 rounded-2xl"
                   data-testid="mobile-search-input"
                 />
               </form>
@@ -158,7 +158,7 @@ const Navbar = () => {
                   <Button
                     onClick={logout}
                     variant="outline"
-                    className="w-full border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-sm"
+                    className="w-full border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-2xl"
                     data-testid="mobile-logout-button"
                   >
                     Logout
@@ -167,7 +167,7 @@ const Navbar = () => {
               ) : (
                 <Button
                   onClick={() => setShowAuth(true)}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-sm"
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-2xl"
                   data-testid="mobile-login-button"
                 >
                   Login

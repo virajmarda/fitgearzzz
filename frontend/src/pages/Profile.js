@@ -72,7 +72,7 @@ const Profile = () => {
           My Account
         </h1>
 
-        <div className="glass-card rounded-sm p-6 mb-8" data-testid="user-info-card">
+        <div className="glass-card rounded-2xl p-6 mb-8" data-testid="user-info-card">
           <h2 className="font-oswald text-2xl font-bold text-white mb-4 uppercase">Profile Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -114,14 +114,14 @@ const Profile = () => {
                 <p className="text-zinc-400">Loading orders...</p>
               </div>
             ) : orders.length === 0 ? (
-              <div className="text-center py-12 glass-card rounded-sm" data-testid="no-orders-message">
+              <div className="text-center py-12 glass-card rounded-2xl" data-testid="no-orders-message">
                 <Package className="w-16 h-16 text-zinc-600 mx-auto mb-4" />
                 <p className="text-zinc-400 mb-4">No orders yet</p>
               </div>
             ) : (
               <div className="space-y-4">
                 {orders.map((order) => (
-                  <div key={order.id} className="glass-card rounded-sm p-6" data-testid={`order-${order.id}`}>
+                  <div key={order.id} className="glass-card rounded-2xl p-6" data-testid={`order-${order.id}`}>
                     <div className="flex items-start justify-between mb-4">
                       <div>
                         <p className="text-zinc-400 text-sm">Order ID</p>
@@ -154,7 +154,7 @@ const Profile = () => {
                             <img
                               src={item.product_image}
                               alt={item.product_name}
-                              className="w-12 h-12 object-cover rounded-sm"
+                              className="w-12 h-12 object-cover rounded-2xl"
                             />
                             <div className="flex-1">
                               <p className="text-white text-sm">{item.product_name}</p>
@@ -174,18 +174,18 @@ const Profile = () => {
 
           <TabsContent value="addresses">
             {addresses.length === 0 ? (
-              <div className="text-center py-12 glass-card rounded-sm" data-testid="no-addresses-message">
+              <div className="text-center py-12 glass-card rounded-2xl" data-testid="no-addresses-message">
                 <MapPin className="w-16 h-16 text-zinc-600 mx-auto mb-4" />
                 <p className="text-zinc-400">No saved addresses</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {addresses.map((address) => (
-                  <div key={address.id} className="glass-card rounded-sm p-6" data-testid={`address-${address.id}`}>
+                  <div key={address.id} className="glass-card rounded-2xl p-6" data-testid={`address-${address.id}`}>
                     <div className="flex items-start justify-between mb-2">
                       <h3 className="font-oswald text-lg font-bold text-white">{address.full_name}</h3>
                       {address.is_default && (
-                        <span className="text-xs bg-orange-500 text-white px-2 py-1 rounded-sm">
+                        <span className="text-xs bg-orange-500 text-white px-2 py-1 rounded-2xl">
                           DEFAULT
                         </span>
                       )}

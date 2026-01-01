@@ -72,7 +72,7 @@ const Products = () => {
           <Button
             onClick={() => setShowFilters(!showFilters)}
             variant="outline"
-            className="md:hidden border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-sm"
+            className="md:hidden border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-2xl"
             data-testid="toggle-filters-button"
           >
             <Filter className="w-4 h-4 mr-2" />
@@ -82,7 +82,7 @@ const Products = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className={`md:block ${showFilters ? 'block' : 'hidden'} space-y-6`} data-testid="filters-panel">
-            <div className="glass-card rounded-sm p-6 space-y-6">
+            <div className="glass-card rounded-2xl p-6 space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="font-oswald text-xl font-bold text-white uppercase">Filters</h2>
                 <Button
@@ -103,7 +103,7 @@ const Products = () => {
                   placeholder="Search products..."
                   value={filters.search}
                   onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                  className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-sm"
+                  className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
                   data-testid="search-filter-input"
                 />
               </div>
@@ -113,7 +113,7 @@ const Products = () => {
                 <div className="space-y-2">
                   <button
                     onClick={() => setFilters({ ...filters, category: '' })}
-                    className={`w-full text-left px-3 py-2 rounded-sm transition-colors ${
+                    className={`w-full text-left px-3 py-2 rounded-2xl transition-colors ${
                       filters.category === ''
                         ? 'bg-orange-500 text-white'
                         : 'bg-zinc-800/50 text-zinc-300 hover:bg-zinc-800'
@@ -126,7 +126,7 @@ const Products = () => {
                     <button
                       key={cat}
                       onClick={() => setFilters({ ...filters, category: cat })}
-                      className={`w-full text-left px-3 py-2 rounded-sm transition-colors ${
+                      className={`w-full text-left px-3 py-2 rounded-2xl transition-colors ${
                         filters.category === cat
                           ? 'bg-orange-500 text-white'
                           : 'bg-zinc-800/50 text-zinc-300 hover:bg-zinc-800'
@@ -159,7 +159,7 @@ const Products = () => {
                 <select
                   value={filters.brand}
                   onChange={(e) => setFilters({ ...filters, brand: e.target.value })}
-                  className="w-full bg-zinc-800/50 border border-zinc-700 text-white rounded-sm px-3 py-2 focus:border-orange-500 focus:outline-none"
+                  className="w-full bg-zinc-800/50 border border-zinc-700 text-white rounded-2xl px-3 py-2 focus:border-orange-500 focus:outline-none"
                   data-testid="brand-filter-select"
                 >
                   <option value="">All Brands</option>
@@ -197,7 +197,7 @@ const Products = () => {
                 <p className="text-zinc-400 mb-4">No products found</p>
                 <Button
                   onClick={clearFilters}
-                  className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-sm"
+                  className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-2xl"
                 >
                   Clear Filters
                 </Button>

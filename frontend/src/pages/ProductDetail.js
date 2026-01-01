@@ -83,7 +83,7 @@ const ProductDetail = () => {
           className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16"
         >
           <div>
-            <div className="glass-card rounded-sm overflow-hidden mb-4" data-testid="product-main-image">
+            <div className="glass-card rounded-2xl overflow-hidden mb-4" data-testid="product-main-image">
               <img
                 src={product.images[selectedImage]}
                 alt={product.name}
@@ -96,7 +96,7 @@ const ProductDetail = () => {
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`rounded-sm overflow-hidden border-2 transition-colors ${
+                    className={`rounded-2xl overflow-hidden border-2 transition-colors ${
                       selectedImage === index ? 'border-orange-500' : 'border-zinc-700'
                     }`}
                     data-testid={`product-thumbnail-${index}`}
@@ -138,7 +138,7 @@ const ProductDetail = () => {
               {product.description}
             </p>
 
-            <div className="glass-card rounded-sm p-6 mb-6">
+            <div className="glass-card rounded-2xl p-6 mb-6">
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <span className="text-zinc-400">Category:</span>
@@ -154,7 +154,7 @@ const ProductDetail = () => {
             </div>
 
             <div className="flex items-center space-x-4 mb-6">
-              <div className="flex items-center space-x-2 glass-card rounded-sm px-4 py-2">
+              <div className="flex items-center space-x-2 glass-card rounded-2xl px-4 py-2">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   className="w-8 h-8 flex items-center justify-center text-white hover:text-orange-500 transition-colors"
@@ -175,7 +175,7 @@ const ProductDetail = () => {
               <Button
                 onClick={handleAddToCart}
                 disabled={product.stock === 0}
-                className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-oswald text-lg uppercase tracking-wider rounded-sm py-6"
+                className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-oswald text-lg uppercase tracking-wider rounded-2xl py-6"
                 data-testid="add-to-cart-detail-button"
               >
                 <ShoppingCart className="w-5 h-5 mr-2" />
@@ -195,7 +195,7 @@ const ProductDetail = () => {
             ) : (
               <div className="space-y-4">
                 {product.reviews.map((review, index) => (
-                  <div key={index} className="glass-card rounded-sm p-6" data-testid={`review-${index}`}>
+                  <div key={index} className="glass-card rounded-2xl p-6" data-testid={`review-${index}`}>
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-manrope font-semibold text-white">{review.user_name}</span>
                       <div className="flex">
@@ -221,7 +221,7 @@ const ProductDetail = () => {
 
           <div>
             <h2 className="font-oswald text-3xl font-bold text-white mb-6 uppercase">Write a Review</h2>
-            <form onSubmit={handleSubmitReview} className="glass-card rounded-sm p-6 space-y-4" data-testid="review-form">
+            <form onSubmit={handleSubmitReview} className="glass-card rounded-2xl p-6 space-y-4" data-testid="review-form">
               <div>
                 <label className="text-zinc-300 mb-2 block">Rating</label>
                 <div className="flex space-x-2">
@@ -248,7 +248,7 @@ const ProductDetail = () => {
                   value={reviewData.comment}
                   onChange={(e) => setReviewData({ ...reviewData, comment: e.target.value })}
                   rows={4}
-                  className="w-full bg-zinc-800/50 border border-zinc-700 text-white rounded-sm px-4 py-2 focus:border-orange-500 focus:outline-none"
+                  className="w-full bg-zinc-800/50 border border-zinc-700 text-white rounded-2xl px-4 py-2 focus:border-orange-500 focus:outline-none"
                   required
                   data-testid="review-comment-input"
                 />
@@ -256,7 +256,7 @@ const ProductDetail = () => {
 
               <Button
                 type="submit"
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-sm"
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-2xl"
                 data-testid="submit-review-button"
               >
                 Submit Review

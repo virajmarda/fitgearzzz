@@ -116,7 +116,7 @@ const Checkout = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <form onSubmit={handlePlaceOrder} className="space-y-6">
-              <div className="glass-card rounded-sm p-6">
+              <div className="glass-card rounded-2xl p-6">
                 <h2 className="font-oswald text-2xl font-bold text-white mb-6 uppercase">Shipping Address</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="sm:col-span-2">
@@ -125,7 +125,7 @@ const Checkout = () => {
                       id="full_name"
                       value={addressData.full_name}
                       onChange={(e) => setAddressData({ ...addressData, full_name: e.target.value })}
-                      className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-sm"
+                      className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
                       required
                       data-testid="full-name-input"
                     />
@@ -138,7 +138,7 @@ const Checkout = () => {
                       type="tel"
                       value={addressData.phone}
                       onChange={(e) => setAddressData({ ...addressData, phone: e.target.value })}
-                      className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-sm"
+                      className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
                       required
                       data-testid="phone-input"
                     />
@@ -150,7 +150,7 @@ const Checkout = () => {
                       id="address_line1"
                       value={addressData.address_line1}
                       onChange={(e) => setAddressData({ ...addressData, address_line1: e.target.value })}
-                      className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-sm"
+                      className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
                       required
                       data-testid="address-line1-input"
                     />
@@ -162,7 +162,7 @@ const Checkout = () => {
                       id="address_line2"
                       value={addressData.address_line2}
                       onChange={(e) => setAddressData({ ...addressData, address_line2: e.target.value })}
-                      className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-sm"
+                      className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
                       data-testid="address-line2-input"
                     />
                   </div>
@@ -173,7 +173,7 @@ const Checkout = () => {
                       id="city"
                       value={addressData.city}
                       onChange={(e) => setAddressData({ ...addressData, city: e.target.value })}
-                      className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-sm"
+                      className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
                       required
                       data-testid="city-input"
                     />
@@ -185,7 +185,7 @@ const Checkout = () => {
                       id="state"
                       value={addressData.state}
                       onChange={(e) => setAddressData({ ...addressData, state: e.target.value })}
-                      className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-sm"
+                      className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
                       required
                       data-testid="state-input"
                     />
@@ -197,7 +197,7 @@ const Checkout = () => {
                       id="zip_code"
                       value={addressData.zip_code}
                       onChange={(e) => setAddressData({ ...addressData, zip_code: e.target.value })}
-                      className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-sm"
+                      className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
                       required
                       data-testid="zip-code-input"
                     />
@@ -209,7 +209,7 @@ const Checkout = () => {
                       id="country"
                       value={addressData.country}
                       onChange={(e) => setAddressData({ ...addressData, country: e.target.value })}
-                      className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-sm"
+                      className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
                       required
                       data-testid="country-input"
                     />
@@ -220,7 +220,7 @@ const Checkout = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald text-lg uppercase tracking-wider rounded-sm py-6"
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald text-lg uppercase tracking-wider rounded-2xl py-6"
                 data-testid="place-order-button"
               >
                 {loading ? 'Processing...' : 'Place Order'}
@@ -229,7 +229,7 @@ const Checkout = () => {
           </div>
 
           <div>
-            <div className="glass-card rounded-sm p-6 sticky top-24">
+            <div className="glass-card rounded-2xl p-6 sticky top-24">
               <h2 className="font-oswald text-2xl font-bold text-white mb-6 uppercase">Order Summary</h2>
 
               <div className="space-y-4 mb-6">
@@ -242,7 +242,7 @@ const Checkout = () => {
                       <img
                         src={product.images[0]}
                         alt={product.name}
-                        className="w-16 h-16 object-cover rounded-sm"
+                        className="w-16 h-16 object-cover rounded-2xl"
                       />
                       <div className="flex-1">
                         <h3 className="text-white text-sm font-semibold">{product.name}</h3>
@@ -265,14 +265,14 @@ const Checkout = () => {
                     placeholder="Discount code"
                     value={discountCode}
                     onChange={(e) => setDiscountCode(e.target.value)}
-                    className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-sm"
+                    className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
                     data-testid="discount-code-input"
                   />
                   <Button
                     type="button"
                     onClick={handleApplyDiscount}
                     variant="outline"
-                    className="border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-sm whitespace-nowrap"
+                    className="border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-2xl whitespace-nowrap"
                     data-testid="apply-discount-button"
                   >
                     Apply
@@ -297,7 +297,7 @@ const Checkout = () => {
                 </div>
               </div>
 
-              <div className="text-sm text-zinc-400 bg-zinc-800/50 p-3 rounded-sm">
+              <div className="text-sm text-zinc-400 bg-zinc-800/50 p-3 rounded-2xl">
                 <p className="mb-2">💳 Payment Method: Cash on Delivery</p>
                 <p>🚚 Free shipping on orders over $100</p>
               </div>

@@ -72,7 +72,7 @@ const Profile = () => {
           My Account
         </h1>
 
-        <div className="glass-card rounded-2xl p-6 mb-8" data-testid="user-info-card">
+        <div className="glass-card rounded-3xl p-6 mb-8 shadow-lg" data-testid="user-info-card">
           <h2 className="font-oswald text-2xl font-bold text-white mb-4 uppercase">Profile Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

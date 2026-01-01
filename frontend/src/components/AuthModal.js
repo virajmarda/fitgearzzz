@@ -36,7 +36,7 @@ const AuthModal = ({ open, onClose }) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-zinc-900 border-zinc-800 text-white rounded-2xl" data-testid="auth-modal">
+      <DialogContent className="bg-zinc-900 border-zinc-800 text-white rounded-3xl shadow-2xl" data-testid="auth-modal">
         <DialogHeader>
           <DialogTitle className="font-oswald text-2xl">
             {isLogin ? 'Login' : 'Sign Up'}

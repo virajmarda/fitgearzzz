@@ -67,7 +67,7 @@ const ProductCard = ({ product }) => {
           <Button
             onClick={() => addToCart(product.id)}
             disabled={product.stock === 0}
-            className="bg-orange-500 hover:bg-orange-600 text-white rounded-2xl px-4"
+            className="bg-orange-500 hover:bg-orange-600 text-white rounded-full px-6"
             data-testid="add-to-cart-button"
           >
             <ShoppingCart className="w-4 h-4 mr-2" />

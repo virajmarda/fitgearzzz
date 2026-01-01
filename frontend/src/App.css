@@ -1,16 +1,19 @@
 .glass-card {
-  background: rgba(24, 24, 27, 0.4);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: border-color 0.3s ease;
+  background: rgba(24, 24, 27, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .glass-card:hover {
-  border-color: rgba(249, 115, 22, 0.5);
+  border-color: rgba(249, 115, 22, 0.3);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
 }
 
 .hero-gradient {
-  background: linear-gradient(to top, #09090b 0%, transparent 100%);
+  background: linear-gradient(to top, #09090b 0%, rgba(9, 9, 11, 0.8) 50%, transparent 100%);
 }
 
 .glow-effect {
@@ -21,12 +24,21 @@
   content: '';
   position: absolute;
   inset: -20%;
-  background: radial-gradient(circle at center, rgba(249, 115, 22, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(249, 115, 22, 0.1) 0%, transparent 70%);
   z-index: -1;
   opacity: 0;
   transition: opacity 0.3s ease;
+  border-radius: inherit;
 }
 
 .glow-effect:hover::before {
   opacity: 1;
+}
+
+.smooth-shadow {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.smooth-shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
 }

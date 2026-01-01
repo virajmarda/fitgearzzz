@@ -220,7 +220,7 @@ const Checkout = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald text-lg uppercase tracking-wider rounded-2xl py-6"
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald text-lg uppercase tracking-wider rounded-full py-7 shadow-lg hover:shadow-orange-500/30"
                 data-testid="place-order-button"
               >
                 {loading ? 'Processing...' : 'Place Order'}

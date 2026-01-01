@@ -167,7 +167,7 @@ const Navbar = () => {
               ) : (
                 <Button
                   onClick={() => setShowAuth(true)}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-2xl"
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full"
                   data-testid="mobile-login-button"
                 >
                   Login

@@ -272,7 +272,7 @@ const Checkout = () => {
                     type="button"
                     onClick={handleApplyDiscount}
                     variant="outline"
-                    className="border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-2xl whitespace-nowrap"
+                    className="border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-full whitespace-nowrap px-6"
                     data-testid="apply-discount-button"
                   >
                     Apply

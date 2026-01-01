@@ -169,7 +169,7 @@ const Home = () => {
             <Link to="/products">
               <Button
                 variant="outline"
-                className="border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-2xl"
+                className="border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-full px-6"
                 data-testid="view-all-button"
               >
                 View All

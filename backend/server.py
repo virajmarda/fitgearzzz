@@ -303,9 +303,16 @@ async def get_products(
     min_price: Optional[float] = None,
     max_price: Optional[float] = None,
     brand: Optional[str] = None,
-    min_rating: Optional[float] = None
+    min_rating: Optional[float] = None,
+    ids: Optional[str] = None
 ):
     query = {}
+    
+    if ids:
+        product_ids = ids.split(',')
+        query["id"] = {"$in": product_ids}
+        products = await db.products.find(query, {"_id": 0}).to_list(len(product_ids))
+        return [Product(**p) for p in products]
     
     if category:
         query["category"] = category

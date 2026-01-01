@@ -154,7 +154,7 @@ const ProductDetail = () => {
             </div>
 
             <div className="flex items-center space-x-4 mb-6">
-              <div className="flex items-center space-x-2 glass-card rounded-2xl px-4 py-2">
+              <div className="flex items-center space-x-2 glass-card rounded-full px-6 py-3 shadow-md">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   className="w-8 h-8 flex items-center justify-center text-white hover:text-orange-500 transition-colors"

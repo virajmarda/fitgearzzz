@@ -138,7 +138,7 @@ const ProductDetail = () => {
               {product.description}
             </p>
 
-            <div className="glass-card rounded-2xl p-6 mb-6">
+            <div className="glass-card rounded-3xl p-6 mb-6 shadow-lg">
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <span className="text-zinc-400">Category:</span>

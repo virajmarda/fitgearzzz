@@ -114,7 +114,7 @@ const Profile = () => {
                 <p className="text-zinc-400">Loading orders...</p>
               </div>
             ) : orders.length === 0 ? (
-              <div className="text-center py-12 glass-card rounded-2xl" data-testid="no-orders-message">
+              <div className="text-center py-12 glass-card rounded-3xl" data-testid="no-orders-message">
                 <Package className="w-16 h-16 text-zinc-600 mx-auto mb-4" />
                 <p className="text-zinc-400 mb-4">No orders yet</p>
               </div>

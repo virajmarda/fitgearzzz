@@ -56,7 +56,7 @@ const Navbar = () => {
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-64 bg-zinc-800/50 border-zinc-700 text-white placeholder-zinc-500 focus:border-orange-500 rounded-2xl"
+                  className="w-64 bg-zinc-800/50 border-zinc-700 text-white placeholder-zinc-500 focus:border-orange-500 rounded-full"
                   data-testid="search-input"
                 />
                 <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2" data-testid="search-button">

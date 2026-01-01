@@ -83,7 +83,7 @@ const ProductDetail = () => {
           className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16"
         >
           <div>
-            <div className="glass-card rounded-2xl overflow-hidden mb-4" data-testid="product-main-image">
+            <div className="glass-card rounded-3xl overflow-hidden mb-4 shadow-lg" data-testid="product-main-image">
               <img
                 src={product.images[selectedImage]}
                 alt={product.name}

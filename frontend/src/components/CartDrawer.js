@@ -50,7 +50,7 @@ const CartDrawer = ({ open, onClose }) => {
               <p className="text-zinc-400 mb-4">Your cart is empty</p>
               <Button
                 onClick={onClose}
-                className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-2xl"
+                className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full"
                 data-testid="continue-shopping-button"
               >
                 Continue Shopping

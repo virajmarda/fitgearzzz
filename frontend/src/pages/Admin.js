@@ -346,7 +346,7 @@ const Admin = () => {
               <h2 className="font-oswald text-2xl font-bold text-white uppercase">Manage Discount Codes</h2>
               <Button
                 onClick={() => setShowDiscountDialog(true)}
-                className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-2xl"
+                className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full px-6"
                 data-testid="add-discount-button"
               >
                 <Plus className="w-4 h-4 mr-2" />

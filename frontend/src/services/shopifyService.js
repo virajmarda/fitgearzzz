@@ -2,8 +2,7 @@
 const SHOPIFY_DOMAIN = process.env.REACT_APP_SHOPIFY_STORE_DOMAIN || 'fitgearzzz.myshopify.com';
 const STOREFRONT_ACCESS_TOKEN = process.env.REACT_APP_SHOPIFY_STOREFRONT_ACCESS_TOKEN || '4f69d01e467efc58595c74f4420ab3bd';
 
-const STOREFRONT_API_URL = `https://${SHOPIFY_DOMAIN}/api/2024-01/graphql.json`;
-
+const STOREFRONT_API_URL = `https://${SHOPIFY_DOMAIN}/api/unstable/graphql.json`;
 const shopifyFetch = async (query, variables = {}) => {
   console.log('Shopify GraphQL Request:', { query, variables });
   

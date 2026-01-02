@@ -6,7 +6,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Slider } from '../components/ui/slider';
-import api from '../utils/api';
+import { fetchProducts as getShopifyProducts } from '../services/shopifyService';
 
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -33,16 +33,47 @@ const Products = () => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const params = {};
-      if (filters.category) params.category = filters.category;
-      if (filters.search) params.search = filters.search;
-      if (filters.minPrice > 0) params.min_price = filters.minPrice;
-      if (filters.maxPrice < 500) params.max_price = filters.maxPrice;
-      if (filters.brand) params.brand = filters.brand;
-      if (filters.minRating > 0) params.min_rating = filters.minRating;
-
-      const response = await api.get('/products', { params });
-      setProducts(response.data);
+      const shopifyProducts = await getShopifyProducts();
+      
+      // Apply filters to Shopify products
+      let filteredProducts = shopifyProducts;
+      
+      // Filter by search
+      if (filters.search) {
+        const searchLower = filters.search.toLowerCase();
+        filteredProducts = filteredProducts.filter(product => 
+          product.title.toLowerCase().includes(searchLower) ||
+          product.description.toLowerCase().includes(searchLower)
+        );
+      }
+      
+      // Filter by category
+      if (filters.category) {
+        filteredProducts = filteredProducts.filter(product => 
+          product.category === filters.category
+        );
+      }
+      
+      // Filter by price range
+      filteredProducts = filteredProducts.filter(product => 
+        product.price >= filters.minPrice && product.price <= filters.maxPrice
+      );
+      
+      // Filter by brand
+      if (filters.brand) {
+        filteredProducts = filteredProducts.filter(product => 
+          product.brand === filters.brand
+        );
+      }
+      
+      // Filter by rating
+      if (filters.minRating > 0) {
+        filteredProducts = filteredProducts.filter(product => 
+          product.rating >= filters.minRating
+        );
+      }
+      
+      setProducts(filteredProducts);
     } catch (error) {
       console.error('Error fetching products:', error);
     } finally {

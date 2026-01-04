@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import api from '../utils/api';
+import { customerLogin, customerRegister, getCustomer } from '../services/shopifyService';
 import { toast } from 'sonner';
 
 const AuthContext = createContext();
@@ -21,8 +21,9 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const response = await api.get('/auth/me');
-      setUser(response.data);
+      const token = localStorage.getItem('token');
+      const customerData = await getCustomer(token);
+      setUser(customerData);
     } catch (error) {
       localStorage.removeItem('token');
     } finally {
@@ -32,26 +33,25 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await api.post('/auth/login', { email, password });
-      localStorage.setItem('token', response.data.token);
-      setUser(response.data.user);
+      const accessToken = await customerLogin(email, password);
+      localStorage.setItem('token', accessToken.accessToken);
+      const customerData = await getCustomer(accessToken.accessToken);
+      setUser(customerData);
       toast.success('Login successful!');
-      return response.data;
+      return { accessToken, user: customerData };
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Login failed');
+      toast.error(error.message || 'Login failed');
       throw error;
     }
   };
 
-  const register = async (name, email, password) => {
+  const register = async (email, password, firstName, lastName) => {
     try {
-      const response = await api.post('/auth/register', { name, email, password });
-      localStorage.setItem('token', response.data.token);
-      setUser(response.data.user);
-      toast.success('Registration successful!');
-      return response.data;
+      const result = await customerRegister(email, password, firstName, lastName);
+      toast.success('Registration successful! Please log in.');
+      return result;
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Registration failed');
+      toast.error(error.message || 'Registration failed');
       throw error;
     }
   };

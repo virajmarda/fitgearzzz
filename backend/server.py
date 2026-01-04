@@ -330,9 +330,7 @@ async def login(credentials: UserLogin):
 
 
 @api_router.get("/auth/me", response_model=User)
-async def get_me(request: Request):
-    current_user = await get_current_user_flexible(request):
-    current_user = await get_current_user_flexible(request)
+async def get_me(current_user: dict = Depends(get_current_user)):
     return User(**current_user)
 
 

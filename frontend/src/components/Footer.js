@@ -40,8 +40,8 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/products?category=Supplements" className="text-zinc-400 hover:text-orange-500 transition-colors font-manrope" data-testid="footer-supplements">
-                  Supplements
+                <Link to="/products?category=Premium Apparel" className="text-zinc-400 hover:text-orange-500 transition-colors font-manrope" data-testid="footer-supplements">
+                  Premium Apparel
                 </Link>
               </li>
               <li>

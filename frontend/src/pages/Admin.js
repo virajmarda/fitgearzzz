@@ -439,7 +439,7 @@ const Admin = () => {
                   data-testid="product-category-input"
                 >
                   <option>Gym Equipment</option>
-                  <option>Supplements</option>
+                  <option>Premium Apparel</option>
                   <option>Apparel</option>
                   <option>Accessories</option>
                 </select>

@@ -31,7 +31,7 @@ const Home = () => {
       image: 'https://images.unsplash.com/photo-1734630341082-0fec0e10126c?crop=entropy&cs=srgb&fm=jpg&q=85',
     },
     {
-      name: 'Supplements',
+      name: 'Premium Apparel',
       image: 'https://images.unsplash.com/photo-1693996045899-7cf0ac0229c7?crop=entropy&cs=srgb&fm=jpg&q=85',
     },
     {

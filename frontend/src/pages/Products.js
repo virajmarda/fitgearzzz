@@ -23,7 +23,7 @@ const Products = () => {
     minRating: 0,
   });
 
-  const categories = ['Gym Equipment', 'Supplements', 'Apparel', 'Accessories'];
+  const categories = ['Gym Equipment', 'Premium Apparel', 'Apparel', 'Accessories'];
   const brands = ['PowerFit', 'IronGrip', 'FlexBand', 'ZenFit', 'NutriFuel', 'RecoverMax', 'VitaStrong', 'PurePower', 'FitWear', 'ActivePro', 'SportMax', 'CarryAll', 'HydroFit', 'TechFit', 'GripPro', 'CardioMax'];
 
   useEffect(() => {

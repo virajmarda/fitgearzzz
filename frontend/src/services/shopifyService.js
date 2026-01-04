@@ -184,3 +184,110 @@ export const createCheckout = async (variantId, quantity = 1) => {
     return null;
   }
 };
+
+// Shopify Customer Account API functions
+export const customerLogin = async (email, password) => {
+  const query = `
+    mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
+      customerAccessTokenCreate(input: $input) {
+        customerAccessToken {
+          accessToken
+          expiresAt
+        }
+        customerUserErrors {
+          message
+          field
+        }
+      }
+    }
+  `;
+
+  try {
+    const data = await shopifyFetch(query, {
+      input: { email, password }
+    });
+
+    if (data.customerAccessTokenCreate.customerUserErrors.length > 0) {
+      throw new Error(data.customerAccessTokenCreate.customerUserErrors[0].message);
+    }
+
+    return data.customerAccessTokenCreate.customerAccessToken;
+  } catch (error) {
+    console.error('Error logging in customer:', error);
+    throw error;
+  }
+};
+
+export const customerRegister = async (email, password, firstName, lastName) => {
+  const query = `
+    mutation customerCreate($input: CustomerCreateInput!) {
+      customerCreate(input: $input) {
+        customer {
+          id
+          email
+          firstName
+          lastName
+        }
+        customerUserErrors {
+          message
+          field
+        }
+      }
+    }
+  `;
+
+  try {
+    const data = await shopifyFetch(query, {
+      input: {
+        email,
+        password,
+        firstName,
+        lastName,
+        acceptsMarketing: false
+      }
+    });
+
+    if (data.customerCreate.customerUserErrors.length > 0) {
+      throw new Error(data.customerCreate.customerUserErrors[0].message);
+    }
+
+    // After creating account, log them in
+    return await customerLogin(email, password);
+  } catch (error) {
+    console.error('Error registering customer:', error);
+    throw error;
+  }
+};
+
+export const getCustomer = async (accessToken) => {
+  const query = `
+    query getCustomer($customerAccessToken: String!) {
+      customer(customerAccessToken: $customerAccessToken) {
+        id
+        email
+        firstName
+        lastName
+        phone
+        defaultAddress {
+          address1
+          address2
+          city
+          province
+          country
+          zip
+        }
+      }
+    }
+  `;
+
+  try {
+    const data = await shopifyFetch(query, {
+      customerAccessToken: accessToken
+    });
+
+    return data.customer;
+  } catch (error) {
+    console.error('Error fetching customer:', error);
+    throw error;
+  }
+};

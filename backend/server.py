@@ -76,44 +76,6 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     return user
 
 
-# REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-async def get_current_user_flexible(request: Request):
-    current_user = await get_current_user_flexible(request):
-    """Get current user from session_token cookie or Authorization header"""
-    # Try cookie first
-    session_token = request.cookies.get("session_token")
-    
-    if session_token:
-        session = await db.user_sessions.find_one({"session_token": session_token}, {"_id": 0})
-        if session:
-            expires_at = session["expires_at"]
-            if isinstance(expires_at, str):
-                expires_at = datetime.fromisoformat(expires_at)
-            if expires_at.tzinfo is None:
-                expires_at = expires_at.replace(tzinfo=timezone.utc)
-            
-            if expires_at > datetime.now(timezone.utc):
-                user = await db.users.find_one({"id": session["user_id"]}, {"_id": 0})
-                if user:
-                    return user
-    
-    # Fallback to Authorization header (for existing JWT auth)
-    auth_header = request.headers.get("Authorization")
-    if auth_header and auth_header.startswith("Bearer "):
-        token = auth_header.replace("Bearer ", "")
-        try:
-            payload = decode_token(token)
-            user_id = payload.get("user_id")
-            if user_id:
-                user = await db.users.find_one({"id": user_id}, {"_id": 0})
-                if user:
-                    return user
-        except:
-            pass
-    
-    raise HTTPException(status_code=401, detail="Not authenticated")
-
-
 # Models
 class UserRegister(BaseModel):
     email: EmailStr

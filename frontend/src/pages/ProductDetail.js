@@ -25,13 +25,13 @@ const ProductDetail = () => {
   }, [handle]);
   const fetchProduct = async () => {
     try {
-      const productData = await fetchProductByHandle(handle);      console.error('Error fetching product:', error);
+      const productData = await fetchProductByHandle(handle);
             setProduct(productData);
+ } catch (error) {
+      console.error('Error fetching product:', error);
+    } finally {
       setLoading(false);
-    }
-  };
-
-  const handleAddToCart = () => {
+    }  const handleAddToCart = () => {
     addToCart(product.id, quantity);
   };
 

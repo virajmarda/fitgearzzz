@@ -78,6 +78,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 
 # REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
 async def get_current_user_flexible(request: Request):
+    current_user = await get_current_user_flexible(request):
     """Get current user from session_token cookie or Authorization header"""
     # Try cookie first
     session_token = request.cookies.get("session_token")
@@ -330,6 +331,7 @@ async def login(credentials: UserLogin):
 
 @api_router.get("/auth/me", response_model=User)
 async def get_me(request: Request):
+    current_user = await get_current_user_flexible(request):
     current_user = await get_current_user_flexible(request)
     return User(**current_user)
 
@@ -471,7 +473,7 @@ async def get_product(product_id: str):
 
 
 @api_router.post("/products", response_model=Product)
-async def create_product(product_data: ProductCreate, current_user: dict = Depends(get_current_user)):
+async def create_product(product_data: ProductCreate, request: Request):
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
     
@@ -490,7 +492,7 @@ async def create_product(product_data: ProductCreate, current_user: dict = Depen
 
 
 @api_router.put("/products/{product_id}", response_model=Product)
-async def update_product(product_id: str, product_data: ProductUpdate, current_user: dict = Depends(get_current_user)):
+async def update_product(product_id: str, product_data: ProductUpdate, request: Request):
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
     
@@ -507,7 +509,7 @@ async def update_product(product_id: str, product_data: ProductUpdate, current_u
 
 
 @api_router.delete("/products/{product_id}")
-async def delete_product(product_id: str, current_user: dict = Depends(get_current_user)):
+async def delete_product(product_id: str, request: Request):
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
     
@@ -519,7 +521,7 @@ async def delete_product(product_id: str, current_user: dict = Depends(get_curre
 
 # Review Routes
 @api_router.post("/products/{product_id}/reviews")
-async def add_review(product_id: str, review_data: ReviewCreate, current_user: dict = Depends(get_current_user)):
+async def add_review(product_id: str, review_data: ReviewCreate, request: Request):
     product = await db.products.find_one({"id": product_id}, {"_id": 0})
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -547,13 +549,14 @@ async def add_review(product_id: str, review_data: ReviewCreate, current_user: d
 
 # Cart Routes
 @api_router.get("/cart", response_model=List[CartItem])
-async def get_cart(current_user: dict = Depends(get_current_user)):
+async def get_cart(request: Request):
+    current_user = await get_current_user_flexible(request):
     cart_items = await db.cart.find({"user_id": current_user["id"]}, {"_id": 0}).to_list(1000)
     return [CartItem(**item) for item in cart_items]
 
 
 @api_router.post("/cart", response_model=CartItem)
-async def add_to_cart(item_data: CartItemCreate, current_user: dict = Depends(get_current_user)):
+async def add_to_cart(item_data: CartItemCreate, request: Request):
     existing = await db.cart.find_one({
         "user_id": current_user["id"],
         "product_id": item_data.product_id
@@ -582,7 +585,7 @@ async def add_to_cart(item_data: CartItemCreate, current_user: dict = Depends(ge
 
 
 @api_router.put("/cart/{cart_id}", response_model=CartItem)
-async def update_cart_item(cart_id: str, update_data: CartItemUpdate, current_user: dict = Depends(get_current_user)):
+async def update_cart_item(cart_id: str, update_data: CartItemUpdate, request: Request):
     existing = await db.cart.find_one({"id": cart_id, "user_id": current_user["id"]}, {"_id": 0})
     if not existing:
         raise HTTPException(status_code=404, detail="Cart item not found")
@@ -593,7 +596,7 @@ async def update_cart_item(cart_id: str, update_data: CartItemUpdate, current_us
 
 
 @api_router.delete("/cart/{cart_id}")
-async def remove_from_cart(cart_id: str, current_user: dict = Depends(get_current_user)):
+async def remove_from_cart(cart_id: str, request: Request):
     result = await db.cart.delete_one({"id": cart_id, "user_id": current_user["id"]})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Cart item not found")
@@ -601,20 +604,22 @@ async def remove_from_cart(cart_id: str, current_user: dict = Depends(get_curren
 
 
 @api_router.delete("/cart")
-async def clear_cart(current_user: dict = Depends(get_current_user)):
+async def clear_cart(request: Request):
+    current_user = await get_current_user_flexible(request):
     await db.cart.delete_many({"user_id": current_user["id"]})
     return {"message": "Cart cleared"}
 
 
 # Address Routes
 @api_router.get("/addresses", response_model=List[Address])
-async def get_addresses(current_user: dict = Depends(get_current_user)):
+async def get_addresses(request: Request):
+    current_user = await get_current_user_flexible(request):
     addresses = await db.addresses.find({"user_id": current_user["id"]}, {"_id": 0}).to_list(1000)
     return [Address(**addr) for addr in addresses]
 
 
 @api_router.post("/addresses", response_model=Address)
-async def create_address(address_data: AddressCreate, current_user: dict = Depends(get_current_user)):
+async def create_address(address_data: AddressCreate, request: Request):
     if address_data.is_default:
         await db.addresses.update_many(
             {"user_id": current_user["id"]},
@@ -633,7 +638,7 @@ async def create_address(address_data: AddressCreate, current_user: dict = Depen
 
 
 @api_router.delete("/addresses/{address_id}")
-async def delete_address(address_id: str, current_user: dict = Depends(get_current_user)):
+async def delete_address(address_id: str, request: Request):
     result = await db.addresses.delete_one({"id": address_id, "user_id": current_user["id"]})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Address not found")
@@ -642,7 +647,7 @@ async def delete_address(address_id: str, current_user: dict = Depends(get_curre
 
 # Order Routes
 @api_router.post("/orders", response_model=Order)
-async def create_order(order_data: OrderCreate, current_user: dict = Depends(get_current_user)):
+async def create_order(order_data: OrderCreate, request: Request):
     order_id = str(uuid.uuid4())
     order_doc = {
         "id": order_id,
@@ -660,7 +665,8 @@ async def create_order(order_data: OrderCreate, current_user: dict = Depends(get
 
 
 @api_router.get("/orders", response_model=List[Order])
-async def get_orders(current_user: dict = Depends(get_current_user)):
+async def get_orders(request: Request):
+    current_user = await get_current_user_flexible(request):
     query = {"user_id": current_user["id"]}
     if current_user["role"] == "admin":
         query = {}
@@ -670,7 +676,7 @@ async def get_orders(current_user: dict = Depends(get_current_user)):
 
 
 @api_router.get("/orders/{order_id}", response_model=Order)
-async def get_order(order_id: str, current_user: dict = Depends(get_current_user)):
+async def get_order(order_id: str, request: Request):
     query = {"id": order_id}
     if current_user["role"] != "admin":
         query["user_id"] = current_user["id"]
@@ -682,7 +688,7 @@ async def get_order(order_id: str, current_user: dict = Depends(get_current_user
 
 
 @api_router.put("/orders/{order_id}/status")
-async def update_order_status(order_id: str, status: str, current_user: dict = Depends(get_current_user)):
+async def update_order_status(order_id: str, status: str, request: Request):
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
     
@@ -718,7 +724,7 @@ async def apply_discount(request: ApplyDiscountRequest):
 
 
 @api_router.post("/discount", response_model=DiscountCode)
-async def create_discount_code(code_data: DiscountCodeCreate, current_user: dict = Depends(get_current_user)):
+async def create_discount_code(code_data: DiscountCodeCreate, request: Request):
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
     
@@ -737,7 +743,8 @@ async def create_discount_code(code_data: DiscountCodeCreate, current_user: dict
 
 
 @api_router.get("/discount", response_model=List[DiscountCode])
-async def get_discount_codes(current_user: dict = Depends(get_current_user)):
+async def get_discount_codes(request: Request):
+    current_user = await get_current_user_flexible(request):
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
     

@@ -329,8 +329,99 @@ async def login(credentials: UserLogin):
 
 
 @api_router.get("/auth/me", response_model=User)
-async def get_me(current_user: dict = Depends(get_current_user)):
+async def get_me(request: Request):
+    current_user = await get_current_user_flexible(request)
     return User(**current_user)
+
+
+# REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+@api_router.post("/auth/google/session")
+async def google_auth_session(request: Request, response: Response):
+    """Exchange Google session_id for user data and create session"""
+    session_id = request.headers.get("X-Session-ID")
+    if not session_id:
+        raise HTTPException(status_code=400, detail="Missing session_id")
+    
+    # Call Emergent Auth API to get user data
+    async with httpx.AsyncClient() as client:
+        try:
+            auth_response = await client.get(
+                "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
+                headers={"X-Session-ID": session_id},
+                timeout=10.0
+            )
+            auth_response.raise_for_status()
+            user_data = auth_response.json()
+        except Exception as e:
+            raise HTTPException(status_code=401, detail=f"Failed to authenticate with Google: {str(e)}")
+    
+    # Check if user exists by email
+    existing_user = await db.users.find_one({"email": user_data["email"]}, {"_id": 0})
+    
+    if existing_user:
+        user_id = existing_user["id"]
+        # Update user info
+        await db.users.update_one(
+            {"id": user_id},
+            {"$set": {
+                "name": user_data.get("name", existing_user.get("name")),
+                "picture": user_data.get("picture")
+            }}
+        )
+    else:
+        # Create new user
+        user_id = str(uuid.uuid4())
+        user_doc = {
+            "id": user_id,
+            "email": user_data["email"],
+            "name": user_data.get("name", ""),
+            "picture": user_data.get("picture"),
+            "role": "customer",
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        await db.users.insert_one(user_doc)
+    
+    # Create session
+    session_token = user_data["session_token"]
+    session_doc = {
+        "user_id": user_id,
+        "session_token": session_token,
+        "expires_at": datetime.now(timezone.utc) + timedelta(days=7),
+        "created_at": datetime.now(timezone.utc)
+    }
+    await db.user_sessions.insert_one(session_doc)
+    
+    # Set httpOnly cookie
+    response.set_cookie(
+        key="session_token",
+        value=session_token,
+        httponly=True,
+        secure=True,
+        samesite="none",
+        path="/",
+        max_age=7 * 24 * 60 * 60
+    )
+    
+    # Return user data
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    return User(**user)
+
+
+@api_router.post("/auth/logout")
+async def logout(request: Request, response: Response):
+    """Logout user and clear session"""
+    session_token = request.cookies.get("session_token")
+    
+    if session_token:
+        await db.user_sessions.delete_many({"session_token": session_token})
+    
+    response.delete_cookie(
+        key="session_token",
+        path="/",
+        domain=None
+    )
+    
+    return {"message": "Logged out successfully"}
 
 
 # Product Routes

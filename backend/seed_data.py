@@ -100,81 +100,81 @@ products_data = [
     },
     {
         "id": str(uuid.uuid4()),
-        "name": "Whey Protein Isolate",
-        "description": "Premium whey protein isolate with 25g protein per serving. Chocolate flavor, 2 lbs container. Low carb, low fat.",
-        "price": 59.99,
-        "category": "Supplements",
-        "brand": "NutriFuel",
+        "name": "Premium Performance Hoodie",
+        "description": "Luxury athletic hoodie with moisture-wicking fabric. Premium cotton blend, perfect fit, ideal for training or casual wear.",
+        "price": 89.99,
+        "category": "Premium Apparel",
+        "brand": "FitWear Elite",
         "images": [
-            "https://images.unsplash.com/photo-1579722821273-0f6c7d6ba3c2?auto=format&fit=crop&w=800&q=80"
-        ],
-        "stock": 200,
-        "rating": 4.7,
-        "review_count": 445,
-        "reviews": [],
-        "created_at": datetime.now(timezone.utc).isoformat()
-    },
-    {
-        "id": str(uuid.uuid4()),
-        "name": "Pre-Workout Energy Boost",
-        "description": "Explosive pre-workout formula with caffeine, beta-alanine, and creatine. Fruit punch flavor, 30 servings.",
-        "price": 44.99,
-        "category": "Supplements",
-        "brand": "NutriFuel",
-        "images": [
-            "https://images.unsplash.com/photo-1579722821273-0f6c7d6ba3c2?auto=format&fit=crop&w=800&q=80"
+            "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=800&q=80"
         ],
         "stock": 150,
-        "rating": 4.5,
-        "review_count": 312,
+        "rating": 4.8,
+        "review_count": 342,
         "reviews": [],
         "created_at": datetime.now(timezone.utc).isoformat()
     },
     {
         "id": str(uuid.uuid4()),
-        "name": "BCAA Recovery Formula",
-        "description": "Branch chain amino acids for muscle recovery. 2:1:1 ratio, lemon-lime flavor, 60 servings.",
-        "price": 34.99,
-        "category": "Supplements",
-        "brand": "RecoverMax",
+        "name": "Elite Training Joggers",
+        "description": "Premium tapered joggers with zippered pockets. Four-way stretch fabric, moisture-wicking, perfect for any workout.",
+        "price": 79.99,
+        "category": "Premium Apparel",
+        "brand": "FitWear Elite",
         "images": [
-            "https://images.unsplash.com/photo-1579722821273-0f6c7d6ba3c2?auto=format&fit=crop&w=800&q=80"
+            "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?auto=format&fit=crop&w=800&q=80"
         ],
-        "stock": 120,
-        "rating": 4.6,
+        "stock": 180,
+        "rating": 4.7,
+        "review_count": 289,
+        "reviews": [],
+        "created_at": datetime.now(timezone.utc).isoformat()
+    },
+    {
+        "id": str(uuid.uuid4()),
+        "name": "Signature Training Set",
+        "description": "Premium matching workout set. Includes performance top and high-waisted leggings. Seamless design, squat-proof material.",
+        "price": 129.99,
+        "category": "Premium Apparel",
+        "brand": "ActiveLux",
+        "images": [
+            "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80"
+        ],
+        "stock": 95,
+        "rating": 4.9,
+        "review_count": 456,
+        "reviews": [],
+        "created_at": datetime.now(timezone.utc).isoformat()
+    },
+    {
+        "id": str(uuid.uuid4()),
+        "name": "Luxury Sports Jacket",
+        "description": "Designer athletic jacket with reflective details. Water-resistant, breathable, perfect for outdoor training.",
+        "price": 149.99,
+        "category": "Premium Apparel",
+        "brand": "SportLux",
+        "images": [
+            "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=800&q=80"
+        ],
+        "stock": 75,
+        "rating": 4.8,
         "review_count": 198,
         "reviews": [],
         "created_at": datetime.now(timezone.utc).isoformat()
     },
     {
         "id": str(uuid.uuid4()),
-        "name": "Multivitamin for Athletes",
-        "description": "Complete multivitamin designed for active individuals. 90 capsules, supports energy and immunity.",
-        "price": 29.99,
-        "category": "Supplements",
-        "brand": "VitaStrong",
+        "name": "Premium Yoga Outfit Set",
+        "description": "Luxury yoga ensemble with sports bra and high-rise leggings. Buttery-soft fabric, seamless construction, ultra-comfortable.",
+        "price": 119.99,
+        "category": "Premium Apparel",
+        "brand": "YogaLux",
         "images": [
-            "https://images.unsplash.com/photo-1550572017-edd951aa8f72?auto=format&fit=crop&w=800&q=80"
+            "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?auto=format&fit=crop&w=800&q=80"
         ],
-        "stock": 180,
-        "rating": 4.4,
-        "review_count": 267,
-        "reviews": [],
-        "created_at": datetime.now(timezone.utc).isoformat()
-    },
-    {
-        "id": str(uuid.uuid4()),
-        "name": "Creatine Monohydrate",
-        "description": "Pure creatine monohydrate powder. Unflavored, micronized for better absorption. 100 servings.",
-        "price": 24.99,
-        "category": "Supplements",
-        "brand": "PurePower",
-        "images": [
-            "https://images.unsplash.com/photo-1579722821273-0f6c7d6ba3c2?auto=format&fit=crop&w=800&q=80"
-        ],
-        "stock": 250,
-        "rating": 4.8,
-        "review_count": 521,
+        "stock": 120,
+        "rating": 4.9,
+        "review_count": 412,
         "reviews": [],
         "created_at": datetime.now(timezone.utc).isoformat()
     },

@@ -16,8 +16,7 @@ const ProductCard = ({ product }) => {
       className="glass-card rounded-3xl overflow-hidden group"
       data-testid={`product-card-${product.id}`}
     >
-      <Link to={`/products/${product.id}`}>
-        <div className="relative aspect-square overflow-hidden bg-zinc-800">
+      <Link to={`/products/${product.handle}`}>        <div className="relative aspect-square overflow-hidden bg-zinc-800">
           <img
               src={product.image || product.images?.[0] || '/placeholder.png'}            alt={product.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"

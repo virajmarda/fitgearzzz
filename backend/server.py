@@ -510,7 +510,7 @@ async def add_review(product_id: str, review_data: ReviewCreate, request: Reques
 # Cart Routes
 @api_router.get("/cart", response_model=List[CartItem])
 async def get_cart(request: Request):
-    current_user = await get_current_user_flexible(request):
+    
     cart_items = await db.cart.find({"user_id": current_user["id"]}, {"_id": 0}).to_list(1000)
     return [CartItem(**item) for item in cart_items]
 
@@ -565,7 +565,7 @@ async def remove_from_cart(cart_id: str, request: Request):
 
 @api_router.delete("/cart")
 async def clear_cart(request: Request):
-    current_user = await get_current_user_flexible(request):
+    
     await db.cart.delete_many({"user_id": current_user["id"]})
     return {"message": "Cart cleared"}
 
@@ -573,7 +573,7 @@ async def clear_cart(request: Request):
 # Address Routes
 @api_router.get("/addresses", response_model=List[Address])
 async def get_addresses(request: Request):
-    current_user = await get_current_user_flexible(request):
+    
     addresses = await db.addresses.find({"user_id": current_user["id"]}, {"_id": 0}).to_list(1000)
     return [Address(**addr) for addr in addresses]
 
@@ -626,7 +626,7 @@ async def create_order(order_data: OrderCreate, request: Request):
 
 @api_router.get("/orders", response_model=List[Order])
 async def get_orders(request: Request):
-    current_user = await get_current_user_flexible(request):
+    
     query = {"user_id": current_user["id"]}
     if current_user["role"] == "admin":
         query = {}
@@ -704,7 +704,7 @@ async def create_discount_code(code_data: DiscountCodeCreate, request: Request):
 
 @api_router.get("/discount", response_model=List[DiscountCode])
 async def get_discount_codes(request: Request):
-    current_user = await get_current_user_flexible(request):
+    
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
     

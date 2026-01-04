@@ -19,8 +19,7 @@ const ProductCard = ({ product }) => {
       <Link to={`/products/${product.id}`}>
         <div className="relative aspect-square overflow-hidden bg-zinc-800">
           <img
-            src={product.images[0]}
-            alt={product.name}
+              src={product.image || product.images?.[0] || '/placeholder.png'}            alt={product.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
           {product.stock < 10 && product.stock > 0 && (

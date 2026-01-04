@@ -8,10 +8,10 @@ import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import api from '../utils/api';
 import AuthModal from '../components/AuthModal';
+import { fetchProductByHandle } from '../services/shopifyService';
 
 const ProductDetail = () => {
-  const { id } = useParams();
-  const { user } = useAuth();
+  const { handle } = useParams();  const { user } = useAuth();
   const { addToCart } = useCart();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -22,16 +22,11 @@ const ProductDetail = () => {
 
   useEffect(() => {
     fetchProduct();
-  }, [id]);
-
+  }, [handle]);
   const fetchProduct = async () => {
     try {
-      const response = await api.get(`/products/${id}`);
-      setProduct(response.data);
-    } catch (error) {
-      console.error('Error fetching product:', error);
-      toast.error('Product not found');
-    } finally {
+      const productData = await fetchProductByHandle(handle);      console.error('Error fetching product:', error);
+            setProduct(productData);
       setLoading(false);
     }
   };

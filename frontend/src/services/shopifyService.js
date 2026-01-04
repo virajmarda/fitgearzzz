@@ -151,6 +151,75 @@ export const fetchProductById = async (id) => {
   }
 };
 
+export const fetchProductByHandle = async (handle) => {
+  const query = `
+    query getProductByHandle($handle: String!) {
+      productByHandle(handle: $handle) {
+        id
+        title
+        description
+        handle
+        productType
+        vendor
+        images(first: 5) {
+          edges {
+            node {
+              url
+              altText
+            }
+          }
+        }
+        priceRange {
+          minVariantPrice {
+            amount
+            currencyCode
+          }
+        }
+        variants(first: 10) {
+          edges {
+            node {
+              id
+              title
+              priceV2 {
+                amount
+                currencyCode
+              }
+              availableForSale
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  try {
+    const data = await shopifyFetch(query, { handle });
+    
+    if (!data || !data.productByHandle) {
+      throw new Error('Product not found');
+    }
+
+    const product = data.productByHandle;
+    
+    return {
+      id: product.id,
+      title: product.title,
+      description: product.description,
+      price: parseFloat(product.priceRange?.minVariantPrice?.amount || 0),
+      image: product.images?.edges[0]?.node?.url || '',
+      images: product.images?.edges?.map(({ node }) => node.url) || [],
+      handle: product.handle,
+      category: product.productType || '',
+      brand: product.vendor || '',
+      variants: product.variants?.edges?.map(({ node }) => node) || [],
+      rating: 4.5
+    };
+  } catch (error) {
+    console.error('Error fetching product by handle:', error);
+    throw error;
+  }
+};
+
 export const createCheckout = async (variantId, quantity = 1) => {
   const query = `
     mutation checkoutCreate($input: CheckoutCreateInput!) {

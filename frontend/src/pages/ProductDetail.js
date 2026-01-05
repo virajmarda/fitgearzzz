@@ -30,7 +30,9 @@ const ProductDetail = () => {
             setProduct(productData);
  } catch (error) {
       console.error('Error fetching product:', error);
-    } finally {
+    }
+      
+      
       setLoading(false);
     }  const handleAddToCart = () => {
     addToCart(product.id, quantity);
@@ -281,6 +283,6 @@ const ProductDetail = () => {
     </div>
   );
 };
-}
+
 
 export default ProductDetail;

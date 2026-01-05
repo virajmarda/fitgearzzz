@@ -20,11 +20,7 @@ const ProductDetail = () => {
   const [showAuth, setShowAuth] = useState(false);
   const [reviewData, setReviewData] = useState({ rating: 5, comment: '' });
 
-  useEffect(() => {
-    fetchProduct();
-  }, [handle]);
-  
-    const fetchProduct = async () => {
+const fetchProduct = async () => {
     try {
       const productData = await fetchProductByHandle(handle);
             setProduct(productData);
@@ -37,7 +33,13 @@ const ProductDetail = () => {
       setLoading(false);
         }
       };
-const handleAddToCart = () => {
+
+  
+  useEffect(() => {
+    fetchProduct();
+  }, [handle]);
+  
+    
     addToCart(product.id, quantity);
   };
 

@@ -279,5 +279,6 @@ const ProductDetail = () => {
       <AuthModal open={showAuth} onClose={() => setShowAuth(false)} />
     </div>
   );
+};
 
 export default ProductDetail;

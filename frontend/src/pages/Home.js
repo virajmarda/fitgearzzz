@@ -4,8 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, TrendingUp, Award, Truck } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import ProductCard from '../components/ProductCard';
-import api from '../utils/api';
-
+import { fetchProducts } from '../services/shopifyService';
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,9 +15,8 @@ const Home = () => {
 
   const fetchFeaturedProducts = async () => {
     try {
-      const response = await api.get('/products');
-      setFeaturedProducts(response.data.slice(0, 8));
-    } catch (error) {
+      const products = await fetchProducts();
+      setFeaturedProducts(products.slice(0, 8));    } catch (error) {
       console.error('Error fetching products:', error);
     } finally {
       setLoading(false);

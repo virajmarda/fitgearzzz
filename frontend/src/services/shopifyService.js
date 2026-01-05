@@ -1,8 +1,6 @@
 // GraphQL-based Shopify Storefront API service
-const SHOPIFY_DOMAIN = process.env.REACT_APP_SHOPIFY_STORE_DOMAIN || 'fitgearzzz.myshopify.com';
-const STOREFRONT_ACCESS_TOKEN = process.env.REACT_APP_SHOPIFY_STOREFRONT_ACCESS_TOKEN || '4f69d01e467efc58595c74f4420ab3bd';
+import { SHOPIFY_STORE_DOMAIN, STOREFRONT_ACCESS_TOKEN, STOREFRONT_API_URL, getCheckoutUrl } from '../config/shopify';
 
-const STOREFRONT_API_URL = `https://${SHOPIFY_DOMAIN}/api/2025-01/graphql.json`;
 const shopifyFetch = async (query, variables = {}) => {
   console.log('Shopify GraphQL Request:', { query, variables });
   
@@ -220,7 +218,8 @@ export const fetchProductByHandle = async (handle) => {
   }
 };
 
-export const createCheckout = async (variantId, quantity = 1) => {
+// Create a Shopify checkout and return the checkout URL
+export const createCheckout = async (lineItems) => {
   const query = `
     mutation checkoutCreate($input: CheckoutCreateInput!) {
       checkoutCreate(input: $input) {
@@ -239,7 +238,7 @@ export const createCheckout = async (variantId, quantity = 1) => {
   try {
     const data = await shopifyFetch(query, {
       input: {
-        lineItems: [{ variantId, quantity }]
+        lineItems: lineItems
       }
     });
     
@@ -247,7 +246,9 @@ export const createCheckout = async (variantId, quantity = 1) => {
       throw new Error(data.checkoutCreate.checkoutUserErrors[0].message);
     }
     
-    return data.checkoutCreate.checkout.webUrl;
+    // Return the custom checkout URL instead of Shopify's default
+    const checkoutId = data.checkoutCreate.checkout.id;
+    return getCheckoutUrl(checkoutId);
   } catch (error) {
     console.error('Error creating checkout:', error);
     return null;

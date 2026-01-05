@@ -23,7 +23,8 @@ const ProductDetail = () => {
   useEffect(() => {
     fetchProduct();
   }, [handle]);
-  const fetchProduct = async () => {
+  
+    const fetchProduct = async () => {
     try {
       const productData = await fetchProductByHandle(handle);
             setProduct(productData);

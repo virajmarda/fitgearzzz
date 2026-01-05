@@ -31,10 +31,13 @@ const ProductDetail = () => {
  } catch (error) {
       console.error('Error fetching product:', error);
     }
+      finally {
       
       
       setLoading(false);
-    }  const handleAddToCart = () => {
+        }
+      };
+const handleAddToCart = () => {
     addToCart(product.id, quantity);
   };
 

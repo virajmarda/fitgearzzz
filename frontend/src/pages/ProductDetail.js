@@ -40,7 +40,8 @@ const fetchProduct = async () => {
   }, [handle]);
   
     
-    addToCart(product.id, quantity);
+const handleAddToCart = () => {
+  addToCart(product.id, quantity);
   };
 
   const handleSubmitReview = async (e) => {

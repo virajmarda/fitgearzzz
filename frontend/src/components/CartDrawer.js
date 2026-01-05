@@ -1,11 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { X, Plus, Minus, Trash2 } from 'lucide-react';
 import { Button } from './ui/button';
 import { useCart } from '../context/CartContext';
-import { Link } from 'react-router-dom';
+import { createCheckout } from '../services/shopifyService';
+import { toast } from 'sonner';
 
 const CartDrawer = ({ open, onClose }) => {
   const { cart, products, updateCartItem, removeFromCart, getCartTotal, getCartCount } = useCart();
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -13,6 +15,7 @@ const CartDrawer = ({ open, onClose }) => {
     } else {
       document.body.style.overflow = 'unset';
     }
+
     return () => {
       document.body.style.overflow = 'unset';
     };
@@ -22,6 +25,40 @@ const CartDrawer = ({ open, onClose }) => {
 
   const total = getCartTotal();
   const count = getCartCount();
+
+  // Handle Shopify checkout
+  const handleCheckout = async () => {
+    setIsCheckingOut(true);
+    try {
+      // Convert cart items to Shopify line items format
+      const lineItems = cart.map((item) => {
+        const product = products[item.product_id];
+        // Find the variant ID from the product
+        const variant = product.variants && product.variants[0];
+        if (!variant) {
+          throw new Error(`No variants found for product: ${product.title}`);
+        }
+        return {
+          variantId: variant.id,
+          quantity: item.quantity
+        };
+      });
+
+      // Create Shopify checkout
+      const checkoutUrl = await createCheckout(lineItems);
+      
+      if (checkoutUrl) {
+        // Redirect to Shopify checkout
+        window.location.href = checkoutUrl;
+      } else {
+        throw new Error('Failed to create checkout');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      toast.error('Failed to proceed to checkout. Please try again.');
+      setIsCheckingOut(false);
+    }
+  };
 
   return (
     <>
@@ -122,14 +159,17 @@ const CartDrawer = ({ open, onClose }) => {
                 ${total.toFixed(2)}
               </span>
             </div>
-            <Link to="/checkout" onClick={onClose}>
-              <Button
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full py-3"
-                data-testid="checkout-button"
-              >
-                Proceed to Checkout
-              </Button>
-            </Link>
+            <Button
+              onClick={handleCheckout}
+              disabled={isCheckingOut}
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full py-3"
+              data-testid="checkout-button"
+            >
+              {isCheckingOut ? 'Processing...' : 'Proceed to Checkout'}
+            </Button>
+            <p className="text-xs text-zinc-400 text-center">
+              You'll be redirected to secure Shopify checkout
+            </p>
           </div>
         )}
       </div>

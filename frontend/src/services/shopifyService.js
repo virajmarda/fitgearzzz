@@ -289,6 +289,16 @@ export const customerLogin = async (email, password) => {
 };
 
 export const customerRegister = async (email, password, firstName, lastName) => {
+  // First, try to login - if successful, customer already exists
+  try {
+    const accessToken = await customerLogin(email, password);
+    console.log('Customer already exists, logged in successfully');
+    return accessToken;
+  } catch (loginError) {
+    // If login fails, customer doesn't exist - proceed with registration
+    console.log('Customer does not exist, creating new account...');
+  }
+
   const query = `
     mutation customerCreate($input: CustomerCreateInput!) {
       customerCreate(input: $input) {
@@ -318,13 +328,27 @@ export const customerRegister = async (email, password, firstName, lastName) => 
     });
 
     if (data.customerCreate.customerUserErrors.length > 0) {
-      throw new Error(data.customerCreate.customerUserErrors[0].message);
+      const error = data.customerCreate.customerUserErrors[0];
+      
+      // If customer already exists, try to login
+      if (error.message.includes('already exists') || error.message.includes('taken')) {
+        console.log('Customer exists (from error), attempting login...');
+        return await customerLogin(email, password);
+      }
+      
+      throw new Error(error.message);
     }
 
     // After creating account, log them in
     return await customerLogin(email, password);
   } catch (error) {
     console.error('Error registering customer:', error);
+    
+    // If limit exceeded, inform user to try login or wait
+    if (error.message && error.message.includes('Limit exceeded')) {
+      throw new Error('Account creation is temporarily limited. If you already have an account, please try logging in instead.');
+    }
+    
     throw error;
   }
 };

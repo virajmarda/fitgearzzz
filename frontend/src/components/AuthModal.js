@@ -15,24 +15,16 @@ const AuthModal = ({ open, onClose }) => {
   });
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      if (isLogin) {
-        await login(formData.email, formData.password);
-      } else {
-        await register(formData.name, formData.email, formData.password);
-      }
-      onClose();
-      setFormData({ name: '', email: '', password: '' });
-    } catch (error) {
-      console.error('Auth error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Send user to Shopify Customer Accounts portal
+  const returnTo = encodeURIComponent('https://fitgearzzz.com/auth/callback');
+  const shopifyLoginUrl = `https://account.fitgearzzz.com/?return_to=${returnTo}`;
+
+  window.location.href = shopifyLoginUrl;
+};
+
 
   return (
     <Dialog open={open} onOpenChange={onClose}>

@@ -210,11 +210,11 @@ const handleAddToCart = () => {
             <h2 className="font-oswald text-3xl font-bold text-white mb-6 uppercase" data-testid="reviews-section-title">
               Customer Reviews
             </h2>
-            {product.reviews.length === 0 ? (
+            {(!product.reviews || product.reviews.length) === 0 ? (
               <p className="text-zinc-400" data-testid="no-reviews-message">No reviews yet. Be the first to review!</p>
             ) : (
               <div className="space-y-4">
-                {product.reviews.map((review, index) => (
+                {product.reviews?.map((review, index) => (
                   <div key={index} className="glass-card rounded-2xl p-6 shadow-md" data-testid={`review-${index}`}>
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-manrope font-semibold text-white">{review.user_name}</span>

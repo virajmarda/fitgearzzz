@@ -21,8 +21,17 @@ const Navbar = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      window.location.href = `/products?search=${encodeURIComponent(searchQuery)}`;
+      window.location.href = `/products?search=${encodeURIComponent(
+        searchQuery
+      )}`;
     }
+  };
+
+  const handleLogout = () => {
+    // keep your local auth cleanup
+    logout();
+    // then go through the customer_identity/logout route
+    navigate('/customer_identity/logout');
   };
 
   const cartCount = getCartCount();
@@ -32,20 +41,38 @@ const Navbar = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-zinc-900/60 backdrop-blur-xl border-b border-zinc-800/50 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <Link to="/" className="flex items-center space-x-2" data-testid="logo-link">
+            <Link
+              to="/"
+              className="flex items-center space-x-2"
+              data-testid="logo-link"
+            >
               <Dumbbell className="w-8 h-8 text-orange-500" />
-              <span className="font-oswald text-2xl font-bold tracking-tight text-white">FITGEAR</span>
+              <span className="font-oswald text-2xl font-bold tracking-tight text-white">
+                FITGEAR
+              </span>
             </Link>
 
             <div className="hidden md:flex items-center space-x-8">
-              <Link to="/" className="text-zinc-300 hover:text-orange-500 font-manrope transition-colors" data-testid="nav-home">
+              <Link
+                to="/"
+                className="text-zinc-300 hover:text-orange-500 font-manrope transition-colors"
+                data-testid="nav-home"
+              >
                 Home
               </Link>
-              <Link to="/products" className="text-zinc-300 hover:text-orange-500 font-manrope transition-colors" data-testid="nav-products">
+              <Link
+                to="/products"
+                className="text-zinc-300 hover:text-orange-500 font-manrope transition-colors"
+                data-testid="nav-products"
+              >
                 Products
               </Link>
               {user?.role === 'admin' && (
-                <Link to="/admin" className="text-zinc-300 hover:text-orange-500 font-manrope transition-colors" data-testid="nav-admin">
+                <Link
+                  to="/admin"
+                  className="text-zinc-300 hover:text-orange-500 font-manrope transition-colors"
+                  data-testid="nav-admin"
+                >
                   Admin
                 </Link>
               )}
@@ -61,7 +88,11 @@ const Navbar = () => {
                   className="w-64 bg-zinc-800/50 border-zinc-700 text-white placeholder-zinc-500 focus:border-orange-500 rounded-full"
                   data-testid="search-input"
                 />
-                <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2" data-testid="search-button">
+                <button
+                  type="submit"
+                  className="absolute right-2 top-1/2 -translate-y-1/2"
+                  data-testid="search-button"
+                >
                   <Search className="w-4 h-4 text-zinc-400" />
                 </button>
               </form>
@@ -73,7 +104,10 @@ const Navbar = () => {
               >
                 <ShoppingCart className="w-6 h-6" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center" data-testid="cart-count">
+                  <span
+                    className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+                    data-testid="cart-count"
+                  >
                     {cartCount}
                   </span>
                 )}
@@ -82,13 +116,17 @@ const Navbar = () => {
               {user ? (
                 <div className="flex items-center space-x-2">
                   <Link to="/profile" data-testid="profile-link">
-                    <Button variant="ghost" className="text-zinc-300 hover:text-orange-500 hover:bg-transparent" data-testid="profile-button">
+                    <Button
+                      variant="ghost"
+                      className="text-zinc-300 hover:text-orange-500 hover:bg-transparent"
+                      data-testid="profile-button"
+                    >
                       <User className="w-5 h-5 mr-2" />
                       {user.name}
                     </Button>
                   </Link>
                   <Button
-                    onClick={logout}
+                    onClick={handleLogout}
                     variant="outline"
                     className="border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-full px-6"
                     data-testid="logout-button"
@@ -118,7 +156,10 @@ const Navbar = () => {
         </div>
 
         {showMenu && (
-          <div className="md:hidden bg-zinc-900 border-t border-zinc-800" data-testid="mobile-menu">
+          <div
+            className="md:hidden bg-zinc-900 border-t border-zinc-800"
+            data-testid="mobile-menu"
+          >
             <div className="px-4 py-4 space-y-4">
               <form onSubmit={handleSearch} className="relative">
                 <Input
@@ -131,14 +172,26 @@ const Navbar = () => {
                 />
               </form>
 
-              <Link to="/" className="block text-zinc-300 hover:text-orange-500 font-manrope" data-testid="mobile-nav-home">
+              <Link
+                to="/"
+                className="block text-zinc-300 hover:text-orange-500 font-manrope"
+                data-testid="mobile-nav-home"
+              >
                 Home
               </Link>
-              <Link to="/products" className="block text-zinc-300 hover:text-orange-500 font-manrope" data-testid="mobile-nav-products">
+              <Link
+                to="/products"
+                className="block text-zinc-300 hover:text-orange-500 font-manrope"
+                data-testid="mobile-nav-products"
+              >
                 Products
               </Link>
               {user?.role === 'admin' && (
-                <Link to="/admin" className="block text-zinc-300 hover:text-orange-500 font-manrope" data-testid="mobile-nav-admin">
+                <Link
+                  to="/admin"
+                  className="block text-zinc-300 hover:text-orange-500 font-manrope"
+                  data-testid="mobile-nav-admin"
+                >
                   Admin
                 </Link>
               )}
@@ -154,11 +207,15 @@ const Navbar = () => {
 
               {user ? (
                 <>
-                  <Link to="/profile" className="block text-zinc-300 hover:text-orange-500 font-manrope" data-testid="mobile-profile-link">
+                  <Link
+                    to="/profile"
+                    className="block text-zinc-300 hover:text-orange-500 font-manrope"
+                    data-testid="mobile-profile-link"
+                  >
                     Profile
                   </Link>
                   <Button
-                    onClick={logout}
+                    onClick={handleLogout}
                     variant="outline"
                     className="w-full border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-full"
                     data-testid="mobile-logout-button"

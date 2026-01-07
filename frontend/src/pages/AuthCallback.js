@@ -6,14 +6,21 @@ function AuthCallback() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // TODO: call your backend or a Cloud Function that
-    // exchanges the Shopify code for a customer token,
-    // then set something like localStorage/session and redirect.
-    // For now, just redirect home.
+        // When Shopify sends user back here, mark them as authenticated
+    localStorage.setItem('shopify_authenticated', 'true');
+    localStorage.setItem('shopify_auth_time', Date.now().toString());
+    
+    // Redirect to home
     navigate('/', { replace: true });
+    
+    // Force reload to update navbar/auth state
+    window.location.reload();navigate('/', { replace: true });
   }, [navigate]);
 
-  return <p>Signing you in...</p>;
-}
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-[#030303]">
+      <p className="text-white text-xl">Signing you in...</p>
+    </div>
+  );}
 
 export default AuthCallback;

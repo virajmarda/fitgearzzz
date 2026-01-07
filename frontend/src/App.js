@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useNavigate, useSearchParams } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { Toaster } from './components/ui/sonner';
@@ -12,7 +12,7 @@ import Checkout from './pages/Checkout';
 import Profile from './pages/Profile';
 import Admin from './pages/Admin';
 import AuthCallback from './pages/AuthCallback';
-import CustomerLogout from "./pages/CustomerLogout";
+import CustomerLogout from './pages/CustomerLogout';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -20,6 +20,25 @@ import TermsOfService from './pages/TermsOfService';
 import ShippingReturns from './pages/ShippingReturns';
 import FAQ from './pages/FAQ';
 import './App.css';
+
+const CustomerSSOCallback = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const returnTo = searchParams.get('return_to');
+
+    if (returnTo) {
+      // Shopify gives a full URL in return_to; go there directly
+      window.location.href = decodeURIComponent(returnTo);
+    } else {
+      // fallback if no return_to
+      navigate('/', { replace: true });
+    }
+  }, [navigate, searchParams]);
+
+  return null;
+};
 
 function App() {
   return (
@@ -36,8 +55,9 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/auth/callback" element={<AuthCallback />} />
                 <Route path="/customer_identity/logout" element={<CustomerLogout />} />
+                <Route path="/customer_authentication/sso_hint" element={<CustomerSSOCallback />} />
                 <Route path="/admin" element={<Admin />} />
-                <Route path="/products/:handle" element={<ProductDetail />} />                
+                <Route path="/products/:handle" element={<ProductDetail />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/privacy" element={<PrivacyPolicy />} />
                 <Route path="/terms" element={<TermsOfService />} />

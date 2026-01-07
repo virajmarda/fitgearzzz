@@ -14,11 +14,17 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem('token');
     if (token) {
       fetchUser();
+  } else if (localStorage.getItem('shopify_authenticated') === 'true') {
+      // User is authenticated via Shopify Customer accounts
+      setUser({ 
+        authenticated: true,
+        source: 'shopify_customer_accounts'
+      });
+      setLoading(false);
     } else {
       setLoading(false);
     }
   }, []);
-
   const fetchUser = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -58,6 +64,8 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem('token');
+        localStorage.removeItem('shopify_authenticated');
+    localStorage.removeItem('shopify_auth_time');
     setUser(null);
     toast.success('Logged out successfully');
   };

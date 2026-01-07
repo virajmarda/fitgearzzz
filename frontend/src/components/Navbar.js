@@ -48,7 +48,7 @@ const Navbar = () => {
             >
               <Dumbbell className="w-8 h-8 text-orange-500" />
               <span className="font-oswald text-2xl font-bold tracking-tight text-white">
-                FITGEAR
+                FITGEARZZZ
               </span>
             </Link>
 
@@ -73,6 +73,15 @@ const Navbar = () => {
                   className="text-zinc-300 hover:text-orange-500 font-manrope transition-colors"
                   data-testid="nav-admin"
                 >
+                    Orders
+              </Link>
+  )}
+  {user?.role === 'admin' && (
+    <Link
+      to="/admin"
+      className="text-zinc-300 hover:text-orange-500 font-manrope transition-colors"
+      data-testid="nav-admin"
+    >
                   Admin
                 </Link>
               )}
@@ -192,6 +201,15 @@ const Navbar = () => {
                   className="block text-zinc-300 hover:text-orange-500 font-manrope"
                   data-testid="mobile-nav-admin"
                 >
+                    Orders
+  </Link>
+)}
+{user?.role === 'admin' && (
+  <Link
+    to="/admin"
+    className="block text-zinc-300 hover:text-orange-500 font-manrope"
+    data-testid="mobile-nav-admin"
+  >
                   Admin
                 </Link>
               )}

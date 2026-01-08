@@ -21,8 +21,8 @@ function AuthCallback() {
           return;
         }
 
-        // Read the PKCE code_verifier that was stored before redirect
-        const codeVerifier = window.sessionStorage.getItem('pkce_code_verifier');
+        // MUST match the key used in initiateShopifyLogin
+        const codeVerifier = window.sessionStorage.getItem('code_verifier');
         if (!codeVerifier) {
           console.error('Missing PKCE code_verifier in sessionStorage');
           toast.error('Authentication failed. Please try again.');
@@ -30,15 +30,10 @@ function AuthCallback() {
           return;
         }
 
-        // Exchange code for tokens via backend (no direct call to Shopify)
         await handleOAuthCallback(code, state, codeVerifier);
 
         toast.success('Successfully logged in!');
-
-        // Redirect to home or orders page
         navigate('/orders', { replace: true });
-
-        // Force reload to update navbar/auth state
         window.location.reload();
       } catch (error) {
         console.error('Auth callback error:', error);
@@ -55,9 +50,7 @@ function AuthCallback() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       {processing ? (
-        <>
-          <p className="text-lg font-medium">Completing your login...</p>
-        </>
+        <p className="text-lg font-medium">Completing your login...</p>
       ) : (
         <p className="text-lg font-medium">Redirecting...</p>
       )}

@@ -1,12 +1,14 @@
+// frontend/src/components/AuthModal.js
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { useAuth } from '../context/AuthContext';
+import { initiateShopifyLogin } from '../utils/shopifyAuth';
 
 const AuthModal = ({ open, onClose }) => {
-  const { login, register } = useAuth();
+  const { login, register } = useAuth(); // keep for future use if needed
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
@@ -15,20 +17,26 @@ const AuthModal = ({ open, onClose }) => {
   });
   const [loading, setLoading] = useState(false);
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  // Send user to Shopify Customer Accounts portal
-  const returnTo = encodeURIComponent('https://fitgearzzz.com/auth/callback');
-  const shopifyLoginUrl = `https://account.fitgearzzz.com/?return_to=${returnTo}`;
-
-  window.location.href = shopifyLoginUrl;
-};
-
+    // Start Shopify Customer Account API PKCE flow
+    setLoading(true);
+    try {
+      await initiateShopifyLogin();
+      // function will redirect the browser; no further code runs here
+    } catch (err) {
+      console.error('Error initiating Shopify login', err);
+      setLoading(false);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-zinc-900 border-zinc-800 text-white rounded-3xl shadow-2xl" data-testid="auth-modal">
+      <DialogContent
+        className="bg-zinc-900 border-zinc-800 text-white rounded-3xl shadow-2xl"
+        data-testid="auth-modal"
+      >
         <DialogHeader>
           <DialogTitle className="font-oswald text-2xl">
             {isLogin ? 'Login' : 'Sign Up'}
@@ -38,12 +46,16 @@ const handleSubmit = async (e) => {
         <form onSubmit={handleSubmit} className="space-y-4" data-testid="auth-form">
           {!isLogin && (
             <div>
-              <Label htmlFor="name" className="text-zinc-300">Name</Label>
+              <Label htmlFor="name" className="text-zinc-300">
+                Name
+              </Label>
               <Input
                 id="name"
                 type="text"
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
                 className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
                 required={!isLogin}
                 data-testid="name-input"
@@ -52,12 +64,16 @@ const handleSubmit = async (e) => {
           )}
 
           <div>
-            <Label htmlFor="email" className="text-zinc-300">Email</Label>
+            <Label htmlFor="email" className="text-zinc-300">
+              Email
+            </Label>
             <Input
               id="email"
               type="email"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
               required
               data-testid="email-input"
@@ -65,12 +81,16 @@ const handleSubmit = async (e) => {
           </div>
 
           <div>
-            <Label htmlFor="password" className="text-zinc-300">Password</Label>
+            <Label htmlFor="password" className="text-zinc-300">
+              Password
+            </Label>
             <Input
               id="password"
               type="password"
               value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
               className="bg-zinc-800/50 border-zinc-700 text-white focus:border-orange-500 rounded-2xl"
               required
               data-testid="password-input"
@@ -93,7 +113,9 @@ const handleSubmit = async (e) => {
             className="text-sm text-zinc-400 hover:text-orange-500 transition-colors"
             data-testid="toggle-auth-mode"
           >
-            {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Login'}
+            {isLogin
+              ? "Don't have an account? Sign up"
+              : 'Already have an account? Login'}
           </button>
         </div>
       </DialogContent>

@@ -254,5 +254,5 @@ const Navbar = () => {
       <CartDrawer open={showCart} onClose={() => setShowCart(false)} />
     </>
   );
-
+}
 export default Navbar;

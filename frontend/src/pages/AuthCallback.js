@@ -1,28 +1,62 @@
 // frontend/src/pages/AuthCallback.js
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { handleOAuthCallback } from '../utils/shopifyAuth';
+import { toast } from 'sonner';
 
 function AuthCallback() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [processing, setProcessing] = useState(true);
 
   useEffect(() => {
-    // When Shopify sends user back here, mark them as authenticated
-    localStorage.setItem('shopify_authenticated', 'true');
-    localStorage.setItem('shopify_auth_time', Date.now().toString());
+    const processCallback = async () => {
+      try {
+        const code = searchParams.get('code');
+        const state = searchParams.get('state');
 
-    // Redirect to your custom Orders page on fitgearzzz.com
-    navigate('/orders', { replace: true });
+        if (!code || !state) {
+          toast.error('Invalid authentication callback');
+          navigate('/', { replace: true });
+          return;
+        }
 
-    // Force reload to update navbar/auth state
-    window.location.reload();
-  }, [navigate]);
+        // Exchange code for tokens
+        await handleOAuthCallback(code, state);
+        
+        toast.success('Successfully logged in!');
+        
+        // Redirect to home or orders page
+        navigate('/orders', { replace: true });
+        
+        // Force reload to update navbar/auth state
+        window.location.reload();
+      } catch (error) {
+        console.error('Auth callback error:', error);
+        toast.error('Authentication failed. Please try again.');
+        navigate('/', { replace: true });
+      } finally {
+        setProcessing(false);
+      }
+    };
+
+    processCallback();
+  }, [searchParams, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#030303]">
-      <p className="text-white text-xl">Signing you in...</p>
+      <div className="text-center">
+        {processing ? (
+          <>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+            <p className="text-white text-xl mt-4">Completing your login...</p>
+          </>
+        ) : (
+          <p className="text-white text-xl">Redirecting...</p>
+        )}
+      </div>
     </div>
   );
 }
 
 export default AuthCallback;
-

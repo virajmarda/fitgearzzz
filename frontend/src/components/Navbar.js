@@ -9,7 +9,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, loginWithShopify } = useAuth();
   const { getCartCount } = useCart();
   const [showAuth, setShowAuth] = useState(false);
   const [showCart, setShowCart] = useState(false);
@@ -145,8 +145,7 @@ const Navbar = () => {
                 </div>
               ) : (
                 <Button
-                  onClick={() => setShowAuth(true)}
-                  className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full px-8"
+                onClick={loginWithShopify}                  className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full px-8"
                   data-testid="login-button"
                 >
                   Login

@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, User, Search, Menu, X, Dumbbell } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-import AuthModal from './AuthModal';
 import CartDrawer from './CartDrawer';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -11,7 +10,6 @@ import { Input } from './ui/input';
 const Navbar = () => {
   const { user, logout, loginWithShopify } = useAuth();
   const { getCartCount } = useCart();
-  const [showAuth, setShowAuth] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -242,8 +240,7 @@ const Navbar = () => {
                 </>
               ) : (
                 <Button
-                  onClick={() => setShowAuth(true)}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full"
+                onClick={loginWithShopify}                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full"
                   data-testid="mobile-login-button"
                 >
                   Login
@@ -254,10 +251,8 @@ const Navbar = () => {
         )}
       </nav>
 
-      <AuthModal open={showAuth} onClose={() => setShowAuth(false)} />
       <CartDrawer open={showCart} onClose={() => setShowCart(false)} />
     </>
   );
-};
 
 export default Navbar;

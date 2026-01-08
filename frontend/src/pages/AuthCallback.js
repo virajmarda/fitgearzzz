@@ -1,8 +1,8 @@
 // frontend/src/pages/AuthCallback.js
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { handleOAuthCallback } from '../utils/shopifyAuth';
 import { toast } from 'sonner';
+import { handleOAuthCallback } from '../utils/shopifyAuth';
 
 function AuthCallback() {
   const navigate = useNavigate();
@@ -21,14 +21,23 @@ function AuthCallback() {
           return;
         }
 
-        // Exchange code for tokens
-        await handleOAuthCallback(code, state);
-        
+        // Read the PKCE code_verifier that was stored before redirect
+        const codeVerifier = window.sessionStorage.getItem('pkce_code_verifier');
+        if (!codeVerifier) {
+          console.error('Missing PKCE code_verifier in sessionStorage');
+          toast.error('Authentication failed. Please try again.');
+          navigate('/', { replace: true });
+          return;
+        }
+
+        // Exchange code for tokens via backend (no direct call to Shopify)
+        await handleOAuthCallback(code, state, codeVerifier);
+
         toast.success('Successfully logged in!');
-        
+
         // Redirect to home or orders page
         navigate('/orders', { replace: true });
-        
+
         // Force reload to update navbar/auth state
         window.location.reload();
       } catch (error) {
@@ -44,17 +53,14 @@ function AuthCallback() {
   }, [searchParams, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#030303]">
-      <div className="text-center">
-        {processing ? (
-          <>
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
-            <p className="text-white text-xl mt-4">Completing your login...</p>
-          </>
-        ) : (
-          <p className="text-white text-xl">Redirecting...</p>
-        )}
-      </div>
+    <div className="min-h-screen flex items-center justify-center">
+      {processing ? (
+        <>
+          <p className="text-lg font-medium">Completing your login...</p>
+        </>
+      ) : (
+        <p className="text-lg font-medium">Redirecting...</p>
+      )}
     </div>
   );
 }

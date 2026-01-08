@@ -8,7 +8,6 @@ export default async function handler(req, res) {
   try {
     const params = new URLSearchParams();
     params.append('client_id', process.env.SHOPIFY_CUSTOMER_API_CLIENT_ID);
-    params.append('client_secret', process.env.SHOPIFY_CUSTOMER_API_CLIENT_SECRET);
     params.append('grant_type', 'authorization_code');
     params.append('redirect_uri', redirectUri);
     params.append('code', code);

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { customerLogin, customerRegister, getCustomer } from '../services/shopifyService';
+import { initiateShopifyLogin, getCustomerFromShopify, isAuthenticated, logoutShopify } from '../utils/shopifyAuth';
 import { toast } from 'sonner';
 
 const AuthContext = createContext();
@@ -11,23 +12,39 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      fetchUser();
-  } else if (localStorage.getItem('shopify_authenticated') === 'true') {
-      // User is authenticated via Shopify Customer accounts
-      setUser({ 
-        authenticated: true,
-        source: 'shopify_customer_accounts'
-      });
-      setLoading(false);
+    // Check if user is authenticated via Shopify Customer Account API
+    if (isAuthenticated()) {
+      fetchShopifyCustomer();
     } else {
-      setLoading(false);
+      // Fallback to old token-based auth
+      const token = localStorage.getItem('token');
+      if (token) {
+        fetchUser(token);
+      } else {
+        setLoading(false);
+      }
     }
   }, []);
-  const fetchUser = async () => {
+
+  const fetchShopifyCustomer = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const customerData = await getCustomerFromShopify();
+      if (customerData) {
+        setUser({
+          ...customerData,
+          source: 'shopify_customer_account',
+          authenticated: true
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching Shopify customer:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchUser = async (token) => {
+    try {
       const customerData = await getCustomer(token);
       setUser(customerData);
     } catch (error) {
@@ -37,6 +54,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // New method: Login with Shopify Customer Account API
+  const loginWithShopify = () => {
+    initiateShopifyLogin();
+  };
+
+  // Legacy method: Login with email/password (Storefront API)
   const login = async (email, password) => {
     try {
       const accessToken = await customerLogin(email, password);
@@ -63,19 +86,27 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-        localStorage.removeItem('shopify_authenticated');
-    localStorage.removeItem('shopify_auth_time');
-    setUser(null);
-    toast.success('Logged out successfully');
+    // Check if user is logged in via Shopify Customer Account API
+    if (isAuthenticated()) {
+      logoutShopify();
+    } else {
+      // Legacy logout
+      localStorage.removeItem('token');
+      localStorage.removeItem('shopify_authenticated');
+      localStorage.removeItem('shopify_auth_time');
+      setUser(null);
+      toast.success('Logged out successfully');
+    }
   };
 
   const value = {
     user,
     loading,
     login,
+    loginWithShopify,
     register,
     logout,
+    isAuthenticated: () => user !== null,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

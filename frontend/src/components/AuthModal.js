@@ -127,6 +127,6 @@ const AuthModal = ({ open, onClose }) => {
         </div>
       </DialogContent>
     </Dialog>
-  };
-
-export default AuthModal);
+  );
+}
+export default AuthModal;

@@ -35,6 +35,7 @@ async function generateCodeChallenge(codeVerifier) {
 
 // Initiate login - redirect to Shopify
 export async function initiateShopifyLogin() {
+    console.log('initiateShopifyLogin start');
   const state = generateRandomString();
   const codeVerifier = generateRandomString();
   const codeChallenge = await generateCodeChallenge(codeVerifier);
@@ -53,8 +54,10 @@ export async function initiateShopifyLogin() {
     code_challenge_method: 'S256'
   });
 
-  window.location.href = `${SHOPIFY_AUTH_CONFIG.authEndpoint}?${params}`;
-}
+    const authorizeUrl = `${SHOPIFY_AUTH_CONFIG.authEndpoint}?${params}`;
+    console.log('Redirecting to', authorizeUrl);
+
+  window.location.href = authorizeUrl;}
 
 // Handle OAuth callback (now via backend API route)
 export async function handleOAuthCallback(code, state, codeVerifierFromCaller) {

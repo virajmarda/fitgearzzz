@@ -8,8 +8,7 @@ const AuthModal = ({ open, onClose }) => {
   const { loginWithShopify } = useAuth();
 
   const handleShopifyLogin = () => {
-    loginWithShopify();
-    onClose();
+    loginWithShopify(;;
   };
 
   return (

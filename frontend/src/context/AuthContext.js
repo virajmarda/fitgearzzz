@@ -56,6 +56,7 @@ export const AuthProvider = ({ children }) => {
 
   // New method: Login with Shopify Customer Account API
   const loginWithShopify = () => {
+        console.log('loginWithShopify called');
     initiateShopifyLogin();
   };
 

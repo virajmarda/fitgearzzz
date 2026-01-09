@@ -10,7 +10,9 @@ import AuthModal from './AuthModal';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
-    const [showAuthModal, setShowAuthModal] = useState(false);t [showCart, setShowCart] = useState(false);
+  const { getCartCount } = useCart();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showCart, setShowCart] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -19,17 +21,14 @@ const Navbar = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      window.location.href = `/products?search=${encodeURIComponent(
-        searchQuery
-      )}`;
+      navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
+      setShowMenu(false);
     }
   };
 
   const handleLogout = () => {
-    // keep your local auth cleanup
     logout();
-    // then go through the customer_identity/logout route
-    navigate('/customer_identity/logout');
+    navigate('/');
   };
 
   const cartCount = getCartCount();
@@ -66,22 +65,22 @@ const Navbar = () => {
                 Products
               </Link>
               {user?.role === 'admin' && (
-                <Link
-                  to="/admin"
-                  className="text-zinc-300 hover:text-orange-500 font-manrope transition-colors"
-                  data-testid="nav-admin"
-                >
+                <>
+                  <Link
+                    to="/orders"
+                    className="text-zinc-300 hover:text-orange-500 font-manrope transition-colors"
+                    data-testid="nav-orders"
+                  >
                     Orders
-              </Link>
-  )}
-  {user?.role === 'admin' && (
-    <Link
-      to="/admin"
-      className="text-zinc-300 hover:text-orange-500 font-manrope transition-colors"
-      data-testid="nav-admin"
-    >
-                  Admin
-                </Link>
+                  </Link>
+                  <Link
+                    to="/admin"
+                    className="text-zinc-300 hover:text-orange-500 font-manrope transition-colors"
+                    data-testid="nav-admin"
+                  >
+                    Admin
+                  </Link>
+                </>
               )}
             </div>
 
@@ -129,7 +128,7 @@ const Navbar = () => {
                       data-testid="profile-button"
                     >
                       <User className="w-5 h-5 mr-2" />
-                      {user.name}
+                      {user.name || user.displayName}
                     </Button>
                   </Link>
                   <Button
@@ -143,7 +142,8 @@ const Navbar = () => {
                 </div>
               ) : (
                 <Button
-                onClick={() => setShowAuthModal(true)}                  className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full px-8"
+                  onClick={() => setShowAuthModal(true)}
+                  className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full px-8"
                   data-testid="login-button"
                 >
                   Login
@@ -181,6 +181,7 @@ const Navbar = () => {
               <Link
                 to="/"
                 className="block text-zinc-300 hover:text-orange-500 font-manrope"
+                onClick={() => setShowMenu(false)}
                 data-testid="mobile-nav-home"
               >
                 Home
@@ -188,31 +189,37 @@ const Navbar = () => {
               <Link
                 to="/products"
                 className="block text-zinc-300 hover:text-orange-500 font-manrope"
+                onClick={() => setShowMenu(false)}
                 data-testid="mobile-nav-products"
               >
                 Products
               </Link>
               {user?.role === 'admin' && (
-                <Link
-                  to="/admin"
-                  className="block text-zinc-300 hover:text-orange-500 font-manrope"
-                  data-testid="mobile-nav-admin"
-                >
+                <>
+                  <Link
+                    to="/orders"
+                    className="block text-zinc-300 hover:text-orange-500 font-manrope"
+                    onClick={() => setShowMenu(false)}
+                    data-testid="mobile-nav-orders"
+                  >
                     Orders
-  </Link>
-)}
-{user?.role === 'admin' && (
-  <Link
-    to="/admin"
-    className="block text-zinc-300 hover:text-orange-500 font-manrope"
-    data-testid="mobile-nav-admin"
-  >
-                  Admin
-                </Link>
+                  </Link>
+                  <Link
+                    to="/admin"
+                    className="block text-zinc-300 hover:text-orange-500 font-manrope"
+                    onClick={() => setShowMenu(false)}
+                    data-testid="mobile-nav-admin"
+                  >
+                    Admin
+                  </Link>
+                </>
               )}
 
               <button
-                onClick={() => setShowCart(true)}
+                onClick={() => {
+                  setShowCart(true);
+                  setShowMenu(false);
+                }}
                 className="flex items-center space-x-2 text-zinc-300 hover:text-orange-500"
                 data-testid="mobile-cart-button"
               >
@@ -225,12 +232,16 @@ const Navbar = () => {
                   <Link
                     to="/profile"
                     className="block text-zinc-300 hover:text-orange-500 font-manrope"
+                    onClick={() => setShowMenu(false)}
                     data-testid="mobile-profile-link"
                   >
                     Profile
                   </Link>
                   <Button
-                    onClick={handleLogout}
+                    onClick={() => {
+                      handleLogout();
+                      setShowMenu(false);
+                    }}
                     variant="outline"
                     className="w-full border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-full"
                     data-testid="mobile-logout-button"
@@ -240,7 +251,11 @@ const Navbar = () => {
                 </>
               ) : (
                 <Button
-                onClick={() => setShowAuthModal(true)}                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full"
+                  onClick={() => {
+                    setShowAuthModal(true);
+                    setShowMenu(false);
+                  }}
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full"
                   data-testid="mobile-login-button"
                 >
                   Login
@@ -256,5 +271,6 @@ const Navbar = () => {
       <AuthModal open={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </>
   );
-}
+};
+
 export default Navbar;

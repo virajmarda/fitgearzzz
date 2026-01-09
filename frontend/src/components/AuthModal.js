@@ -38,6 +38,8 @@ const AuthModal = ({ open, onClose }) => {
     } finally {
       setLoading(false);
     }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent
@@ -128,5 +130,6 @@ const AuthModal = ({ open, onClose }) => {
       </DialogContent>
     </Dialog>
   );
-}
+};
+
 export default AuthModal;

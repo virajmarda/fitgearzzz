@@ -6,11 +6,11 @@ import { useCart } from '../context/CartContext';
 import CartDrawer from './CartDrawer';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import AuthModal from './AuthModal';
 
 const Navbar = () => {
-  const { user, logout, loginWithShopify } = useAuth();
-  const { getCartCount } = useCart();
-  const [showCart, setShowCart] = useState(false);
+  const { user, logout } = useAuth();
+    const [showAuthModal, setShowAuthModal] = useState(false);t [showCart, setShowCart] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -143,7 +143,7 @@ const Navbar = () => {
                 </div>
               ) : (
                 <Button
-                onClick={loginWithShopify}                  className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full px-8"
+                onClick={() => setShowAuthModal(true)}                  className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full px-8"
                   data-testid="login-button"
                 >
                   Login
@@ -240,7 +240,7 @@ const Navbar = () => {
                 </>
               ) : (
                 <Button
-                onClick={loginWithShopify}                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full"
+                onClick={() => setShowAuthModal(true)}                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full"
                   data-testid="mobile-login-button"
                 >
                   Login
@@ -252,6 +252,8 @@ const Navbar = () => {
       </nav>
 
       <CartDrawer open={showCart} onClose={() => setShowCart(false)} />
+        
+      <AuthModal open={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </>
   );
 }

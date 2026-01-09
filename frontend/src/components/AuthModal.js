@@ -5,7 +5,6 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { useAuth } from '../context/AuthContext';
-import { initiateShopifyLogin } from '../utils/shopifyAuth';
 
 const AuthModal = ({ open, onClose }) => {
   const { login, register } = useAuth(); // keep for future use if needed
@@ -20,17 +19,25 @@ const AuthModal = ({ open, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Start Shopify Customer Account API PKCE flow
+    // Traditional login/register with email and password
     setLoading(true);
     try {
-      await initiateShopifyLogin();
-      // function will redirect the browser; no further code runs here
+      if (isLogin) {
+        // Login with existing account
+        await login(formData.email, formData.password);
+        onClose();
+      } else {
+        // Register new account
+        await register(formData.email, formData.password, formData.name.split(' ')[0], formData.name.split(' ')[1] || '');
+        setIsLogin(true);
+        setFormData({ name: '', email: '', password: '' });
+      }
     } catch (err) {
-      console.error('Error initiating Shopify login', err);
+      console.error('Auth error:', err);
+      // Error is already shown via toast in AuthContext
+    } finally {
       setLoading(false);
     }
-  };
-
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent

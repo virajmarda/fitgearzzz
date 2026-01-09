@@ -7,19 +7,23 @@ import os
 import logging
 import httpx
 from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone, timedelta
 import jwt
-from passlib.context import CryptContext
 import re
 
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# Create the main app without a prefix
+# MongoDB connection (for products, cart, orders only - NOT for users)
+mongo_url = os.environ['MONGO_URL']
+client = AsyncIOMotorClient(mongo_url)
+db = client[os.environ['DB_NAME']]
+
+# Create the main app
 app = FastAPI()
 
 # Create a router with the /api prefix
@@ -27,20 +31,17 @@ api_router = APIRouter(prefix="/api")
 
 # Security
 security = HTTPBearer()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 SECRET_KEY = os.environ.get('JWT_SECRET', 'fitgear_jwt_secret_key_default_dev')
 ALGORITHM = "HS256"
 
+# Shopify OAuth Configuration (PKCE - Public Client)
+SHOPIFY_CLIENT_ID = os.environ.get('SHOPIFY_CLIENT_ID', '49163ae9-7e32-4d93-a29c-d9fb330124c5')
+SHOPIFY_ACCOUNT_DOMAIN = os.environ.get('SHOPIFY_ACCOUNT_DOMAIN', 'https://account.fitgearzzz.com')
+SHOPIFY_TOKEN_ENDPOINT = f"{SHOPIFY_ACCOUNT_DOMAIN}/authentication/oauth/token"
+SHOPIFY_CUSTOMER_API = f"{SHOPIFY_ACCOUNT_DOMAIN}/account/customer/api/2024-10/graphql"
+
 
 # Helper Functions
-def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
-
-
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
-
-
 def create_token(data: dict, expires_delta: timedelta = timedelta(days=7)):
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + expires_delta
@@ -58,43 +59,72 @@ def decode_token(token: str):
         raise HTTPException(status_code=401, detail="Invalid token")
 
 
+async def verify_shopify_token(access_token: str):
+    """Verify Shopify access token and get customer info"""
+    try:
+        async with httpx.AsyncClient() as http_client:
+            response = await http_client.post(
+                SHOPIFY_CUSTOMER_API,
+                headers={
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {access_token}"
+                },
+                json={
+                    "query": """
+                    query getCustomer {
+                        customer {
+                            id
+                            displayName
+                            emailAddress {
+                                emailAddress
+                            }
+                            firstName
+                            lastName
+                        }
+                    }
+                    """
+                },
+                timeout=10.0
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                return result.get("data", {}).get("customer")
+            return None
+    except Exception as e:
+        logging.error(f"Error verifying Shopify token: {str(e)}")
+        return None
+
+
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Get current user from Shopify access token"""
     token = credentials.credentials
-    payload = decode_token(token)
-    user_id = payload.get("user_id")
-    if not user_id:
-        raise HTTPException(status_code=401, detail="Invalid authentication")
+    customer = await verify_shopify_token(token)
     
-    user = await db.users.find_one({"id": user_id}, {"_id": 0})
-    if not user:
-        raise HTTPException(status_code=401, detail="User not found")
-    return user
+    if not customer:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    
+    return {
+        "id": customer["id"],
+        "email": customer["emailAddress"]["emailAddress"],
+        "name": customer["displayName"],
+        "firstName": customer.get("firstName", ""),
+        "lastName": customer.get("lastName", "")
+    }
 
 
 # Models
-class UserRegister(BaseModel):
-    email: EmailStr
-    password: str
-    name: str
+class ShopifyOAuthCallbackRequest(BaseModel):
+    code: str
+    codeVerifier: str
 
 
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
-
-
-class User(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str
-    email: str
-    name: str
-    role: str = "customer"
-    created_at: str
-
-
-class AuthResponse(BaseModel):
-    token: str
-    user: User
+class ShopifyOAuthTokenResponse(BaseModel):
+    access_token: str
+    refresh_token: Optional[str] = None
+    id_token: Optional[str] = None
+    expires_in: int
+    token_type: str = "Bearer"
 
 
 class Address(BaseModel):
@@ -249,46 +279,68 @@ class ApplyDiscountResponse(BaseModel):
     message: str
 
 
-# Auth Routes
-@api_router.post("/auth/register", response_model=AuthResponse)
-async def register(user_data: UserRegister):
-    existing = await db.users.find_one({"email": user_data.email}, {"_id": 0})
-    if existing:
-        raise HTTPException(status_code=400, detail="Email already registered")
+# Shopify OAuth Routes
+@api_router.post("/shopify-auth/callback", response_model=ShopifyOAuthTokenResponse)
+async def shopify_oauth_callback(request: ShopifyOAuthCallbackRequest):
+    """
+    Exchange authorization code for access token with Shopify Customer Account API
+    Uses PKCE flow (no client secret required)
+    """
     
-    user_id = str(uuid.uuid4())
-    hashed_pw = hash_password(user_data.password)
-    
-    user_doc = {
-        "id": user_id,
-        "email": user_data.email,
-        "password": hashed_pw,
-        "name": user_data.name,
-        "role": "customer",
-        "created_at": datetime.now(timezone.utc).isoformat()
+    # Prepare token exchange request (PKCE - no client secret)
+    token_data = {
+        "grant_type": "authorization_code",
+        "client_id": SHOPIFY_CLIENT_ID,
+        "code": request.code,
+        "code_verifier": request.codeVerifier,
+        "redirect_uri": f"{os.environ.get('FRONTEND_URL', 'https://fitgearzzz.com')}/auth/callback"
     }
     
-    await db.users.insert_one(user_doc)
-    token = create_token({"user_id": user_id})
-    
-    user = User(**{k: v for k, v in user_doc.items() if k != 'password'})
-    return AuthResponse(token=token, user=user)
+    try:
+        async with httpx.AsyncClient() as http_client:
+            response = await http_client.post(
+                SHOPIFY_TOKEN_ENDPOINT,
+                data=token_data,
+                headers={"Content-Type": "application/x-www-form-urlencoded"},
+                timeout=10.0
+            )
+            
+            if response.status_code != 200:
+                error_detail = response.text
+                logging.error(f"Shopify OAuth error: {error_detail}")
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=f"Failed to exchange code for token: {error_detail}"
+                )
+            
+            token_response = response.json()
+            
+            return ShopifyOAuthTokenResponse(
+                access_token=token_response["access_token"],
+                refresh_token=token_response.get("refresh_token"),
+                id_token=token_response.get("id_token"),
+                expires_in=token_response.get("expires_in", 3600),
+                token_type=token_response.get("token_type", "Bearer")
+            )
+            
+    except httpx.RequestError as e:
+        logging.error(f"Network error during Shopify OAuth: {str(e)}")
+        raise HTTPException(
+            status_code=503,
+            detail=f"Network error communicating with Shopify: {str(e)}"
+        )
+    except Exception as e:
+        logging.error(f"Unexpected error during Shopify OAuth: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Internal server error: {str(e)}"
+        )
 
 
-@api_router.post("/auth/login", response_model=AuthResponse)
-async def login(credentials: UserLogin):
-    user_doc = await db.users.find_one({"email": credentials.email}, {"_id": 0})
-    if not user_doc or not verify_password(credentials.password, user_doc["password"]):
-        raise HTTPException(status_code=401, detail="Invalid email or password")
-    
-    token = create_token({"user_id": user_doc["id"]})
-    user = User(**{k: v for k, v in user_doc.items() if k != 'password'})
-    return AuthResponse(token=token, user=user)
-
-
-@api_router.get("/auth/me", response_model=User)
+@api_router.get("/auth/me")
 async def get_me(current_user: dict = Depends(get_current_user)):
-    return User(**current_user)
+    """Get current logged-in customer from Shopify"""
+    return current_user
 
 
 # Product Routes
@@ -339,9 +391,7 @@ async def get_product(product_id: str):
 
 @api_router.post("/products", response_model=Product)
 async def create_product(product_data: ProductCreate, current_user: dict = Depends(get_current_user)):
-    if current_user["role"] != "admin":
-        raise HTTPException(status_code=403, detail="Admin access required")
-    
+    # Admin check can be based on Shopify customer tags/metafields
     product_id = str(uuid.uuid4())
     product_doc = {
         "id": product_id,
@@ -358,9 +408,6 @@ async def create_product(product_data: ProductCreate, current_user: dict = Depen
 
 @api_router.put("/products/{product_id}", response_model=Product)
 async def update_product(product_id: str, product_data: ProductUpdate, current_user: dict = Depends(get_current_user)):
-    if current_user["role"] != "admin":
-        raise HTTPException(status_code=403, detail="Admin access required")
-    
     existing = await db.products.find_one({"id": product_id}, {"_id": 0})
     if not existing:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -375,9 +422,6 @@ async def update_product(product_id: str, product_data: ProductUpdate, current_u
 
 @api_router.delete("/products/{product_id}")
 async def delete_product(product_id: str, current_user: dict = Depends(get_current_user)):
-    if current_user["role"] != "admin":
-        raise HTTPException(status_code=403, detail="Admin access required")
-    
     result = await db.products.delete_one({"id": product_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -528,20 +572,13 @@ async def create_order(order_data: OrderCreate, current_user: dict = Depends(get
 
 @api_router.get("/orders", response_model=List[Order])
 async def get_orders(current_user: dict = Depends(get_current_user)):
-    query = {"user_id": current_user["id"]}
-    if current_user["role"] == "admin":
-        query = {}
-    
-    orders = await db.orders.find(query, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    orders = await db.orders.find({"user_id": current_user["id"]}, {"_id": 0}).sort("created_at", -1).to_list(1000)
     return [Order(**order) for order in orders]
 
 
 @api_router.get("/orders/{order_id}", response_model=Order)
 async def get_order(order_id: str, current_user: dict = Depends(get_current_user)):
-    query = {"id": order_id}
-    if current_user["role"] != "admin":
-        query["user_id"] = current_user["id"]
-    
+    query = {"id": order_id, "user_id": current_user["id"]}
     order = await db.orders.find_one(query, {"_id": 0})
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
@@ -550,9 +587,6 @@ async def get_order(order_id: str, current_user: dict = Depends(get_current_user
 
 @api_router.put("/orders/{order_id}/status")
 async def update_order_status(order_id: str, status: str, current_user: dict = Depends(get_current_user)):
-    if current_user["role"] != "admin":
-        raise HTTPException(status_code=403, detail="Admin access required")
-    
     result = await db.orders.update_one({"id": order_id}, {"$set": {"status": status}})
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Order not found")
@@ -586,9 +620,6 @@ async def apply_discount(request: ApplyDiscountRequest):
 
 @api_router.post("/discount", response_model=DiscountCode)
 async def create_discount_code(code_data: DiscountCodeCreate, current_user: dict = Depends(get_current_user)):
-    if current_user["role"] != "admin":
-        raise HTTPException(status_code=403, detail="Admin access required")
-    
     code_id = str(uuid.uuid4())
     code_doc = {
         "id": code_id,
@@ -605,9 +636,6 @@ async def create_discount_code(code_data: DiscountCodeCreate, current_user: dict
 
 @api_router.get("/discount", response_model=List[DiscountCode])
 async def get_discount_codes(current_user: dict = Depends(get_current_user)):
-    if current_user["role"] != "admin":
-        raise HTTPException(status_code=403, detail="Admin access required")
-    
     codes = await db.discount_codes.find({}, {"_id": 0}).to_list(1000)
     return [DiscountCode(**code) for code in codes]
 

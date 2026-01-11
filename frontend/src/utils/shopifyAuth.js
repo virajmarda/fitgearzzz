@@ -38,8 +38,7 @@ export function initiateShopifyLogin() {
     // Simpler approach: redirect to Shopify's hosted login page
   console.log('Redirecting to Shopify Customer Account login');
   const returnTo = encodeURIComponent(window.location.origin + '/orders');
-  const loginUrl = `${ACCOUNT_DOMAIN}/account/login?return_to=${returnTo}`;
-  console.log('Login URL:', loginUrl);
+  const loginUrl = `https://fitgearzzz.myshopify.com/account/login?return_url=${returnTo}`;  console.log('Login URL:', loginUrl);
   window.location.href = loginUrl;window.location.href = authorizeUrl;}
 
 // Handle OAuth callback (now via backend API route)

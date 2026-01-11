@@ -57,7 +57,7 @@ export function initiateShopifyLogin() {
     const authorizeUrl = `${SHOPIFY_AUTH_CONFIG.authEndpoint}?${params.toString()}`;
     console.log('Redirecting to OAuth authorize URL');
     window.location.href = authorizeUrl;
-  });zeUrl;}
+  });}
 
 // Handle OAuth callback (now via backend API route)
 export async function handleOAuthCallback(code, state, codeVerifierFromCaller) {

@@ -34,30 +34,13 @@ async function generateCodeChallenge(codeVerifier) {
 }
 
 // Initiate login - redirect to Shopify
-export async function initiateShopifyLogin() {
-    console.log('initiateShopifyLogin start');
-  const state = generateRandomString();
-  const codeVerifier = generateRandomString();
-  const codeChallenge = await generateCodeChallenge(codeVerifier);
-
-  // Store in sessionStorage
-  sessionStorage.setItem('oauth_state', state);
-  sessionStorage.setItem('code_verifier', codeVerifier);
-
-  const params = new URLSearchParams({
-    client_id: SHOPIFY_AUTH_CONFIG.clientId,
-    response_type: 'code',
-    redirect_uri: SHOPIFY_AUTH_CONFIG.redirectUri,
-    scope: SHOPIFY_AUTH_CONFIG.scope,
-    state: state,
-    code_challenge: codeChallenge,
-    code_challenge_method: 'S256'
-  });
-
-    const authorizeUrl = `${SHOPIFY_AUTH_CONFIG.authEndpoint}?${params}`;
-    console.log('Redirecting to', authorizeUrl);
-
-  window.location.href = authorizeUrl;}
+export function initiateShopifyLogin() {
+    // Simpler approach: redirect to Shopify's hosted login page
+  console.log('Redirecting to Shopify Customer Account login');
+  const returnTo = encodeURIComponent(window.location.origin + '/orders');
+  const loginUrl = `${ACCOUNT_DOMAIN}/account/login?return_to=${returnTo}`;
+  console.log('Login URL:', loginUrl);
+  window.location.href = loginUrl;window.location.href = authorizeUrl;}
 
 // Handle OAuth callback (now via backend API route)
 export async function handleOAuthCallback(code, state, codeVerifierFromCaller) {

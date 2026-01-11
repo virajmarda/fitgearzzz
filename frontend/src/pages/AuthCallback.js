@@ -17,7 +17,7 @@ function AuthCallback() {
 
         if (!code || !state) {
           toast.error('Invalid authentication callback');
-          navigate('/', { replace: true });
+                  window.location.href = 'https://fitgearzzz.com/';
           return;
         }
 
@@ -26,18 +26,18 @@ function AuthCallback() {
         if (!codeVerifier) {
           console.error('Missing PKCE code_verifier in sessionStorage');
           toast.error('Authentication failed. Please try again.');
-          navigate('/', { replace: true });
+                  window.location.href = 'https://fitgearzzz.com/';
           return;
         }
 
         await handleOAuthCallback(code, state, codeVerifier);
 
         toast.success('Successfully logged in!');
-        navigate('/'/'', { replace: true });
+              window.location.href = 'https://fitgearzzz.com/';
       } catch (error) {
         console.error('Auth callback error:', error);
         toast.error(''/' failed. Please try again.');
-        navigate('/', { replace: true });
+              window.location.href = 'https://fitgearzzz.com/';
       } finally {
         setProcessing(false);
       }

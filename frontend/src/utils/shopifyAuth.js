@@ -35,11 +35,29 @@ async function generateCodeChallenge(codeVerifier) {
 
 // Initiate login - redirect to Shopify
 export function initiateShopifyLogin() {
-    // Simpler approach: redirect to Shopify's hosted login page
-  console.log('Redirecting to Shopify Customer Account login');
-  const returnTo = encodeURIComponent(window.location.origin + '/orders');
-  const loginUrl = `https://fitgearzzz.myshopify.com/account/login?return_url=${returnTo}`;  console.log('Login URL:', loginUrl);
-  window.location.href = loginUrl;window.location.href = authorizeUrl;}
+      // Proper OAuth 2.0 + PKCE flow
+  const state = generateRandomString();
+  const codeVerifier = generateRandomString();
+  
+  // Store for callback verification
+  sessionStorage.setItem('oauth_state', state);
+  sessionStorage.setItem('code_verifier', codeVerifier);
+  
+  generateCodeChallenge(codeVerifier).then(codeChallenge => {
+    const params = new URLSearchParams({
+      client_id: SHOPIFY_AUTH_CONFIG.clientId,
+      scope: SHOPIFY_AUTH_CONFIG.scope,
+      redirect_uri: SHOPIFY_AUTH_CONFIG.redirectUri,
+      state: state,
+      response_type: 'code',
+      code_challenge: codeChallenge,
+      code_challenge_method: 'S256'
+    });
+    
+    const authorizeUrl = `${SHOPIFY_AUTH_CONFIG.authEndpoint}?${params.toString()}`;
+    console.log('Redirecting to OAuth authorize URL');
+    window.location.href = authorizeUrl;
+  });zeUrl;}
 
 // Handle OAuth callback (now via backend API route)
 export async function handleOAuthCallback(code, state, codeVerifierFromCaller) {

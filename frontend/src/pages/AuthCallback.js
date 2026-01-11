@@ -33,11 +33,10 @@ function AuthCallback() {
         await handleOAuthCallback(code, state, codeVerifier);
 
         toast.success('Successfully logged in!');
-        navigate('/orders', { replace: true });
-        window.location.reload();
+        navigate('/'/'', { replace: true });
       } catch (error) {
         console.error('Auth callback error:', error);
-        toast.error('Authentication failed. Please try again.');
+        toast.error(''/' failed. Please try again.');
         navigate('/', { replace: true });
       } finally {
         setProcessing(false);

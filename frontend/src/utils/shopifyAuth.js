@@ -37,6 +37,7 @@ async function generateCodeChallenge(codeVerifier) {
 export function initiateShopifyLogin() {
       // Proper OAuth 2.0 + PKCE flow
   const state = generateRandomString();
+    console.log('[OAUTH] Starting Shopify OAuth login flow');
   const codeVerifier = generateRandomString();
   
   // Store for callback verification

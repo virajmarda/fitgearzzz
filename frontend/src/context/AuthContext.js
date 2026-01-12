@@ -55,10 +55,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   // New method: Login with Shopify Customer Account API
-  const loginWithShopify = () => {
-        console.log('loginWithShopify called');
-    initiateShopifyLogin();
-  };
+ const loginWithShopify = () => {
+  console.log('✅ loginWithShopify called');
+  initiateShopifyLogin();
+};
 
   // Legacy method: Login with email/password (Storefront API)
   const login = async (email, password) => {

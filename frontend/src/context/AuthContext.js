@@ -29,19 +29,19 @@ export const AuthProvider = ({ children }) => {
   const fetchShopifyCustomer = async () => {
     try {
       const customerData = await getCustomerFromShopify();
-      if (customerData) {
+
         setUser({
-          ...customerData,
-          source: 'shopify_customer_account',
-          authenticated: true
-        });
-      }
-    } catch (error) {
+                // Since getCustomerFromShopify returns null (disabled CORS call),
+      // set a basic user object when authenticated
+      setUser(customerData || {
+        displayName: 'Customer',
+        authenticated: true,
+        source: 'shopify_customer_account'
+            setLoading(false);
+        } catch (error) {
       console.error('Error fetching Shopify customer:', error);
     } finally {
-      setLoading(false);
-    }
-  };
+
 
   const fetchUser = async (token) => {
     try {

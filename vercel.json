@@ -1,23 +1,30 @@
 {
-  "buildCommand": "cd frontend && npm install && npm run build",
-  "outputDirectory": "frontend/build",
-  "functions": {
-    "backend/api/**/*.py": {
-      "runtime": "python3.9"
+  "version": 2,
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    },
+    {
+      "src": "backend/api/shopify-auth/callback.py",
+      "use": "@vercel/python"
     }
-  },
-  "rewrites": [
+  ],
+  "routes": [
     {
-      "source": "/api/shopify-auth/callback",
-      "destination": "/backend/api/shopify-auth/callback.py"
+      "src": "/api/shopify-auth/callback",
+      "dest": "/backend/api/shopify-auth/callback.py"
     },
     {
-      "source": "/api/:path*",
-      "destination": "/frontend/api/:path*"
+      "src": "/api/(.*)",
+      "dest": "/frontend/api/$1"
     },
     {
-      "source": "/(.*)",
-      "destination": "/frontend/$1"
+      "src": "/(.*)",
+      "dest": "/frontend/$1"
     }
   ]
 }

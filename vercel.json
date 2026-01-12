@@ -1,7 +1,16 @@
 {
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/build",
+  "functions": {
+    "backend/api/**/*.py": {
+      "runtime": "python3.9"
+    }
+  },
   "rewrites": [
+    {
+      "source": "/api/shopify-auth/callback",
+      "destination": "/backend/api/shopify-auth/callback.py"
+    },
     {
       "source": "/api/:path*",
       "destination": "/frontend/api/:path*"

@@ -34,31 +34,31 @@ async function generateCodeChallenge(codeVerifier) {
 }
 
 // Initiate login - redirect to Shopify
-export function initiateShopifyLogin() {
-      // Proper OAuth 2.0 + PKCE flow
-  const state = generateRandomString();
-    console.log('[OAUTH] Starting Shopify OAuth login flow');
-  const codeVerifier = generateRandomString();
+export async function initiateShopifyLogin() {
+  console.log('[OAUTH] Starting Shopify OAuth login flow');
   
-  // Store for callback verification
+  const state = generateRandomString();
+  const codeVerifier = generateRandomString();
+  const codeChallenge = await generateCodeChallenge(codeVerifier);
+
   sessionStorage.setItem('oauth_state', state);
   sessionStorage.setItem('code_verifier', codeVerifier);
+
+  const params = new URLSearchParams({
+    client_id: SHOPIFY_AUTH_CONFIG.clientId,
+    response_type: 'code',
+    redirect_uri: SHOPIFY_AUTH_CONFIG.redirectUri,
+    scope: SHOPIFY_AUTH_CONFIG.scope,
+    state,
+    code_challenge: codeChallenge,
+    code_challenge_method: 'S256',
+  });
+
+  const authorizeUrl = `${SHOPIFY_AUTH_CONFIG.authEndpoint}?${params.toString()}`;
+  console.log('🚀 Redirecting to:', authorizeUrl);
   
-  generateCodeChallenge(codeVerifier).then(codeChallenge => {
-    const params = new URLSearchParams({
-      client_id: SHOPIFY_AUTH_CONFIG.clientId,
-      scope: SHOPIFY_AUTH_CONFIG.scope,
-      redirect_uri: SHOPIFY_AUTH_CONFIG.redirectUri,
-      state: state,
-      response_type: 'code',
-      code_challenge: codeChallenge,
-      code_challenge_method: 'S256'
-    });
-    
-    const authorizeUrl = `${SHOPIFY_AUTH_CONFIG.authEndpoint}?${params.toString()}`;
-    console.log('Redirecting to OAuth authorize URL');
-    window.location.href = authorizeUrl;
-  });}
+  window.location.href = authorizeUrl;
+}
 
 // Handle OAuth callback (now via backend API route)
 export async function handleOAuthCallback(code, state, codeVerifierFromCaller) {

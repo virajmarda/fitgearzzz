@@ -41,7 +41,8 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
       console.error('Error fetching Shopify customer:', error);
     } finally {
-
+    }
+  };
 
   const fetchUser = async (token) => {
     try {

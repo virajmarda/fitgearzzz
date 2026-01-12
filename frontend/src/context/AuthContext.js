@@ -27,22 +27,39 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const fetchShopifyCustomer = async () => {
-    try {
-      const customerData = await getCustomerFromShopify();
+  try {
+    const customerData = await getCustomerFromShopify();
 
-      // Since getCustomerFromShopify returns null (disabled CORS call),
-      // set a basic user object when authenticated
-      setUser(customerData || {
-        displayName: 'Customer',
+    // Only set user if we actually got customer data
+    if (customerData) {
+      setUser({
+        id: customerData.id,
+        email: customerData.emailAddress?.emailAddress || '',
+        name: customerData.displayName || `${customerData.firstName} ${customerData.lastName}`,
+        displayName: customerData.displayName,
+        firstName: customerData.firstName,
+        lastName: customerData.lastName,
         authenticated: true,
         source: 'shopify_customer_account'
       });
-    } catch (error) {
-      console.error('Error fetching Shopify customer:', error);
-    } finally {
-      setLoading(false);
+    } else {
+      // No customer data means not actually logged in
+      setUser(null);
+      sessionStorage.removeItem('access_token');
+      sessionStorage.removeItem('refresh_token');
+      sessionStorage.removeItem('id_token');
     }
-  };
+  } catch (error) {
+    console.error('Error fetching Shopify customer:', error);
+    // Clear invalid tokens
+    setUser(null);
+    sessionStorage.removeItem('access_token');
+    sessionStorage.removeItem('refresh_token');
+    sessionStorage.removeItem('id_token');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const fetchUser = async (token) => {
     try {

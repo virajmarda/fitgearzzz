@@ -30,17 +30,17 @@ export const AuthProvider = ({ children }) => {
     try {
       const customerData = await getCustomerFromShopify();
 
-        setUser({
-                // Since getCustomerFromShopify returns null (disabled CORS call),
+      // Since getCustomerFromShopify returns null (disabled CORS call),
       // set a basic user object when authenticated
       setUser(customerData || {
         displayName: 'Customer',
         authenticated: true,
         source: 'shopify_customer_account'
-            setLoading(false);
-        } catch (error) {
+      });
+    } catch (error) {
       console.error('Error fetching Shopify customer:', error);
     } finally {
+      setLoading(false);
     }
   };
 
@@ -56,10 +56,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   // New method: Login with Shopify Customer Account API
- const loginWithShopify = () => {
-  console.log('✅ loginWithShopify called');
-  initiateShopifyLogin();
-};
+  const loginWithShopify = () => {
+    console.log('✅ loginWithShopify called');
+    initiateShopifyLogin();
+  };
 
   // Legacy method: Login with email/password (Storefront API)
   const login = async (email, password) => {

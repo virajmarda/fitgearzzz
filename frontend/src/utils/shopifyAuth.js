@@ -117,7 +117,11 @@ export async function handleOAuthCallback(code, state, codeVerifierFromCaller) {
 export async function getCustomerFromShopify() {
   const accessToken = sessionStorage.getItem('access_token');
   if (!accessToken) return null;
+  // Temporarily disable direct Shopify GraphQL calls due to CORS
+  // User is authenticated if access_token exists
+  return null;
 
+  /*
   try {
     const response = await fetch(
       `${ACCOUNT_DOMAIN}/account/customer/api/2024-10/graphql`,
@@ -155,6 +159,7 @@ export async function getCustomerFromShopify() {
     console.error('Error fetching customer:', error);
     return null;
   }
+  */
 }
 
 // Logout

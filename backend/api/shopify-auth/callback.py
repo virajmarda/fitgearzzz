@@ -35,11 +35,11 @@ class handler(BaseHTTPRequestHandler):
             }
             
             headers = {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/x-www-form-urlencoded'
             }
             
             print(f'Exchanging code for tokens...')
-            response = requests.post(token_url, json=token_data, headers=headers)
+            response = requests.post(token_url, data=token_data, headers=headers)
             print(f'Token response status: {response.status_code}')
             
             if response.status_code != 200:

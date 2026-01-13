@@ -3,11 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { handleOAuthCallback } from '../utils/shopifyAuth';
+import { useAuth } from '../context/AuthContext';
 
 function AuthCallback() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [processing, setProcessing] = useState(true);
+  const { fetchShopifyCustomer } = useAuth();
 
   useEffect(() => {
     const processCallback = async () => {
@@ -17,7 +19,7 @@ function AuthCallback() {
 
         if (!code || !state) {
           toast.error('Invalid authentication callback');
-                  window.location.href = 'https://fitgearzzz.com/';
+          navigate('/', { replace: true });
           return;
         }
 
@@ -26,32 +28,38 @@ function AuthCallback() {
         if (!codeVerifier) {
           console.error('Missing PKCE code_verifier in sessionStorage');
           toast.error('Authentication failed. Please try again.');
-                  window.location.href = 'https://fitgearzzz.com/';
+          navigate('/', { replace: true });
           return;
         }
 
+        // Exchange code for tokens
         await handleOAuthCallback(code, state, codeVerifier);
 
+        // Fetch customer data to populate AuthContext
+        await fetchShopifyCustomer();
+
         toast.success('Successfully logged in!');
-              window.location.href = 'https://fitgearzzz.com/';
+        navigate('/', { replace: true });
       } catch (error) {
         console.error('Auth callback error:', error);
-        toast.error(''/' failed. Please try again.');
-              window.location.href = 'https://fitgearzzz.com/';
+        toast.error('Login failed. Please try again.');
+        navigate('/', { replace: true });
       } finally {
         setProcessing(false);
       }
     };
 
     processCallback();
-  }, [searchParams, navigate]);
+  }, [searchParams, navigate, fetchShopifyCustomer]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div style={{ textAlign: 'center', padding: '50px' }}>
       {processing ? (
-        <p className="text-lg font-medium">Completing your login...</p>
+        <div>
+          <p>Completing your login...</p>
+        </div>
       ) : (
-        <p className="text-lg font-medium">Redirecting...</p>
+        <p>Redirecting...</p>
       )}
     </div>
   );

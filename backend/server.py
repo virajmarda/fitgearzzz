@@ -18,6 +18,11 @@ import re
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
+# MongoDB connection
+mongo_url = os.environ['MONGO_URL']
+client = AsyncIOMotorClient(mongo_url)
+db = client[os.environ['DB_NAME']]
+
 # Create the main app
 app = FastAPI()
 
@@ -34,6 +39,13 @@ SHOPIFY_CLIENT_ID = os.environ.get('SHOPIFY_CLIENT_ID', '49163ae9-7e32-4d93-a29c
 SHOPIFY_ACCOUNT_DOMAIN = os.environ.get('SHOPIFY_ACCOUNT_DOMAIN', 'https://account.fitgearzzz.com')
 SHOPIFY_TOKEN_ENDPOINT = f"{SHOPIFY_ACCOUNT_DOMAIN}/authentication/oauth/token"
 SHOPIFY_CUSTOMER_API = f"{SHOPIFY_ACCOUNT_DOMAIN}/account/customer/api/2024-10/graphql"
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 
 # Helper Functions
@@ -282,13 +294,22 @@ async def shopify_oauth_callback(request: ShopifyOAuthCallbackRequest):
     Uses PKCE flow (no client secret required)
     """
     
+    # Log request details
+    logger.info(f"OAuth callback received - code length: {len(request.code)}, verifier length: {len(request.codeVerifier)}")
+    
     # Prepare token exchange request (PKCE - no client secret)
+    redirect_uri = f"{os.environ.get('FRONTEND_URL', 'https://fitgearzzz.com')}/auth/callback"
+    
+    logger.info(f"Using redirect_uri: {redirect_uri}")
+    logger.info(f"Using client_id: {SHOPIFY_CLIENT_ID}")
+    logger.info(f"Using token endpoint: {SHOPIFY_TOKEN_ENDPOINT}")
+    
     token_data = {
         "grant_type": "authorization_code",
         "client_id": SHOPIFY_CLIENT_ID,
         "code": request.code,
         "code_verifier": request.codeVerifier,
-        "redirect_uri": f"{os.environ.get('FRONTEND_URL', 'https://fitgearzzz.com')}/auth/callback"
+        "redirect_uri": redirect_uri
     }
     
     try:
@@ -300,9 +321,12 @@ async def shopify_oauth_callback(request: ShopifyOAuthCallbackRequest):
                 timeout=10.0
             )
             
+            logger.info(f"Shopify response status: {response.status_code}")
+            logger.info(f"Shopify response body: {response.text}")
+            
             if response.status_code != 200:
                 error_detail = response.text
-                logging.error(f"Shopify OAuth error: {error_detail}")
+                logger.error(f"Shopify OAuth error: {error_detail}")
                 raise HTTPException(
                     status_code=response.status_code,
                     detail=f"Failed to exchange code for token: {error_detail}"
@@ -319,13 +343,13 @@ async def shopify_oauth_callback(request: ShopifyOAuthCallbackRequest):
             )
             
     except httpx.RequestError as e:
-        logging.error(f"Network error during Shopify OAuth: {str(e)}")
+        logger.error(f"Network error during Shopify OAuth: {str(e)}")
         raise HTTPException(
             status_code=503,
             detail=f"Network error communicating with Shopify: {str(e)}"
         )
     except Exception as e:
-        logging.error(f"Unexpected error during Shopify OAuth: {str(e)}")
+        logger.error(f"Unexpected error during Shopify OAuth: {str(e)}")
         raise HTTPException(
             status_code=500,
             detail=f"Internal server error: {str(e)}"
@@ -654,12 +678,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
 
 @app.on_event("shutdown")
 async def shutdown_db_client():

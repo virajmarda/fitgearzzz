@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
       setUser({
         id: customerData.id,
         email: customerData.emailAddress?.emailAddress || '',
-        name: customerData.displayName || `${customerData.firstName} ${customerData.lastName}`,
+                name: customerData.displayName || `${customerData.firstName} ${customerData.lastName}`,
         displayName: customerData.displayName,
         firstName: customerData.firstName,
         lastName: customerData.lastName,

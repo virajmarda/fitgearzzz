@@ -127,6 +127,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     isAuthenticated: () => user !== null,
   };
+      fetchShopifyCustomer,
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

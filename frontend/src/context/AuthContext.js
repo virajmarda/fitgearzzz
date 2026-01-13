@@ -65,6 +65,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const customerData = await getCustomer(token);
       setUser(customerData);
+129
     } catch (error) {
       localStorage.removeItem('token');
     } finally {
@@ -126,8 +127,8 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     isAuthenticated: () => user !== null,
+        fetchShopifyCustomer
   };
-      fetchShopifyCustomer,
-
+    
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

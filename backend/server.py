@@ -638,12 +638,15 @@ async def get_discount_codes(current_user: dict = Depends(get_current_user)):
 # Include the router in the main app
 app.include_router(api_router)
 
+# CORS Configuration
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://fitgearzzz.com')
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
     allow_origins=[
         "https://fitgearzzz.com",
-        "https://www.fitgearzzz.com",
+        "https://www.fitgearzzz.com", 
         "http://localhost:3000",
         "http://localhost:5173"
     ],

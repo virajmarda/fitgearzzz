@@ -1,7 +1,6 @@
 // Shopify headless configuration
 // This file contains all Shopify-related domain URLs for the headless setup
 export const SHOPIFY_CLIENT_ID = process.env.REACT_APP_SHOPIFY_CLIENT_ID || '49163ae9-7e32-4d93-a29c-d9fb330124c5';
-export const ACCOUNT_DOMAIN = process.env.REACT_APP_ACCOUNT_DOMAIN || 'https://account.fitgearzzz.com';
 export const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://fitgearzzz-backend.vercel.app';
 
 // Shopify store domain (for Storefront API)

@@ -36,11 +36,24 @@ SHOPIFY_STORE_DOMAIN = os.environ.get('SHOPIFY_STORE_DOMAIN', 'fitgearzzz.myshop
 SHOPIFY_STOREFRONT_ACCESS_TOKEN = os.environ.get('SHOPIFY_STOREFRONT_ACCESS_TOKEN', '')
 
 # Shopify Customer Account API Configuration (PKCE - Public Client)
-SHOPIFY_CLIENT_ID = os.environ.get('SHOPIFY_CLIENT_ID', '49163ae9-7e32-4d93-a29c-d9fb330124c5')
-SHOPIFY_ACCOUNT_DOMAIN = os.environ.get('SHOPIFY_ACCOUNT_DOMAIN', 'https://account.fitgearzzz.com')
+SHOPIFY_CLIENT_ID = os.environ.get(
+    'SHOPIFY_CLIENT_ID',
+    '49163ae9-7e32-4d93-a29c-d9fb330124c5',
+)
+
+# Should be just the account domain, no extra /account
+SHOPIFY_ACCOUNT_DOMAIN = os.environ.get(
+    'SHOPIFY_ACCOUNT_DOMAIN',
+    'https://account.fitgearzzz.com',
+)
+
 SHOPIFY_TOKEN_ENDPOINT = f"{SHOPIFY_ACCOUNT_DOMAIN}/authentication/oauth/token"
-SHOPIFY_CUSTOMER_API = f"{SHOPIFY_ACCOUNT_DOMAIN}/account/customer/api/2024-10/graphql"
+
+# Correct Customer Account API path (no extra /account)
+SHOPIFY_CUSTOMER_API = f"{SHOPIFY_ACCOUNT_DOMAIN}/customer/api/2024-10/graphql"
+
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://fitgearzzz.com')
+
 
 # Shopify API Endpoints
 SHOPIFY_STOREFRONT_API = f"https://{SHOPIFY_STORE_DOMAIN}/api/2024-10/graphql.json"

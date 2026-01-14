@@ -18,7 +18,7 @@ const Navbar = () => {
 
   const navigate = useNavigate();
 
-    // Add access token to URL when user logs in
+  // Add access token to URL when user logs in
   useEffect(() => {
     if (user) {
       const token = localStorage.getItem('token');
@@ -41,8 +41,7 @@ const Navbar = () => {
   const handleLogout = () => {
     logout();
     navigate('/');
-  143
-    
+  };
 
   const cartCount = getCartCount();
 
@@ -142,6 +141,119 @@ const Navbar = () => {
                     >
                       <User className="w-5 h-5 mr-2" />
                       {user.email || 'Guest'}
-                               </Button>
+                    </Button>
+                  </Link>
+                  <Button
+                    onClick={handleLogout}
+                    variant="ghost"
+                    className="text-zinc-300 hover:text-orange-500 hover:bg-transparent"
+                    data-testid="logout-button"
+                  >
+                    Logout
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  onClick={() => setShowAuthModal(true)}
+                  className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full px-6"
+                  data-testid="login-button"
+                >
+                  Login
+                </Button>
+              )}
+            </div>
+
+            <button
+              onClick={() => setShowMenu(!showMenu)}
+              className="md:hidden p-2 text-zinc-300"
+              data-testid="mobile-menu-button"
+            >
+              {showMenu ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+
+          {showMenu && (
+            <div className="md:hidden pb-4 space-y-2">
+              <Link
+                to="/"
+                className="block py-2 text-zinc-300 hover:text-orange-500"
+                onClick={() => setShowMenu(false)}
+              >
+                Home
+              </Link>
+              <Link
+                to="/products"
+                className="block py-2 text-zinc-300 hover:text-orange-500"
+                onClick={() => setShowMenu(false)}
+              >
+                Products
+              </Link>
+              {user?.role === 'admin' && (
+                <>
+                  <Link
+                    to="/orders"
+                    className="block py-2 text-zinc-300 hover:text-orange-500"
+                    onClick={() => setShowMenu(false)}
+                  >
+                    Orders
+                  </Link>
+                  <Link
+                    to="/admin"
+                    className="block py-2 text-zinc-300 hover:text-orange-500"
+                    onClick={() => setShowMenu(false)}
+                  >
+                    Admin
+                  </Link>
+                </>
+              )}
+              <form onSubmit={handleSearch} className="relative pt-2">
+                <Input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-zinc-800/50 border-zinc-700 text-white placeholder-zinc-500"
+                />
+              </form>
+              {user ? (
+                <>
+                  <Link
+                    to="/profile"
+                    className="block py-2 text-zinc-300 hover:text-orange-500"
+                    onClick={() => setShowMenu(false)}
+                  >
+                    Profile
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setShowMenu(false);
+                    }}
+                    className="block w-full text-left py-2 text-zinc-300 hover:text-orange-500"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => {
+                    setShowAuthModal(true);
+                    setShowMenu(false);
+                  }}
+                  className="block w-full text-left py-2 text-zinc-300 hover:text-orange-500"
+                >
+                  Login
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      </nav>
+
+      <CartDrawer open={showCart} onClose={() => setShowCart(false)} />
+      <AuthModal open={showAuthModal} onClose={() => setShowAuthModal(false)} />
+    </>
+  );
+};
 
 export default Navbar;

@@ -68,7 +68,7 @@ async def verify_shopify_token(access_token: str):
                 SHOPIFY_CUSTOMER_API,
                 headers={
                     "Content-Type": "application/json",
-                    "Authorization": f"Bearer {access_token}"
+                    "Authorization": f"Bearer {access_token}",
                 },
                 json={
                     "query": """
@@ -85,21 +85,27 @@ async def verify_shopify_token(access_token: str):
                     }
                     """
                 },
-                timeout=10.0
+                timeout=10.0,
             )
-            logger.info(f"Customer API status: {response.status_code}")
-logger.info(f"Customer API body: {response.text}")
 
-            
+            logger.info(f"Customer API status: {response.status_code}")
+            logger.info(f"Customer API body: {response.text}")
+
             if response.status_code == 200:
                 result = response.json()
                 customer = result.get("data", {}).get("customer")
                 if customer:
-                    logger.info(f"Successfully verified token for customer: {customer.get('emailAddress', {}).get('emailAddress')}")
+                    logger.info(
+                        f"Successfully verified token for customer: "
+                        f"{customer.get('emailAddress', {}).get('emailAddress')}"
+                    )
                 return customer
             else:
-                logger.warning(f"Token verification failed with status {response.status_code}")
-            return None
+                logger.warning(
+                    f"Token verification failed with status {response.status_code}"
+                )
+                return None
+
     except Exception as e:
         logger.error(f"Error verifying Shopify token: {str(e)}")
         return None

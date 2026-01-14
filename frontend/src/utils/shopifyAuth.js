@@ -151,7 +151,11 @@ export async function handleOAuthCallback(code, state) {
 // Get customer data via backend API (avoids CORS issues)
 export async function getCustomerFromShopify() {
   const accessToken = sessionStorage.getItem('access_token');
-  
+  console.log(
+    'Access token from sessionStorage (first 25):',
+    accessToken ? accessToken.slice(0, 25) : null
+  );
+
   if (!accessToken) {
     console.log('⚠️ No access token found');
     return null;
@@ -159,12 +163,12 @@ export async function getCustomerFromShopify() {
 
   try {
     console.log('👤 Fetching customer data via backend...');
-    
+
     const response = await fetch(`${BACKEND_URL}/api/auth/me`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${accessToken}`
-      }
+        Authorization: `Bearer ${accessToken}`,
+      },
     });
 
     if (!response.ok) {
@@ -173,18 +177,17 @@ export async function getCustomerFromShopify() {
     }
 
     const customer = await response.json();
-    
+
     if (customer) {
       console.log('✅ Customer data retrieved');
-      // Transform backend response to match expected format
       return {
         id: customer.id,
         displayName: customer.name,
         emailAddress: {
-          emailAddress: customer.email
+          emailAddress: customer.email,
         },
         firstName: customer.firstName,
-        lastName: customer.lastName
+        lastName: customer.lastName,
       };
     } else {
       console.warn('⚠️ No customer data in response');
@@ -195,6 +198,7 @@ export async function getCustomerFromShopify() {
     return null;
   }
 }
+
 
 // Logout
 export function logoutShopify() {

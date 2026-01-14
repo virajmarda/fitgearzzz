@@ -258,11 +258,8 @@ async def shopify_oauth_callback(request: ShopifyOAuthCallbackRequest):
             logger.info(f"Expires in: {token_response.get('expires_in')} seconds")
             logger.info(f"Full token response: {token_response}")
 
-            # Choose the customer access token (should start with shcat_)
-            customer_token = (
-                token_response.get("customer_access_token")
-                or token_response.get("access_token")
-            )
+            # Choose the customer access token (starts with shcat_)
+            customer_token = token_response.get("access_token")
 
             return ShopifyOAuthTokenResponse(
                 access_token=customer_token,

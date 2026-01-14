@@ -111,22 +111,29 @@ async def verify_shopify_token(access_token: str):
         return None
 
 
-async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+async def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+):
     """Get current user from Shopify access token"""
     token = credentials.credentials
+    logger.info(
+        f"Token from Authorization header (first 25): {token[:25]}"
+    )
+
     customer = await verify_shopify_token(token)
-    
+
     if not customer:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
-    
+
     return {
         "id": customer["id"],
         "email": customer["emailAddress"]["emailAddress"],
         "name": customer["displayName"],
         "firstName": customer.get("firstName", ""),
         "lastName": customer.get("lastName", ""),
-        "access_token": token
+        "access_token": token,
     }
+
 
 
 async def shopify_storefront_request(query: str, variables: Optional[Dict] = None):

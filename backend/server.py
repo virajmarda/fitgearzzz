@@ -46,10 +46,9 @@ FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://fitgearzzz.com')
 SHOPIFY_STOREFRONT_API = f"https://{SHOPIFY_STORE_DOMAIN}/api/2024-10/graphql.json"
 
 
-# Helper Functions
 async def verify_shopify_token(access_token: str):
-    """Verify Shopify access token and get customer info"""
     try:
+        logger.info(f"Verifying token (first 20 chars): {access_token[:20]}...")
         async with httpx.AsyncClient() as http_client:
             response = await http_client.post(
                 SHOPIFY_CUSTOMER_API,
@@ -74,19 +73,9 @@ async def verify_shopify_token(access_token: str):
                 },
                 timeout=10.0
             )
-            
-            if response.status_code == 200:
-                result = response.json()
-                customer = result.get("data", {}).get("customer")
-                if customer:
-                    logger.info(f"Successfully verified token for customer: {customer.get('emailAddress', {}).get('emailAddress')}")
-                return customer
-            else:
-                logger.warning(f"Token verification failed with status {response.status_code}")
-            return None
-    except Exception as e:
-        logger.error(f"Error verifying Shopify token: {str(e)}")
-        return None
+            logger.info(f"Customer API status: {response.status_code}")
+            logger.info(f"Customer API body: {response.text}")
+            ...
 
 
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):

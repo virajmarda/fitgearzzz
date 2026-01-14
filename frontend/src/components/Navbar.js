@@ -41,7 +41,8 @@ const Navbar = () => {
   const handleLogout = () => {
     logout();
     navigate('/');
-  };
+  143
+    
 
   const cartCount = getCartCount();
 
@@ -141,6 +142,6 @@ const Navbar = () => {
                     >
                       <User className="w-5 h-5 mr-2" />
                       {user.email || 'Guest'}
-};
+                               </Button>
 
 export default Navbar;

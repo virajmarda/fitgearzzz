@@ -249,14 +249,22 @@ async def shopify_oauth_callback(request: ShopifyOAuthCallbackRequest):
             logger.info("✅ Token exchange successful!")
             logger.info(f"Token type: {token_response.get('token_type')}")
             logger.info(f"Expires in: {token_response.get('expires_in')} seconds")
+            logger.info(f"Full token response: {token_response}")
             
-            return ShopifyOAuthTokenResponse(
-                access_token=token_response["access_token"],
-                refresh_token=token_response.get("refresh_token"),
-                id_token=token_response.get("id_token"),
-                expires_in=token_response.get("expires_in", 3600),
-                token_type=token_response.get("token_type", "Bearer")
-            )
+           # Pick the customer access token (starts with shcat_)
+customer_token = (
+    token_response.get("customer_access_token")
+    or token_response.get("access_token")
+)
+
+return ShopifyOAuthTokenResponse(
+    access_token=customer_token,
+    refresh_token=token_response.get("refresh_token"),
+    id_token=token_response.get("id_token"),
+    expires_in=token_response.get("expires_in", 3600),
+    token_type=token_response.get("token_type", "Bearer"),
+)
+
             
     except httpx.RequestError as e:
         logger.error(f"❌ Network error during Shopify OAuth: {str(e)}")

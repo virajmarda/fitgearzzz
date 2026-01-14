@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } , useEffectfrom 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, User, Search, Menu, X, Dumbbell } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -17,6 +17,18 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const navigate = useNavigate();
+
+    // Add access token to URL when user logs in
+  useEffect(() => {
+    if (user) {
+      const token = localStorage.getItem('token');
+      if (token && !window.location.search.includes('token=')) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('token', token.substring(0, 20) + '...');
+        window.history.pushState({}, '', url);
+      }
+    }
+  }, [user]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -128,149 +140,7 @@ const Navbar = () => {
                       data-testid="profile-button"
                     >
                       <User className="w-5 h-5 mr-2" />
-                      {user.name || user.displayName}
-                    </Button>
-                  </Link>
-                  <Button
-                    onClick={handleLogout}
-                    variant="outline"
-                    className="border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-full px-6"
-                    data-testid="logout-button"
-                  >
-                    Logout
-                  </Button>
-                </div>
-              ) : (
-                <Button
-                  onClick={() => setShowAuthModal(true)}
-                  className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full px-8"
-                  data-testid="login-button"
-                >
-                  Login
-                </Button>
-              )}
-            </div>
-
-            <button
-              onClick={() => setShowMenu(!showMenu)}
-              className="md:hidden text-zinc-300 hover:text-orange-500"
-              data-testid="mobile-menu-button"
-            >
-              {showMenu ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-
-        {showMenu && (
-          <div
-            className="md:hidden bg-zinc-900 border-t border-zinc-800"
-            data-testid="mobile-menu"
-          >
-            <div className="px-4 py-4 space-y-4">
-              <form onSubmit={handleSearch} className="relative">
-                <Input
-                  type="text"
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-zinc-800/50 border-zinc-700 text-white placeholder-zinc-500 focus:border-orange-500 rounded-full"
-                  data-testid="mobile-search-input"
-                />
-              </form>
-
-              <Link
-                to="/"
-                className="block text-zinc-300 hover:text-orange-500 font-manrope"
-                onClick={() => setShowMenu(false)}
-                data-testid="mobile-nav-home"
-              >
-                Home
-              </Link>
-              <Link
-                to="/products"
-                className="block text-zinc-300 hover:text-orange-500 font-manrope"
-                onClick={() => setShowMenu(false)}
-                data-testid="mobile-nav-products"
-              >
-                Products
-              </Link>
-              {user?.role === 'admin' && (
-                <>
-                  <Link
-                    to="/orders"
-                    className="block text-zinc-300 hover:text-orange-500 font-manrope"
-                    onClick={() => setShowMenu(false)}
-                    data-testid="mobile-nav-orders"
-                  >
-                    Orders
-                  </Link>
-                  <Link
-                    to="/admin"
-                    className="block text-zinc-300 hover:text-orange-500 font-manrope"
-                    onClick={() => setShowMenu(false)}
-                    data-testid="mobile-nav-admin"
-                  >
-                    Admin
-                  </Link>
-                </>
-              )}
-
-              <button
-                onClick={() => {
-                  setShowCart(true);
-                  setShowMenu(false);
-                }}
-                className="flex items-center space-x-2 text-zinc-300 hover:text-orange-500"
-                data-testid="mobile-cart-button"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                <span>Cart ({cartCount})</span>
-              </button>
-
-              {user ? (
-                <>
-                  <Link
-                    to="/profile"
-                    className="block text-zinc-300 hover:text-orange-500 font-manrope"
-                    onClick={() => setShowMenu(false)}
-                    data-testid="mobile-profile-link"
-                  >
-                    Profile
-                  </Link>
-                  <Button
-                    onClick={() => {
-                      handleLogout();
-                      setShowMenu(false);
-                    }}
-                    variant="outline"
-                    className="w-full border-zinc-700 text-white hover:border-orange-500 hover:text-orange-500 bg-transparent rounded-full"
-                    data-testid="mobile-logout-button"
-                  >
-                    Logout
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  onClick={() => {
-                    setShowAuthModal(true);
-                    setShowMenu(false);
-                  }}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full"
-                  data-testid="mobile-login-button"
-                >
-                  Login
-                </Button>
-              )}
-            </div>
-          </div>
-        )}
-      </nav>
-
-      <CartDrawer open={showCart} onClose={() => setShowCart(false)} />
-        
-      <AuthModal open={showAuthModal} onClose={() => setShowAuthModal(false)} />
-    </>
-  );
+                      {user.email || 'Guest;'
 };
 
 export default Navbar;

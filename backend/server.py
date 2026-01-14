@@ -61,56 +61,46 @@ SHOPIFY_STOREFRONT_API = f"https://{SHOPIFY_STORE_DOMAIN}/api/2024-10/graphql.js
 
 # Helper Functions
 async def verify_shopify_token(access_token: str):
-    """Verify Shopify access token and get customer info"""
+    """Verify Shopify token by querying customer via Storefront API"""
     try:
-        auth_header = f"Bearer {access_token}".strip()
-        logger.info(f"Auth header sent to Shopify (first 40): {auth_header[:40]}")
-
         async with httpx.AsyncClient() as http_client:
             response = await http_client.post(
-                SHOPIFY_CUSTOMER_API,
+                SHOPIFY_STOREFRONT_API,
                 headers={
                     "Content-Type": "application/json",
-                    "Authorization": auth_header,
+                    "X-Shopify-Storefront-Access-Token": SHOPIFY_STOREFRONT_ACCESS_TOKEN,
                 },
                 json={
                     "query": """
-                    query getCustomer {
-                        customer {
-                            id
-                            displayName
-                            emailAddress {
-                                emailAddress
-                            }
-                            firstName
-                            lastName
-                        }
+                    query getCustomer($token: String!) {
+                      customer(customerAccessToken: $token) {
+                        id
+                        displayName
+                        email
+                        firstName
+                        lastName
+                      }
                     }
-                    """
+                    """,
+                    "variables": {"token": access_token},
                 },
                 timeout=10.0,
             )
 
-            logger.info(f"Customer API status: {response.status_code}")
-            logger.info(f"Customer API body: {response.text}")
+            logger.info(f"Storefront customer status: {response.status_code}")
+            logger.info(f"Storefront customer body: {response.text}")
 
             if response.status_code == 200:
                 result = response.json()
                 customer = result.get("data", {}).get("customer")
-                if customer:
-                    logger.info(
-                        "Successfully verified token for customer: "
-                        f"{customer.get('emailAddress', {}).get('emailAddress')}"
-                    )
                 return customer
 
             logger.warning(
-                f"Token verification failed with status {response.status_code}"
+                f"Storefront customer lookup failed with status {response.status_code}"
             )
             return None
-
     except Exception as e:
-        logger.error(f"Error verifying Shopify token: {str(e)}")
+        logger.error(f"Error verifying Shopify token via Storefront: {str(e)}")
         return None
 
 
@@ -118,7 +108,6 @@ async def verify_shopify_token(access_token: str):
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
 ):
-    """Get current user from Shopify access token"""
     token = credentials.credentials
     logger.info(
         f"Token from Authorization header (first 25): {token[:25]}"
@@ -131,13 +120,12 @@ async def get_current_user(
 
     return {
         "id": customer["id"],
-        "email": customer["emailAddress"]["emailAddress"],
+        "email": customer["email"],
         "name": customer["displayName"],
-        "firstName": customer.get("firstName", ""),
-        "lastName": customer.get("lastName", ""),
+        "firstName": customer.get("firstName", "") or "",
+        "lastName": customer.get("lastName", "") or "",
         "access_token": token,
     }
-
 
 
 async def shopify_storefront_request(query: str, variables: Optional[Dict] = None):

@@ -87,6 +87,9 @@ async def verify_shopify_token(access_token: str):
                 },
                 timeout=10.0
             )
+            logger.info(f"Customer API status: {response.status_code}")
+logger.info(f"Customer API body: {response.text}")
+
             
             if response.status_code == 200:
                 result = response.json()

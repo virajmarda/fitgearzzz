@@ -148,57 +148,48 @@ export async function handleOAuthCallback(code, state) {
   }
 }
 
-// Get customer data from Customer Account API
+// Get customer data via backend API (avoids CORS issues)
 export async function getCustomerFromShopify() {
   const accessToken = sessionStorage.getItem('access_token');
+  
   if (!accessToken) {
     console.log('⚠️ No access token found');
     return null;
   }
 
   try {
-    console.log('👤 Fetching customer data...');
-    const response = await fetch(
-      `${ACCOUNT_DOMAIN}/account/customer/api/2024-10/graphql`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`
-        },
-        body: JSON.stringify({
-          query: `
-          query getCustomer {
-            customer {
-              id
-              displayName
-              emailAddress {
-                emailAddress
-              }
-              firstName
-              lastName
-            }
-          }
-        `
-        })
+    console.log('👤 Fetching customer data via backend...');
+    
+    const response = await fetch(`${BACKEND_URL}/api/auth/me`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
       }
-    );
+    });
 
     if (!response.ok) {
       console.error('❌ Failed to fetch customer data:', response.status);
       return null;
     }
 
-    const result = await response.json();
-    const customer = result.data?.customer;
+    const customer = await response.json();
     
     if (customer) {
       console.log('✅ Customer data retrieved');
+      // Transform backend response to match expected format
+      return {
+        id: customer.id,
+        displayName: customer.name,
+        emailAddress: {
+          emailAddress: customer.email
+        },
+        firstName: customer.firstName,
+        lastName: customer.lastName
+      };
     } else {
       console.warn('⚠️ No customer data in response');
+      return null;
     }
-    
-    return customer;
   } catch (error) {
     console.error('❌ Error fetching customer:', error);
     return null;

@@ -1,5 +1,5 @@
 // frontend/src/utils/shopifyAuth.js
-import { ACCOUNT_DOMAIN, SHOPIFY_CLIENT_ID, BACKEND_URL } from '../config/shopify';
+import { ACCOUNT_DOMAIN, SHOPIFY_CLIENT_ID, BACKEND_URL } from '../config/shopify'; 
 
 const SHOPIFY_AUTH_CONFIG = {
   clientId: SHOPIFY_CLIENT_ID,

@@ -193,84 +193,82 @@ async def shopify_oauth_callback(request: ShopifyOAuthCallbackRequest):
     Exchange authorization code for access token with Shopify Customer Account API
     Uses PKCE flow (no client secret required)
     """
-    
-    logger.info(f"=== OAuth Callback Started ===")
+
+    logger.info("=== OAuth Callback Started ===")
     logger.info(f"Code length: {len(request.code)}")
     logger.info(f"Code verifier length: {len(request.codeVerifier)}")
     logger.info(f"Code (first 20 chars): {request.code[:20]}...")
-    
+
     redirect_uri = f"{FRONTEND_URL}/auth/callback"
-    
+
     logger.info(f"Redirect URI: {redirect_uri}")
     logger.info(f"Client ID: {SHOPIFY_CLIENT_ID}")
     logger.info(f"Token Endpoint: {SHOPIFY_TOKEN_ENDPOINT}")
-    
+
     token_data = {
         "grant_type": "authorization_code",
         "client_id": SHOPIFY_CLIENT_ID,
         "code": request.code,
         "code_verifier": request.codeVerifier,
-        "redirect_uri": redirect_uri
+        "redirect_uri": redirect_uri,
     }
-    
+
     try:
         async with httpx.AsyncClient() as http_client:
             logger.info("Sending token exchange request to Shopify...")
-            
+
             response = await http_client.post(
                 SHOPIFY_TOKEN_ENDPOINT,
                 data=token_data,
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
-                timeout=15.0
+                timeout=15.0,
             )
-            
+
             logger.info(f"Shopify Response Status: {response.status_code}")
             logger.info(f"Shopify Response Headers: {dict(response.headers)}")
             logger.info(f"Shopify Response Body: {response.text}")
-            
+
             if response.status_code != 200:
                 error_detail = response.text
-                logger.error(f"❌ Token exchange failed!")
+                logger.error("❌ Token exchange failed!")
                 logger.error(f"Error: {error_detail}")
-                
-                # Try to parse error details
+
                 try:
                     error_json = response.json()
                     logger.error(f"Error JSON: {json.dumps(error_json, indent=2)}")
-                except:
+                except Exception:
                     pass
-                
+
                 raise HTTPException(
                     status_code=response.status_code,
-                    detail=f"Failed to exchange code for token: {error_detail}"
+                    detail=f"Failed to exchange code for token: {error_detail}",
                 )
-            
+
             token_response = response.json()
             logger.info("✅ Token exchange successful!")
             logger.info(f"Token type: {token_response.get('token_type')}")
             logger.info(f"Expires in: {token_response.get('expires_in')} seconds")
             logger.info(f"Full token response: {token_response}")
-            
-           # Pick the customer access token (starts with shcat_)
-customer_token = (
-    token_response.get("customer_access_token")
-    or token_response.get("access_token")
-)
 
-return ShopifyOAuthTokenResponse(
-    access_token=customer_token,
-    refresh_token=token_response.get("refresh_token"),
-    id_token=token_response.get("id_token"),
-    expires_in=token_response.get("expires_in", 3600),
-    token_type=token_response.get("token_type", "Bearer"),
-)
+            # Choose the customer access token (should start with shcat_)
+            customer_token = (
+                token_response.get("customer_access_token")
+                or token_response.get("access_token")
+            )
 
-            
+            return ShopifyOAuthTokenResponse(
+                access_token=customer_token,
+                refresh_token=token_response.get("refresh_token"),
+                id_token=token_response.get("id_token"),
+                expires_in=token_response.get("expires_in", 3600),
+                token_type=token_response.get("token_type", "Bearer"),
+            )
+
     except httpx.RequestError as e:
         logger.error(f"❌ Network error during Shopify OAuth: {str(e)}")
         raise HTTPException(
             status_code=503,
-            detail=f"Network error communicating with Shopify: {str(e)}"
+            detail=f"Network error communicating with Shopify: {str(e)}",
         )
     except HTTPException:
         raise
@@ -279,8 +277,9 @@ return ShopifyOAuthTokenResponse(
         logger.exception("Full traceback:")
         raise HTTPException(
             status_code=500,
-            detail=f"Internal server error: {str(e)}"
+            detail=f"Internal server error: {str(e)}",
         )
+
 
 
 @api_router.get("/auth/me")

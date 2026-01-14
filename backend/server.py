@@ -63,12 +63,15 @@ SHOPIFY_STOREFRONT_API = f"https://{SHOPIFY_STORE_DOMAIN}/api/2024-10/graphql.js
 async def verify_shopify_token(access_token: str):
     """Verify Shopify access token and get customer info"""
     try:
+        auth_header = f"Bearer {access_token}".strip()
+        logger.info(f"Auth header sent to Shopify (first 40): {auth_header[:40]}")
+
         async with httpx.AsyncClient() as http_client:
             response = await http_client.post(
                 SHOPIFY_CUSTOMER_API,
                 headers={
                     "Content-Type": "application/json",
-                    "Authorization": f"Bearer {access_token}",
+                    "Authorization": auth_header,
                 },
                 json={
                     "query": """

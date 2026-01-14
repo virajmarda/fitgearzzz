@@ -96,19 +96,20 @@ async def verify_shopify_token(access_token: str):
                 customer = result.get("data", {}).get("customer")
                 if customer:
                     logger.info(
-                        f"Successfully verified token for customer: "
+                        "Successfully verified token for customer: "
                         f"{customer.get('emailAddress', {}).get('emailAddress')}"
                     )
                 return customer
-            else:
-                logger.warning(
-                    f"Token verification failed with status {response.status_code}"
-                )
-                return None
+
+            logger.warning(
+                f"Token verification failed with status {response.status_code}"
+            )
+            return None
 
     except Exception as e:
         logger.error(f"Error verifying Shopify token: {str(e)}")
         return None
+
 
 
 async def get_current_user(

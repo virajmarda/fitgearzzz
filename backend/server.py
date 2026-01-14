@@ -74,13 +74,12 @@ async def verify_shopify_token(access_token: str):
                 SHOPIFY_STOREFRONT_API,
                 headers={
                     "Content-Type": "application/json",
-                    # MUST be the private Storefront token (shpat_...)
                     "X-Shopify-Storefront-Access-Token": SHOPIFY_STOREFRONT_ACCESS_TOKEN,
                 },
                 json={
                     "query": """
-                    query getCustomer($token: String!) {
-                      customer(customerAccessToken: $token) {
+                    query getCustomer($customerAccessToken: String!) {
+                      customer(customerAccessToken: $customerAccessToken) {
                         id
                         displayName
                         email
@@ -89,7 +88,7 @@ async def verify_shopify_token(access_token: str):
                       }
                     }
                     """,
-                    "variables": {"token": access_token},
+                    "variables": {"customerAccessToken": access_token},
                 },
                 timeout=10.0,
             )
@@ -113,6 +112,7 @@ async def verify_shopify_token(access_token: str):
             f"Error verifying Shopify token via Storefront: {str(e)}"
         )
         return None
+
 
 
 async def get_current_user(

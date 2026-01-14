@@ -1,10 +1,9 @@
 // frontend/src/utils/shopifyAuth.js
-import { ACCOUNT_DOMAIN } from '../config/shopify';
+import { ACCOUNT_DOMAIN, SHOPIFY_CLIENT_ID, BACKEND_URL } from '../config/shopify';
 
 const SHOPIFY_AUTH_CONFIG = {
-  clientId: '49163ae9-7e32-4d93-a29c-d9fb330124c5',
+  clientId: SHOPIFY_CLIENT_ID,
   authEndpoint: `${ACCOUNT_DOMAIN}/authentication/oauth/authorize`,
-  // tokenEndpoint is still defined but NOT used directly in the browser
   tokenEndpoint: `${ACCOUNT_DOMAIN}/authentication/oauth/token`,
   logoutEndpoint: `${ACCOUNT_DOMAIN}/authentication/logout`,
   redirectUri: `${window.location.origin}/auth/callback`,
@@ -13,8 +12,7 @@ const SHOPIFY_AUTH_CONFIG = {
 
 // Generate random string for PKCE
 function generateRandomString(length = 43) {
-  const possible =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
   let text = '';
   for (let i = 0; i < length; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -35,94 +33,131 @@ async function generateCodeChallenge(codeVerifier) {
 
 // Initiate login - redirect to Shopify
 export async function initiateShopifyLogin() {
-  console.log('[OAUTH] Starting Shopify OAuth login flow');
+  console.log('🔐 Starting Shopify OAuth flow...');
+  
+  // CRITICAL: Clear any existing OAuth state to prevent code reuse
+  sessionStorage.removeItem('oauth_state');
+  sessionStorage.removeItem('code_verifier');
+  sessionStorage.removeItem('access_token');
+  sessionStorage.removeItem('refresh_token');
+  sessionStorage.removeItem('id_token');
   
   const state = generateRandomString();
   const codeVerifier = generateRandomString();
   const codeChallenge = await generateCodeChallenge(codeVerifier);
 
+  // Store NEW OAuth parameters
   sessionStorage.setItem('oauth_state', state);
   sessionStorage.setItem('code_verifier', codeVerifier);
+  sessionStorage.setItem('oauth_initiated_at', Date.now().toString());
 
   const params = new URLSearchParams({
     client_id: SHOPIFY_AUTH_CONFIG.clientId,
     response_type: 'code',
     redirect_uri: SHOPIFY_AUTH_CONFIG.redirectUri,
     scope: SHOPIFY_AUTH_CONFIG.scope,
-    state,
+    state: state,
     code_challenge: codeChallenge,
-    code_challenge_method: 'S256',
+    code_challenge_method: 'S256'
   });
 
   const authorizeUrl = `${SHOPIFY_AUTH_CONFIG.authEndpoint}?${params.toString()}`;
-  console.log('🚀 Redirecting to:', authorizeUrl);
-  
-  window.location.href = authorizeUrl;
+  console.log('🔗 Redirecting to:', authorizeUrl);
+
+  // Force immediate redirect
+  window.location.replace(authorizeUrl);
 }
 
-// Handle OAuth callback (now via backend API route)
-export async function handleOAuthCallback(code, state, codeVerifierFromCaller) {
+// Handle OAuth callback
+export async function handleOAuthCallback(code, state) {
+  console.log('📥 Processing OAuth callback...');
+  
   const storedState = sessionStorage.getItem('oauth_state');
   const storedCodeVerifier = sessionStorage.getItem('code_verifier');
+  const initiatedAt = sessionStorage.getItem('oauth_initiated_at');
+
+  // Check if OAuth was initiated within last 10 minutes
+  if (initiatedAt) {
+    const elapsed = Date.now() - parseInt(initiatedAt, 10);
+    if (elapsed > 600000) { // 10 minutes
+      console.error('❌ OAuth flow expired (>10 minutes old)');
+      sessionStorage.clear();
+      throw new Error('Authentication session expired. Please try again.');
+    }
+  }
 
   if (state !== storedState) {
+    console.error('❌ State mismatch!');
     throw new Error('Invalid state parameter');
   }
 
-  const codeVerifier = codeVerifierFromCaller || storedCodeVerifier;
-  if (!codeVerifier) {
+  if (!storedCodeVerifier) {
+    console.error('❌ Missing code_verifier!');
     throw new Error('Missing PKCE code_verifier');
   }
 
-  // Call your own backend, not Shopify directly
-  const tokenResponse = await fetch('/api/shopify-auth/callback', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      code,
-      codeVerifier
-    })
-  });
+  console.log('✅ State verified');
+  console.log('📤 Exchanging code for tokens...');
 
-  if (!tokenResponse.ok) {
-    const errorText = await tokenResponse.text();
-    throw new Error('Failed to exchange code for token: ' + errorText);
+  try {
+    const tokenResponse = await fetch(`${BACKEND_URL}/api/shopify-auth/callback`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        code,
+        codeVerifier: storedCodeVerifier
+      })
+    });
+
+    if (!tokenResponse.ok) {
+      const errorText = await tokenResponse.text();
+      console.error('❌ Token exchange failed:', errorText);
+      throw new Error(`Failed to exchange code for token: ${errorText}`);
+    }
+
+    const tokens = await tokenResponse.json();
+    console.log('✅ Tokens received!');
+
+    // Store tokens
+    sessionStorage.setItem('access_token', tokens.access_token);
+    if (tokens.refresh_token) {
+      sessionStorage.setItem('refresh_token', tokens.refresh_token);
+    }
+    if (tokens.id_token) {
+      sessionStorage.setItem('id_token', tokens.id_token);
+    }
+    if (tokens.expires_in) {
+      sessionStorage.setItem(
+        'token_expires_at',
+        (Date.now() + tokens.expires_in * 1000).toString()
+      );
+    }
+
+    // Clean up OAuth flow state (but keep tokens!)
+    sessionStorage.removeItem('oauth_state');
+    sessionStorage.removeItem('code_verifier');
+    sessionStorage.removeItem('oauth_initiated_at');
+
+    console.log('✅ Login successful!');
+    return tokens;
+  } catch (error) {
+    console.error('❌ OAuth callback error:', error);
+    // Clear everything on error
+    sessionStorage.clear();
+    throw error;
   }
-
-  const tokens = await tokenResponse.json();
-
-  // Store tokens
-  sessionStorage.setItem('access_token', tokens.access_token);
-  if (tokens.refresh_token) {
-    sessionStorage.setItem('refresh_token', tokens.refresh_token);
-  }
-  if (tokens.id_token) {
-    sessionStorage.setItem('id_token', tokens.id_token);
-  }
-  if (tokens.expires_in) {
-    sessionStorage.setItem(
-      'token_expires_at',
-      Date.now() + tokens.expires_in * 1000
-    );
-  }
-
-  // Clean up PKCE state
-  sessionStorage.removeItem('oauth_state');
-  sessionStorage.removeItem('code_verifier');
-
-  return tokens;
 }
 
 // Get customer data from Customer Account API
 export async function getCustomerFromShopify() {
   const accessToken = sessionStorage.getItem('access_token');
-  if (!accessToken) return null;
-  // Temporarily disable direct Shopify GraphQL calls due to CORS
-  // User is authenticated if access_token exists
-  return null;
+  if (!accessToken) {
+    console.log('⚠️ No access token found');
+    return null;
+  }
 
-  /*
   try {
+    console.log('👤 Fetching customer data...');
     const response = await fetch(
       `${ACCOUNT_DOMAIN}/account/customer/api/2024-10/graphql`,
       {
@@ -150,24 +185,32 @@ export async function getCustomerFromShopify() {
     );
 
     if (!response.ok) {
-      throw new Error('Failed to fetch customer data');
+      console.error('❌ Failed to fetch customer data:', response.status);
+      return null;
     }
 
     const result = await response.json();
-    return result.data?.customer;
+    const customer = result.data?.customer;
+    
+    if (customer) {
+      console.log('✅ Customer data retrieved');
+    } else {
+      console.warn('⚠️ No customer data in response');
+    }
+    
+    return customer;
   } catch (error) {
-    console.error('Error fetching customer:', error);
+    console.error('❌ Error fetching customer:', error);
     return null;
   }
-  */
 }
 
 // Logout
 export function logoutShopify() {
-  sessionStorage.removeItem('access_token');
-  sessionStorage.removeItem('refresh_token');
-  sessionStorage.removeItem('id_token');
-  sessionStorage.removeItem('token_expires_at');
+  console.log('👋 Logging out...');
+  sessionStorage.clear();
+  
+  // Redirect to Shopify logout
   window.location.href = SHOPIFY_AUTH_CONFIG.logoutEndpoint;
 }
 
@@ -177,8 +220,9 @@ export function isAuthenticated() {
   const expiresAt = sessionStorage.getItem('token_expires_at');
 
   if (!accessToken) return false;
+  
   if (expiresAt && Date.now() > parseInt(expiresAt, 10)) {
-    // Token expired
+    console.log('⚠️ Token expired');
     logoutShopify();
     return false;
   }

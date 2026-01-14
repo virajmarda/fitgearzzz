@@ -68,6 +68,7 @@ async def verify_shopify_token(access_token: str):
                 SHOPIFY_STOREFRONT_API,
                 headers={
                     "Content-Type": "application/json",
+                    # MUST be the private Storefront token (shpat_...)
                     "X-Shopify-Storefront-Access-Token": SHOPIFY_STOREFRONT_ACCESS_TOKEN,
                 },
                 json={
@@ -102,6 +103,7 @@ async def verify_shopify_token(access_token: str):
     except Exception as e:
         logger.error(f"Error verifying Shopify token via Storefront: {str(e)}")
         return None
+
 
 
 

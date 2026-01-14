@@ -1,5 +1,5 @@
 // frontend/src/pages/AuthCallback.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { handleOAuthCallback } from '../utils/shopifyAuth';
@@ -10,9 +10,16 @@ function AuthCallback() {
   const [searchParams] = useSearchParams();
   const [processing, setProcessing] = useState(true);
   const { fetchShopifyCustomer } = useAuth();
+  const hasProcessed = useRef(false);
 
   useEffect(() => {
     const processCallback = async () => {
+      // Prevent double execution in React StrictMode
+      if (hasProcessed.current) {
+        return;
+      }
+      hasProcessed.current = true;
+
       try {
         const code = searchParams.get('code');
         const state = searchParams.get('state');
@@ -25,6 +32,7 @@ function AuthCallback() {
 
         // MUST match the key used in initiateShopifyLogin
         const codeVerifier = window.sessionStorage.getItem('code_verifier');
+
         if (!codeVerifier) {
           console.error('Missing PKCE code_verifier in sessionStorage');
           toast.error('Authentication failed. Please try again.');
@@ -34,6 +42,9 @@ function AuthCallback() {
 
         // Exchange code for tokens
         await handleOAuthCallback(code, state, codeVerifier);
+
+        // Clear code_verifier after use to prevent reuse
+        window.sessionStorage.removeItem('code_verifier');
 
         // Fetch customer data to populate AuthContext
         await fetchShopifyCustomer();

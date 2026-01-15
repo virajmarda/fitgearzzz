@@ -59,7 +59,7 @@ function App() {
                 <Route path="/customer_identity/logout" element={<CustomerLogout />} />
                 <Route path="/customer_authentication/sso_hint" element={<CustomerSSOCallback />} />
                 <Route path="/orders" element={<Orders />} />
-                <Route path="/ordersuccess" element={<OrderSuccess />} />
+                <Route path="/order-success" element={<OrderSuccess />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/products/:handle" element={<ProductDetail />} />
                 <Route path="/contact" element={<Contact />} />

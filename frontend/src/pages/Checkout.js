@@ -10,17 +10,24 @@ import { motion } from 'framer-motion';
 const Checkout = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { cart, cartItems } = useCart();
+  const { cart, isLoading } = useCart();
   const [redirecting, setRedirecting] = useState(false);
 
+  // Get cart items safely
+  const cartItems = cart?.lines?.edges || [];
+  const hasItems = cartItems.length > 0;
+
   useEffect(() => {
+    // Wait for cart to load
+    if (isLoading) return;
+
     // Check if cart exists and has items
-    if (!cart || !cart.id || cartItems.length === 0) {
+    if (!cart || !cart.id || !hasItems) {
       toast.error('Your cart is empty');
       navigate('/products');
       return;
     }
-  }, [cart, cartItems, navigate]);
+  }, [cart, hasItems, navigate, isLoading]);
 
   const handleProceedToCheckout = () => {
     if (!cart || !cart.checkoutUrl) {
@@ -46,6 +53,19 @@ const Checkout = () => {
     return parseFloat(cart.cost.subtotalAmount?.amount || cart.cost.totalAmount.amount);
   };
 
+  // Show loading state while cart loads
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black pt-24">
+        <div className="text-center">
+          <Loader2 className="w-16 h-16 text-orange-500 animate-spin mx-auto mb-4" />
+          <p className="text-zinc-400">Loading checkout...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show redirecting state
   if (redirecting) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black">
@@ -91,31 +111,36 @@ const Checkout = () => {
                 </h2>
 
                 <div className="space-y-4">
-                  {cartItems.map((item) => (
-                    <div key={item.id} className="flex space-x-4 p-4 bg-zinc-800/50 rounded-2xl">
-                      <img
-                        src={item.merchandise.product.featuredImage.url}
-                        alt={item.merchandise.product.title}
-                        className="w-20 h-20 object-cover rounded-xl"
-                      />
-                      <div className="flex-1">
-                        <h3 className="text-white font-semibold">
-                          {item.merchandise.product.title}
-                        </h3>
-                        <p className="text-zinc-400 text-sm">
-                          {item.merchandise.title !== 'Default Title' && item.merchandise.title}
-                        </p>
-                        <p className="text-zinc-400 text-sm mt-1">
-                          ${parseFloat(item.merchandise.priceV2.amount).toFixed(2)} × {item.quantity}
-                        </p>
+                  {cartItems.map(({ node: item }) => {
+                    const product = item.merchandise.product;
+                    const variant = item.merchandise;
+                    
+                    return (
+                      <div key={item.id} className="flex space-x-4 p-4 bg-zinc-800/50 rounded-2xl">
+                        <img
+                          src={product.featuredImage?.url || '/placeholder.png'}
+                          alt={product.title}
+                          className="w-20 h-20 object-cover rounded-xl"
+                        />
+                        <div className="flex-1">
+                          <h3 className="text-white font-semibold">
+                            {product.title}
+                          </h3>
+                          {variant.title !== 'Default Title' && (
+                            <p className="text-zinc-400 text-sm">{variant.title}</p>
+                          )}
+                          <p className="text-zinc-400 text-sm mt-1">
+                            ${parseFloat(variant.priceV2.amount).toFixed(2)} × {item.quantity}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-orange-500 font-bold text-lg">
+                            ${(parseFloat(variant.priceV2.amount) * item.quantity).toFixed(2)}
+                          </span>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <span className="text-orange-500 font-bold text-lg">
-                          ${(parseFloat(item.merchandise.priceV2.amount) * item.quantity).toFixed(2)}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 

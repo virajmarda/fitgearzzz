@@ -186,6 +186,7 @@ const ensureCart = async () => {
 
   const value = {
     cart,
+    cartItems: cart?.lines?.edges || [], // ✅
     isLoading,
     addToCart,
     updateCartItem,

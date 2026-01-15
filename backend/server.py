@@ -324,6 +324,7 @@ class CartLinesAddInput(BaseModel):
     cartId: str
     lines: List[CartLineInput]
 
+# Pydantic models for cart operations (add at top with other models)
 class CartLinesUpdateInput(BaseModel):
     cartId: str
     lines: List[Dict]
@@ -824,8 +825,7 @@ async def add_to_cart(cart_data: CartLinesAddInput):
     
     return result.get("data", {}).get("cartLinesAdd", {}).get("cart", {})
 
-# Add these after the existing cart endpoints
-
+# Update the endpoints to use request bodies
 @api_router.post("/cart/update")
 async def update_cart_lines(data: CartLinesUpdateInput):
     """Update cart line items using Storefront API"""
@@ -875,8 +875,8 @@ async def update_cart_lines(data: CartLinesUpdateInput):
     """
     
     variables = {
-        "cartId": cart_id,
-        "lines": lines
+        "cartId": data.cartId,
+        "lines": data.lines
     }
     
     result = await shopify_storefront_request(query, variables)
@@ -939,8 +939,8 @@ async def remove_cart_lines(data: CartLinesRemoveInput):
     """
     
     variables = {
-        "cartId": cart_id,
-        "lineIds": line_ids
+        "cartId": data.cartId,
+        "lineIds": data.lineIds
     }
     
     result = await shopify_storefront_request(query, variables)
@@ -952,7 +952,6 @@ async def remove_cart_lines(data: CartLinesRemoveInput):
         )
     
     return result.get("data", {}).get("cartLinesRemove", {}).get("cart", {})
-
 
 @api_router.get("/cart/{cart_id}")
 async def get_cart_by_id(cart_id: str):
@@ -1271,6 +1270,7 @@ app.add_middleware(
     allow_origins=[
         "https://fitgearzzz.com",
         "https://www.fitgearzzz.com",
+        "https://account.fitgearzzz.com",
         "http://localhost:3000",
         "http://localhost:5173",
     ],

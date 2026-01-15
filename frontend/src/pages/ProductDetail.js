@@ -7,8 +7,11 @@ import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import AuthModal from '../components/AuthModal';
+import ReviewForm from '../components/ReviewForm';
+import ReviewsList from '../components/ReviewsList';
 import { fetchProductByHandle } from '../services/shopifyService';
-import { fetchProductReviews, initializeJudgeWidget } from '../services/judgeService';
+import { fetchProductReviews } from '../services/judgeService';
+import api from '../utils/api';
 import '../styles/judgeme-custom.css';
 
 const ProductDetail = () => {
@@ -21,16 +24,16 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [showAuth, setShowAuth] = useState(false);
   const [reviews, setReviews] = useState({ reviews: [], rating: 0, reviewCount: 0 });
+  const [loadingReviews, setLoadingReviews] = useState(true);
 
   const fetchProduct = async () => {
     try {
       const productData = await fetchProductByHandle(handle);
       setProduct(productData);
       
-      // Fetch Judge.me reviews
+      // Fetch Judge.me reviews via backend API
       if (productData.id) {
-        const reviewData = await fetchProductReviews(productData.id);
-        setReviews(reviewData);
+        await loadReviews(productData.id);
       }
     } catch (error) {
       console.error('Error fetching product:', error);
@@ -39,21 +42,21 @@ const ProductDetail = () => {
     }
   };
 
+  const loadReviews = async (productId) => {
+    try {
+      setLoadingReviews(true);
+      const reviewData = await fetchProductReviews(productId);
+      setReviews(reviewData);
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+    } finally {
+      setLoadingReviews(false);
+    }
+  };
+
   useEffect(() => {
     fetchProduct();
   }, [handle]);
-
-  // Initialize Judge.me widget after product loads
-  useEffect(() => {
-    if (product) {
-      // Extract numeric ID from Shopify GID
-      const numericId = product.id.includes('gid://') 
-        ? product.id.split('/').pop()
-        : product.id;
-      
-      initializeJudgeWidget(numericId, handle);
-    }
-  }, [product, handle]);
 
   const handleAddToCart = () => {
     const variantId = product.variants?.[0]?.id;
@@ -62,6 +65,13 @@ const ProductDetail = () => {
       return;
     }
     addToCart(variantId, quantity);
+  };
+
+  const handleReviewSubmitted = () => {
+    // Refresh reviews after submission
+    if (product) {
+      loadReviews(product.id);
+    }
   };
 
   if (loading) {
@@ -89,7 +99,7 @@ const ProductDetail = () => {
           transition={{ duration: 0.5 }}
           className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16"
         >
-          {/* Product Images - Keep your existing code */}
+          {/* Product Images */}
           <div>
             <div className="glass-card rounded-3xl overflow-hidden mb-4 shadow-lg">
               <img
@@ -121,7 +131,7 @@ const ProductDetail = () => {
               {product.name}
             </h1>
 
-            {/* Judge.me Rating Display */}
+            {/* Rating Display */}
             <div className="flex items-center space-x-4 mb-6">
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
@@ -149,7 +159,7 @@ const ProductDetail = () => {
               {product.description}
             </p>
 
-            {/* Stock & Category - Keep your existing code */}
+            {/* Stock & Category */}
             <div className="glass-card rounded-3xl p-6 mb-6 shadow-lg">
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
@@ -165,7 +175,7 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            {/* Quantity & Add to Cart - Keep your existing code */}
+            {/* Quantity & Add to Cart */}
             <div className="flex items-center space-x-4 mb-6">
               <div className="flex items-center space-x-2 glass-card rounded-full px-6 py-3 shadow-md">
                 <button
@@ -195,38 +205,47 @@ const ProductDetail = () => {
           </div>
         </motion.div>
 
-        {/* ✅ NEW: Judge.me Reviews Section */}
-        <div className="grid grid-cols-1 gap-12 mt-16">
-          <div>
-            <h2 className="font-oswald text-3xl font-bold text-white mb-6 uppercase">
-              Customer Reviews
-            </h2>
+        {/* Reviews Section */}
+        <div className="mt-16">
+          <h2 className="font-oswald text-3xl font-bold text-white mb-8 uppercase">
+            Customer Reviews
+          </h2>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Left: Reviews Display */}
+            <div>
+              {loadingReviews ? (
+                <div className="glass-card rounded-3xl p-8 text-center">
+                  <p className="text-zinc-400">Loading reviews...</p>
+                </div>
+              ) : (
+                <ReviewsList 
+                  reviews={reviews.reviews} 
+                  rating={reviews.rating} 
+                  reviewCount={reviews.reviewCount} 
+                />
+              )}
+            </div>
             
-            {/* Judge.me Review Widget - Displays reviews */}
-            <div 
-              className="jdgm-widget jdgm-review-widget glass-card rounded-3xl p-6"
-              data-id={product.id.split('/').pop()}
-            ></div>
-            
-            {/* Judge.me Review Form - For submitting new reviews */}
-            <div className="mt-8">
-              <h3 className="font-oswald text-2xl font-bold text-white mb-4">Write a Review</h3>
-              <div 
-                className="jdgm-widget jdgm-write-review-tab glass-card rounded-3xl p-6"
-                data-id={product.id.split('/').pop()}
-              >
-                {!user && (
-                  <div className="text-center py-8">
-                    <p className="text-zinc-400 mb-4">Please log in to write a review</p>
-                    <Button
-                      onClick={() => setShowAuth(true)}
-                      className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full"
-                    >
-                      Log In to Review
-                    </Button>
-                  </div>
-                )}
-              </div>
+            {/* Right: Write Review Form */}
+            <div>
+              {user ? (
+                <ReviewForm 
+                  product={product} 
+                  user={user} 
+                  onReviewSubmitted={handleReviewSubmitted}
+                />
+              ) : (
+                <div className="glass-card rounded-3xl p-8 text-center">
+                  <p className="text-zinc-400 mb-4">Please log in to write a review</p>
+                  <Button
+                    onClick={() => setShowAuth(true)}
+                    className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full"
+                  >
+                    Log In to Review
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -238,4 +257,3 @@ const ProductDetail = () => {
 };
 
 export default ProductDetail;
-

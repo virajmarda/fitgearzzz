@@ -324,6 +324,14 @@ class CartLinesAddInput(BaseModel):
     cartId: str
     lines: List[CartLineInput]
 
+class CartLinesUpdateInput(BaseModel):
+    cartId: str
+    lines: List[Dict]
+
+class CartLinesRemoveInput(BaseModel):
+    cartId: str
+    lineIds: List[str]
+
 
 # ✅ UPDATED: Shopify OAuth Routes - now decodes id_token
 @api_router.post(
@@ -767,6 +775,135 @@ async def add_to_cart(cart_data: CartLinesAddInput):
         )
     
     return result.get("data", {}).get("cartLinesAdd", {}).get("cart", {})
+
+# Add these after the existing cart endpoints
+
+@api_router.post("/cart/update")
+async def update_cart_lines(data: CartLinesUpdateInput):
+    """Update cart line items using Storefront API"""
+    query = """
+    mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+        cartLinesUpdate(cartId: $cartId, lines: $lines) {
+            cart {
+                id
+                checkoutUrl
+                lines(first: 10) {
+                    edges {
+                        node {
+                            id
+                            quantity
+                            merchandise {
+                                ... on ProductVariant {
+                                    id
+                                    title
+                                    priceV2 {
+                                        amount
+                                        currencyCode
+                                    }
+                                    product {
+                                        title
+                                        featuredImage {
+                                            url
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                cost {
+                    totalAmount {
+                        amount
+                        currencyCode
+                    }
+                }
+            }
+            userErrors {
+                field
+                message
+            }
+        }
+    }
+    """
+    
+    variables = {
+        "cartId": cart_id,
+        "lines": lines
+    }
+    
+    result = await shopify_storefront_request(query, variables)
+    
+    if result.get("data", {}).get("cartLinesUpdate", {}).get("userErrors"):
+        raise HTTPException(
+            status_code=400,
+            detail=result["data"]["cartLinesUpdate"]["userErrors"]
+        )
+    
+    return result.get("data", {}).get("cartLinesUpdate", {}).get("cart", {})
+
+
+@api_router.post("/cart/remove")
+async def remove_cart_lines(data: CartLinesRemoveInput):
+    """Remove items from cart using Storefront API"""
+    query = """
+    mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+        cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+            cart {
+                id
+                checkoutUrl
+                lines(first: 10) {
+                    edges {
+                        node {
+                            id
+                            quantity
+                            merchandise {
+                                ... on ProductVariant {
+                                    id
+                                    title
+                                    priceV2 {
+                                        amount
+                                        currencyCode
+                                    }
+                                    product {
+                                        title
+                                        featuredImage {
+                                            url
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                cost {
+                    totalAmount {
+                        amount
+                        currencyCode
+                    }
+                }
+            }
+            userErrors {
+                field
+                message
+            }
+        }
+    }
+    """
+    
+    variables = {
+        "cartId": cart_id,
+        "lineIds": line_ids
+    }
+    
+    result = await shopify_storefront_request(query, variables)
+    
+    if result.get("data", {}).get("cartLinesRemove", {}).get("userErrors"):
+        raise HTTPException(
+            status_code=400,
+            detail=result["data"]["cartLinesRemove"]["userErrors"]
+        )
+    
+    return result.get("data", {}).get("cartLinesRemove", {}).get("cart", {})
 
 
 @api_router.get("/cart/{cart_id}")

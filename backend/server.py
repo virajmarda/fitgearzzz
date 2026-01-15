@@ -587,6 +587,45 @@ async def get_product(product_id: str):
         ],
     }
 
+# ✅ NEW: Checkout using Storefront API
+@api_router.post("/checkout/create")
+async def create_checkout_from_cart(cart_id: str):
+    """
+    Get checkout URL from cart using Storefront API.
+    The cart's checkoutUrl field provides the Shopify-hosted checkout page.
+    """
+    query = """
+    query getCartCheckout($cartId: ID!) {
+        cart(id: $cartId) {
+            id
+            checkoutUrl
+            cost {
+                totalAmount {
+                    amount
+                    currencyCode
+                }
+            }
+        }
+    }
+    """
+    
+    variables = {"cartId": cart_id}
+    result = await shopify_storefront_request(query, variables)
+    
+    cart = result.get("data", {}).get("cart")
+    
+    if not cart:
+        raise HTTPException(status_code=404, detail="Cart not found")
+    
+    if not cart.get("checkoutUrl"):
+        raise HTTPException(status_code=400, detail="Cart has no checkout URL")
+    
+    return {
+        "checkoutUrl": cart["checkoutUrl"],
+        "cartId": cart["id"],
+        "total": cart["cost"]["totalAmount"]
+    }
+
 
 # ✅ FIXED: Cart Routes - Using Storefront API (Customer Account API doesn't support carts)
 @api_router.post("/cart/create")

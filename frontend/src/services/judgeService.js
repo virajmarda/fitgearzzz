@@ -1,8 +1,7 @@
-const SHOP_DOMAIN = 'fitgearzzz.myshopify.com';
-const JUDGE_API_URL = 'https://judge.me/api/v1';
+import api from '../utils/api';
 
 /**
- * Fetch reviews for a product by Shopify product ID
+ * Fetch reviews for a product via backend proxy (avoids CORS)
  */
 export const fetchProductReviews = async (shopifyProductId) => {
   try {
@@ -11,22 +10,16 @@ export const fetchProductReviews = async (shopifyProductId) => {
       ? shopifyProductId.split('/').pop()
       : shopifyProductId;
     
-    const response = await fetch(
-      `${JUDGE_API_URL}/reviews?shop_domain=${SHOP_DOMAIN}&external_id=${productId}&per_page=50`
-    );
+    // Call YOUR backend instead of Judge.me directly
+    const response = await api.get(`/reviews/${productId}`);
     
-    if (!response.ok) {
-      throw new Error('Failed to fetch reviews');
-    }
-    
-    const data = await response.json();
     return {
-      reviews: data.reviews || [],
-      rating: data.rating || 0,
-      reviewCount: data.reviews?.length || 0
+      reviews: response.data.reviews || [],
+      rating: response.data.rating || 0,
+      reviewCount: response.data.reviewCount || 0
     };
   } catch (error) {
-    console.error('Error fetching Judge.me reviews:', error);
+    console.error('Error fetching reviews:', error);
     return {
       reviews: [],
       rating: 0,
@@ -40,15 +33,8 @@ export const fetchProductReviews = async (shopifyProductId) => {
  */
 export const fetchReviewWidget = async (productHandle) => {
   try {
-    const response = await fetch(
-      `${JUDGE_API_URL}/widgets/product_review?shop_domain=${SHOP_DOMAIN}&handle=${productHandle}`
-    );
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch review widget');
-    }
-    
-    return await response.json();
+    const response = await api.get(`/reviews/widget/${productHandle}`);
+    return response.data;
   } catch (error) {
     console.error('Error fetching review widget:', error);
     return null;
@@ -57,7 +43,6 @@ export const fetchReviewWidget = async (productHandle) => {
 
 /**
  * Initialize Judge.me widget on the page
- * Call this after the component mounts
  */
 export const initializeJudgeWidget = (productId, productHandle) => {
   // Load Judge.me script if not already loaded
@@ -67,7 +52,7 @@ export const initializeJudgeWidget = (productId, productHandle) => {
     script.async = true;
     script.onload = () => {
       if (window.jdgm) {
-        window.jdgm.customerId = null; // Set if user is logged in
+        window.jdgm.customerId = null;
         window.jdgm.productId = productId;
       }
     };
@@ -79,3 +64,4 @@ export const initializeJudgeWidget = (productId, productHandle) => {
     }
   }
 };
+

@@ -334,6 +334,15 @@ class CartLinesRemoveInput(BaseModel):
     cartId: str
     lineIds: List[str]
 
+# Pydantic model for review submission
+class ReviewSubmitInput(BaseModel):
+    product_id: str
+    rating: int
+    title: str
+    body: str
+    reviewer_name: str
+    reviewer_email: str
+
 
 # ✅ UPDATED: Shopify OAuth Routes - now decodes id_token
 @api_router.post(
@@ -653,6 +662,57 @@ async def get_review_widget(product_handle: str):
     except Exception as e:
         logger.error(f"Error fetching review widget: {str(e)}")
         return {"error": str(e)}
+
+# Judge.me Review Submission Endpoint
+@api_router.post("/reviews/submit")
+async def submit_review(
+    review_data: ReviewSubmitInput,
+    current_user: dict = Depends(get_current_user)
+):
+    """Submit a review to Judge.me via API"""
+    try:
+        # Extract numeric product ID
+        numeric_id = review_data.product_id.split('/')[-1] if 'gid://' in review_data.product_id else review_data.product_id
+        
+        # Judge.me review submission endpoint
+        judge_url = "https://judge.me/api/v1/reviews"
+        
+        # Prepare review data
+        payload = {
+            "shop_domain": "fitgearzzz.myshopify.com",
+            "platform": "shopify",
+            "id": numeric_id,  # Product ID
+            "email": review_data.reviewer_email,
+            "name": review_data.reviewer_name,
+            "rating": review_data.rating,
+            "title": review_data.title,
+            "body": review_data.body,
+            "api_token": JUDGE_ME_API_TOKEN
+        }
+        
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                judge_url,
+                json=payload,
+                headers={"Content-Type": "application/json"},
+                timeout=10.0
+            )
+            
+            if response.status_code in [200, 201]:
+                return {
+                    "success": True,
+                    "message": "Review submitted successfully! It will appear after moderation."
+                }
+            else:
+                logger.error(f"Judge.me review submission failed: {response.status_code} - {response.text}")
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=f"Failed to submit review: {response.text}"
+                )
+                
+    except Exception as e:
+        logger.error(f"Error submitting review: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to submit review: {str(e)}")
         
 
 # ✅ NEW: Checkout using Storefront API

@@ -7,7 +7,7 @@ import logging
 import httpx
 from pathlib import Path
 from pydantic import BaseModel
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 import json
 import base64
 
@@ -311,6 +311,19 @@ class ShopifyOAuthTokenResponse(BaseModel):
     expires_in: int
     token_type: str = "Bearer"
 
+class CartLineInput(BaseModel):
+    merchandiseId: str
+    quantity: int
+
+
+class CartCreateInput(BaseModel):
+    lines: Optional[List[CartLineInput]] = None
+
+
+class CartLinesAddInput(BaseModel):
+    cartId: str
+    lines: List[CartLineInput]
+
 
 # ✅ UPDATED: Shopify OAuth Routes - now decodes id_token
 @api_router.post(
@@ -575,42 +588,216 @@ async def get_product(product_id: str):
     }
 
 
-# ✅ UPDATED: Cart Routes - Using Customer Account API
-@api_router.get("/cart")
-async def get_cart(current_user: dict = Depends(get_current_user)):
-    """Get customer's cart from Shopify Customer Account API"""
-    try:
-        query = """
-        query {
-            customer {
-                emailAddress {
-                    emailAddress
+# ✅ FIXED: Cart Routes - Using Storefront API (Customer Account API doesn't support carts)
+@api_router.post("/cart/create")
+async def create_cart(cart_input: Optional[CartCreateInput] = None):
+    """Create a new cart using Storefront API"""
+    query = """
+    mutation cartCreate($input: CartInput!) {
+        cartCreate(input: $input) {
+            cart {
+                id
+                checkoutUrl
+                lines(first: 10) {
+                    edges {
+                        node {
+                            id
+                            quantity
+                            merchandise {
+                                ... on ProductVariant {
+                                    id
+                                    title
+                                    priceV2 {
+                                        amount
+                                        currencyCode
+                                    }
+                                    product {
+                                        title
+                                        featuredImage {
+                                            url
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                cost {
+                    totalAmount {
+                        amount
+                        currencyCode
+                    }
+                }
+            }
+            userErrors {
+                field
+                message
+            }
+        }
+    }
+    """
+    
+    variables = {
+        "input": {
+            "lines": [
+                {
+                    "merchandiseId": line.merchandiseId,
+                    "quantity": line.quantity
+                }
+                for line in (cart_input.lines if cart_input and cart_input.lines else [])
+            ]
+        }
+    }
+    
+    result = await shopify_storefront_request(query, variables)
+    
+    if result.get("data", {}).get("cartCreate", {}).get("userErrors"):
+        raise HTTPException(
+            status_code=400,
+            detail=result["data"]["cartCreate"]["userErrors"]
+        )
+    
+    return result.get("data", {}).get("cartCreate", {}).get("cart", {})
+
+
+@api_router.post("/cart/add")
+async def add_to_cart(cart_data: CartLinesAddInput):
+    """Add items to cart using Storefront API"""
+    query = """
+    mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+        cartLinesAdd(cartId: $cartId, lines: $lines) {
+            cart {
+                id
+                checkoutUrl
+                lines(first: 10) {
+                    edges {
+                        node {
+                            id
+                            quantity
+                            merchandise {
+                                ... on ProductVariant {
+                                    id
+                                    title
+                                    priceV2 {
+                                        amount
+                                        currencyCode
+                                    }
+                                    product {
+                                        title
+                                        featuredImage {
+                                            url
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                cost {
+                    totalAmount {
+                        amount
+                        currencyCode
+                    }
+                }
+            }
+            userErrors {
+                field
+                message
+            }
+        }
+    }
+    """
+    
+    variables = {
+        "cartId": cart_data.cartId,
+        "lines": [
+            {
+                "merchandiseId": line.merchandiseId,
+                "quantity": line.quantity
+            }
+            for line in cart_data.lines
+        ]
+    }
+    
+    result = await shopify_storefront_request(query, variables)
+    
+    if result.get("data", {}).get("cartLinesAdd", {}).get("userErrors"):
+        raise HTTPException(
+            status_code=400,
+            detail=result["data"]["cartLinesAdd"]["userErrors"]
+        )
+    
+    return result.get("data", {}).get("cartLinesAdd", {}).get("cart", {})
+
+
+@api_router.get("/cart/{cart_id}")
+async def get_cart_by_id(cart_id: str):
+    """Get cart details using Storefront API"""
+    query = """
+    query getCart($cartId: ID!) {
+        cart(id: $cartId) {
+            id
+            checkoutUrl
+            lines(first: 10) {
+                edges {
+                    node {
+                        id
+                        quantity
+                        merchandise {
+                            ... on ProductVariant {
+                                id
+                                title
+                                priceV2 {
+                                    amount
+                                    currencyCode
+                                }
+                                product {
+                                    title
+                                    featuredImage {
+                                        url
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            cost {
+                totalAmount {
+                    amount
+                    currencyCode
+                }
+                subtotalAmount {
+                    amount
+                    currencyCode
                 }
             }
         }
-        """
-        
-        result = await shopify_customer_request(
-            current_user["access_token"], query
-        )
-        
-        if result.get("errors"):
-            logger.error(f"GraphQL errors: {result['errors']}")
-            raise HTTPException(
-                status_code=500,
-                detail=f"Failed to fetch cart: {result['errors']}"
-            )
-        
-        # Note: Customer Account API doesn't have a direct cart query
-        # Cart is typically managed through Storefront API
-        # This endpoint returns empty for now
-        return {"cart": [], "customer": result.get("data", {}).get("customer")}
+    }
+    """
     
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Cart fetch error: {str(e)}")
-        raise HTTPException(status_code=500, detail="Failed to fetch cart")
+    variables = {"cartId": cart_id}
+    result = await shopify_storefront_request(query, variables)
+    
+    cart = result.get("data", {}).get("cart")
+    
+    if not cart:
+        raise HTTPException(status_code=404, detail="Cart not found")
+    
+    return cart
+
+
+# Legacy cart endpoint - returns message
+@api_router.get("/cart")
+async def get_cart(current_user: dict = Depends(get_current_user)):
+    """Cart management info"""
+    return {
+        "message": "Cart is managed via Storefront API. Use POST /cart/create to create a cart, then use /cart/{cart_id} to retrieve it.",
+        "customer": {
+            "email": current_user["email"],
+            "name": current_user["name"]
+        }
+    }
 
 
 # ✅ UPDATED: Orders Routes - Using Customer Account API

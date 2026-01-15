@@ -33,43 +33,66 @@ export const CartProvider = ({ children }) => {
     }
   }, []);
 
-  const fetchCart = async (cartId) => {
-    if (!cartId) return;
-    
-    try {
-      setIsLoading(true);
-      const response = await api.get(`/cart/${cartId}`);
-      setCart(response.data);
-    } catch (error) {
-      console.error('Error fetching cart:', error);
-      // Cart might be expired, create new one
-      setCartId(null);
-      setCart(null);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+const fetchCart = async (cartId) => {
+  if (!cartId) return;
+  
+  try {
+    setIsLoading(true);
+    // Encode the cart ID to handle special characters
+    const encodedCartId = encodeURIComponent(cartId);
+    const response = await api.get(`/cart/${encodedCartId}`);
+    setCart(response.data);
+  } catch (error) {
+    console.error('Error fetching cart:', error);
+    // Cart might be expired, clear it
+    setCartId(null);
+    setCart(null);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-  // Create new cart if needed
-  const ensureCart = async () => {
-    let cartId = getCartId();
-    
-    if (!cartId || !cart) {
-      try {
-        const response = await api.post('/cart/create', { lines: [] });
-        cartId = response.data.id;
-        setCartId(cartId);
-        setCart(response.data);
-        return cartId;
-      } catch (error) {
-        console.error('Error creating cart:', error);
-        toast.error('Failed to initialize cart');
-        return null;
-      }
+  // Update the ensureCart function (around line 35)
+const ensureCart = async () => {
+  let cartId = getCartId();
+  
+  // Check if cart ID exists and is valid
+  if (cartId && cartId.startsWith('gid://shopify/Cart/')) {
+    try {
+      // Try to fetch existing cart
+      const response = await api.get(`/cart/${encodeURIComponent(cartId)}`);
+      setCart(response.data);
+      return cartId;
+    } catch (error) {
+      console.log('Existing cart not found, creating new one');
+      // Cart expired or invalid, clear it
+      setCartId(null);
+      cartId = null;
     }
-    
-    return cartId;
-  };
+  }
+  
+  // Create new cart if no valid cart exists
+  if (!cartId) {
+    try {
+      const response = await api.post('/cart/create', { lines: [] });
+      cartId = response.data.id;
+      
+      if (!cartId) {
+        throw new Error('No cart ID returned from API');
+      }
+      
+      setCartId(cartId);
+      setCart(response.data);
+      return cartId;
+    } catch (error) {
+      console.error('Error creating cart:', error);
+      toast.error('Failed to initialize cart');
+      return null;
+    }
+  }
+  
+  return cartId;
+};
 
   const addToCart = async (variantId, quantity = 1) => {
     try {

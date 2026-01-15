@@ -95,29 +95,34 @@ const ensureCart = async () => {
 };
 
   const addToCart = async (variantId, quantity = 1) => {
-    try {
-      setIsLoading(true);
-      const cartId = await ensureCart();
-      
-      if (!cartId) {
-        toast.error('Failed to add item to cart');
-        return;
-      }
-
-      const response = await api.post('/cart/add', {
-        cartId,
-        lines: [{ merchandiseId: variantId, quantity }]
-      });
-      
-      setCart(response.data);
-      toast.success('Added to cart!');
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      toast.error('Failed to add to cart');
-    } finally {
-      setIsLoading(false);
+  try {
+    setIsLoading(true);
+    console.log('🛒 Adding to cart:', { variantId, quantity });
+    
+    const cartId = await ensureCart();
+    console.log('🛒 Cart ID:', cartId);
+    
+    if (!cartId) {
+      toast.error('Failed to add item to cart');
+      return;
     }
-  };
+
+    const response = await api.post('/cart/add', {
+      cartId,
+      lines: [{ merchandiseId: variantId, quantity }]
+    });
+    
+    console.log('🛒 Cart response:', response.data);
+    setCart(response.data);
+    toast.success('Added to cart!');
+  } catch (error) {
+    console.error('❌ Error adding to cart:', error);
+    toast.error('Failed to add to cart');
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const updateCartItem = async (lineId, quantity) => {
     const cartId = getCartId();

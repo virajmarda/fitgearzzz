@@ -8,113 +8,165 @@ const CartContext = createContext();
 export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState([]);
-  const [products, setProducts] = useState({});
+  const [cart, setCart] = useState(null); // Shopify cart object
+  const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
 
-  useEffect(() => {
-    if (user) {
-      fetchCart();
-    } else {
-      setCart([]);
-    }
-  }, [user]);
+  // Load cart ID from localStorage
+  const getCartId = () => {
+    return localStorage.getItem('shopify_cart_id');
+  };
 
-  const fetchCart = async () => {
+  const setCartId = (cartId) => {
+    if (cartId) {
+      localStorage.setItem('shopify_cart_id', cartId);
+    } else {
+      localStorage.removeItem('shopify_cart_id');
+    }
+  };
+
+  // Fetch existing cart or create new one
+  useEffect(() => {
+    const cartId = getCartId();
+    if (cartId) {
+      fetchCart(cartId);
+    }
+  }, []);
+
+  const fetchCart = async (cartId) => {
+    if (!cartId) return;
+    
     try {
-      const response = await api.get('/cart');
+      setIsLoading(true);
+      const response = await api.get(`/cart/${cartId}`);
       setCart(response.data);
-      await fetchCartProducts(response.data);
     } catch (error) {
       console.error('Error fetching cart:', error);
+      // Cart might be expired, create new one
+      setCartId(null);
+      setCart(null);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const fetchCartProducts = async (cartItems) => {
-    const productIds = [...new Set(cartItems.map((item) => item.product_id))];
+  // Create new cart if needed
+  const ensureCart = async () => {
+    let cartId = getCartId();
     
-    if (productIds.length === 0) {
-      setProducts({});
-      return;
+    if (!cartId || !cart) {
+      try {
+        const response = await api.post('/cart/create', { lines: [] });
+        cartId = response.data.id;
+        setCartId(cartId);
+        setCart(response.data);
+        return cartId;
+      } catch (error) {
+        console.error('Error creating cart:', error);
+        toast.error('Failed to initialize cart');
+        return null;
+      }
     }
-
-    try {
-      const response = await api.get(`/products?ids=${productIds.join(',')}`);
-      const productData = {};
-      response.data.forEach((product) => {
-        productData[product.id] = product;
-      });
-      setProducts(productData);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    }
+    
+    return cartId;
   };
 
-  const addToCart = async (productId, quantity = 1) => {
-    if (!user) {
-      toast.error('Please login to add items to cart');
-      return;
-    }
-
+  const addToCart = async (variantId, quantity = 1) => {
     try {
-      await api.post('/cart', { product_id: productId, quantity });
-      await fetchCart();
+      setIsLoading(true);
+      const cartId = await ensureCart();
+      
+      if (!cartId) {
+        toast.error('Failed to add item to cart');
+        return;
+      }
+
+      const response = await api.post('/cart/add', {
+        cartId,
+        lines: [{ merchandiseId: variantId, quantity }]
+      });
+      
+      setCart(response.data);
       toast.success('Added to cart!');
     } catch (error) {
+      console.error('Error adding to cart:', error);
       toast.error('Failed to add to cart');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const updateCartItem = async (cartId, quantity) => {
+  const updateCartItem = async (lineId, quantity) => {
+    const cartId = getCartId();
+    if (!cartId) return;
+
     try {
-      await api.put(`/cart/${cartId}`, { quantity });
-      await fetchCart();
+      setIsLoading(true);
+      // This endpoint needs to be added to backend
+      const response = await api.post('/cart/update', {
+        cartId,
+        lines: [{ id: lineId, quantity }]
+      });
+      setCart(response.data);
     } catch (error) {
+      console.error('Error updating cart:', error);
       toast.error('Failed to update cart');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const removeFromCart = async (cartId) => {
+  const removeFromCart = async (lineId) => {
+    const cartId = getCartId();
+    if (!cartId) return;
+
     try {
-      await api.delete(`/cart/${cartId}`);
-      await fetchCart();
+      setIsLoading(true);
+      // This endpoint needs to be added to backend
+      const response = await api.post('/cart/remove', {
+        cartId,
+        lineIds: [lineId]
+      });
+      setCart(response.data);
       toast.success('Item removed from cart');
     } catch (error) {
+      console.error('Error removing item:', error);
       toast.error('Failed to remove item');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const clearCart = async () => {
-    try {
-      await api.delete('/cart');
-      setCart([]);
-      setProducts({});
-    } catch (error) {
-      toast.error('Failed to clear cart');
-    }
+  const clearCart = () => {
+    setCartId(null);
+    setCart(null);
   };
 
   const getCartTotal = () => {
-    return cart.reduce((total, item) => {
-      const product = products[item.product_id];
-      return total + (product ? product.price * item.quantity : 0);
-    }, 0);
+    if (!cart || !cart.cost) return 0;
+    return parseFloat(cart.cost.totalAmount.amount);
   };
 
   const getCartCount = () => {
-    return cart.reduce((count, item) => count + item.quantity, 0);
+    if (!cart || !cart.lines) return 0;
+    return cart.lines.edges.reduce((count, edge) => count + edge.node.quantity, 0);
+  };
+
+  const getCheckoutUrl = () => {
+    return cart?.checkoutUrl || null;
   };
 
   const value = {
     cart,
-    products,
+    isLoading,
     addToCart,
     updateCartItem,
     removeFromCart,
     clearCart,
     getCartTotal,
     getCartCount,
-    fetchCart,
+    getCheckoutUrl,
+    fetchCart: () => fetchCart(getCartId()),
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

@@ -63,7 +63,13 @@ const ProductCard = ({ product }) => {
             ${product.price.toFixed(2)}
           </span>
           <Button
-            onClick={() => addToCart(product.id)}
+            onClick={() => {
+  const variantId = product.variants?.[0]?.id;
+  if (variantId) {
+    addToCart(variantId);
+  }
+}}  // ✅ Correct
+
             disabled={product.stock === 0}
             className="bg-orange-500 hover:bg-orange-600 text-white rounded-full px-6"
             data-testid="add-to-cart-button"

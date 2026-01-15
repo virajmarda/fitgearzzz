@@ -10,6 +10,7 @@ from pydantic import BaseModel
 from typing import Optional, Dict, List
 import json
 import base64
+from urllib.parse import unquote
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / ".env")
@@ -953,9 +954,20 @@ async def remove_cart_lines(data: CartLinesRemoveInput):
     
     return result.get("data", {}).get("cartLinesRemove", {}).get("cart", {})
 
-@api_router.get("/cart/{cart_id}")
+@api_router.get("/cart/{cart_id:path}")  # Note: {cart_id:path} to capture full GID
 async def get_cart_by_id(cart_id: str):
     """Get cart details using Storefront API"""
+    
+    # Decode the cart ID (in case it's URL encoded)
+    cart_id = unquote(cart_id)
+    
+    # Validate cart ID format
+    if not cart_id.startswith('gid://shopify/Cart/'):
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Invalid cart ID format. Expected gid://shopify/Cart/... but got {cart_id}"
+        )
+    
     query = """
     query getCart($cartId: ID!) {
         cart(id: $cartId) {
@@ -1000,15 +1012,18 @@ async def get_cart_by_id(cart_id: str):
     """
     
     variables = {"cartId": cart_id}
-    result = await shopify_storefront_request(query, variables)
     
-    cart = result.get("data", {}).get("cart")
-    
-    if not cart:
-        raise HTTPException(status_code=404, detail="Cart not found")
-    
-    return cart
-
+    try:
+        result = await shopify_storefront_request(query, variables)
+        cart = result.get("data", {}).get("cart")
+        
+        if not cart:
+            raise HTTPException(status_code=404, detail="Cart not found or expired")
+        
+        return cart
+    except Exception as e:
+        logger.error(f"Error fetching cart: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch cart: {str(e)}")
 
 # Legacy cart endpoint - returns message
 @api_router.get("/cart")

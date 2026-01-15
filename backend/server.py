@@ -595,6 +595,36 @@ async def get_product(product_id: str):
         ],
     }
 
+# ✅ NEW: Reviews endpoint (if you want custom reviews)
+@api_router.post("/products/{product_id}/reviews")
+async def create_review(
+    product_id: str,
+    rating: int,
+    comment: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Create a product review"""
+    # Since Shopify doesn't have a native reviews API,
+    # you'd need to store these in a separate database
+    # For now, return a placeholder
+    return {
+        "message": "Reviews are not yet implemented. Please use a Shopify reviews app like Judge.me or Yotpo.",
+        "rating": rating,
+        "comment": comment,
+        "user": current_user["email"]
+    }
+
+
+@api_router.get("/products/{product_id}/reviews")
+async def get_reviews(product_id: str):
+    """Get product reviews"""
+    # Placeholder - integrate with reviews app or custom database
+    return {
+        "reviews": [],
+        "message": "Reviews integration pending"
+    }
+
+
 # ✅ NEW: Checkout using Storefront API
 @api_router.post("/checkout/create")
 async def create_checkout_from_cart(cart_id: str):

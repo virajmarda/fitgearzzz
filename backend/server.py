@@ -6,7 +6,7 @@ import os
 import logging
 import httpx
 from pathlib import Path
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Optional, Dict, List
 import json
 import base64
@@ -341,8 +341,7 @@ class ReviewSubmitInput(BaseModel):
     title: str
     body: str
     reviewer_name: str
-    reviewer_email: str
-
+    reviewer_email: EmailStr
 
 # ✅ UPDATED: Shopify OAuth Routes - now decodes id_token
 @api_router.post(
@@ -665,10 +664,7 @@ async def get_review_widget(product_handle: str):
 
 # Judge.me Review Submission Endpoint
 @api_router.post("/reviews/submit")
-async def submit_review(
-    review_data: ReviewSubmitInput,
-    current_user: dict = Depends(get_current_user)
-):
+async def submit_review(review_data: ReviewSubmitInput):
     """Submit a review to Judge.me via API"""
     try:
         # Extract numeric product ID
@@ -677,11 +673,11 @@ async def submit_review(
         # Judge.me review submission endpoint
         judge_url = "https://judge.me/api/v1/reviews"
         
-        # Prepare review data
+        # Prepare review data in Judge.me format
         payload = {
             "shop_domain": "fitgearzzz.myshopify.com",
             "platform": "shopify",
-            "id": numeric_id,  # Product ID
+            "id": numeric_id,  # Product external_id
             "email": review_data.reviewer_email,
             "name": review_data.reviewer_name,
             "rating": review_data.rating,
@@ -690,19 +686,33 @@ async def submit_review(
             "api_token": JUDGE_ME_API_TOKEN
         }
         
+        logger.info(f"Submitting review to Judge.me: {payload}")
+        
         async with httpx.AsyncClient() as client:
             response = await client.post(
                 judge_url,
-                json=payload,
-                headers={"Content-Type": "application/json"},
-                timeout=10.0
+                data=payload,  # Use 'data' instead of 'json' for form submission
+                timeout=15.0
             )
+            
+            logger.info(f"Judge.me response status: {response.status_code}")
+            logger.info(f"Judge.me response body: {response.text}")
             
             if response.status_code in [200, 201]:
                 return {
                     "success": True,
                     "message": "Review submitted successfully! It will appear after moderation."
                 }
+            elif response.status_code == 403:
+                # Check response for specific error
+                error_text = response.text
+                logger.error(f"Judge.me API 403 error: {error_text}")
+                
+                # Return helpful error message
+                raise HTTPException(
+                    status_code=403,
+                    detail="Review submission forbidden. Please ensure you have purchased this product or check Judge.me settings."
+                )
             else:
                 logger.error(f"Judge.me review submission failed: {response.status_code} - {response.text}")
                 raise HTTPException(
@@ -710,6 +720,8 @@ async def submit_review(
                     detail=f"Failed to submit review: {response.text}"
                 )
                 
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error submitting review: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to submit review: {str(e)}")

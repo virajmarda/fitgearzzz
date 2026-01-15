@@ -9,6 +9,7 @@ from pathlib import Path
 from pydantic import BaseModel
 from typing import Optional, Dict
 import json
+import base64
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / ".env")
@@ -50,7 +51,6 @@ SHOPIFY_ACCOUNT_DOMAIN = os.environ.get(
 )
 
 SHOPIFY_TOKEN_ENDPOINT = f"{SHOPIFY_ACCOUNT_DOMAIN}/authentication/oauth/token"
-SHOPIFY_CUSTOMER_API = f"{SHOPIFY_ACCOUNT_DOMAIN}/customer/api/2024-10/graphql"
 
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "https://fitgearzzz.com")
 
@@ -65,20 +65,142 @@ logger.info(
 )
 
 
-# Helper Functions
-async def verify_shopify_token(access_token: str):
-    """Verify Shopify customer access token (shcat_ format)"""
+# ✅ NEW: JWT Decoding Helper
+def decode_jwt(token: str) -> dict:
+    """Decode JWT token without verification (for id_token from Shopify)"""
     try:
-        # shcat_ tokens are already validated by Shopify during OAuth
-        # Just verify the format and return success
+        # Split the JWT into parts
+        parts = token.split('.')
+        if len(parts) != 3:
+            raise ValueError("Invalid JWT format")
+        
+        # Decode the payload (second part)
+        payload = parts[1]
+        # Add padding if needed
+        padding = len(payload) % 4
+        if padding:
+            payload += '=' * (4 - padding)
+        
+        decoded_bytes = base64.urlsafe_b64decode(payload)
+        decoded_payload = json.loads(decoded_bytes.decode('utf-8'))
+        
+        return decoded_payload
+    except Exception as e:
+        logger.error(f"Error decoding JWT: {str(e)}")
+        raise
+
+
+# ✅ NEW: Cache for customer data by access token
+customer_cache = {}
+
+
+# ✅ NEW: Dynamic endpoint discovery
+async def get_customer_api_endpoint():
+    """Dynamically fetch the Customer Account API GraphQL endpoint"""
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                f"https://{SHOPIFY_STORE_DOMAIN}/.well-known/customer-account-api",
+                timeout=10.0
+            )
+            if response.status_code == 200:
+                config = response.json()
+                return config.get("graphql_api")
+            else:
+                # Fallback to constructed URL
+                return f"https://{SHOPIFY_STORE_DOMAIN}/customer/api/2024-10/graphql"
+    except Exception as e:
+        logger.error(f"Error fetching customer API endpoint: {str(e)}")
+        # Fallback to constructed URL
+        return f"https://{SHOPIFY_STORE_DOMAIN}/customer/api/2024-10/graphql"
+
+
+# ✅ UPDATED: Now decodes id_token for real customer data
+async def verify_shopify_token(access_token: str, id_token: Optional[str] = None):
+    """Verify Shopify customer access token and decode id_token for real customer data"""
+    try:
+        # Check cache first
+        if access_token in customer_cache:
+            logger.info("Returning cached customer data")
+            return customer_cache[access_token]
+        
         if not access_token.startswith("shcat_"):
             logger.warning("Token doesn't start with shcat_")
             return None
-            
+        
         logger.info("Token format verified (shcat_)")
         
-        # Return a basic customer object
-        # The token itself proves authentication since Shopify issued it
+        # ✅ NEW: If we have id_token, decode it to get real customer data
+        if id_token:
+            try:
+                decoded_payload = decode_jwt(id_token)
+                logger.info(f"Decoded id_token payload: {json.dumps(decoded_payload, indent=2)}")
+                
+                customer_data = {
+                    "id": decoded_payload.get("sub", "gid://shopify/Customer/unknown"),
+                    "email": decoded_payload.get("email", "customer@example.com"),
+                    "displayName": decoded_payload.get("email", "Customer").split("@")[0],
+                    "firstName": decoded_payload.get("given_name", ""),
+                    "lastName": decoded_payload.get("family_name", ""),
+                }
+                
+                # Cache the customer data
+                customer_cache[access_token] = customer_data
+                
+                return customer_data
+            except Exception as e:
+                logger.error(f"Error decoding id_token: {str(e)}")
+        
+        # Fallback: Use Customer Account API to fetch customer data
+        try:
+            customer_api_url = await get_customer_api_endpoint()
+            
+            query = """
+            query {
+                customer {
+                    id
+                    emailAddress {
+                        emailAddress
+                    }
+                    firstName
+                    lastName
+                    displayName
+                }
+            }
+            """
+            
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    customer_api_url,
+                    headers={
+                        "Content-Type": "application/json",
+                        "Authorization": access_token,
+                    },
+                    json={"query": query},
+                    timeout=10.0,
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    customer = data.get("data", {}).get("customer", {})
+                    
+                    if customer:
+                        customer_data = {
+                            "id": customer.get("id", "gid://shopify/Customer/unknown"),
+                            "email": customer.get("emailAddress", {}).get("emailAddress", "customer@example.com"),
+                            "displayName": customer.get("displayName", "Customer"),
+                            "firstName": customer.get("firstName", ""),
+                            "lastName": customer.get("lastName", ""),
+                        }
+                        
+                        # Cache the customer data
+                        customer_cache[access_token] = customer_data
+                        
+                        return customer_data
+        except Exception as e:
+            logger.error(f"Error fetching customer from API: {str(e)}")
+        
+        # Final fallback
         return {
             "id": "gid://shopify/Customer/verified",
             "displayName": "Customer",
@@ -89,7 +211,6 @@ async def verify_shopify_token(access_token: str):
     except Exception as e:
         logger.error(f"Error verifying token: {str(e)}")
         return None
-
 
 
 async def get_current_user(
@@ -147,16 +268,19 @@ async def shopify_storefront_request(
         return response.json()
 
 
+# ✅ UPDATED: Now uses dynamic endpoint
 async def shopify_customer_request(
     access_token: str, query: str, variables: Optional[Dict] = None
 ):
     """Make a request to Shopify Customer Account API"""
+    customer_api_url = await get_customer_api_endpoint()
+    
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            SHOPIFY_CUSTOMER_API,
+            customer_api_url,
             headers={
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {access_token}",
+                "Authorization": access_token,
             },
             json={"query": query, "variables": variables or {}},
             timeout=10.0,
@@ -164,11 +288,11 @@ async def shopify_customer_request(
 
         if response.status_code != 200:
             logger.error(
-                f"Shopify Customer API error: {response.text}"
+                f"Shopify Customer API error: {response.status_code} - {response.text}"
             )
             raise HTTPException(
                 status_code=response.status_code,
-                detail="Shopify Customer API error",
+                detail=f"Shopify Customer API error: {response.text}",
             )
 
         return response.json()
@@ -188,7 +312,7 @@ class ShopifyOAuthTokenResponse(BaseModel):
     token_type: str = "Bearer"
 
 
-# Shopify OAuth Routes
+# ✅ UPDATED: Shopify OAuth Routes - now decodes id_token
 @api_router.post(
     "/shopify-auth/callback", response_model=ShopifyOAuthTokenResponse
 )
@@ -256,15 +380,19 @@ async def shopify_oauth_callback(request: ShopifyOAuthCallbackRequest):
             logger.info(
                 f"Expires in: {token_response.get('expires_in')} seconds"
             )
-            logger.info(f"Full token response: {token_response}")
-
-            # Choose the customer access token (starts with shcat_)
+            
+            # ✅ NEW: Decode id_token and cache customer data
             customer_token = token_response.get("access_token")
+            id_token = token_response.get("id_token")
+            
+            if id_token:
+                # Pre-populate the cache with decoded customer data
+                await verify_shopify_token(customer_token, id_token)
 
             return ShopifyOAuthTokenResponse(
                 access_token=customer_token,
                 refresh_token=token_response.get("refresh_token"),
-                id_token=token_response.get("id_token"),
+                id_token=id_token,
                 expires_in=token_response.get("expires_in", 3600),
                 token_type=token_response.get("token_type", "Bearer"),
             )
@@ -298,7 +426,7 @@ async def get_me(current_user: dict = Depends(get_current_user)):
     }
 
 
-# Product Routes
+# Product Routes (unchanged)
 @api_router.get("/products")
 async def get_products(
     category: Optional[str] = None,
@@ -447,46 +575,77 @@ async def get_product(product_id: str):
     }
 
 
-# Cart Routes (placeholder)
+# ✅ UPDATED: Cart Routes - Using Customer Account API
 @api_router.get("/cart")
 async def get_cart(current_user: dict = Depends(get_current_user)):
-    """Get customer's cart from Shopify (placeholder)"""
-    return []
+    """Get customer's cart from Shopify Customer Account API"""
+    try:
+        query = """
+        query {
+            customer {
+                emailAddress {
+                    emailAddress
+                }
+            }
+        }
+        """
+        
+        result = await shopify_customer_request(
+            current_user["access_token"], query
+        )
+        
+        if result.get("errors"):
+            logger.error(f"GraphQL errors: {result['errors']}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to fetch cart: {result['errors']}"
+            )
+        
+        # Note: Customer Account API doesn't have a direct cart query
+        # Cart is typically managed through Storefront API
+        # This endpoint returns empty for now
+        return {"cart": [], "customer": result.get("data", {}).get("customer")}
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Cart fetch error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch cart")
 
 
-# Orders Routes (still using Customer Account API token)
+# ✅ UPDATED: Orders Routes - Using Customer Account API
 @api_router.get("/orders")
 async def get_orders(current_user: dict = Depends(get_current_user)):
-    """Get customer orders from Shopify"""
-
-    query = """
-    query getOrders($first: Int!) {
-        customer {
-            orders(first: $first) {
-                edges {
-                    node {
-                        id
-                        name
-                        processedAt
-                        fulfillmentStatus
-                        financialStatus
-                        totalPriceV2 {
-                            amount
-                            currencyCode
-                        }
-                        lineItems(first: 50) {
-                            edges {
-                                node {
+    """Get customer orders from Shopify Customer Account API"""
+    try:
+        query = """
+        query {
+            customer {
+                orders(first: 10) {
+                    edges {
+                        node {
+                            id
+                            name
+                            totalPrice {
+                                amount
+                                currencyCode
+                            }
+                            processedAt
+                            fulfillments(first: 5) {
+                                nodes {
+                                    status
+                                }
+                            }
+                            lineItems(first: 50) {
+                                nodes {
                                     title
                                     quantity
-                                    variant {
-                                        id
-                                        image {
-                                            url
-                                        }
-                                        priceV2 {
-                                            amount
-                                        }
+                                    price {
+                                        amount
+                                        currencyCode
+                                    }
+                                    image {
+                                        url
                                     }
                                 }
                             }
@@ -495,65 +654,66 @@ async def get_orders(current_user: dict = Depends(get_current_user)):
                 }
             }
         }
-    }
-    """
-
-    result = await shopify_customer_request(
-        current_user["access_token"], query, {"first": 50}
-    )
-    orders = (
-        result.get("data", {})
-        .get("customer", {})
-        .get("orders", {})
-        .get("edges", [])
-    )
-
-    return [
-        {
-            "id": order["node"]["id"],
-            "orderNumber": order["node"]["name"],
-            "date": order["node"]["processedAt"],
-            "status": order["node"]["fulfillmentStatus"],
-            "paymentStatus": order["node"]["financialStatus"],
-            "total": float(
-                order["node"]["totalPriceV2"]["amount"]
-            ),
-            "items": [
-                {
-                    "name": item["node"]["title"],
-                    "quantity": item["node"]["quantity"],
-                    "price": float(
-                        item["node"]["variant"]["priceV2"]["amount"]
-                    )
-                    if item["node"].get("variant")
-                    else 0,
-                    "image": item["node"]["variant"]["image"]["url"]
-                    if item["node"].get("variant", {}).get("image")
-                    else "",
-                }
-                for item in order["node"]["lineItems"]["edges"]
-            ],
-        }
-        for order in orders
-    ]
+        """
+        
+        result = await shopify_customer_request(
+            current_user["access_token"], query
+        )
+        
+        if result.get("errors"):
+            logger.error(f"GraphQL errors: {result['errors']}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to fetch orders: {result['errors']}"
+            )
+        
+        orders = (
+            result.get("data", {})
+            .get("customer", {})
+            .get("orders", {})
+            .get("edges", [])
+        )
+        
+        return [
+            {
+                "id": order["node"]["id"],
+                "orderNumber": order["node"]["name"],
+                "date": order["node"]["processedAt"],
+                "status": order["node"]["fulfillments"]["nodes"][0]["status"] if order["node"]["fulfillments"]["nodes"] else "PENDING",
+                "total": float(order["node"]["totalPrice"]["amount"]),
+                "items": [
+                    {
+                        "name": item["title"],
+                        "quantity": item["quantity"],
+                        "price": float(item["price"]["amount"]),
+                        "image": item.get("image", {}).get("url", ""),
+                    }
+                    for item in order["node"]["lineItems"]["nodes"]
+                ],
+            }
+            for order in orders
+        ]
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Orders fetch error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch orders")
 
 
 @api_router.get("/orders/{order_id}")
 async def get_order(
     order_id: str, current_user: dict = Depends(get_current_user)
 ):
-    """Get specific order from Shopify"""
-
-    query = """
-    query getOrder($id: ID!) {
-        node(id: $id) {
-            ... on Order {
+    """Get specific order from Shopify Customer Account API"""
+    try:
+        query = """
+        query getOrder($id: ID!) {
+            order(id: $id) {
                 id
                 name
                 processedAt
-                fulfillmentStatus
-                financialStatus
-                totalPriceV2 {
+                totalPrice {
                     amount
                     currencyCode
                 }
@@ -561,64 +721,133 @@ async def get_order(
                     address1
                     address2
                     city
-                    province
+                    provinceCode
                     zip
-                    country
+                    countryCode
+                }
+                fulfillments(first: 5) {
+                    nodes {
+                        status
+                    }
                 }
                 lineItems(first: 50) {
-                    edges {
-                        node {
-                            title
-                            quantity
-                            variant {
-                                id
-                                image {
-                                    url
-                                }
-                                priceV2 {
-                                    amount
-                                }
-                            }
+                    nodes {
+                        title
+                        quantity
+                        price {
+                            amount
+                            currencyCode
+                        }
+                        image {
+                            url
                         }
                     }
                 }
             }
         }
-    }
-    """
+        """
+        
+        result = await shopify_customer_request(
+            current_user["access_token"], query, {"id": order_id}
+        )
+        
+        if result.get("errors"):
+            logger.error(f"GraphQL errors: {result['errors']}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to fetch order: {result['errors']}"
+            )
+        
+        order = result.get("data", {}).get("order")
+        
+        if not order:
+            raise HTTPException(status_code=404, detail="Order not found")
+        
+        return {
+            "id": order["id"],
+            "orderNumber": order["name"],
+            "date": order["processedAt"],
+            "status": order["fulfillments"]["nodes"][0]["status"] if order["fulfillments"]["nodes"] else "PENDING",
+            "total": float(order["totalPrice"]["amount"]),
+            "shippingAddress": order.get("shippingAddress"),
+            "items": [
+                {
+                    "name": item["title"],
+                    "quantity": item["quantity"],
+                    "price": float(item["price"]["amount"]),
+                    "image": item.get("image", {}).get("url", ""),
+                }
+                for item in order["lineItems"]["nodes"]
+            ],
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Order fetch error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch order")
 
-    result = await shopify_customer_request(
-        current_user["access_token"], query, {"id": order_id}
-    )
-    order = result.get("data", {}).get("node")
 
-    if not order:
-        raise HTTPException(status_code=404, detail="Order not found")
-
-    return {
-        "id": order["id"],
-        "orderNumber": order["name"],
-        "date": order["processedAt"],
-        "status": order["fulfillmentStatus"],
-        "paymentStatus": order["financialStatus"],
-        "total": float(order["totalPriceV2"]["amount"]),
-        "shippingAddress": order.get("shippingAddress"),
-        "items": [
-            {
-                "name": item["node"]["title"],
-                "quantity": item["node"]["quantity"],
-                "price": float(
-                    item["node"]["variant"]["priceV2"]["amount"]
-                )
-                if item["node"].get("variant")
-                else 0,
-                "image": item["node"]["variant"]["image"]["url"]
-                if item["node"].get("variant", {}).get("image")
-                else "",
+# ✅ NEW: Addresses Routes - Using Customer Account API
+@api_router.get("/addresses")
+async def get_addresses(current_user: dict = Depends(get_current_user)):
+    """Get customer addresses from Shopify Customer Account API"""
+    try:
+        query = """
+        query {
+            customer {
+                defaultAddress {
+                    id
+                    address1
+                    address2
+                    city
+                    provinceCode
+                    countryCode
+                    zip
+                }
+                addresses(first: 10) {
+                    edges {
+                        node {
+                            id
+                            address1
+                            address2
+                            city
+                            provinceCode
+                            countryCode
+                            zip
+                        }
+                    }
+                }
             }
-            for item in order["lineItems"]["edges"]
-        ],
-    }
+        }
+        """
+        
+        result = await shopify_customer_request(
+            current_user["access_token"], query
+        )
+        
+        if result.get("errors"):
+            logger.error(f"GraphQL errors: {result['errors']}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to fetch addresses: {result['errors']}"
+            )
+        
+        customer_data = result.get("data", {}).get("customer", {})
+        
+        return {
+            "defaultAddress": customer_data.get("defaultAddress"),
+            "addresses": [
+                edge["node"]
+                for edge in customer_data.get("addresses", {}).get("edges", [])
+            ],
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Addresses fetch error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch addresses")
 
 
 # Include the router in the main app

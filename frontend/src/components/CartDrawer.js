@@ -150,16 +150,19 @@ const CartDrawer = ({ open, onClose }) => {
               </span>
             </div>
             <Button
-              onClick={handleCheckout}
-              disabled={isCheckingOut}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full py-3"
-              data-testid="checkout-button"
-            >
-              {isCheckingOut ? 'Processing...' : 'Proceed to Checkout'}
-            </Button>
-            <p className="text-xs text-zinc-400 text-center">
-              You'll be redirected to secure Shopify checkout
-            </p>
+  onClick={() => {
+    onClose(); // Close the drawer first
+    window.location.href = '/checkout'; // Navigate to your checkout page
+  }}
+  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full py-3"
+  data-testid="checkout-button"
+>
+  Proceed to Checkout
+</Button>
+<p className="text-xs text-zinc-400 text-center">
+  Secure checkout powered by Fitgearzzz
+</p>
+
           </div>
         )}
       </div>

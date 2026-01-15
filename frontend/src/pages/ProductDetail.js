@@ -9,6 +9,7 @@ import { motion } from 'framer-motion';
 import AuthModal from '../components/AuthModal';
 import { fetchProductByHandle } from '../services/shopifyService';
 import { fetchProductReviews, initializeJudgeWidget } from '../services/judgeService';
+import '../styles/judgeme-custom.css';
 
 const ProductDetail = () => {
   const { handle } = useParams();

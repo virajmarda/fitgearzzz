@@ -595,34 +595,52 @@ async def get_product(product_id: str):
         ],
     }
 
-# ✅ NEW: Reviews endpoint (if you want custom reviews)
-@api_router.post("/products/{product_id}/reviews")
-async def create_review(
-    product_id: str,
-    rating: int,
-    comment: str,
-    current_user: dict = Depends(get_current_user)
-):
-    """Create a product review"""
-    # Since Shopify doesn't have a native reviews API,
-    # you'd need to store these in a separate database
-    # For now, return a placeholder
-    return {
-        "message": "Reviews are not yet implemented. Please use a Shopify reviews app like Judge.me or Yotpo.",
-        "rating": rating,
-        "comment": comment,
-        "user": current_user["email"]
-    }
+# ✅ NEW: Judge.me Reviews Proxy (to avoid CORS)
+@api_router.get("/reviews/{product_id}")
+async def get_product_reviews(product_id: str):
+    """Get Judge.me reviews for a product (proxy to avoid CORS)"""
+    try:
+        # Extract numeric ID from Shopify GID if needed
+        numeric_id = product_id.split('/')[-1] if 'gid://' in product_id else product_id
+        
+        judge_url = f"https://judge.me/api/v1/reviews?shop_domain=fitgearzzz.myshopify.com&external_id={numeric_id}&per_page=50"
+        
+        async with httpx.AsyncClient() as client:
+            response = await client.get(judge_url, timeout=10.0)
+            
+            if response.status_code == 200:
+                data = response.json()
+                return {
+                    "reviews": data.get("reviews", []),
+                    "rating": data.get("rating", 0),
+                    "reviewCount": len(data.get("reviews", []))
+                }
+            else:
+                logger.warning(f"Judge.me API returned {response.status_code}")
+                return {"reviews": [], "rating": 0, "reviewCount": 0}
+                
+    except Exception as e:
+        logger.error(f"Error fetching Judge.me reviews: {str(e)}")
+        return {"reviews": [], "rating": 0, "reviewCount": 0}
 
 
-@api_router.get("/products/{product_id}/reviews")
-async def get_reviews(product_id: str):
-    """Get product reviews"""
-    # Placeholder - integrate with reviews app or custom database
-    return {
-        "reviews": [],
-        "message": "Reviews integration pending"
-    }
+@api_router.get("/reviews/widget/{product_handle}")
+async def get_review_widget(product_handle: str):
+    """Get Judge.me review widget data"""
+    try:
+        judge_url = f"https://judge.me/api/v1/widgets/product_review?shop_domain=fitgearzzz.myshopify.com&handle={product_handle}"
+        
+        async with httpx.AsyncClient() as client:
+            response = await client.get(judge_url, timeout=10.0)
+            
+            if response.status_code == 200:
+                return response.json()
+            else:
+                return {"error": "Widget not found"}
+                
+    except Exception as e:
+        logger.error(f"Error fetching review widget: {str(e)}")
+        return {"error": str(e)}
 
 
 # ✅ NEW: Checkout using Storefront API

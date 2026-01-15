@@ -52,7 +52,7 @@ SHOPIFY_ACCOUNT_DOMAIN = os.environ.get(
 )
 
 SHOPIFY_TOKEN_ENDPOINT = f"{SHOPIFY_ACCOUNT_DOMAIN}/authentication/oauth/token"
-
+JUDGE_ME_API_TOKEN = os.environ.get("JUDGE_ME_API_TOKEN", "")
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "https://fitgearzzz.com")
 
 # Shopify API Endpoints
@@ -596,16 +596,19 @@ async def get_product(product_id: str):
             for v in product["variants"]["edges"]
         ],
     }
-
-# ✅ NEW: Judge.me Reviews Proxy (to avoid CORS)
+    
 @api_router.get("/reviews/{product_id}")
 async def get_product_reviews(product_id: str):
     """Get Judge.me reviews for a product (proxy to avoid CORS)"""
     try:
-        # Extract numeric ID from Shopify GID if needed
         numeric_id = product_id.split('/')[-1] if 'gid://' in product_id else product_id
         
+        # Build URL with API token
         judge_url = f"https://judge.me/api/v1/reviews?shop_domain=fitgearzzz.myshopify.com&external_id={numeric_id}&per_page=50"
+        
+        # Add API token to URL if available
+        if JUDGE_ME_API_TOKEN:
+            judge_url += f"&api_token={JUDGE_ME_API_TOKEN}"
         
         async with httpx.AsyncClient() as client:
             response = await client.get(judge_url, timeout=10.0)
@@ -617,6 +620,9 @@ async def get_product_reviews(product_id: str):
                     "rating": data.get("rating", 0),
                     "reviewCount": len(data.get("reviews", []))
                 }
+            elif response.status_code == 401:
+                logger.error("Judge.me API authentication failed. Check API token.")
+                return {"reviews": [], "rating": 0, "reviewCount": 0, "error": "Authentication required"}
             else:
                 logger.warning(f"Judge.me API returned {response.status_code}")
                 return {"reviews": [], "rating": 0, "reviewCount": 0}
@@ -632,6 +638,10 @@ async def get_review_widget(product_handle: str):
     try:
         judge_url = f"https://judge.me/api/v1/widgets/product_review?shop_domain=fitgearzzz.myshopify.com&handle={product_handle}"
         
+        # Add API token if available
+        if JUDGE_ME_API_TOKEN:
+            judge_url += f"&api_token={JUDGE_ME_API_TOKEN}"
+        
         async with httpx.AsyncClient() as client:
             response = await client.get(judge_url, timeout=10.0)
             
@@ -643,7 +653,7 @@ async def get_review_widget(product_handle: str):
     except Exception as e:
         logger.error(f"Error fetching review widget: {str(e)}")
         return {"error": str(e)}
-
+        
 
 # ✅ NEW: Checkout using Storefront API
 @api_router.post("/checkout/create")

@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { X, Plus, Minus, Trash2 } from 'lucide-react';
 import { Button } from './ui/button';
 import { useCart } from '../context/CartContext';
-import { createCheckout } from '../services/shopifyService';
 import { toast } from 'sonner';
 
 const CartDrawer = ({ open, onClose }) => {
-  const { cart, products, updateCartItem, removeFromCart, getCartTotal, getCartCount } = useCart();
+  const { cart, isLoading, updateCartItem, removeFromCart, getCartTotal, getCartCount, getCheckoutUrl } = useCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   useEffect(() => {
@@ -25,33 +24,17 @@ const CartDrawer = ({ open, onClose }) => {
 
   const total = getCartTotal();
   const count = getCartCount();
+  const cartItems = cart?.lines?.edges || [];
 
-  // Handle Shopify checkout
   const handleCheckout = async () => {
     setIsCheckingOut(true);
     try {
-      // Convert cart items to Shopify line items format
-      const lineItems = cart.map((item) => {
-        const product = products[item.product_id];
-        // Find the variant ID from the product
-        const variant = product.variants && product.variants[0];
-        if (!variant) {
-          throw new Error(`No variants found for product: ${product.title}`);
-        }
-        return {
-          variantId: variant.id,
-          quantity: item.quantity
-        };
-      });
-
-      // Create Shopify checkout
-      const checkoutUrl = await createCheckout(lineItems);
+      const checkoutUrl = getCheckoutUrl();
       
       if (checkoutUrl) {
-        // Redirect to Shopify checkout
         window.location.href = checkoutUrl;
       } else {
-        throw new Error('Failed to create checkout');
+        throw new Error('No checkout URL available');
       }
     } catch (error) {
       console.error('Checkout error:', error);
@@ -82,7 +65,11 @@ const CartDrawer = ({ open, onClose }) => {
         </div>
 
         <div className="flex-1 overflow-y-auto p-4">
-          {cart.length === 0 ? (
+          {isLoading ? (
+            <div className="text-center py-12">
+              <p className="text-zinc-400">Loading cart...</p>
+            </div>
+          ) : cartItems.length === 0 ? (
             <div className="text-center py-12" data-testid="empty-cart-message">
               <p className="text-zinc-400 mb-4">Your cart is empty</p>
               <Button
@@ -95,9 +82,9 @@ const CartDrawer = ({ open, onClose }) => {
             </div>
           ) : (
             <div className="space-y-4">
-              {cart.map((item) => {
-                const product = products[item.product_id];
-                if (!product) return null;
+              {cartItems.map(({ node: item }) => {
+                const product = item.merchandise.product;
+                const variant = item.merchandise;
 
                 return (
                   <div
@@ -106,16 +93,19 @@ const CartDrawer = ({ open, onClose }) => {
                     data-testid={`cart-item-${item.id}`}
                   >
                     <img
-                      src={product.images[0]}
-                      alt={product.name}
+                      src={product.featuredImage?.url || '/placeholder.png'}
+                      alt={product.title}
                       className="w-20 h-20 object-cover rounded-2xl"
                     />
                     <div className="flex-1">
                       <h3 className="font-manrope font-semibold text-white text-sm" data-testid="cart-item-name">
-                        {product.name}
+                        {product.title}
                       </h3>
+                      {variant.title !== 'Default Title' && (
+                        <p className="text-zinc-400 text-xs">{variant.title}</p>
+                      )}
                       <p className="text-orange-500 font-bold mt-1" data-testid="cart-item-price">
-                        ${product.price.toFixed(2)}
+                        ${parseFloat(variant.priceV2.amount).toFixed(2)}
                       </p>
                       <div className="flex items-center space-x-2 mt-2">
                         <button
@@ -151,7 +141,7 @@ const CartDrawer = ({ open, onClose }) => {
           )}
         </div>
 
-        {cart.length > 0 && (
+        {cartItems.length > 0 && (
           <div className="border-t border-zinc-800 p-4 space-y-4">
             <div className="flex items-center justify-between text-lg">
               <span className="font-manrope text-zinc-300">Subtotal:</span>

@@ -41,8 +41,13 @@ const fetchProduct = async () => {
   
     
 const handleAddToCart = () => {
-  addToCart(product.id, quantity);
-  };
+  const variantId = product.variants?.[0]?.id;
+  if (!variantId) {
+    toast.error('Product variant not available');
+    return;
+  }
+  addToCart(variantId, quantity);
+};
 
   const handleSubmitReview = async (e) => {
     e.preventDefault();

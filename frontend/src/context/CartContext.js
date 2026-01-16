@@ -25,7 +25,7 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  // Fetch existing cart or create new one
+  // Fetch existing cart on mount
   useEffect(() => {
     const cartId = getCartId();
     if (cartId) {
@@ -33,96 +33,104 @@ export const CartProvider = ({ children }) => {
     }
   }, []);
 
-const fetchCart = async (cartId) => {
-  if (!cartId) return;
-  
-  try {
-    setIsLoading(true);
-    // Encode the cart ID to handle special characters
-    const encodedCartId = encodeURIComponent(cartId);
-    const response = await api.get(`/cart/${encodedCartId}`);
-    setCart(response.data);
-  } catch (error) {
-    console.error('Error fetching cart:', error);
-    // Cart might be expired, clear it
-    setCartId(null);
-    setCart(null);
-  } finally {
-    setIsLoading(false);
-  }
-};
+  const fetchCart = async (cartId) => {
+    const idToUse = cartId || getCartId();
+    if (!idToUse) return;
 
-  // Update the ensureCart function (around line 35)
-const ensureCart = async () => {
-  let cartId = getCartId();
-  
-  // Check if cart ID exists and is valid
-  if (cartId && cartId.startsWith('gid://shopify/Cart/')) {
     try {
-      // Try to fetch existing cart
-      const response = await api.get(`/cart/${encodeURIComponent(cartId)}`);
+      setIsLoading(true);
+      const encodedCartId = encodeURIComponent(idToUse);
+      const response = await api.get(`/cart/${encodedCartId}`);
       setCart(response.data);
-      return cartId;
     } catch (error) {
-      console.log('Existing cart not found, creating new one');
-      // Cart expired or invalid, clear it
+      console.error('Error fetching cart:', error);
+      // Cart might be expired, clear it
       setCartId(null);
-      cartId = null;
+      setCart(null);
+    } finally {
+      setIsLoading(false);
     }
-  }
-  
-  // Create new cart if no valid cart exists
-  if (!cartId) {
-    try {
-      const response = await api.post('/cart/create', { lines: [] });
-      cartId = response.data.id;
-      
-      if (!cartId) {
-        throw new Error('No cart ID returned from API');
+  };
+
+  // Ensure there is a valid cart and keep local state in sync
+  const ensureCart = async () => {
+    let cartId = getCartId();
+
+    if (cartId && cartId.startsWith('gid://shopify/Cart/')) {
+      try {
+        const response = await api.get(`/cart/${encodeURIComponent(cartId)}`);
+        setCart(response.data);
+        return cartId;
+      } catch (error) {
+        console.log('Existing cart not found, creating new one');
+        setCartId(null);
+        cartId = null;
       }
-      
-      setCartId(cartId);
-      setCart(response.data);
-      return cartId;
-    } catch (error) {
-      console.error('Error creating cart:', error);
-      toast.error('Failed to initialize cart');
-      return null;
     }
-  }
-  
-  return cartId;
-};
+
+    if (!cartId) {
+      try {
+        const response = await api.post('/cart/create', { lines: [] });
+        const newCart = response.data;
+        cartId = newCart?.id;
+
+        if (!cartId) {
+          throw new Error('No cart ID returned from API');
+        }
+
+        setCartId(cartId);
+        setCart(newCart);
+        return cartId;
+      } catch (error) {
+        console.error('Error creating cart:', error);
+        toast.error('Failed to initialize cart');
+        return null;
+      }
+    }
+
+    return cartId;
+  };
 
   const addToCart = async (variantId, quantity = 1) => {
-  try {
-    setIsLoading(true);
-    console.log('🛒 Adding to cart:', { variantId, quantity });
-    
-    const cartId = await ensureCart();
-    console.log('🛒 Cart ID:', cartId);
-    
-    if (!cartId) {
-      toast.error('Failed to add item to cart');
-      return;
+    try {
+      setIsLoading(true);
+      console.log('🛒 Adding to cart:', { variantId, quantity });
+
+      const cartId = await ensureCart();
+      console.log('🛒 Cart ID:', cartId);
+
+      if (!cartId) {
+        toast.error('Failed to add item to cart');
+        return;
+      }
+
+      const response = await api.post('/cart/add', {
+        cartId,
+        lines: [{ merchandiseId: variantId, quantity }],
+      });
+
+      const updatedCart = response.data;
+      console.log('🛒 Cart response:', updatedCart);
+
+      if (!updatedCart || !updatedCart.id) {
+        throw new Error('Cart update failed');
+      }
+
+      // Update local state with latest cart
+      setCart(updatedCart);
+      setCartId(updatedCart.id); // in case Shopify rotated the ID
+
+      // Optional: force a fresh fetch to avoid any stale edges
+      await fetchCart(updatedCart.id);
+
+      toast.success('Added to cart!');
+    } catch (error) {
+      console.error('❌ Error adding to cart:', error);
+      toast.error(error.message || 'Failed to add to cart');
+    } finally {
+      setIsLoading(false);
     }
-
-    const response = await api.post('/cart/add', {
-      cartId,
-      lines: [{ merchandiseId: variantId, quantity }]
-    });
-    
-    console.log('🛒 Cart response:', response.data);
-    setCart(response.data);
-    toast.success('Added to cart!');
-  } catch (error) {
-    console.error('❌ Error adding to cart:', error);
-    toast.error('Failed to add to cart');
-  } finally {
-    setIsLoading(false);
-  }
-};
-
+  };
 
   const updateCartItem = async (lineId, quantity) => {
     const cartId = getCartId();
@@ -130,10 +138,9 @@ const ensureCart = async () => {
 
     try {
       setIsLoading(true);
-      // This endpoint needs to be added to backend
       const response = await api.post('/cart/update', {
         cartId,
-        lines: [{ id: lineId, quantity }]
+        lines: [{ id: lineId, quantity }],
       });
       setCart(response.data);
     } catch (error) {
@@ -150,10 +157,9 @@ const ensureCart = async () => {
 
     try {
       setIsLoading(true);
-      // This endpoint needs to be added to backend
       const response = await api.post('/cart/remove', {
         cartId,
-        lineIds: [lineId]
+        lineIds: [lineId],
       });
       setCart(response.data);
       toast.success('Item removed from cart');
@@ -177,7 +183,10 @@ const ensureCart = async () => {
 
   const getCartCount = () => {
     if (!cart || !cart.lines) return 0;
-    return cart.lines.edges.reduce((count, edge) => count + edge.node.quantity, 0);
+    return cart.lines.edges.reduce(
+      (count, edge) => count + edge.node.quantity,
+      0
+    );
   };
 
   const getCheckoutUrl = () => {
@@ -186,7 +195,7 @@ const ensureCart = async () => {
 
   const value = {
     cart,
-    cartItems: cart?.lines?.edges || [], // ✅
+    cartItems: cart?.lines?.edges || [],
     isLoading,
     addToCart,
     updateCartItem,

@@ -2,11 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { X, Plus, Minus, Trash2 } from 'lucide-react';
 import { Button } from './ui/button';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
 
 const CartDrawer = ({ open, onClose }) => {
-  const { cart, isLoading, updateCartItem, removeFromCart, getCartTotal, getCartCount, getCheckoutUrl } = useCart();
+  const { user } = useAuth();
+  const {
+    cart,
+    isLoading,
+    updateCartItem,
+    removeFromCart,
+    getCartTotal,
+    getCartCount,
+    getCheckoutUrl,
+  } = useCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+
+  // Block cart completely if not logged in
+  if (!user) return null;
 
   useEffect(() => {
     if (open) {
@@ -29,8 +42,8 @@ const CartDrawer = ({ open, onClose }) => {
   const handleCheckout = async () => {
     setIsCheckingOut(true);
     try {
-      const checkoutUrl = getCheckoutUrl();
-      
+      const checkoutUrl = getCheckoutUrl() || cart?.checkoutUrl;
+
       if (checkoutUrl) {
         window.location.href = checkoutUrl;
       } else {
@@ -50,7 +63,10 @@ const CartDrawer = ({ open, onClose }) => {
         onClick={onClose}
         data-testid="cart-overlay"
       />
-      <div className="fixed right-0 top-0 h-full w-full sm:w-96 bg-zinc-900 shadow-2xl z-50 overflow-hidden flex flex-col" data-testid="cart-drawer">
+      <div
+        className="fixed right-0 top-0 h-full w-full sm:w-96 bg-zinc-900 shadow-2xl z-50 overflow-hidden flex flex-col"
+        data-testid="cart-drawer"
+      >
         <div className="flex items-center justify-between p-4 border-b border-zinc-800">
           <h2 className="font-oswald text-2xl font-bold text-white" data-testid="cart-title">
             Cart ({count})
@@ -98,24 +114,35 @@ const CartDrawer = ({ open, onClose }) => {
                       className="w-20 h-20 object-cover rounded-2xl"
                     />
                     <div className="flex-1">
-                      <h3 className="font-manrope font-semibold text-white text-sm" data-testid="cart-item-name">
+                      <h3
+                        className="font-manrope font-semibold text-white text-sm"
+                        data-testid="cart-item-name"
+                      >
                         {product.title}
                       </h3>
                       {variant.title !== 'Default Title' && (
                         <p className="text-zinc-400 text-xs">{variant.title}</p>
                       )}
-                      <p className="text-orange-500 font-bold mt-1" data-testid="cart-item-price">
+                      <p
+                        className="text-orange-500 font-bold mt-1"
+                        data-testid="cart-item-price"
+                      >
                         ${parseFloat(variant.priceV2.amount).toFixed(2)}
                       </p>
                       <div className="flex items-center space-x-2 mt-2">
                         <button
-                          onClick={() => updateCartItem(item.id, Math.max(1, item.quantity - 1))}
+                          onClick={() =>
+                            updateCartItem(item.id, Math.max(1, item.quantity - 1))
+                          }
                           className="w-6 h-6 flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 text-white rounded-2xl transition-colors"
                           data-testid="decrease-quantity-button"
                         >
                           <Minus className="w-3 h-3" />
                         </button>
-                        <span className="text-white font-semibold w-8 text-center" data-testid="cart-item-quantity">
+                        <span
+                          className="text-white font-semibold w-8 text-center"
+                          data-testid="cart-item-quantity"
+                        >
                           {item.quantity}
                         </span>
                         <button
@@ -145,28 +172,24 @@ const CartDrawer = ({ open, onClose }) => {
           <div className="border-t border-zinc-800 p-4 space-y-4">
             <div className="flex items-center justify-between text-lg">
               <span className="font-manrope text-zinc-300">Subtotal:</span>
-              <span className="font-oswald text-2xl font-bold text-orange-500" data-testid="cart-subtotal">
+              <span
+                className="font-oswald text-2xl font-bold text-orange-500"
+                data-testid="cart-subtotal"
+              >
                 ${total.toFixed(2)}
               </span>
             </div>
             <Button
-  onClick={() => {
-    if (!cart?.checkoutUrl) {
-      toast.error('Unable to proceed to checkout');
-      return;
-    }
-    // Direct redirect to Shopify checkout
-    window.location.href = cart.checkoutUrl;
-  }}
-  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full py-3"
-  data-testid="checkout-button"
->
-  Proceed to Checkout
-</Button>
-<p className="text-xs text-zinc-400 text-center">
-  Secure checkout powered by Shopify
-</p>
-
+              onClick={handleCheckout}
+              disabled={isCheckingOut}
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full py-3 disabled:opacity-60"
+              data-testid="checkout-button"
+            >
+              {isCheckingOut ? 'Redirecting…' : 'Proceed to Checkout'}
+            </Button>
+            <p className="text-xs text-zinc-400 text-center">
+              Secure checkout powered by Fitgearzzz
+            </p>
           </div>
         )}
       </div>

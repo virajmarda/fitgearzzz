@@ -843,6 +843,7 @@ from fastapi import HTTPException
 
 @api_router.post("/cart/add")
 async def add_to_cart(cart_data: CartLinesAddInput):
+    """Add items to cart using Storefront API"""
     query = """
     mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
       cartLinesAdd(cartId: $cartId, lines: $lines) {
@@ -858,10 +859,7 @@ async def add_to_cart(cart_data: CartLinesAddInput):
                   ... on ProductVariant {
                     id
                     title
-                    priceV2 {
-                      amount
-                      currencyCode
-                    }
+                    priceV2 { amount currencyCode }
                     product {
                       title
                       featuredImage { url }
@@ -872,10 +870,7 @@ async def add_to_cart(cart_data: CartLinesAddInput):
             }
           }
           cost {
-            totalAmount {
-              amount
-              currencyCode
-            }
+            totalAmount { amount currencyCode }
           }
         }
         userErrors {
@@ -897,14 +892,24 @@ async def add_to_cart(cart_data: CartLinesAddInput):
     result = await shopify_storefront_request(query, variables)
     cart_lines_add = result.get("data", {}).get("cartLinesAdd")
 
-    # Handle userErrors explicitly
-    if not cart_lines_add or cart_lines_add.get("userErrors"):
-        errors = cart_lines_add.get("userErrors", []) if cart_lines_add else []
-        message = errors[0]["message"] if errors else "Cart update failed"
-        raise HTTPException(status_code=400, detail=message)
+    # If mutation missing entirely
+    if cart_lines_add is None:
+      raise HTTPException(status_code=400, detail="cartLinesAdd returned null")
 
-    # Return full cart object
-    return cart_lines_add["cart"]
+    # If Shopify reports userErrors
+    user_errors = cart_lines_add.get("userErrors") or []
+    if user_errors:
+      # Log full errors on server
+      print("cartLinesAdd userErrors:", user_errors)
+      raise HTTPException(status_code=400, detail=user_errors[0].get("message", "Cart update failed"))
+
+    cart = cart_lines_add.get("cart")
+    if not cart or not cart.get("id"):
+      raise HTTPException(status_code=400, detail="No cart returned from Shopify")
+
+    # Success: return full cart
+    return cart
+
 
 # Update the endpoints to use request bodies
 @api_router.post("/cart/update")

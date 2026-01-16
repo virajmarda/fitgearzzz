@@ -1,41 +1,40 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useNavigate, useSearchParams } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import { CartProvider } from './context/CartContext';
-import { Toaster } from './components/ui/sonner';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import Home from './pages/Home';
-import Products from './pages/Products';
-import ProductDetail from './pages/ProductDetail';
-import Orders from './pages/Orders';
-import OrderSuccess from './pages/OrderSuccess';
-import Checkout from './pages/Checkout';
-import Profile from './pages/Profile';
-import Admin from './pages/Admin';
-import AuthCallback from './pages/AuthCallback';
-import CustomerLogout from './pages/CustomerLogout';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import TermsOfService from './pages/TermsOfService';
-import ShippingReturns from './pages/ShippingReturns';
-import FAQ from './pages/FAQ';
-import './App.css';
+import React, { useEffect } from "react";
+import { BrowserRouter, Routes, Route, useNavigate, useSearchParams, } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import { CartProvider } from "./context/CartContext";
+import { Toaster } from "./components/ui/sonner";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import Home from "./pages/Home";
+import Products from "./pages/Products";
+import ProductDetail from "./pages/ProductDetail";
+import Orders from "./pages/Orders";
+import OrderSuccess from "./pages/OrderSuccess";
+import Checkout from "./pages/Checkout";
+import Profile from "./pages/Profile";
+import Admin from "./pages/Admin";
+import AuthCallback from "./pages/AuthCallback";
+import CustomerLogout from "./pages/CustomerLogout";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import ShippingReturns from "./pages/ShippingReturns";
+import FAQ from "./pages/FAQ";
+import CatalogPage from "./pages/CatalogPage"; // ⬅️ new page
+import "./App.css";
 
 const CustomerSSOCallback = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    const returnTo = searchParams.get('return_to');
+    const returnTo = searchParams.get("return_to");
 
     if (returnTo) {
-      // Shopify gives a full URL in return_to; go there directly
       window.location.href = decodeURIComponent(returnTo);
     } else {
-      // fallback if no return_to
-      navigate('/', { replace: true });
+      navigate("/", { replace: true });
     }
   }, [navigate, searchParams]);
 
@@ -53,6 +52,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/products" element={<Products />} />
+                <Route path="/catalog" element={<CatalogPage />} /> {/* ⬅️ new */}
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/auth/callback" element={<AuthCallback />} />
@@ -73,11 +73,11 @@ function App() {
             <Toaster
               position="top-right"
               toastOptions={{
-                className: 'bg-zinc-900 border-zinc-800 text-white',
+                className: "bg-zinc-900 border-zinc-800 text-white",
                 style: {
-                  background: '#18181b',
-                  color: '#fafafa',
-                  border: '1px solid #27272a',
+                  background: "#18181b",
+                  color: "#fafafa",
+                  border: "1px solid #27272a",
                 },
               }}
             />

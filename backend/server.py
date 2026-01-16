@@ -839,74 +839,72 @@ async def create_cart(cart_input: Optional[CartCreateInput] = None):
     return result.get("data", {}).get("cartCreate", {}).get("cart", {})
 
 
+from fastapi import HTTPException
+
 @api_router.post("/cart/add")
 async def add_to_cart(cart_data: CartLinesAddInput):
-    """Add items to cart using Storefront API"""
     query = """
     mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
-        cartLinesAdd(cartId: $cartId, lines: $lines) {
-            cart {
+      cartLinesAdd(cartId: $cartId, lines: $lines) {
+        cart {
+          id
+          checkoutUrl
+          lines(first: 10) {
+            edges {
+              node {
                 id
-                checkoutUrl
-                lines(first: 10) {
-                    edges {
-                        node {
-                            id
-                            quantity
-                            merchandise {
-                                ... on ProductVariant {
-                                    id
-                                    title
-                                    priceV2 {
-                                        amount
-                                        currencyCode
-                                    }
-                                    product {
-                                        title
-                                        featuredImage {
-                                            url
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                quantity
+                merchandise {
+                  ... on ProductVariant {
+                    id
+                    title
+                    priceV2 {
+                      amount
+                      currencyCode
                     }
-                }
-                cost {
-                    totalAmount {
-                        amount
-                        currencyCode
+                    product {
+                      title
+                      featuredImage { url }
                     }
+                  }
                 }
+              }
             }
-            userErrors {
-                field
-                message
+          }
+          cost {
+            totalAmount {
+              amount
+              currencyCode
             }
+          }
         }
+        userErrors {
+          field
+          message
+        }
+      }
     }
     """
-    
+
     variables = {
         "cartId": cart_data.cartId,
         "lines": [
-            {
-                "merchandiseId": line.merchandiseId,
-                "quantity": line.quantity
-            }
+            {"merchandiseId": line.merchandiseId, "quantity": line.quantity}
             for line in cart_data.lines
-        ]
+        ],
     }
-    
+
     result = await shopify_storefront_request(query, variables)
-    
-    if result.get("data", {}).get("cartLinesAdd", {}).get("userErrors"):
-        raise HTTPException(
-            status_code=400,
-            detail=result["data"]["cartLinesAdd"]["userErrors"]
-        )
-    
-    return result.get("data", {}).get("cartLinesAdd", {}).get("cart", {})
+    cart_lines_add = result.get("data", {}).get("cartLinesAdd")
+
+    # Handle userErrors explicitly
+    if not cart_lines_add or cart_lines_add.get("userErrors"):
+        errors = cart_lines_add.get("userErrors", []) if cart_lines_add else []
+        message = errors[0]["message"] if errors else "Cart update failed"
+        raise HTTPException(status_code=400, detail=message)
+
+    # Return full cart object
+    return cart_lines_add["cart"]
 
 # Update the endpoints to use request bodies
 @api_router.post("/cart/update")

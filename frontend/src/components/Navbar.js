@@ -39,9 +39,8 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
+  logout(); // this will clear tokens and redirect to https://fitgearzzz.com
+};
 
   const cartCount = user ? getCartCount() : 0;
 

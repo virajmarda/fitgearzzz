@@ -116,20 +116,17 @@ const Navbar = () => {
               </form>
 
               <button
-                onClick={() => setShowCart(true)}
-                className="relative p-2 text-zinc-300 hover:text-orange-500 transition-colors"
-                data-testid="cart-button"
-              >
-                <ShoppingCart className="w-6 h-6" />
-                {cartCount > 0 && (
-                  <span
-                    className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
-                    data-testid="cart-count"
-                  >
-                    {cartCount}
-                  </span>
-                )}
-              </button>
+  onClick={() => setCartDrawerOpen(true)}
+  className="relative flex items-center p-2 text-zinc-300 hover:text-orange-500 transition-colors"
+  aria-label="Open shopping cart"
+>
+  <ShoppingCart className="w-6 h-6" />
+  {cartCount > 0 && (
+    <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+      {cartCount}
+    </span>
+  )}
+</button>
 
               {user ? (
                 <div className="flex items-center space-x-2">
@@ -188,6 +185,23 @@ const Navbar = () => {
               >
                 Products
               </Link>
+           <button
+      onClick={() => {
+        setCartDrawerOpen(true);
+        setShowMenu(false);
+      }}
+      className="w-full flex items-center justify-between py-2 text-zinc-300 hover:text-orange-500"
+    >
+      <span className="flex items-center">
+        <ShoppingCart className="w-5 h-5 mr-2" />
+        Cart
+      </span>
+      {cartCount > 0 && (
+        <span className="bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+          {cartCount}
+        </span>
+      )}
+    </button>
               {user?.role === 'admin' && (
                 <>
                   <Link

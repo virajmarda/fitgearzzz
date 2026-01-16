@@ -10,10 +10,10 @@ const Footer = () => {
           <div>
             <Link to="/" className="flex items-center space-x-2 mb-6">
               <Dumbbell className="w-8 h-8 text-orange-500" />
-              <span className="font-oswald text-2xl font-bold tracking-tight text-white">FITGEAR</span>
+              <span className="font-oswald text-2xl font-bold tracking-tight text-white">FITGEARZZZ</span>
             </Link>
             <p className="text-zinc-400 font-manrope mb-6 leading-relaxed">
-              Premium fitness equipment and supplements to fuel your journey to greatness. Quality you can trust.
+              Premium fitness equipment and accessories to fuel your journey to greatness. Quality you can trust.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="w-10 h-10 rounded-full bg-zinc-800/50 flex items-center justify-center text-zinc-400 hover:text-orange-500 hover:bg-zinc-800 transition-all" data-testid="facebook-link">
@@ -98,8 +98,8 @@ const Footer = () => {
               </li>
               <li className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-orange-500 flex-shrink-0" />
-                <a href="mailto:support@fitgear.com" className="text-zinc-400 hover:text-orange-500 transition-colors font-manrope">
-                  support@fitgear.com
+                <a href="mailto:fitgearzzz@gmail.com" className="text-zinc-400 hover:text-orange-500 transition-colors font-manrope">
+                  fitgearzzz@gmail.com
                 </a>
               </li>
             </ul>
@@ -109,7 +109,7 @@ const Footer = () => {
         <div className="border-t border-zinc-800/50 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
             <p className="text-zinc-500 text-sm font-manrope">
-              © 2024 FitGear. All rights reserved.
+              © 2026 FitGearzzz. All rights reserved.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-6">
               <Link to="/privacy" className="text-zinc-500 hover:text-orange-500 transition-colors text-sm font-manrope" data-testid="footer-privacy">

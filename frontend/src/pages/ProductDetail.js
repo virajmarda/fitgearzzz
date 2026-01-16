@@ -1,205 +1,152 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Star, ShoppingCart, Plus, Minus } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { toast } from 'sonner';
-import { motion } from 'framer-motion';
 import AuthModal from '../components/AuthModal';
-import ReviewForm from '../components/ReviewForm';
 import ReviewsList from '../components/ReviewsList';
-import { fetchProductByHandle } from '../services/shopifyService';
-import { fetchProductReviews } from '../services/judgeService';
+import ReviewForm from '../components/ReviewForm';
+import { toast } from 'sonner';
 import api from '../utils/api';
-import '../styles/judgeme-custom.css';
 
 const ProductDetail = () => {
-  const { handle } = useParams();
+  const { id } = useParams();
   const { user } = useAuth();
   const { addToCart } = useCart();
+
   const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
-  const [selectedImage, setSelectedImage] = useState(0);
+  const [isAdding, setIsAdding] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [loadingProduct, setLoadingProduct] = useState(true);
   const [reviews, setReviews] = useState({ reviews: [], rating: 0, reviewCount: 0 });
   const [loadingReviews, setLoadingReviews] = useState(true);
 
-  const fetchProduct = async () => {
-    try {
-      const productData = await fetchProductByHandle(handle);
-      setProduct(productData);
-      
-      // Fetch Judge.me reviews via backend API
-      if (productData.id) {
-        await loadReviews(productData.id);
-      }
-    } catch (error) {
-      console.error('Error fetching product:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadReviews = async (productId) => {
-    try {
-      setLoadingReviews(true);
-      const reviewData = await fetchProductReviews(productId);
-      setReviews(reviewData);
-    } catch (error) {
-      console.error('Error fetching reviews:', error);
-    } finally {
-      setLoadingReviews(false);
-    }
-  };
-
   useEffect(() => {
-    fetchProduct();
-  }, [handle]);
+    const fetchProduct = async () => {
+      try {
+        setLoadingProduct(true);
+        const res = await api.get(`/products/${id}`);
+        setProduct(res.data);
+      } catch (error) {
+        console.error('Error fetching product:', error);
+        toast.error('Failed to load product');
+      } finally {
+        setLoadingProduct(false);
+      }
+    };
 
-  const handleAddToCart = () => {
-    const variantId = product.variants?.[0]?.id;
-    if (!variantId) {
+    const fetchReviews = async () => {
+      try {
+        setLoadingReviews(true);
+        const res = await api.get(`/reviews/product/${id}`);
+        setReviews(res.data);
+      } catch (error) {
+        console.error('Error fetching reviews:', error);
+      } finally {
+        setLoadingReviews(false);
+      }
+    };
+
+    fetchProduct();
+    fetchReviews();
+  }, [id]);
+
+  const handleReviewSubmitted = (newReviewData) => {
+    setReviews(newReviewData);
+  };
+
+  const handleAddToCart = async () => {
+    if (!user) {
+      setShowAuth(true);
+      return;
+    }
+
+    if (!product || !product.variants || !product.variants[0]?.id) {
       toast.error('Product variant not available');
       return;
     }
-    addToCart(variantId, quantity);
-  };
 
-  const handleReviewSubmitted = () => {
-    // Refresh reviews after submission
-    if (product) {
-      loadReviews(product.id);
+    const variantId = product.variants[0].id; // or selected variant id
+
+    try {
+      setIsAdding(true);
+      await addToCart(variantId, quantity);
+      // Optional: open cart drawer here via global state if you want
+    } catch (error) {
+      console.error('Add to cart error in ProductDetail:', error);
+      // addToCart already shows toast
+    } finally {
+      setIsAdding(false);
     }
   };
 
-  if (loading) {
+  if (loadingProduct || !product) {
     return (
-      <div className="min-h-screen pt-24 flex items-center justify-center">
-        <p className="text-zinc-400">Loading...</p>
-      </div>
-    );
-  }
-
-  if (!product) {
-    return (
-      <div className="min-h-screen pt-24 flex items-center justify-center">
-        <p className="text-zinc-400">Product not found</p>
+      <div className="min-h-screen flex items-center justify-center bg-zinc-950">
+        <p className="text-zinc-400">Loading product...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-12">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-zinc-950 pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto">
+        {/* Product layout */}
         <motion.div
+          className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16"
         >
-          {/* Product Images */}
-          <div>
-            <div className="glass-card rounded-3xl overflow-hidden mb-4 shadow-lg">
-              <img
-                src={product.images[selectedImage]}
-                alt={product.name}
-                className="w-full aspect-square object-cover"
-              />
-            </div>
-            {product.images.length > 1 && (
-              <div className="grid grid-cols-4 gap-4">
-                {product.images.map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImage(index)}
-                    className={`rounded-2xl overflow-hidden border-2 transition-colors ${
-                      selectedImage === index ? 'border-orange-500' : 'border-zinc-700'
-                    }`}
-                  >
-                    <img src={image} alt={`${product.name} ${index + 1}`} className="w-full aspect-square object-cover" />
-                  </button>
-                ))}
-              </div>
-            )}
+          {/* Left: Image */}
+          <div className="glass-card rounded-3xl overflow-hidden">
+            <img
+              src={product.image || product.featuredImage?.url || '/placeholder.png'}
+              alt={product.title}
+              className="w-full h-full object-cover"
+            />
           </div>
 
-          {/* Product Details */}
-          <div>
-            <h1 className="font-oswald text-4xl sm:text-5xl font-bold text-white mb-2 tracking-tight">
-              {product.name}
+          {/* Right: Info */}
+          <div className="space-y-6">
+            <h1 className="font-oswald text-3xl sm:text-4xl font-bold text-white">
+              {product.title}
             </h1>
 
-            {/* Rating Display */}
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="flex">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`w-5 h-5 ${
-                      i < Math.floor(reviews.rating) 
-                        ? 'text-orange-500 fill-orange-500' 
-                        : 'text-zinc-600'
-                    }`}
-                  />
-                ))}
-              </div>
-              <span className="text-zinc-300">
-                {reviews.rating > 0 ? reviews.rating.toFixed(1) : 'No reviews yet'} 
-                {reviews.reviewCount > 0 && ` (${reviews.reviewCount} reviews)`}
-              </span>
-            </div>
+            <p className="text-zinc-400">{product.description}</p>
 
-            <div className="text-5xl font-oswald font-bold text-orange-500 mb-6">
-              ${product.price.toFixed(2)}
-            </div>
-
-            <p className="text-zinc-300 font-manrope mb-8 leading-relaxed">
-              {product.description}
+            <p className="text-3xl font-oswald font-bold text-orange-500">
+              ${parseFloat(product.price || product.variants?.[0]?.priceV2?.amount || 0).toFixed(2)}
             </p>
 
-            {/* Stock & Category */}
-            <div className="glass-card rounded-3xl p-6 mb-6 shadow-lg">
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-zinc-400">Category:</span>
-                  <p className="text-white font-semibold">{product.category}</p>
-                </div>
-                <div>
-                  <span className="text-zinc-400">Stock:</span>
-                  <p className={`font-semibold ${product.stock > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                    {product.stock > 0 ? `${product.stock} available` : 'Out of stock'}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Quantity & Add to Cart */}
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="flex items-center space-x-2 glass-card rounded-full px-6 py-3 shadow-md">
+            <div className="flex items-center space-x-4 mt-4">
+              {/* Quantity controls */}
+              <div className="flex items-center bg-zinc-900 rounded-full px-3 py-2">
                 <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                   className="w-8 h-8 flex items-center justify-center text-white hover:text-orange-500 transition-colors"
                 >
-                  <Minus className="w-4 h-4" />
+                  -
                 </button>
-                <span className="text-white font-bold w-12 text-center">{quantity}</span>
+                <span className="w-8 text-center text-white font-semibold">{quantity}</span>
                 <button
-                  onClick={() => setQuantity(quantity + 1)}
+                  onClick={() => setQuantity((q) => q + 1)}
                   className="w-8 h-8 flex items-center justify-center text-white hover:text-orange-500 transition-colors"
                 >
-                  <Plus className="w-4 h-4" />
+                  +
                 </button>
               </div>
 
+              {/* Add to cart button */}
               <Button
                 onClick={handleAddToCart}
-                disabled={product.stock === 0}
-                className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-oswald text-lg uppercase tracking-wider rounded-full py-7 shadow-lg hover:shadow-orange-500/30"
+                disabled={product.stock === 0 || isAdding}
+                className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-oswald text-lg uppercase tracking-wider rounded-full py-7 shadow-lg hover:shadow-orange-500/30 disabled:opacity-60"
               >
                 <ShoppingCart className="w-5 h-5 mr-2" />
-                Add to Cart
+                {isAdding ? 'Adding…' : 'Add to Cart'}
               </Button>
             </div>
           </div>
@@ -210,7 +157,7 @@ const ProductDetail = () => {
           <h2 className="font-oswald text-3xl font-bold text-white mb-8 uppercase">
             Customer Reviews
           </h2>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Left: Reviews Display */}
             <div>
@@ -219,20 +166,20 @@ const ProductDetail = () => {
                   <p className="text-zinc-400">Loading reviews...</p>
                 </div>
               ) : (
-                <ReviewsList 
-                  reviews={reviews.reviews} 
-                  rating={reviews.rating} 
-                  reviewCount={reviews.reviewCount} 
+                <ReviewsList
+                  reviews={reviews.reviews}
+                  rating={reviews.rating}
+                  reviewCount={reviews.reviewCount}
                 />
               )}
             </div>
-            
+
             {/* Right: Write Review Form */}
             <div>
               {user ? (
-                <ReviewForm 
-                  product={product} 
-                  user={user} 
+                <ReviewForm
+                  product={product}
+                  user={user}
                   onReviewSubmitted={handleReviewSubmitted}
                 />
               ) : (
@@ -250,7 +197,7 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
-      
+
       <AuthModal open={showAuth} onClose={() => setShowAuth(false)} />
     </div>
   );

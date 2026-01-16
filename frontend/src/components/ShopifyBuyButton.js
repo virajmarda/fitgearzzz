@@ -29,7 +29,7 @@ const ShopifyBuyButton = ({ productId }) => {
 
     loadShopifyBuy(() => {
       const client = window.ShopifyBuy.buildClient({
-        domain: "gnzuhe-en.myshopify.com", // your .myshopify.com domain
+        domain: "fitgearzzz.myshopify.com", // your .myshopify.com domain
         storefrontAccessToken: process.env.REACT_APP_SHOPIFY_CLIENT_KEY,
       });
 

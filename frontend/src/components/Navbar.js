@@ -43,7 +43,25 @@ const Navbar = () => {
     navigate('/');
   };
 
-  const cartCount = getCartCount();
+  const cartCount = user ? getCartCount() : 0;
+
+  const handleCartClick = () => {
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
+    setShowCart(true);
+  };
+
+  const handleMobileCartClick = () => {
+    if (!user) {
+      setShowAuthModal(true);
+      setShowMenu(false);
+      return;
+    }
+    setShowCart(true);
+    setShowMenu(false);
+  };
 
   return (
     <>
@@ -120,12 +138,12 @@ const Navbar = () => {
 
               {/* Cart button (desktop) */}
               <button
-                onClick={() => setShowCart(true)}
+                onClick={handleCartClick}
                 className="relative flex items-center p-2 text-zinc-300 hover:text-orange-500 transition-colors"
                 aria-label="Open shopping cart"
               >
                 <ShoppingCart className="w-6 h-6" />
-                {cartCount > 0 && (
+                {user && cartCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                     {cartCount}
                   </span>
@@ -195,17 +213,14 @@ const Navbar = () => {
 
               {/* Cart button (mobile) */}
               <button
-                onClick={() => {
-                  setShowCart(true);
-                  setShowMenu(false);
-                }}
+                onClick={handleMobileCartClick}
                 className="w-full flex items-center justify-between py-2 text-zinc-300 hover:text-orange-500"
               >
                 <span className="flex items-center">
                   <ShoppingCart className="w-5 h-5 mr-2" />
                   Cart
                 </span>
-                {cartCount > 0 && (
+                {user && cartCount > 0 && (
                   <span className="bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                     {cartCount}
                   </span>

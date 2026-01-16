@@ -18,9 +18,6 @@ const CartDrawer = ({ open, onClose }) => {
   } = useCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
-  // Block cart completely if not logged in
-  if (!user) return null;
-
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
@@ -33,7 +30,8 @@ const CartDrawer = ({ open, onClose }) => {
     };
   }, [open]);
 
-  if (!open) return null;
+  // Block cart completely if not logged in
+  if (!user || !open) return null;
 
   const total = getCartTotal();
   const count = getCartCount();

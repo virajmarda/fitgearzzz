@@ -12,11 +12,9 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is authenticated via Shopify Customer Account API
     if (isAuthenticated()) {
       fetchShopifyCustomer();
     } else {
-      // Fallback to old token-based auth
       const token = localStorage.getItem('token');
       if (token) {
         fetchUser(token);
@@ -27,45 +25,43 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const fetchShopifyCustomer = async () => {
-  try {
-    const customerData = await getCustomerFromShopify();
+    try {
+      const customerData = await getCustomerFromShopify();
 
-    // Only set user if we actually got customer data
-    if (customerData) {
-      setUser({
-        id: customerData.id,
-        email: customerData.emailAddress?.emailAddress || '',
-                name: customerData.displayName || `${customerData.firstName} ${customerData.lastName}`,
-        displayName: customerData.displayName,
-        firstName: customerData.firstName,
-        lastName: customerData.lastName,
-        authenticated: true,
-        source: 'shopify_customer_account'
-      });
-    } else {
-      // No customer data means not actually logged in
+      if (customerData) {
+        setUser({
+          id: customerData.id,
+          email: customerData.emailAddress?.emailAddress || '',
+          name:
+            customerData.displayName ||
+            `${customerData.firstName} ${customerData.lastName}`,
+          displayName: customerData.displayName,
+          firstName: customerData.firstName,
+          lastName: customerData.lastName,
+          authenticated: true,
+          source: 'shopify_customer_account',
+        });
+      } else {
+        setUser(null);
+        sessionStorage.removeItem('access_token');
+        sessionStorage.removeItem('refresh_token');
+        sessionStorage.removeItem('id_token');
+      }
+    } catch (error) {
+      console.error('Error fetching Shopify customer:', error);
       setUser(null);
       sessionStorage.removeItem('access_token');
       sessionStorage.removeItem('refresh_token');
       sessionStorage.removeItem('id_token');
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error('Error fetching Shopify customer:', error);
-    // Clear invalid tokens
-    setUser(null);
-    sessionStorage.removeItem('access_token');
-    sessionStorage.removeItem('refresh_token');
-    sessionStorage.removeItem('id_token');
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const fetchUser = async (token) => {
     try {
       const customerData = await getCustomer(token);
       setUser(customerData);
-129
     } catch (error) {
       localStorage.removeItem('token');
     } finally {
@@ -73,13 +69,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // New method: Login with Shopify Customer Account API
   const loginWithShopify = () => {
     console.log('✅ loginWithShopify called');
     initiateShopifyLogin();
   };
 
-  // Legacy method: Login with email/password (Storefront API)
   const login = async (email, password) => {
     try {
       const accessToken = await customerLogin(email, password);
@@ -106,16 +100,26 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    // Check if user is logged in via Shopify Customer Account API
-    if (isAuthenticated()) {
-      logoutShopify();
-    } else {
-      // Legacy logout
+    try {
+      // Shopify Customer Account API logout (if in that flow)
+      if (isAuthenticated()) {
+        logoutShopify();
+      }
+
+      // Clear all tokens / flags from both flows
       localStorage.removeItem('token');
       localStorage.removeItem('shopify_authenticated');
       localStorage.removeItem('shopify_auth_time');
+      localStorage.removeItem('shopify_customer_token');
+      sessionStorage.removeItem('access_token');
+      sessionStorage.removeItem('refresh_token');
+      sessionStorage.removeItem('id_token');
+
       setUser(null);
       toast.success('Logged out successfully');
+    } finally {
+      // Hard redirect to main domain home, replace history
+      window.location.replace('https://fitgearzzz.com');
     }
   };
 
@@ -127,8 +131,8 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     isAuthenticated: () => user !== null,
-        fetchShopifyCustomer
+    fetchShopifyCustomer,
   };
-    
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

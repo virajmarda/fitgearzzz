@@ -92,45 +92,49 @@ export const CartProvider = ({ children }) => {
   };
 
   const addToCart = async (variantId, quantity = 1) => {
-    try {
-      setIsLoading(true);
-      console.log('🛒 Adding to cart:', { variantId, quantity });
+  try {
+    setIsLoading(true);
+    console.log('🛒 Adding to cart:', { variantId, quantity });
 
-      const cartId = await ensureCart();
-      console.log('🛒 Cart ID:', cartId);
+    const cartId = await ensureCart();
+    console.log('🛒 Cart ID:', cartId);
 
-      if (!cartId) {
-        toast.error('Failed to add item to cart');
-        return;
-      }
-
-      const response = await api.post('/cart/add', {
-        cartId,
-        lines: [{ merchandiseId: variantId, quantity }],
-      });
-
-      const updatedCart = response.data;
-      console.log('🛒 Cart response:', updatedCart);
-
-      if (!updatedCart || !updatedCart.id) {
-        throw new Error('Cart update failed');
-      }
-
-      // Update local state with latest cart
-      setCart(updatedCart);
-      setCartId(updatedCart.id); // in case Shopify rotated the ID
-
-      // Optional: force a fresh fetch to avoid any stale edges
-      await fetchCart(updatedCart.id);
-
-      toast.success('Added to cart!');
-    } catch (error) {
-      console.error('❌ Error adding to cart:', error);
-      toast.error(error.message || 'Failed to add to cart');
-    } finally {
-      setIsLoading(false);
+    if (!cartId) {
+      toast.error('Failed to add item to cart');
+      return;
     }
-  };
+
+    const response = await api.post('/cart/add', {
+      cartId,
+      lines: [{ merchandiseId: variantId, quantity }],
+    });
+
+    const updatedCart = response.data;
+    console.log('🛒 Cart response:', updatedCart);
+
+    if (!updatedCart || !updatedCart.id) {
+      throw new Error('Cart update failed');
+    }
+
+    setCart(updatedCart);
+    setCartId(updatedCart.id);
+    await fetchCart(updatedCart.id);
+
+    toast.success('Added to cart!');
+  } catch (error) {
+    console.error('❌ Error adding to cart:', error);
+
+    const message =
+      error.response?.data?.detail ||
+      error.response?.data?.error ||
+      error.message ||
+      'Failed to add to cart';
+
+    toast.error(message);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const updateCartItem = async (lineId, quantity) => {
     const cartId = getCartId();

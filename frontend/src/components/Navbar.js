@@ -50,6 +50,7 @@ const Navbar = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-zinc-900/60 backdrop-blur-xl border-b border-zinc-800/50 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
+            {/* Logo */}
             <Link
               to="/"
               className="flex items-center space-x-2"
@@ -61,6 +62,7 @@ const Navbar = () => {
               </span>
             </Link>
 
+            {/* Desktop nav links */}
             <div className="hidden md:flex items-center space-x-8">
               <Link
                 to="/"
@@ -96,6 +98,7 @@ const Navbar = () => {
               )}
             </div>
 
+            {/* Desktop actions: search, cart, auth */}
             <div className="hidden md:flex items-center space-x-4">
               <form onSubmit={handleSearch} className="relative">
                 <Input
@@ -115,19 +118,21 @@ const Navbar = () => {
                 </button>
               </form>
 
+              {/* Cart button (desktop) */}
               <button
-  onClick={() => setCartDrawerOpen(true)}
-  className="relative flex items-center p-2 text-zinc-300 hover:text-orange-500 transition-colors"
-  aria-label="Open shopping cart"
->
-  <ShoppingCart className="w-6 h-6" />
-  {cartCount > 0 && (
-    <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-      {cartCount}
-    </span>
-  )}
-</button>
+                onClick={() => setShowCart(true)}
+                className="relative flex items-center p-2 text-zinc-300 hover:text-orange-500 transition-colors"
+                aria-label="Open shopping cart"
+              >
+                <ShoppingCart className="w-6 h-6" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
 
+              {/* Auth section */}
               {user ? (
                 <div className="flex items-center space-x-2">
                   <Link to="/profile" data-testid="profile-link">
@@ -160,6 +165,7 @@ const Navbar = () => {
               )}
             </div>
 
+            {/* Mobile menu toggle */}
             <button
               onClick={() => setShowMenu(!showMenu)}
               className="md:hidden p-2 text-zinc-300"
@@ -169,6 +175,7 @@ const Navbar = () => {
             </button>
           </div>
 
+          {/* Mobile menu */}
           {showMenu && (
             <div className="md:hidden pb-4 space-y-2">
               <Link
@@ -185,23 +192,26 @@ const Navbar = () => {
               >
                 Products
               </Link>
-           <button
-      onClick={() => {
-        setCartDrawerOpen(true);
-        setShowMenu(false);
-      }}
-      className="w-full flex items-center justify-between py-2 text-zinc-300 hover:text-orange-500"
-    >
-      <span className="flex items-center">
-        <ShoppingCart className="w-5 h-5 mr-2" />
-        Cart
-      </span>
-      {cartCount > 0 && (
-        <span className="bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-          {cartCount}
-        </span>
-      )}
-    </button>
+
+              {/* Cart button (mobile) */}
+              <button
+                onClick={() => {
+                  setShowCart(true);
+                  setShowMenu(false);
+                }}
+                className="w-full flex items-center justify-between py-2 text-zinc-300 hover:text-orange-500"
+              >
+                <span className="flex items-center">
+                  <ShoppingCart className="w-5 h-5 mr-2" />
+                  Cart
+                </span>
+                {cartCount > 0 && (
+                  <span className="bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+
               {user?.role === 'admin' && (
                 <>
                   <Link
@@ -220,6 +230,7 @@ const Navbar = () => {
                   </Link>
                 </>
               )}
+
               <form onSubmit={handleSearch} className="relative pt-2">
                 <Input
                   type="text"
@@ -229,6 +240,7 @@ const Navbar = () => {
                   className="w-full bg-zinc-800/50 border-zinc-700 text-white placeholder-zinc-500"
                 />
               </form>
+
               {user ? (
                 <>
                   <Link
@@ -264,6 +276,7 @@ const Navbar = () => {
         </div>
       </nav>
 
+      {/* Cart drawer and auth modal */}
       <CartDrawer open={showCart} onClose={() => setShowCart(false)} />
       <AuthModal open={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </>

@@ -23,6 +23,7 @@ import ShippingReturns from "./pages/ShippingReturns";
 import FAQ from "./pages/FAQ";
 import CatalogPage from "./pages/CatalogPage"; // ⬅️ new page
 import "./App.css";
+import './styles/shopify-buy-button.css';
 
 const CustomerSSOCallback = () => {
   const navigate = useNavigate();

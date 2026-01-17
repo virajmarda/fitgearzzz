@@ -30,6 +30,9 @@ const Products = () => {
   // Shopify product IDs for Buy Button - add your product IDs here
   const shopifyBuyButtonProducts = [
     '9078870606050',
+        '9078771810530',  // 150Lbs Resistance Bands Set
+        '9077798306018',  // Adjustable Counting Grip
+        '9064695922914',  // Knee Patches
     // Add more product IDs here
   ];
 

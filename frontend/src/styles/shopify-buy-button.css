@@ -1,0 +1,86 @@
+/* Shopify Buy Button Dark Theme Styling for FitGearzzz */
+
+/* Override Shopify Buy Button iframe styles to match dark theme */
+[id^="product-component-"] iframe {
+  min-height: 550px !important;
+}
+
+/* Style the Shopify Buy Button product cards */
+.shopify-buy__product {
+  background-color: #18181b !important;
+  border-radius: 24px !important;
+  border: 1px solid #27272a !important;
+  padding: 20px !important;
+}
+
+/* Product title */
+.shopify-buy__product__title {
+  font-family: 'Oswald', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 18px !important;
+  color: #ffffff !important;
+  text-transform: uppercase !important;
+}
+
+/* Product price */
+.shopify-buy__product__price {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: 20px !important;
+  color: #ff6b35 !important;
+  font-weight: 700 !important;
+}
+
+/* Product image */
+.shopify-buy__product-img-wrapper img {
+  border-radius: 16px !important;
+  margin-bottom: 16px !important;
+}
+
+/* Add to Cart button */
+.shopify-buy__btn {
+  font-family: 'Oswald', sans-serif !important;
+  font-size: 16px !important;
+  padding: 16px 32px !important;
+  background-color: #ff6b35 !important;
+  border-radius: 9999px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  border: none !important;
+  transition: background-color 0.3s ease !important;
+}
+
+.shopify-buy__btn:hover {
+  background-color: #ff8c5a !important;
+}
+
+/* Cart button */
+.shopify-buy__cart-toggle {
+  background-color: #ff6b35 !important;
+}
+
+.shopify-buy__cart-toggle:hover {
+  background-color: #ff8c5a !important;
+}
+
+/* Variant selector */
+.shopify-buy__option-select-wrapper select {
+  background-color: #18181b !important;
+  border: 1px solid #27272a !important;
+  color: #ffffff !important;
+  border-radius: 12px !important;
+  padding: 12px !important;
+  font-family: 'Manrope', sans-serif !important;
+}
+
+/* Quantity selector */
+.shopify-buy__quantity-container {
+  background-color: #18181b !important;
+  border: 1px solid #27272a !important;
+  border-radius: 12px !important;
+}
+
+.shopify-buy__quantity {
+  color: #ffffff !important;
+  font-family: 'Manrope', sans-serif !important;
+}

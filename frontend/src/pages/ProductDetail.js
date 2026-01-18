@@ -13,10 +13,9 @@ import api from '../utils/api';
 import { fetchProductByHandle } from '../services/shopifyService';
 
 const ProductDetail = () => {
-  const { id } = useParams();
-  const { user } = useAuth();
+const { handle } = useParams();
+    const { user } = useAuth();
   const { addToCart } = useCart();
-
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
@@ -29,11 +28,11 @@ const ProductDetail = () => {
     const fetchProduct = async () => {
       try {
         setLoadingProduct(true);
-                const productData = await fetchProductByHandle(id);
+                const productData = await fetchProductByHandle(handle);
 
         setProduct(productData);
       } catch (error) {
-        console.error('Error fetching product:', error);
+        console.error('Error fetching product:', errorhandle
       } finally {
         setLoadingProduct(false);
       }
@@ -42,7 +41,7 @@ const ProductDetail = () => {
     const fetchReviews = async () => {
       try {
         setLoadingReviews(true);
-        const res = await api.get(`/reviews/product/${id}`);
+        const res = await api.get(`/reviews/product/${handle}`);
         setReviews(res.data);
       } catch (error) {
         console.error('Error fetching reviews:', error);
@@ -53,7 +52,7 @@ const ProductDetail = () => {
 
     fetchProduct();
     fetchReviews();
-  }, [id]);
+  }, [handle]);
 
   const handleReviewSubmitted = (newReviewData) => {
     setReviews(newReviewData);

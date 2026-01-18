@@ -122,7 +122,7 @@ const ProductDetail = () => {
             {/* Brand and Stock */}
             <div className="flex items-center gap-3">
               <span className="px-4 py-1 bg-zinc-800 text-zinc-200 rounded-full text-sm font-semibold">
-                FitGear
+                Fitgearzzz
               </span>
               <span className="px-4 py-1 bg-green-900/30 text-green-400 border border-green-400/30 rounded-full text-sm font-semibold">
                 In Stock
@@ -173,12 +173,13 @@ const ProductDetail = () => {
             {/* Description - Using Shopify Product Description */}
             {product.description && (
               <div className="space-y-3">
-                <h2 className="text-lg font-bold text-white">Description</h2>
-                <p className="text-zinc-300 leading-relaxed">
-                  {product.description}
-                </p>
-              </div>
-            )}
+              <h2 className="text-lg font-bold text-white">Description</h2>
+              <p className="text-zinc-300 leading-relaxed whitespace-pre-line">
+            {product.description}
+              </p>
+             </div>
+           )}
+
 
             {/* Quantity and Add to Cart */}
             <div className="space-y-4">

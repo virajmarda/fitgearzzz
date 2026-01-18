@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { ShoppingCart, Heart, Share2, Star, Truck } from 'lucide-react';
+import { ShoppingCart, Star, Truck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { useCart } from '../context/CartContext';
@@ -23,6 +23,9 @@ const ProductDetail = () => {
   const [loadingProduct, setLoadingProduct] = useState(true);
   const [reviews, setReviews] = useState({ reviews: [], rating: 0, reviewCount: 0 });
   const [loadingReviews, setLoadingReviews] = useState(true);
+
+  // USD to INR conversion rate
+  const USD_TO_INR = 90.69;
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -88,15 +91,17 @@ const ProductDetail = () => {
     );
   }
 
-  const price = parseFloat(product.price || product.variants?.[0]?.priceV2?.amount || 0);
-  const compareAtPrice = parseFloat(product.compareAtPrice || price * 1.2);
-  const discount = Math.round(((compareAtPrice - price) / compareAtPrice) * 100);
+  const priceUSD = parseFloat(product.price || product.variants?.[0]?.priceV2?.amount || 0);
+  const compareAtPriceUSD = parseFloat(product.compareAtPrice || priceUSD * 1.2);
+  const priceINR = priceUSD * USD_TO_INR;
+  const compareAtPriceINR = compareAtPriceUSD * USD_TO_INR;
+  const discount = Math.round(((compareAtPriceUSD - priceUSD) / compareAtPriceUSD) * 100);
 
   return (
-    <div className="min-h-screen bg-white pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-zinc-950 pt-24 pb-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Breadcrumb */}
-        <div className="text-sm text-zinc-600 mb-6">
+        <div className="text-sm text-zinc-400 mb-6">
           Home › Electronics › {product.title}
         </div>
 
@@ -107,7 +112,7 @@ const ProductDetail = () => {
           animate={{ opacity: 1, y: 0 }}
         >
           {/* Left: Image */}
-          <div className="relative bg-zinc-50 rounded-2xl overflow-hidden">
+          <div className="relative bg-zinc-900 rounded-2xl overflow-hidden">
             {discount > 0 && (
               <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold z-10">
                 -{discount}% OFF
@@ -124,16 +129,16 @@ const ProductDetail = () => {
           <div className="space-y-6">
             {/* Brand and Stock */}
             <div className="flex items-center gap-3">
-              <span className="px-4 py-1 bg-zinc-100 text-zinc-800 rounded-full text-sm font-semibold">
+              <span className="px-4 py-1 bg-zinc-800 text-zinc-200 rounded-full text-sm font-semibold">
                 FitGear
               </span>
-              <span className="px-4 py-1 bg-green-50 text-green-600 border border-green-200 rounded-full text-sm font-semibold">
+              <span className="px-4 py-1 bg-green-900/30 text-green-400 border border-green-400/30 rounded-full text-sm font-semibold">
                 In Stock
               </span>
             </div>
 
             {/* Title */}
-            <h1 className="text-3xl sm:text-4xl font-bold text-zinc-900">
+            <h1 className="text-3xl sm:text-4xl font-bold text-white">
               {product.title}
             </h1>
 
@@ -143,9 +148,9 @@ const ProductDetail = () => {
                 {[1, 2, 3, 4].map((star) => (
                   <Star key={star} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
                 ))}
-                <Star className="w-5 h-5 text-gray-300" />
+                <Star className="w-5 h-5 text-zinc-600" />
               </div>
-              <span className="text-zinc-600">
+              <span className="text-zinc-400">
                 {reviews.rating.toFixed(1)} ({reviews.reviewCount} reviews)
               </span>
             </div>
@@ -153,78 +158,53 @@ const ProductDetail = () => {
             {/* Price */}
             <div className="space-y-2">
               <div className="flex items-baseline gap-3">
-                <span className="text-4xl font-bold text-zinc-900">
-                  ${price.toFixed(2)}
+                <span className="text-4xl font-bold text-white">
+                  ₹{priceINR.toFixed(2)}
                 </span>
                 {discount > 0 && (
-                  <span className="text-2xl text-zinc-400 line-through">
-                    ${compareAtPrice.toFixed(2)}
+                  <span className="text-2xl text-zinc-500 line-through">
+                    ₹{compareAtPriceINR.toFixed(2)}
                   </span>
                 )}
                 {discount > 0 && (
                   <span className="px-3 py-1 bg-red-500 text-white rounded-md text-sm font-semibold">
-                    SAVE ${(compareAtPrice - price).toFixed(2)}
+                    SAVE ₹{(compareAtPriceINR - priceINR).toFixed(2)}
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-2 text-green-600">
+              <div className="flex items-center gap-2 text-green-400">
                 <Truck className="w-5 h-5" />
                 <span className="font-semibold">Free Shipping</span>
               </div>
             </div>
 
-            {/* Description */}
-            <div className="space-y-3">
-              <h2 className="text-lg font-bold text-zinc-900">Description</h2>
-              <p className="text-zinc-600 leading-relaxed">
-                {product.description || 'Experience immersive sound with our premium wireless headphones featuring noise cancellation technology.'}
-              </p>
-            </div>
-
-            {/* Key Features */}
-            <div className="space-y-3">
-              <h2 className="text-lg font-bold text-zinc-900">Key Features</h2>
-              <ul className="space-y-2">
-                <li className="flex items-start gap-2 text-zinc-700">
-                  <span className="text-orange-500 mt-1">•</span>
-                  <span>Premium build quality and ergonomic design</span>
-                </li>
-                <li className="flex items-start gap-2 text-zinc-700">
-                  <span className="text-orange-500 mt-1">•</span>
-                  <span>Long battery life for extended use</span>
-                </li>
-                <li className="flex items-start gap-2 text-zinc-700">
-                  <span className="text-orange-500 mt-1">•</span>
-                  <span>Advanced connectivity features</span>
-                </li>
-                <li className="flex items-start gap-2 text-zinc-700">
-                  <span className="text-orange-500 mt-1">•</span>
-                  <span>Built-in controls for easy operation</span>
-                </li>
-                <li className="flex items-start gap-2 text-zinc-700">
-                  <span className="text-orange-500 mt-1">•</span>
-                  <span>Comfortable for all-day wear</span>
-                </li>
-              </ul>
-            </div>
+            {/* Description - Using Shopify Product Description */}
+            {product.description && (
+              <div className="space-y-3">
+                <h2 className="text-lg font-bold text-white">Description</h2>
+                <p className="text-zinc-300 leading-relaxed">
+                  {product.description}
+                </p>
+              </div>
+            )}
 
             {/* Quantity and Add to Cart */}
             <div className="space-y-4">
-              <div className="flex items-center gap-1 text-zinc-700">
+              <div className="flex items-center gap-1 text-zinc-300">
                 <span className="font-semibold">Quantity:</span>
               </div>
               <div className="flex items-center gap-4">
-                <div className="flex items-center bg-zinc-100 rounded-lg">
+                <div className="flex items-center bg-zinc-900 rounded-lg">
                   <button
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="w-10 h-10 flex items-center justify-center text-zinc-700 hover:text-orange-500 transition-colors font-bold"
+                    className="w-10 h-10 flex items-center justify-center text-zinc-300 hover:text-orange-500 transition-colors font-bold"
                   >
                     −
                   </button>
-                  <span className="w-12 text-center text-zinc-900 font-semibold">{quantity}</span>
+                  <span className="w-12 text-center text-white font-semibold">{quantity}</span>
                   <button
                     onClick={() => setQuantity((q) => q + 1)}
-                    className="w-10 h-10 flex items-center justify-center text-zinc-700 hover:text-orange-500 transition-colors font-bold"
+                    className="w-10 h-10 flex items-center justify-center text-zinc-300 hover:text-orange-500 transition-colors font-bold"
                   >
                     +
                   </button>
@@ -233,19 +213,11 @@ const ProductDetail = () => {
                 <Button
                   onClick={handleAddToCart}
                   disabled={product.stock === 0 || isAdding}
-                  className="flex-1 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold text-base uppercase tracking-wide rounded-lg py-6 shadow-lg disabled:opacity-60"
+                  className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-base uppercase tracking-wide rounded-lg py-6 shadow-lg disabled:opacity-60"
                 >
                   <ShoppingCart className="w-5 h-5 mr-2" />
                   {isAdding ? 'Adding…' : 'Add to Cart'}
                 </Button>
-
-                <button className="w-12 h-12 flex items-center justify-center border-2 border-zinc-200 rounded-lg hover:border-orange-500 hover:text-orange-500 transition-colors">
-                  <Heart className="w-5 h-5" />
-                </button>
-
-                <button className="w-12 h-12 flex items-center justify-center border-2 border-zinc-200 rounded-lg hover:border-orange-500 hover:text-orange-500 transition-colors">
-                  <Share2 className="w-5 h-5" />
-                </button>
               </div>
             </div>
           </div>
@@ -253,14 +225,14 @@ const ProductDetail = () => {
 
         {/* Reviews Section */}
         <div className="mt-16">
-          <h2 className="text-3xl font-bold text-zinc-900 mb-8 uppercase">
+          <h2 className="text-3xl font-bold text-white mb-8 uppercase">
             Customer Reviews
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
               {loadingReviews ? (
-                <div className="bg-zinc-50 rounded-2xl p-8 text-center">
-                  <p className="text-zinc-600">Loading reviews...</p>
+                <div className="bg-zinc-900 rounded-2xl p-8 text-center">
+                  <p className="text-zinc-400">Loading reviews...</p>
                 </div>
               ) : (
                 <ReviewsList
@@ -278,8 +250,8 @@ const ProductDetail = () => {
                   onReviewSubmitted={handleReviewSubmitted}
                 />
               ) : (
-                <div className="bg-zinc-50 rounded-2xl p-8 text-center">
-                  <p className="text-zinc-600 mb-4">Please log in to write a review</p>
+                <div className="bg-zinc-900 rounded-2xl p-8 text-center">
+                  <p className="text-zinc-400 mb-4">Please log in to write a review</p>
                   <Button
                     onClick={() => setShowAuth(true)}
                     className="bg-orange-500 hover:bg-orange-600 text-white font-semibold uppercase tracking-wide rounded-lg"

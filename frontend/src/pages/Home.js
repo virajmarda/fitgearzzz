@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight,  Award, Truck } from 'lucide-react';
+import { ArrowRight,  Award, Truck, TrendingUp } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import ProductCard from '../components/ProductCard';
 import { fetchProducts } from '../services/shopifyService';

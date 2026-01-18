@@ -32,7 +32,7 @@ const { handle } = useParams();
 
         setProduct(productData);
       } catch (error) {
-        console.error('Error fetching product:', errorhandle
+        console.error('Error fetching product:', errorhandle);
       } finally {
         setLoadingProduct(false);
       }

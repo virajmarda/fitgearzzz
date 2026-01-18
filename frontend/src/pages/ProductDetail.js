@@ -88,6 +88,11 @@ const ProductDetail = () => {
     );
   }
 
+  // Calculate price and discount
+  const price = parseFloat(product.price || product.variants?.[0]?.priceV2?.amount || 0);
+  const compareAtPrice = parseFloat(product.compareAtPrice || price * 1.2);
+  const discount = Math.round(((compareAtPrice - price) / compareAtPrice) * 100);
+
   return (
     <div className="min-h-screen bg-zinc-950 pt-24 pb-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -146,16 +151,16 @@ const ProductDetail = () => {
             <div className="space-y-2">
               <div className="flex items-baseline gap-3">
                 <span className="text-4xl font-bold text-white">
-                  ₹{priceINR.toFixed(2)}
+                  ${price.toFixed(2)}
                 </span>
                 {discount > 0 && (
                   <span className="text-2xl text-zinc-500 line-through">
-                    ₹{compareAtPriceINR.toFixed(2)}
+                    ${compareAtPrice.toFixed(2)}
                   </span>
                 )}
                 {discount > 0 && (
                   <span className="px-3 py-1 bg-red-500 text-white rounded-md text-sm font-semibold">
-                    SAVE ₹{(compareAtPriceINR - priceINR).toFixed(2)}
+                    SAVE ${(compareAtPrice - price).toFixed(2)}
                   </span>
                 )}
               </div>

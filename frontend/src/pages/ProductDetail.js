@@ -10,6 +10,7 @@ import ReviewsList from '../components/ReviewsList';
 import ReviewForm from '../components/ReviewForm';
 import { toast } from 'sonner';
 import api from '../utils/api';
+import { fetchProductByHandle } from '../services/shopifyService';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -28,11 +29,11 @@ const ProductDetail = () => {
     const fetchProduct = async () => {
       try {
         setLoadingProduct(true);
-        const res = await api.get(`/products/${id}`);
-        setProduct(res.data);
+                const productData = await fetchProductByHandle(id);
+
+        setProduct(productData);
       } catch (error) {
         console.error('Error fetching product:', error);
-        toast.error('Failed to load product');
       } finally {
         setLoadingProduct(false);
       }

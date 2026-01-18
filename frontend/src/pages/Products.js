@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Filter, X } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
-import ShopifyBuyButton from '../components/ShopifyBuyButton';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -26,15 +25,6 @@ const Products = () => {
 
   const categories = ['Gym Equipment', 'Supplements', 'Apparel', 'Accessories'];
   const brands = ['PowerFit', 'IronGrip', 'FlexBand', 'ZenFit', 'NutriFuel', 'RecoverMax', 'VitaStrong', 'PurePower', 'FitWear', 'ActivePro', 'SportMax', 'CarryAll', 'HydroFit', 'TechFit', 'GripPro', 'CardioMax'];
-
-  // Shopify product IDs for Buy Button - add your product IDs here
-  const shopifyBuyButtonProducts = [
-    '9078870606050',
-        '9078771810530',  // 150Lbs Resistance Bands Set
-        '9077798306018',  // Adjustable Counting Grip
-        '9064695922914',  // Knee Patches
-    // Add more product IDs here
-  ];
 
   useEffect(() => {
     fetchProducts();
@@ -229,21 +219,6 @@ const Products = () => {
           </div>
 
           <div className="md:col-span-3">
-            {/* Shopify Buy Button Products Section */}
-            {shopifyBuyButtonProducts.length > 0 && (
-              <div className="mb-12">
-                <h2 className="font-oswald text-2xl font-bold text-white mb-6 uppercase">
-                  Featured Shopify Products
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {shopifyBuyButtonProducts.map((productId) => (
-                    <ShopifyBuyButton key={productId} productId={productId} />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Regular Products Section */}
             {loading ? (
               <div className="text-center py-12">
                 <p className="text-zinc-400">Loading products...</p>

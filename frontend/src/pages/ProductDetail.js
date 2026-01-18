@@ -24,9 +24,6 @@ const ProductDetail = () => {
   const [reviews, setReviews] = useState({ reviews: [], rating: 0, reviewCount: 0 });
   const [loadingReviews, setLoadingReviews] = useState(true);
 
-  // USD to INR conversion rate
-  const USD_TO_INR = 90.69;
-
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -91,19 +88,9 @@ const ProductDetail = () => {
     );
   }
 
-  const priceUSD = parseFloat(product.price || product.variants?.[0]?.priceV2?.amount || 0);
-  const compareAtPriceUSD = parseFloat(product.compareAtPrice || priceUSD * 1.2);
-  const priceINR = priceUSD * USD_TO_INR;
-  const compareAtPriceINR = compareAtPriceUSD * USD_TO_INR;
-  const discount = Math.round(((compareAtPriceUSD - priceUSD) / compareAtPriceUSD) * 100);
-
   return (
     <div className="min-h-screen bg-zinc-950 pt-24 pb-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        {/* Breadcrumb */}
-        <div className="text-sm text-zinc-400 mb-6">
-          Home › Electronics › {product.title}
-        </div>
 
         {/* Product layout */}
         <motion.div

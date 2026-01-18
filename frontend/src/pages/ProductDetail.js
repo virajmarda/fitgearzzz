@@ -151,16 +151,16 @@ const ProductDetail = () => {
             <div className="space-y-2">
               <div className="flex items-baseline gap-3">
                 <span className="text-4xl font-bold text-white">
-                  ${price.toFixed(2)}
+                  ₹{price.toFixed(2)}
                 </span>
                 {discount > 0 && (
                   <span className="text-2xl text-zinc-500 line-through">
-                    ${compareAtPrice.toFixed(2)}
+                    ₹{compareAtPrice.toFixed(2)}
                   </span>
                 )}
                 {discount > 0 && (
                   <span className="px-3 py-1 bg-red-500 text-white rounded-md text-sm font-semibold">
-                    SAVE ${(compareAtPrice - price).toFixed(2)}
+                    SAVE ₹{(compareAtPrice - price).toFixed(2)}
                   </span>
                 )}
               </div>

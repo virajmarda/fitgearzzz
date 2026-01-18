@@ -18,7 +18,7 @@ const Products = () => {
     category: searchParams.get('category') || '',
     search: searchParams.get('search') || '',
     minPrice: 0,
-    maxPrice: 500,
+    maxPrice: 5000,
     brand: '',
     minRating: 0,
   });
@@ -112,7 +112,7 @@ const Products = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className={`md:block ${showFilters ? 'block' : 'hidden'} space-y-6`} data-testid="filters-panel">
+          <div className={`md:block ₹{showFilters ? 'block' : 'hidden'} space-y-6`} data-testid="filters-panel">
             <div className="glass-card rounded-3xl p-6 space-y-6 shadow-lg">
               <div className="flex items-center justify-between">
                 <h2 className="font-oswald text-xl font-bold text-white uppercase">Filters</h2>
@@ -172,11 +172,11 @@ const Products = () => {
 
               <div>
                 <Label className="text-zinc-300 font-manrope mb-3 block">
-                  Price Range: ${filters.minPrice} - ${filters.maxPrice}
+                  Price Range: ₹{filters.minPrice} - ₹{filters.maxPrice}
                 </Label>
                 <Slider
                   min={0}
-                  max={500}
+                  max={5000}
                   step={10}
                   value={[filters.minPrice, filters.maxPrice]}
                   onValueChange={([min, max]) => setFilters({ ...filters, minPrice: min, maxPrice: max })}

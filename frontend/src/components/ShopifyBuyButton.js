@@ -93,33 +93,14 @@ const ShopifyBuyButton = ({ productId }) => {
               }
             },
             cart: {
-              styles: {
-                button: {
-                  "font-family": "Oswald, sans-serif",
-                  "font-size": "16px",
-                  "padding": "16px 32px",
-                  "background-color": "#ff6b35",
-                  "color": "#fff",
-                  "border-radius": "8px",
-                  ":hover": {
-                    "background-color": "#ff8555"
-                  }
-                },
-                toggle: {
-                  "background-color": "#ff6b35",
-                  ":hover": {
-                    "background-color": "#ff8c5a"
-                  }
-                }
-              }
+              startOpen: false
             },
             toggle: {
+              iframe: false,
+              sticky: false,
               styles: {
                 toggle: {
-                  "background-color": "#ff6b35",
-                  ":hover": {
-                    "background-color": "#ff8c5a"
-                  }
+                  "display": "none"
                 }
               }
             }

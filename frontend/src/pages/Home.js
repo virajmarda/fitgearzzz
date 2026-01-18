@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, TrendingUp, Award, Truck } from 'lucide-react';
+import { ArrowRight,  Award, Truck } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import ProductCard from '../components/ProductCard';
 import { fetchProducts } from '../services/shopifyService';
@@ -165,10 +165,7 @@ const Home = () => {
             <h2 className="font-oswald text-4xl sm:text-5xl font-bold text-white tracking-tight uppercase">
               Featured Products
             </h2>
-                      <div className="mb-12 text-center">
-                        <h3 className="font-oswald text-2xl font-bold text-white mb-4">Trending Now: Resistance Bands Set</h3>
-                        <ShopifyBuyButton productId="9078771810530" />
-                      </div>
+
             <Link to="/products">
               <Button
                 variant="outline"

@@ -60,7 +60,7 @@ const ProductCard = ({ product }) => {
 
         <div className="flex items-center justify-between">
           <span className="font-oswald text-2xl font-bold text-orange-500" data-testid="product-price">
-            ${product.price.toFixed(2)}
+            ₹{product.price.toFixed(2)}
           </span>
           <Button
             onClick={() => {

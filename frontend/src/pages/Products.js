@@ -86,7 +86,7 @@ const Products = () => {
       category: '',
       search: '',
       minPrice: 0,
-      maxPrice: 500,
+      maxPrice: 5000,
       brand: '',
       minRating: 0,
     });

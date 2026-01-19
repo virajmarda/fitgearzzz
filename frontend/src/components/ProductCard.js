@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';import { Star, ShoppingCart, Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Star, ShoppingCart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { motion } from 'framer-motion';
 
@@ -7,13 +8,26 @@ const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
 
   // Calculate discount percentage
-  const originalPrice = product.variants?.[0]?.compareAtPrice?.amount || null;
-  const currentPrice = product.price;
-    const discountPercentage = originalPrice ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100) : 0;
+  const originalPrice =
+    product.variants?.[0]?.compareAtPrice?.amount != null
+      ? Number(product.variants[0].compareAtPrice.amount)
+      : null;
+  const currentPrice = Number(product.price) || 0;
+
+  const discountPercentage = originalPrice
+    ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100)
+    : 0;
 
   // Generate rating (use product rating if available, default to 4-5 stars)
-  const rating = product.rating || (4 + Math.random());
-  const reviewCount = product.reviewCount || Math.floor(Math.random() * 500) + 50;
+  const rating = product.rating || 4 + Math.random();
+  const reviewCount =
+    product.reviewCount || Math.floor(Math.random() * 500) + 50;
+
+  // Add to Cart handler
+  const handleAddToCart = (e) => {
+    e.preventDefault();
+    addToCart(product);
+  };
 
   return (
     <motion.div
@@ -31,18 +45,6 @@ const ProductCard = ({ product }) => {
           </div>
         )}
 
-        {/* Wishlist Heart Icon */}
-        <button
-          className="absolute top-3 right-3 z-10 bg-white/90 hover:bg-white p-2 rounded-full transition-all duration-200 hover:scale-110"
-          onClick={(e) => {
-            e.preventDefault();
-                    ();
-            // Add wishlist functionality here
-          }}
-        >
-          <Heart className="w-5 h-5 text-zinc-900 hover:text-red-500 transition-colors" />
-        </button>
-
         {/* Product Image */}
         <Link to={`/products/${product.handle}`}>
           <img
@@ -51,7 +53,7 @@ const ProductCard = ({ product }) => {
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
         </Link>
-
+      </div>
 
       <div className="p-4">
         {/* Category */}
@@ -90,7 +92,7 @@ const ProductCard = ({ product }) => {
           <span className="text-2xl font-bold text-orange-500">
             ${currentPrice.toFixed(2)}
           </span>
-          {discountPercentage > 0 && (
+          {discountPercentage > 0 && originalPrice && (
             <span className="text-gray-500 line-through text-sm">
               ${originalPrice.toFixed(2)}
             </span>
@@ -102,11 +104,8 @@ const ProductCard = ({ product }) => {
 
         {/* Add to Cart Button */}
         <button
-          onClick={(e) => {
-            e.preventDefault();
-                    ();
-            addToCart(product);
-          }}
+          type="button"
+          onClick={handleAddToCart}
           className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:scale-105 active:scale-95"
         >
           <ShoppingCart className="w-5 h-5" />

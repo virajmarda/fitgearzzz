@@ -8,9 +8,9 @@ const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
 
   // Calculate discount percentage
-  const originalPrice = product.variants?.[0]?.compareAtPrice?.amount || product.price * 1.2;
+  const originalPrice = product.variants?.[0]?.compareAtPrice?.amount || null;
   const currentPrice = product.price;
-  const discountPercentage = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
+    const discountPercentage = originalPrice ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100) : 0;
 
   // Generate rating (use product rating if available, default to 4-5 stars)
   const rating = product.rating || (4 + Math.random());

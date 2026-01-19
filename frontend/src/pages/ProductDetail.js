@@ -22,6 +22,7 @@ const ProductDetail = () => {
   const [showAuth, setShowAuth] = useState(false);
   const [loadingProduct, setLoadingProduct] = useState(true);
   const [reviews, setReviews] = useState({ reviews: [], rating: 0, reviewCount: 0 });
+    const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [loadingReviews, setLoadingReviews] = useState(true);
 
   useEffect(() => {
@@ -104,18 +105,51 @@ const ProductDetail = () => {
           animate={{ opacity: 1, y: 0 }}
         >
           {/* Left: Image */}
-          <div className="relative bg-zinc-900 rounded-2xl overflow-hidden">
-            {discount > 0 && (
-              <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold z-10">
-                -{discount}% OFF
+<div className="space-y-4">
+              {/* Main Image */}
+              <div className="relative bg-zinc-900 rounded-2xl overflow-hidden aspect-square">
+                {discount > 0 && (
+                  <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold z-10">
+                    -{discount}% OFF
+                  </div>
+                )}
+                <img
+                  src={(product?.images || [])[selectedImageIndex] || product?.image || '/placeholder.png'}
+                  alt={product?.title}
+                  className="w-full h-full object-cover"
+                />
               </div>
-            )}
-            <img
-              src={product.image || product.featuredImage?.url || '/placeholder.png'}
-              alt={product.title}
-              className="w-full h-full object-cover"
-            />
-          </div>
+
+              {/* Thumbnail Grid */}
+              {(product?.images || []).length > 1 && (
+                <div className="grid grid-cols-4 gap-3">
+                  {(product?.images || []).slice(0, 4).map((img, index) => (
+                    <div
+                      key={index}
+                      onClick={() => setSelectedImageIndex(index)}
+                      className={`relative aspect-square rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${
+                        selectedImageIndex === index
+                          ? 'border-orange-500 scale-105'
+                          : 'border-zinc-800 hover:border-zinc-600'
+                      }`}
+                    >
+                      <img
+                        src={img}
+                        alt={`${product?.title} ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                      {index === 3 && (product?.images || []).length > 4 && (
+                        <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+                          <span className="text-white text-2xl font-bold">
+                            +{(product?.images || []).length - 4}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
           {/* Right: Info */}
           <div className="space-y-6">

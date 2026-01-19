@@ -1,11 +1,10 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';import { Star, ShoppingCart, Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';import { Star, ShoppingCart, Heart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { motion } from 'framer-motion';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
-    const navigate = useNavigate();
 
   // Calculate discount percentage
   const originalPrice = product.variants?.[0]?.compareAtPrice?.amount || null;
@@ -21,11 +20,9 @@ const ProductCard = ({ product }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      onClick={() => navigate(`/products/${product.handle}`)}
-      className="bg-zinc-900 rounded-xl overflow-hidden group hover:shadow-2xl hover:shadow-orange-500/20 transition-all duration-300 border border-zinc-800 hover:border-orange-500/50 cursor-pointer"
+      className="bg-zinc-900 rounded-xl overflow-hidden group hover:shadow-2xl hover:shadow-orange-500/20 transition-all duration-300 border border-zinc-800 hover:border-orange-500/50"
     >
       <div className="relative aspect-square overflow-hidden bg-zinc-800">
-        {/* Discount Badge */}
         {discountPercentage > 0 && (
           <div className="absolute top-3 left-3 z-10">
             <span className="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
@@ -39,7 +36,7 @@ const ProductCard = ({ product }) => {
           className="absolute top-3 right-3 z-10 bg-white/90 hover:bg-white p-2 rounded-full transition-all duration-200 hover:scale-110"
           onClick={(e) => {
             e.preventDefault();
-                    e.stopPropagation();
+                    ();
             // Add wishlist functionality here
           }}
         >
@@ -107,7 +104,7 @@ const ProductCard = ({ product }) => {
         <button
           onClick={(e) => {
             e.preventDefault();
-                    e.stopPropagation();
+                    ();
             addToCart(product);
           }}
           className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:scale-105 active:scale-95"

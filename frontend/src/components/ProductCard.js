@@ -90,11 +90,11 @@ const ProductCard = ({ product }) => {
         {/* Price Section */}
         <div className="flex items-center gap-3 mb-4">
           <span className="text-2xl font-bold text-orange-500">
-            ${currentPrice.toFixed(2)}
+            ₹{currentPrice.toFixed(2)}
           </span>
           {discountPercentage > 0 && originalPrice && (
             <span className="text-gray-500 line-through text-sm">
-              ${originalPrice.toFixed(2)}
+              ₹{originalPrice.toFixed(2)}
             </span>
           )}
           <span className="ml-auto text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded">

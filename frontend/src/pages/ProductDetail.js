@@ -231,9 +231,15 @@ const ProductDetail = () => {
             {product.description && (
               <div className="space-y-3">
                 <h2 className="text-lg font-bold text-white">Description</h2>
-            <div className="text-zinc-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />   
-          </div>
-        }
+                <div
+                  className="text-zinc-300 leading-relaxed"
+                  dangerouslySetInnerHTML={{
+                    __html: product.descriptionHtml || product.description,
+                  }}
+                />
+              </div>
+            )}
+
             {/* Quantity and Add to Cart */}
             <div className="space-y-4">
               <div className="flex items-center gap-1 text-zinc-300">

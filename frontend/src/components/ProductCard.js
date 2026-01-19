@@ -1,11 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Star, ShoppingCart, Heart } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';import { Star, ShoppingCart, Heart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { motion } from 'framer-motion';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
+    const navigate = useNavigate();
 
   // Calculate discount percentage
   const originalPrice = product.variants?.[0]?.compareAtPrice?.amount || null;
@@ -21,7 +21,8 @@ const ProductCard = ({ product }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="bg-zinc-900 rounded-xl overflow-hidden group hover:shadow-2xl hover:shadow-orange-500/20 transition-all duration-300 border border-zinc-800 hover:border-orange-500/50"
+      onClick={() => navigate(`/products/${product.handle}`)}
+      className="bg-zinc-900 rounded-xl overflow-hidden group hover:shadow-2xl hover:shadow-orange-500/20 transition-all duration-300 border border-zinc-800 hover:border-orange-500/50 cursor-pointer"
     >
       <div className="relative aspect-square overflow-hidden bg-zinc-800">
         {/* Discount Badge */}
@@ -38,6 +39,7 @@ const ProductCard = ({ product }) => {
           className="absolute top-3 right-3 z-10 bg-white/90 hover:bg-white p-2 rounded-full transition-all duration-200 hover:scale-110"
           onClick={(e) => {
             e.preventDefault();
+                    e.stopPropagation();
             // Add wishlist functionality here
           }}
         >
@@ -53,16 +55,6 @@ const ProductCard = ({ product }) => {
           />
         </Link>
 
-        {/* Quick View Overlay on Hover */}
-        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-          <Link
-            to={`/products/${product.handle}`}
-            className="bg-orange-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
-          >
-            Quick View
-          </Link>
-        </div>
-      </div>
 
       <div className="p-4">
         {/* Category */}
@@ -115,6 +107,7 @@ const ProductCard = ({ product }) => {
         <button
           onClick={(e) => {
             e.preventDefault();
+                    e.stopPropagation();
             addToCart(product);
           }}
           className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:scale-105 active:scale-95"

@@ -16,13 +16,18 @@ const ProductDetail = () => {
   const { handle } = useParams();
   const { user } = useAuth();
   const { addToCart } = useCart();
+
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [loadingProduct, setLoadingProduct] = useState(true);
-  const [reviews, setReviews] = useState({ reviews: [], rating: 0, reviewCount: 0 });
-    const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [reviews, setReviews] = useState({
+    reviews: [],
+    rating: 0,
+    reviewCount: 0,
+  });
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [loadingReviews, setLoadingReviews] = useState(true);
 
   useEffect(() => {
@@ -89,73 +94,82 @@ const ProductDetail = () => {
     );
   }
 
-  // Calculate discount percentage
-  const originalPrice =
-    product.variants?.[0]?.compareAtPrice?.amount != null
-      ? Number(product.variants[0].compareAtPrice.amount)
-      : null;
-  const currentPrice = Number(product.price) || 0;
+  // Prices (assuming Shopify-like shape)
+  const rawPrice = product.price ?? product.variants?.[0]?.price;
+  const rawCompareAt =
+    product.variants?.[0]?.compareAtPrice?.amount ?? product.compareAtPrice;
 
-  const discountPercentage = originalPrice
-    ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100)
-    : 0;
+  const price = Number(rawPrice) || 0;
+  const compareAtPrice =
+    rawCompareAt != null && !Number.isNaN(Number(rawCompareAt))
+      ? Number(rawCompareAt)
+      : null;
+
+  const discount =
+    compareAtPrice && compareAtPrice > price
+      ? Math.round(((compareAtPrice - price) / compareAtPrice) * 100)
+      : 0;
 
   return (
     <div className="min-h-screen bg-zinc-950 pt-24 pb-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-
         {/* Product layout */}
         <motion.div
           className="grid grid-cols-1 lg:grid-cols-2 gap-12"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          {/* Left: Image */}
-<div className="space-y-4">
-              {/* Main Image */}
-              <div className="relative bg-zinc-900 rounded-2xl overflow-hidden aspect-square">
-                {discount > 0 && (
-                  <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold z-10">
-                    -{discount}% OFF
-                  </div>
-                )}
-                <img
-                  src={(product?.images || [])[selectedImageIndex] || product?.image || '/placeholder.png'}
-                  alt={product?.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+          {/* Left: Images */}
+          <div className="space-y-4">
+            {/* Main Image */}
+            <div className="relative bg-zinc-900 rounded-2xl overflow-hidden aspect-square">
+              {discount > 0 && (
+                <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold z-10">
+                  -{discount}% OFF
+                </div>
+              )}
+              <img
+                src={
+                  (product?.images || [])[selectedImageIndex] ||
+                  product?.image ||
+                  '/placeholder.png'
+                }
+                alt={product?.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
 
-              {/* Thumbnail Grid */}
-              {(product?.images || []).length > 1 && (
-                <div className="grid grid-cols-4 gap-3">
-                  {(product?.images || []).slice(0, 4).map((img, index) => (
-                    <div
-                      key={index}
-                      onClick={() => setSelectedImageIndex(index)}
-                      className={`relative aspect-square rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${
-                        selectedImageIndex === index
-                          ? 'border-orange-500 scale-105'
-                          : 'border-zinc-800 hover:border-zinc-600'
-                      }`}
-                    >
-                      <img
-                        src={img}
-                        alt={`${product?.title} ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                      {index === 3 && (product?.images || []).length > 4 && (
+            {/* Thumbnail Grid */}
+            {(product?.images || []).length > 1 && (
+              <div className="grid grid-cols-4 gap-3">
+                {(product?.images || []).slice(0, 4).map((img, index) => (
+                  <div
+                    key={index}
+                    onClick={() => setSelectedImageIndex(index)}
+                    className={`relative aspect-square rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${
+                      selectedImageIndex === index
+                        ? 'border-orange-500 scale-105'
+                        : 'border-zinc-800 hover:border-zinc-600'
+                    }`}
+                  >
+                    <img
+                      src={img}
+                      alt={`${product?.title} ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    {index === 3 &&
+                      (product?.images || []).length > 4 && (
                         <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
                           <span className="text-white text-2xl font-bold">
                             +{(product?.images || []).length - 4}
                           </span>
                         </div>
                       )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
           {/* Right: Info */}
           <div className="space-y-6">
@@ -178,7 +192,10 @@ const ProductDetail = () => {
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
                 {[1, 2, 3, 4].map((star) => (
-                  <Star key={star} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                  <Star
+                    key={star}
+                    className="w-5 h-5 fill-yellow-400 text-yellow-400"
+                  />
                 ))}
                 <Star className="w-5 h-5 text-zinc-600" />
               </div>
@@ -193,15 +210,15 @@ const ProductDetail = () => {
                 <span className="text-4xl font-bold text-white">
                   ₹{price.toFixed(2)}
                 </span>
-                {discount > 0 && (
-                  <span className="text-2xl text-zinc-500 line-through">
-                    ₹{compareAtPrice.toFixed(2)}
-                  </span>
-                )}
-                {discount > 0 && (
-                  <span className="px-3 py-1 bg-red-500 text-white rounded-md text-sm font-semibold">
-                    SAVE ₹{(compareAtPrice - price).toFixed(2)}
-                  </span>
+                {discount > 0 && compareAtPrice && (
+                  <>
+                    <span className="text-2xl text-zinc-500 line-through">
+                      ₹{compareAtPrice.toFixed(2)}
+                    </span>
+                    <span className="px-3 py-1 bg-red-500 text-white rounded-md text-sm font-semibold">
+                      SAVE ₹{(compareAtPrice - price).toFixed(2)}
+                    </span>
+                  </>
                 )}
               </div>
               <div className="flex items-center gap-2 text-green-400">
@@ -210,16 +227,15 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            {/* Description - Using Shopify Product Description */}
+            {/* Description */}
             {product.description && (
               <div className="space-y-3">
-              <h2 className="text-lg font-bold text-white">Description</h2>
-              <p className="text-zinc-300 leading-relaxed whitespace-pre-line">
-            {product.description}
-              </p>
-             </div>
-           )}
-
+                <h2 className="text-lg font-bold text-white">Description</h2>
+                <p className="text-zinc-300 leading-relaxed whitespace-pre-line">
+                  {product.description}
+                </p>
+              </div>
+            )}
 
             {/* Quantity and Add to Cart */}
             <div className="space-y-4">
@@ -229,12 +245,16 @@ const ProductDetail = () => {
               <div className="flex items-center gap-4">
                 <div className="flex items-center bg-zinc-900 rounded-lg">
                   <button
-                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    onClick={() =>
+                      setQuantity((q) => Math.max(1, q - 1))
+                    }
                     className="w-10 h-10 flex items-center justify-center text-zinc-300 hover:text-orange-500 transition-colors font-bold"
                   >
                     −
                   </button>
-                  <span className="w-12 text-center text-white font-semibold">{quantity}</span>
+                  <span className="w-12 text-center text-white font-semibold">
+                    {quantity}
+                  </span>
                   <button
                     onClick={() => setQuantity((q) => q + 1)}
                     className="w-10 h-10 flex items-center justify-center text-zinc-300 hover:text-orange-500 transition-colors font-bold"
@@ -284,7 +304,9 @@ const ProductDetail = () => {
                 />
               ) : (
                 <div className="bg-zinc-900 rounded-2xl p-8 text-center">
-                  <p className="text-zinc-400 mb-4">Please log in to write a review</p>
+                  <p className="text-zinc-400 mb-4">
+                    Please log in to write a review
+                  </p>
                   <Button
                     onClick={() => setShowAuth(true)}
                     className="bg-orange-500 hover:bg-orange-600 text-white font-semibold uppercase tracking-wide rounded-lg"

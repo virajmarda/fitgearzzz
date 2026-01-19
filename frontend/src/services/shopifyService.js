@@ -156,6 +156,7 @@ export const fetchProductByHandle = async (handle) => {
         id
         title
         description
+              descriptionHtml
         handle
         productType
         vendor
@@ -203,6 +204,7 @@ export const fetchProductByHandle = async (handle) => {
       id: product.id,
       title: product.title,
       description: product.description,
+          descriptionHtml: product.descriptionHtml,
       price: parseFloat(product.priceRange?.minVariantPrice?.amount || 0),
       image: product.images?.edges[0]?.node?.url || '',
       images: product.images?.edges?.map(({ node }) => node.url) || [],

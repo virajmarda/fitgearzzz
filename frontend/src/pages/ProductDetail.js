@@ -89,10 +89,16 @@ const ProductDetail = () => {
     );
   }
 
-  // Calculate price and discount
-  const price = parseFloat(product.price || product.variants?.[0]?.priceV2?.amount || 0);
-  const compareAtPrice = parseFloat(product.compareAtPrice || price * 1.2);
-  const discount = Math.round(((compareAtPrice - price) / compareAtPrice) * 100);
+  // Calculate discount percentage
+  const originalPrice =
+    product.variants?.[0]?.compareAtPrice?.amount != null
+      ? Number(product.variants[0].compareAtPrice.amount)
+      : null;
+  const currentPrice = Number(product.price) || 0;
+
+  const discountPercentage = originalPrice
+    ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100)
+    : 0;
 
   return (
     <div className="min-h-screen bg-zinc-950 pt-24 pb-16 px-4 sm:px-6 lg:px-8">

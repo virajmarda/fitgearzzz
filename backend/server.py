@@ -1388,6 +1388,7 @@ app.add_middleware(
         "https://account.fitgearzzz.com",
         "http://localhost:3000",
         "http://localhost:5173",
+        "https://checkout.fitgearzzz.com",
     ],
     allow_methods=["*"],
     allow_headers=["*"],

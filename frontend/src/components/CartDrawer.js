@@ -125,7 +125,7 @@ const CartDrawer = ({ open, onClose }) => {
                         className="text-orange-500 font-bold mt-1"
                         data-testid="cart-item-price"
                       >
-                        ${parseFloat(variant.priceV2.amount).toFixed(2)}
+                        ₹{parseFloat(variant.priceV2.amount).toFixed(2)}
                       </p>
                       <div className="flex items-center space-x-2 mt-2">
                         <button

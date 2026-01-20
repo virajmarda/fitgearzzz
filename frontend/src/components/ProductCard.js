@@ -23,10 +23,27 @@ const ProductCard = ({ product }) => {
   const reviewCount =
     product.reviewCount || Math.floor(Math.random() * 500) + 50;
 
-  // Add to Cart handler
+  // Add to Cart handler - FIXED: Now properly passes variant information
   const handleAddToCart = (e) => {
     e.preventDefault();
-    addToCart(product);
+    
+    // Get the first variant or construct from product data
+    const variantId = product.variantId || product.variants?.[0]?.id || `gid://shopify/ProductVariant/${product.id.split('/').pop()}`;
+    
+    // Create properly structured item for cart
+    const cartItem = {
+      merchandiseId: variantId,
+      quantity: 1,
+      product: {
+        id: product.id,
+        title: product.title,
+        image: product.image || product.images?.[0],
+        price: currentPrice,
+        handle: product.handle
+      }
+    };
+    
+    addToCart(cartItem);
   };
 
   return (

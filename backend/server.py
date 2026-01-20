@@ -454,6 +454,7 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         "name": current_user["name"],
         "firstName": current_user["firstName"],
         "lastName": current_user["lastName"],
+                "created_at": "2024-01-01T00:00:00Z", "role": "customer",
     }
 
 
@@ -1187,16 +1188,16 @@ async def get_orders(current_user: dict = Depends(get_current_user)):
         return [
             {
                 "id": order["node"]["id"],
-                "orderNumber": order["node"]["name"],
-                "date": order["node"]["processedAt"],
-                "status": order["node"]["fulfillments"]["nodes"][0]["status"] if order["node"]["fulfillments"]["nodes"] else "PENDING",
+                1191
+                ,
+            "created_at": order["node"]["processedAt"],                "status": order["node"]["fulfillments"]["nodes"][0]["status"] if order["node"]["fulfillments"]["nodes"] else "PENDING",
                 "total": float(order["node"]["totalPrice"]["amount"]),
                 "items": [
                     {
-                        "name": item["title"],
-                        "quantity": item["quantity"],
+                "product_name": item["title"],                        "quantity": item["quantity"],
                         "price": float(item["price"]["amount"]),
-                        "image": item.get("image", {}).get("url", ""),
+                "product_image": item.get("image", {}).get("url", ""),1328
+                    1310
                     }
                     for item in order["node"]["lineItems"]["nodes"]
                 ],
@@ -1345,13 +1346,27 @@ async def get_addresses(current_user: dict = Depends(get_current_user)):
         
         customer_data = result.get("data", {}).get("customer", {})
         
-        return {
-            "defaultAddress": customer_data.get("defaultAddress"),
-            "addresses": [
-                edge["node"]
-                for edge in customer_data.get("addresses", {}).get("edges", [])
-            ],
-        }
+            default_address = customer_data.get("defaultAddress")
+    all_addresses = customer_data.get("addresses", {}).get("edges", [])
+    
+    # Transform to match Profile.js expected format
+    formatted_addresses = []
+    for edge in all_addresses:
+        addr = edge["node"]
+        formatted_addresses.append({
+            "id": addr.get("id", ""),
+            "full_name": "",  # Shopify doesn't store name in address
+            "phone": "",
+            "address_line1": addr.get("address1", ""),
+            "address_line2": addr.get("address2", ""),
+            "city": addr.get("city", ""),
+            "state": addr.get("provinceCode", ""),
+            "zip_code": addr.get("zip", ""),
+            "country": addr.get("countryCode", ""),
+            "is_default": (default_address and addr.get("id") == default_address.get("id")) if default_address else False
+        })
+    
+    return formatted_addresses}
     
     except HTTPException:
         raise

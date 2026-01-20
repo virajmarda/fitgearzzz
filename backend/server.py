@@ -25,6 +25,23 @@ logger = logging.getLogger(__name__)
 # Create the main app
 app = FastAPI()
 
+# ✅ CRITICAL FIX: CORS must be added BEFORE routes for Vercel
+app.add_middleware(
+    CORSMiddleware,
+    allow_credentials=True,
+    allow_origins=[
+        "https://fitgearzzz.com",
+        "https://www.fitgearzzz.com",
+        "https://account.fitgearzzz.com",
+        "https://checkout.fitgearzzz.com",
+        "http://localhost:3000",
+        "http://localhost:5173",
+    ],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+)
+
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
@@ -66,7 +83,7 @@ logger.info(
 )
 
 
-# ✅ NEW: JWT Decoding Helper
+# ✅ JWT Decoding Helper
 def decode_jwt(token: str) -> dict:
     """Decode JWT token without verification (for id_token from Shopify)"""
     try:
@@ -91,11 +108,11 @@ def decode_jwt(token: str) -> dict:
         raise
 
 
-# ✅ NEW: Cache for customer data by access token
+# ✅ Cache for customer data by access token
 customer_cache = {}
 
 
-# ✅ NEW: Dynamic endpoint discovery
+# ✅ Dynamic endpoint discovery
 async def get_customer_api_endpoint():
     """Dynamically fetch the Customer Account API GraphQL endpoint"""
     try:
@@ -131,7 +148,7 @@ async def verify_shopify_token(access_token: str, id_token: Optional[str] = None
         
         logger.info("Token format verified (shcat_)")
         
-        # ✅ NEW: If we have id_token, decode it to get real customer data
+        # ✅ If we have id_token, decode it to get real customer data
         if id_token:
             try:
                 decoded_payload = decode_jwt(id_token)
@@ -325,7 +342,7 @@ class CartLinesAddInput(BaseModel):
     cartId: str
     lines: List[CartLineInput]
 
-# Pydantic models for cart operations (add at top with other models)
+# Pydantic models for cart operations
 class CartLinesUpdateInput(BaseModel):
     cartId: str
     lines: List[Dict]
@@ -412,7 +429,7 @@ async def shopify_oauth_callback(request: ShopifyOAuthCallbackRequest):
                 f"Expires in: {token_response.get('expires_in')} seconds"
             )
             
-            # ✅ NEW: Decode id_token and cache customer data
+            # ✅ Decode id_token and cache customer data
             customer_token = token_response.get("access_token")
             id_token = token_response.get("id_token")
             
@@ -454,11 +471,12 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         "name": current_user["name"],
         "firstName": current_user["firstName"],
         "lastName": current_user["lastName"],
-                "created_at": "2024-01-01T00:00:00Z", "role": "customer",
+        "created_at": "2024-01-01T00:00:00Z",
+        "role": "customer",
     }
 
 
-# Product Routes (unchanged)
+# Product Routes
 @api_router.get("/products")
 async def get_products(
     category: Optional[str] = None,
@@ -728,7 +746,7 @@ async def submit_review(review_data: ReviewSubmitInput):
         raise HTTPException(status_code=500, detail=f"Failed to submit review: {str(e)}")
         
 
-# ✅ NEW: Checkout using Storefront API
+# ✅ Checkout using Storefront API
 @api_router.post("/checkout/create")
 async def create_checkout_from_cart(cart_id: str):
     """
@@ -768,7 +786,7 @@ async def create_checkout_from_cart(cart_id: str):
     }
 
 
-# ✅ FIXED: Cart Routes - Using Storefront API (Customer Account API doesn't support carts)
+# ✅ Cart Routes - Using Storefront API
 @api_router.post("/cart/create")
 async def create_cart(cart_input: Optional[CartCreateInput] = None):
     """Create a new cart using Storefront API"""
@@ -840,8 +858,6 @@ async def create_cart(cart_input: Optional[CartCreateInput] = None):
     return result.get("data", {}).get("cartCreate", {}).get("cart", {})
 
 
-from fastapi import HTTPException
-
 @api_router.post("/cart/add")
 async def add_to_cart(cart_data: CartLinesAddInput):
     """Add items to cart using Storefront API"""
@@ -895,24 +911,23 @@ async def add_to_cart(cart_data: CartLinesAddInput):
 
     # If mutation missing entirely
     if cart_lines_add is None:
-      raise HTTPException(status_code=400, detail="cartLinesAdd returned null")
+        raise HTTPException(status_code=400, detail="cartLinesAdd returned null")
 
     # If Shopify reports userErrors
     user_errors = cart_lines_add.get("userErrors") or []
     if user_errors:
-      # Log full errors on server
-      print("cartLinesAdd userErrors:", user_errors)
-      raise HTTPException(status_code=400, detail=user_errors[0].get("message", "Cart update failed"))
+        # Log full errors on server
+        print("cartLinesAdd userErrors:", user_errors)
+        raise HTTPException(status_code=400, detail=user_errors[0].get("message", "Cart update failed"))
 
     cart = cart_lines_add.get("cart")
     if not cart or not cart.get("id"):
-      raise HTTPException(status_code=400, detail="No cart returned from Shopify")
+        raise HTTPException(status_code=400, detail="No cart returned from Shopify")
 
     # Success: return full cart
     return cart
 
 
-# Update the endpoints to use request bodies
 @api_router.post("/cart/update")
 async def update_cart_lines(data: CartLinesUpdateInput):
     """Update cart line items using Storefront API"""
@@ -1040,7 +1055,7 @@ async def remove_cart_lines(data: CartLinesRemoveInput):
     
     return result.get("data", {}).get("cartLinesRemove", {}).get("cart", {})
 
-@api_router.get("/cart/{cart_id:path}")  # Note: {cart_id:path} to capture full GID
+@api_router.get("/cart/{cart_id:path}")
 async def get_cart_by_id(cart_id: str):
     """Get cart details using Storefront API"""
     
@@ -1124,7 +1139,7 @@ async def get_cart(current_user: dict = Depends(get_current_user)):
     }
 
 
-# ✅ UPDATED: Orders Routes - Using Customer Account API
+# ✅ Orders Routes - Using Customer Account API
 @api_router.get("/orders")
 async def get_orders(current_user: dict = Depends(get_current_user)):
     """Get customer orders from Shopify Customer Account API"""
@@ -1188,16 +1203,16 @@ async def get_orders(current_user: dict = Depends(get_current_user)):
         return [
             {
                 "id": order["node"]["id"],
-                1191
-                ,
-            "created_at": order["node"]["processedAt"],                "status": order["node"]["fulfillments"]["nodes"][0]["status"] if order["node"]["fulfillments"]["nodes"] else "PENDING",
+                "orderNumber": order["node"]["name"],
+                "created_at": order["node"]["processedAt"],
+                "status": order["node"]["fulfillments"]["nodes"][0]["status"] if order["node"]["fulfillments"]["nodes"] else "PENDING",
                 "total": float(order["node"]["totalPrice"]["amount"]),
                 "items": [
                     {
-                "product_name": item["title"],                        "quantity": item["quantity"],
+                        "product_name": item["title"],
+                        "quantity": item["quantity"],
                         "price": float(item["price"]["amount"]),
-                "product_image": item.get("image", {}).get("url", ""),1328
-                    1310
+                        "product_image": item.get("image", {}).get("url", ""),
                     }
                     for item in order["node"]["lineItems"]["nodes"]
                 ],
@@ -1299,7 +1314,7 @@ async def get_order(
         raise HTTPException(status_code=500, detail="Failed to fetch order")
 
 
-# ✅ NEW: Addresses Routes - Using Customer Account API
+# ✅ Addresses Routes - Using Customer Account API
 @api_router.get("/addresses")
 async def get_addresses(current_user: dict = Depends(get_current_user)):
     """Get customer addresses from Shopify Customer Account API"""
@@ -1346,27 +1361,27 @@ async def get_addresses(current_user: dict = Depends(get_current_user)):
         
         customer_data = result.get("data", {}).get("customer", {})
         
-            default_address = customer_data.get("defaultAddress")
-    all_addresses = customer_data.get("addresses", {}).get("edges", [])
-    
-    # Transform to match Profile.js expected format
-    formatted_addresses = []
-    for edge in all_addresses:
-        addr = edge["node"]
-        formatted_addresses.append({
-            "id": addr.get("id", ""),
-            "full_name": "",  # Shopify doesn't store name in address
-            "phone": "",
-            "address_line1": addr.get("address1", ""),
-            "address_line2": addr.get("address2", ""),
-            "city": addr.get("city", ""),
-            "state": addr.get("provinceCode", ""),
-            "zip_code": addr.get("zip", ""),
-            "country": addr.get("countryCode", ""),
-            "is_default": (default_address and addr.get("id") == default_address.get("id")) if default_address else False
-        })
-    
-    return formatted_addresses}
+        default_address = customer_data.get("defaultAddress")
+        all_addresses = customer_data.get("addresses", {}).get("edges", [])
+        
+        # Transform to match Profile.js expected format
+        formatted_addresses = []
+        for edge in all_addresses:
+            addr = edge["node"]
+            formatted_addresses.append({
+                "id": addr.get("id", ""),
+                "full_name": "",  # Shopify doesn't store name in address
+                "phone": "",
+                "address_line1": addr.get("address1", ""),
+                "address_line2": addr.get("address2", ""),
+                "city": addr.get("city", ""),
+                "state": addr.get("provinceCode", ""),
+                "zip_code": addr.get("zip", ""),
+                "country": addr.get("countryCode", ""),
+                "is_default": (default_address and addr.get("id") == default_address.get("id")) if default_address else False
+            })
+        
+        return formatted_addresses
     
     except HTTPException:
         raise
@@ -1377,22 +1392,6 @@ async def get_addresses(current_user: dict = Depends(get_current_user)):
 
 # Include the router in the main app
 app.include_router(api_router)
-
-# CORS Configuration
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=[
-        "https://fitgearzzz.com",
-        "https://www.fitgearzzz.com",
-        "https://account.fitgearzzz.com",
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "https://checkout.fitgearzzz.com",
-    ],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 
 # Health check endpoint

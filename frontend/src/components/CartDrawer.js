@@ -174,7 +174,7 @@ const CartDrawer = ({ open, onClose }) => {
                 className="font-oswald text-2xl font-bold text-orange-500"
                 data-testid="cart-subtotal"
               >
-                ${total.toFixed(2)}
+                ₹{total.toFixed(2)}
               </span>
             </div>
             <Button

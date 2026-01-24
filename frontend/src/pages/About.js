@@ -12,10 +12,10 @@ const About = () => {
           transition={{ duration: 0.5 }}
         >
           <h1 className="font-oswald text-5xl sm:text-6xl font-bold text-white mb-6 tracking-tight uppercase" data-testid="about-title">
-            About FitGear
+            About FitGearzzz
           </h1>
           <p className="text-xl text-zinc-400 font-manrope mb-12 leading-relaxed">
-            Your trusted partner in fitness excellence since 2020
+            Your trusted partner in fitness excellence since 2026
           </p>
         </motion.div>
 
@@ -28,13 +28,13 @@ const About = () => {
           <h2 className="font-oswald text-3xl font-bold text-white mb-6 uppercase">Our Story</h2>
           <div className="space-y-4 text-zinc-300 font-manrope leading-relaxed">
             <p>
-              FitGear was born from a simple belief: everyone deserves access to premium fitness equipment that helps them achieve their goals. Founded by fitness enthusiasts who were tired of overpriced, low-quality gear, we set out to change the industry.
+              FitGearzzz was born from a simple belief: everyone deserves access to premium fitness equipment that helps them achieve their goals. Founded by fitness enthusiasts who were tired of overpriced, low-quality gear, we set out to change the industry.
             </p>
             <p>
               What started as a small garage operation has grown into a trusted brand serving thousands of customers worldwide. We've built our reputation on three core principles: quality, affordability, and exceptional customer service.
             </p>
             <p>
-              Today, FitGear offers a comprehensive range of fitness equipment, supplements, and apparel, all carefully selected and tested by our team of fitness professionals. We partner with leading manufacturers to bring you products that deliver results without breaking the bank.
+              Today, FitGearzzz offers a comprehensive range of fitness equipment, supplements, and apparel, all carefully selected and tested by our team of fitness professionals. We partner with leading manufacturers to bring you products that deliver results without breaking the bank.
             </p>
           </div>
         </motion.div>
@@ -107,7 +107,7 @@ const About = () => {
           transition={{ duration: 0.5, delay: 0.7 }}
           className="glass-card rounded-3xl p-8 shadow-lg"
         >
-          <h2 className="font-oswald text-3xl font-bold text-white mb-6 uppercase">Why Choose FitGear?</h2>
+          <h2 className="font-oswald text-3xl font-bold text-white mb-6 uppercase">Why Choose FitGearzzz?</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <h3 className="font-oswald text-xl font-semibold text-orange-500 mb-3">Premium Quality</h3>
@@ -124,13 +124,13 @@ const About = () => {
             <div>
               <h3 className="font-oswald text-xl font-semibold text-orange-500 mb-3">Fast Shipping</h3>
               <p className="text-zinc-300 font-manrope">
-                Free shipping on orders over $100 and fast delivery to get you training sooner.
+                Free shipping on all orders and fast delivery to get you training sooner.
               </p>
             </div>
             <div>
               <h3 className="font-oswald text-xl font-semibold text-orange-500 mb-3">Satisfaction Guarantee</h3>
               <p className="text-zinc-300 font-manrope">
-                30-day return policy on all products. If you're not satisfied, neither are we.
+                7-day return policy on all products. If you're not satisfied, neither are we.
               </p>
             </div>
           </div>

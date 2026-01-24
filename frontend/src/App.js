@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter, Routes, Route, useNavigate, useSearchParams, } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate, useSearchParams,, useLocation } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import { Toaster } from "./components/ui/sonner";
@@ -43,6 +43,14 @@ const CustomerSSOCallback = () => {
 };
 
 function App() {
+    const location = useLocation();
+
+  useEffect(() => {
+    // Track PageView on route change
+    if (window.fbq) {
+      window.fbq('track', 'PageView');
+    }
+  }, [location]);
   return (
     <AuthProvider>
       <CartProvider>

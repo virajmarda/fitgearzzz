@@ -21,7 +21,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import ShippingReturns from "./pages/ShippingReturns";
 import FAQ from "./pages/FAQ";
-import CatalogPage from "./pages/CatalogPage"; // ⬅️ new page
+import CatalogPage from "./pages/CatalogPage";
 import "./App.css";
 import './styles/shopify-buy-button.css';
 
@@ -31,7 +31,6 @@ const CustomerSSOCallback = () => {
 
   useEffect(() => {
     const returnTo = searchParams.get("return_to");
-
     if (returnTo) {
       window.location.href = decodeURIComponent(returnTo);
     } else {
@@ -42,8 +41,9 @@ const CustomerSSOCallback = () => {
   return null;
 };
 
-function App() {
-    const location = useLocation();
+// New component that uses useLocation - must be inside BrowserRouter
+const AppContent = () => {
+  const location = useLocation();
 
   useEffect(() => {
     // Track PageView on route change
@@ -51,47 +51,54 @@ function App() {
       window.fbq('track', 'PageView');
     }
   }, [location]);
+
+  return (
+    <div className="App min-h-screen bg-[#09090b] flex flex-col">
+      <Navbar />
+      <main className="flex-grow">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/catalog" element={<CatalogPage />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="/customer_identity/logout" element={<CustomerLogout />} />
+          <Route path="/customer_authentication/sso_hint" element={<CustomerSSOCallback />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/order-success" element={<OrderSuccess />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/products/:handle" element={<ProductDetail />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/shipping" element={<ShippingReturns />} />
+          <Route path="/faq" element={<FAQ />} />
+        </Routes>
+      </main>
+      <Footer />
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          className: "bg-zinc-900 border-zinc-800 text-white",
+          style: {
+            background: "#18181b",
+            color: "#fafafa",
+            border: "1px solid #27272a",
+          },
+        }}
+      />
+    </div>
+  );
+};
+
+function App() {
   return (
     <AuthProvider>
       <CartProvider>
         <BrowserRouter>
-          <div className="App min-h-screen bg-[#09090b] flex flex-col">
-            <Navbar />
-            <main className="flex-grow">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/catalog" element={<CatalogPage />} /> {/* ⬅️ new */}
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/auth/callback" element={<AuthCallback />} />
-                <Route path="/customer_identity/logout" element={<CustomerLogout />} />
-                <Route path="/customer_authentication/sso_hint" element={<CustomerSSOCallback />} />
-                <Route path="/orders" element={<Orders />} />
-                <Route path="/order-success" element={<OrderSuccess />} />
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/products/:handle" element={<ProductDetail />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/privacy" element={<PrivacyPolicy />} />
-                <Route path="/terms" element={<TermsOfService />} />
-                <Route path="/shipping" element={<ShippingReturns />} />
-                <Route path="/faq" element={<FAQ />} />
-              </Routes>
-            </main>
-            <Footer />
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                className: "bg-zinc-900 border-zinc-800 text-white",
-                style: {
-                  background: "#18181b",
-                  color: "#fafafa",
-                  border: "1px solid #27272a",
-                },
-              }}
-            />
-          </div>
+          <AppContent />
         </BrowserRouter>
       </CartProvider>
     </AuthProvider>

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter, Routes, Route, useNavigate, useSearchParams,, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import { Toaster } from "./components/ui/sonner";
@@ -71,7 +71,7 @@ function App() {
                 <Route path="/order-success" element={<OrderSuccess />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/products/:handle" element={<ProductDetail />} />
-                  <Route path="/about" element={<About />} />
+                <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/privacy" element={<PrivacyPolicy />} />
                 <Route path="/terms" element={<TermsOfService />} />

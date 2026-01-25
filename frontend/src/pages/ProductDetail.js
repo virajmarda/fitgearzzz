@@ -63,46 +63,68 @@ const ProductDetail = () => {
     setReviews(newReviewData);
   };
 
- const handleAddToCart = async () => {
-  if (!product || !product.variants || !product.variants[0]?.id) {
-    toast.error('Product variant not available');
-    return;
+  const handleAddToCart = async () => {
+    if (!product || !product.variants || !product.variants[0]?.id) {
+      toast.error('Product variant not available');
+      return;
+    }
+
+    const variant = product.variants[0];
+    const variantId = variant.id;
+
+    const price =
+      variant?.priceV2?.amount != null
+        ? Number(variant.priceV2.amount)
+        : product?.price != null
+        ? Number(product.price)
+        : 0;
+
+    const imageUrl =
+      (product.images && product.images[0]) ||
+      product.image ||
+      null;
+
+    try {
+      setIsAdding(true);
+      await addToCart(variantId, quantity, {
+        title: product.title,
+        imageUrl,
+        price,
+      });
+    } catch (error) {
+      console.error('Add to cart error in ProductDetail:', error);
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+  // While product is loading or missing, render a safe fallback
+  if (loadingProduct || !product) {
+    return (
+      <div className="min-h-screen bg-zinc-950 pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <p className="text-zinc-300">Loading product...</p>
+        </div>
+      </div>
+    );
   }
 
-  const variantId = product.variants[0].id;
+  // Price calculations (Shopify-like shape, guarded)
+  const firstVariant = product?.variants?.[0];
 
   const price =
-    Number(product.price ?? product.variants?.[0]?.price ?? 0);
+    firstVariant?.priceV2?.amount != null
+      ? Number(firstVariant.priceV2.amount)
+      : product?.price != null
+      ? Number(product.price)
+      : 0;
 
-  const imageUrl =
-    (product.images && product.images[0]) ||
-    product.image ||
-    null;
+  const compareAtRaw =
+    firstVariant?.compareAtPrice?.amount ?? product?.compareAtPrice;
 
-  try {
-    setIsAdding(true);
-    await addToCart(variantId, quantity, {
-      title: product.title,
-      imageUrl,
-      price,
-    });
-  } catch (error) {
-    console.error('Add to cart error in ProductDetail:', error);
-  } finally {
-    setIsAdding(false);
-  }
-};
-  
-
-  // Prices (assuming Shopify-like shape)
-  const rawPrice = product.price ?? product.variants?.[0]?.price;
-  const rawCompareAt =
-    product.variants?.[0]?.compareAtPrice?.amount ?? product.compareAtPrice;
-
-  const price = Number(rawPrice) || 0;
   const compareAtPrice =
-    rawCompareAt != null && !Number.isNaN(Number(rawCompareAt))
-      ? Number(rawCompareAt)
+    compareAtRaw != null && !Number.isNaN(Number(compareAtRaw))
+      ? Number(compareAtRaw)
       : null;
 
   const discount =

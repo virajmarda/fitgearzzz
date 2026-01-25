@@ -4,7 +4,6 @@ import { Button } from './ui/button';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
-import api from '../utils/api';
 
 const CartDrawer = ({ open, onClose }) => {
   const { user } = useAuth();
@@ -36,7 +35,6 @@ const CartDrawer = ({ open, onClose }) => {
   const total = getCartTotal();
   const count = getCartCount();
   const cartItems = cart?.lines?.edges || [];
-  const isGuestCart = cart?.isGuest;
 
   const handleCheckout = async () => {
     if (!cartItems.length) {
@@ -47,27 +45,6 @@ const CartDrawer = ({ open, onClose }) => {
     try {
       setIsCheckingOut(true);
 
-      // GUEST CHECKOUT: create cart in backend and redirect to checkout URL
-      if (isGuestCart) {
-        const guestLines = cartItems.map((edge) => ({
-          merchandiseId: edge.node.merchandise.id,
-          quantity: edge.node.quantity,
-        }));
-
-        const res = await api.post('/cart/guest-checkout', {
-          lines: guestLines,
-        });
-
-        const checkoutUrl = res.data?.checkoutUrl;
-        if (!checkoutUrl) {
-          throw new Error('No checkout URL returned');
-        }
-
-        window.location.href = checkoutUrl;
-        return;
-      }
-
-      // LOGGED-IN CHECKOUT
       const checkoutUrl = getCheckoutUrl() || cart?.checkoutUrl;
       if (!checkoutUrl) {
         throw new Error('No checkout URL available');
@@ -145,14 +122,12 @@ const CartDrawer = ({ open, onClose }) => {
             </div>
           ) : (
             <div className="space-y-4">
-              {cartItems.map((edge, index) => {
-                const item = edge?.node || edge || {};
+              {cartItems.map(({ node: item }) => {
                 const merchandise = item.merchandise || {};
                 const product = merchandise.product || {};
 
                 const imageUrl =
                   product.featuredImage?.url ||
-                  merchandise.featuredImage?.url ||
                   '/placeholder.png';
 
                 const title =
@@ -166,7 +141,7 @@ const CartDrawer = ({ open, onClose }) => {
                   merchandise.price ??
                   0;
 
-                const lineId = item.id || `guest-line-${index}`;
+                const lineId = item.id;
                 const quantity = item.quantity ?? 1;
 
                 return (

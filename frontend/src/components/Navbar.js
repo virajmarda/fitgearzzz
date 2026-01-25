@@ -39,18 +39,17 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-  logout(); // this will clear tokens and redirect to https://fitgearzzz.com
-};
+    logout(); // this will clear tokens and redirect to https://fitgearzzz.com
+  };
 
-  const cartCount = getCartCount(); // Now includes guest cart items from localStorage
+  const cartCount = getCartCount(); // Includes guest cart items
 
   const handleCartClick = () => {
     // Allow guest users to view cart
     setShowCart(true);
   };
-  
-  const handleMobileCartClick = () => {
 
+  const handleMobileCartClick = () => {
     // Allow guest users to view cart on mobile
     setShowCart(true);
     setShowMenu(false);
@@ -136,7 +135,7 @@ const Navbar = () => {
                 aria-label="Open shopping cart"
               >
                 <ShoppingCart className="w-6 h-6" />
-                {user && cartCount > 0 && (
+                {cartCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                     {cartCount}
                   </span>
@@ -213,7 +212,7 @@ const Navbar = () => {
                   <ShoppingCart className="w-5 h-5 mr-2" />
                   Cart
                 </span>
-                {user && cartCount > 0 && (
+                {cartCount > 0 && (
                   <span className="bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                     {cartCount}
                   </span>

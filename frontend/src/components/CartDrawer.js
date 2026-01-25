@@ -31,7 +31,7 @@ const CartDrawer = ({ open, onClose }) => {
   }, [open]);
 
   // Block cart completely if not logged in
-  if (!user || !open) return null;
+    if (!open) return null; // Allow guest users to view cart
 
   const total = getCartTotal();
   const count = getCartCount();
@@ -77,6 +77,21 @@ const CartDrawer = ({ open, onClose }) => {
             <X className="w-6 h-6" />
           </button>
         </div>
+              
+        {/* Soft login prompt for guest users */}
+        {!user && cartItems.length > 0 && (
+          <div className="bg-zinc-800/50 border-b border-zinc-700 p-3">
+            <p className="text-sm text-zinc-300 text-center">
+              <button 
+                onClick={() => window.location.href = '/login'} 
+                className="text-orange-500 hover:text-orange-400 underline"
+              >
+                Log in
+              </button>
+              {' '}to save your cart and checkout faster next time!
+            </p>
+          </div>
+        )}
 
         <div className="flex-1 overflow-y-auto p-4">
           {isLoading ? (

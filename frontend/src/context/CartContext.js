@@ -37,7 +37,7 @@ const clearGuestCart = () => {
 };
 
 export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState(null); // Shopify cart object
+  const [cart, setCart] = useState(null); // Shopify or guest cart object
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
 
@@ -59,18 +59,19 @@ export const CartProvider = ({ children }) => {
     const cartId = getCartId();
     if (cartId) {
       fetchCart(cartId);
+    } else {
+      // If no Shopify cart but we might have a guest cart
+      if (!user) {
+        fetchCart(null);
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-const fetchCart = async (cartId) => {
-  const idToUse = cartId || getCartId();
-
-  // If no Shopify cart but we might have a guest cart
-  if (!idToUse && !user) {
-    const guestCart = getGuestCart();
-
-    const guestCartObject = {
+  const buildGuestCartObject = (guestCart) => {
+    return {
       id: 'guest-cart',
+      isGuest: true,
       lines: {
         edges: guestCart.map((item, index) => ({
           node: {
@@ -78,11 +79,18 @@ const fetchCart = async (cartId) => {
             quantity: item.quantity,
             merchandise: {
               id: item.variantId,
+              // Optional: you can add title/image/price later when you store them
+              title: item.title,
+              featuredImage: item.imageUrl ? { url: item.imageUrl } : undefined,
+              priceV2: item.price
+                ? { amount: item.price }
+                : undefined,
             },
           },
         })),
       },
       cost: {
+        // For guests we don't yet compute a real total, so 0 is fine for now
         totalAmount: {
           amount: 0,
           currencyCode: 'INR',
@@ -90,60 +98,45 @@ const fetchCart = async (cartId) => {
       },
       checkoutUrl: null,
     };
+  };
 
-    setCart(guestCartObject);
-    return;
-  }
+  const fetchCart = async (cartId) => {
+    const idToUse = cartId || getCartId();
 
-  if (!idToUse) return;
-
-  try {
-    setIsLoading(true);
-    const encodedCartId = encodeURIComponent(idToUse);
-    const response = await api.get(`/cart/${encodedCartId}`);
-    setCart(response.data);
-
-    // If user is still guest, override with localStorage cart
-    if (!user) {
+    // If no Shopify cart but we might have a guest cart
+    if (!idToUse && !user) {
       const guestCart = getGuestCart();
-
-      const guestCartObject = {
-        id: 'guest-cart',
-        lines: {
-          edges: guestCart.map((item, index) => ({
-            node: {
-              id: `guest-line-${index}`,
-              quantity: item.quantity,
-              merchandise: {
-                id: item.variantId,
-              },
-            },
-          })),
-        },
-        cost: {
-          totalAmount: {
-            amount: 0,
-            currencyCode: 'INR',
-          },
-        },
-        checkoutUrl: null,
-      };
-
+      const guestCartObject = buildGuestCartObject(guestCart);
       setCart(guestCartObject);
-      setIsLoading(false);
       return;
     }
 
-    // Logged‑in: keep response.data
-  } catch (error) {
-    console.error('Error fetching cart:', error);
-    setCartId(null);
-    setCart(null);
-  } finally {
-    setIsLoading(false);
-  }
-};
+    if (!idToUse) return;
 
+    try {
+      setIsLoading(true);
+      const encodedCartId = encodeURIComponent(idToUse);
+      const response = await api.get(`/cart/${encodedCartId}`);
+      setCart(response.data);
+
+      // If user is still guest, override with localStorage cart
+      if (!user) {
+        const guestCart = getGuestCart();
+        const guestCartObject = buildGuestCartObject(guestCart);
+        setCart(guestCartObject);
+        setIsLoading(false);
+        return;
+      }
+
+      // Logged‑in: keep response.data
+    } catch (error) {
+      console.error('Error fetching cart:', error);
+      setCartId(null);
+      setCart(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Merge guest cart with user cart on login
   const mergeGuestCart = async () => {
@@ -206,74 +199,82 @@ const fetchCart = async (cartId) => {
   };
 
   const addToCart = async (variantId, quantity = 1) => {
-  try {
-    // GUEST USERS – use localStorage
-    if (!user) {
-      const guestCart = getGuestCart();
-      const existingItem = guestCart.find(
-        (item) => item.variantId === variantId
-      );
+    try {
+      // GUEST USERS – use localStorage
+      if (!user) {
+        const guestCart = getGuestCart();
+        const existingItem = guestCart.find(
+          (item) => item.variantId === variantId
+        );
 
-      if (existingItem) {
-        existingItem.quantity += quantity;
-      } else {
-        guestCart.push({ variantId, quantity, addedAt: Date.now() });
+        if (existingItem) {
+          existingItem.quantity += quantity;
+        } else {
+          guestCart.push({
+            variantId,
+            quantity,
+            addedAt: Date.now(),
+            // Optional: fill these when you have them in the caller
+            // title: productTitle,
+            // imageUrl: productImageUrl,
+            // price: productPrice,
+          });
+        }
+
+        saveGuestCart(guestCart);
+
+        toast.success('Added to cart!');
+
+        // Rebuild cart object so navbar/cart drawer update
+        await fetchCart();
+        return;
       }
 
-      saveGuestCart(guestCart);
+      // LOGGED-IN USERS – Shopify cart
+      setIsLoading(true);
+      console.log('🛒 Adding to cart:', { variantId, quantity });
+
+      const cartId = await ensureCart();
+      console.log('🛒 Cart ID:', cartId);
+
+      if (!cartId) {
+        toast.error('Failed to add item to cart');
+        return;
+      }
+
+      const response = await api.post('/cart/add', {
+        cartId,
+        lines: [{ merchandiseId: variantId, quantity }],
+      });
+
+      const updatedCart = response.data;
+      console.log('🛒 Cart response:', updatedCart);
+
+      if (!updatedCart || !updatedCart.id) {
+        throw new Error('Cart update failed');
+      }
+
+      setCart(updatedCart);
+      setCartId(updatedCart.id);
+
+      // Ensure we have the freshest cart data
+      await fetchCart(updatedCart.id);
 
       toast.success('Added to cart!');
+    } catch (error) {
+      console.error('❌ Error adding to cart:', error);
 
-      // Rebuild cart object so navbar/cart drawer update
-      await fetchCart();
-      return;
+      const message =
+        error.response?.data?.detail ||
+        error.response?.data?.error ||
+        error.message ||
+        'Failed to add to cart';
+
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
     }
-
-    // LOGGED-IN USERS – Shopify cart
-    setIsLoading(true);
-    console.log('🛒 Adding to cart:', { variantId, quantity });
-
-    const cartId = await ensureCart();
-    console.log('🛒 Cart ID:', cartId);
-
-    if (!cartId) {
-      toast.error('Failed to add item to cart');
-      return;
-    }
-
-    const response = await api.post('/cart/add', {
-      cartId,
-      lines: [{ merchandiseId: variantId, quantity }],
-    });
-
-    const updatedCart = response.data;
-    console.log('🛒 Cart response:', updatedCart);
-
-    if (!updatedCart || !updatedCart.id) {
-      throw new Error('Cart update failed');
-    }
-
-    setCart(updatedCart);
-    setCartId(updatedCart.id);
-
-    // Ensure we have the freshest cart data
-    await fetchCart(updatedCart.id);
-
-    toast.success('Added to cart!');
-  } catch (error) {
-    console.error('❌ Error adding to cart:', error);
-
-    const message =
-      error.response?.data?.detail ||
-      error.response?.data?.error ||
-      error.message ||
-      'Failed to add to cart';
-
-    toast.error(message);
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   const updateCartItem = async (lineId, quantity) => {
     const cartId = getCartId();
@@ -325,9 +326,11 @@ const fetchCart = async (cartId) => {
   };
 
   const getCartCount = () => {
-  if (!cart || !cart.lines) return 0;
-  return cart.lines.edges.reduce(
-    (count, edge) => count + edge.node.quantity, 0);
+    if (!cart || !cart.lines) return 0;
+    return cart.lines.edges.reduce(
+      (count, edge) => count + (edge.node?.quantity ?? 0),
+      0
+    );
   };
 
   const getCheckoutUrl = () => {

@@ -63,32 +63,36 @@ const ProductDetail = () => {
     setReviews(newReviewData);
   };
 
-  const handleAddToCart = async () => {
-    if (!product || !product.variants || !product.variants[0]?.id) {
-      toast.error('Product variant not available');
-      return;
-    }
-
-    const variantId = product.variants[0].id;
-
-    try {
-      setIsAdding(true);
-      // CartContext handles guest vs logged-in logic internally
-      await addToCart(variantId, quantity);
-    } catch (error) {
-      console.error('Add to cart error in ProductDetail:', error);
-    } finally {
-      setIsAdding(false);
-    }
-  };
-
-  if (loadingProduct || !product) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-zinc-950">
-        <p className="text-zinc-400">Loading product...</p>
-      </div>
-    );
+ const handleAddToCart = async () => {
+  if (!product || !product.variants || !product.variants[0]?.id) {
+    toast.error('Product variant not available');
+    return;
   }
+
+  const variantId = product.variants[0].id;
+
+  const price =
+    Number(product.price ?? product.variants?.[0]?.price ?? 0);
+
+  const imageUrl =
+    (product.images && product.images[0]) ||
+    product.image ||
+    null;
+
+  try {
+    setIsAdding(true);
+    await addToCart(variantId, quantity, {
+      title: product.title,
+      imageUrl,
+      price,
+    });
+  } catch (error) {
+    console.error('Add to cart error in ProductDetail:', error);
+  } finally {
+    setIsAdding(false);
+  }
+};
+  
 
   // Prices (assuming Shopify-like shape)
   const rawPrice = product.price ?? product.variants?.[0]?.price;

@@ -4,6 +4,7 @@ import { Button } from './ui/button';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
+import api from '../utils/api';
 
 const CartDrawer = ({ open, onClose }) => {
   const { user } = useAuth();
@@ -30,29 +31,53 @@ const CartDrawer = ({ open, onClose }) => {
     };
   }, [open]);
 
-  // Only render when open
   if (!open) return null;
 
   const total = getCartTotal();
   const count = getCartCount();
-
-  // cart.lines.edges for Shopify; for guest carts we normalize in CartContext,
-  // but still guard against missing shapes.
   const cartItems = cart?.lines?.edges || [];
+  const isGuestCart = cart?.isGuest;
 
   const handleCheckout = async () => {
-    setIsCheckingOut(true);
-    try {
-      const checkoutUrl = getCheckoutUrl() || cart?.checkoutUrl;
+    if (!cartItems.length) {
+      toast.error('Your cart is empty');
+      return;
+    }
 
-      if (checkoutUrl) {
+    try {
+      setIsCheckingOut(true);
+
+      // GUEST CHECKOUT: create cart in backend and redirect to checkout URL
+      if (isGuestCart) {
+        const guestLines = cartItems.map((edge) => ({
+          merchandiseId: edge.node.merchandise.id,
+          quantity: edge.node.quantity,
+        }));
+
+        const res = await api.post('/cart/guest-checkout', {
+          lines: guestLines,
+        });
+
+        const checkoutUrl = res.data?.checkoutUrl;
+        if (!checkoutUrl) {
+          throw new Error('No checkout URL returned');
+        }
+
         window.location.href = checkoutUrl;
-      } else {
+        return;
+      }
+
+      // LOGGED-IN CHECKOUT
+      const checkoutUrl = getCheckoutUrl() || cart?.checkoutUrl;
+      if (!checkoutUrl) {
         throw new Error('No checkout URL available');
       }
+
+      window.location.href = checkoutUrl;
     } catch (error) {
       console.error('Checkout error:', error);
       toast.error('Failed to proceed to checkout. Please try again.');
+    } finally {
       setIsCheckingOut(false);
     }
   };
@@ -121,9 +146,7 @@ const CartDrawer = ({ open, onClose }) => {
           ) : (
             <div className="space-y-4">
               {cartItems.map((edge, index) => {
-                // Support both Shopify shape (edge.node) and any fallback
                 const item = edge?.node || edge || {};
-
                 const merchandise = item.merchandise || {};
                 const product = merchandise.product || {};
 

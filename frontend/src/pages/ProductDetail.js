@@ -64,11 +64,6 @@ const ProductDetail = () => {
   };
 
   const handleAddToCart = async () => {
-    if (!user) {
-      setShowAuth(true);
-      return;
-    }
-
     if (!product || !product.variants || !product.variants[0]?.id) {
       toast.error('Product variant not available');
       return;
@@ -78,6 +73,7 @@ const ProductDetail = () => {
 
     try {
       setIsAdding(true);
+      // CartContext handles guest vs logged-in logic internally
       await addToCart(variantId, quantity);
     } catch (error) {
       console.error('Add to cart error in ProductDetail:', error);
@@ -228,16 +224,16 @@ const ProductDetail = () => {
             </div>
 
             {product.description && (
-  <div className="space-y-3">
-    <h2 className="text-lg font-bold text-white">Description</h2>
-    <div
-      className="shopify-rte text-zinc-300 leading-relaxed"
-      dangerouslySetInnerHTML={{
-        __html: product.descriptionHtml || product.description,
-      }}
-    />
-  </div>
-)}
+              <div className="space-y-3">
+                <h2 className="text-lg font-bold text-white">Description</h2>
+                <div
+                  className="shopify-rte text-zinc-300 leading-relaxed"
+                  dangerouslySetInnerHTML={{
+                    __html: product.descriptionHtml || product.description,
+                  }}
+                />
+              </div>
+            )}
 
             {/* Quantity and Add to Cart */}
             <div className="space-y-4">

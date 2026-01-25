@@ -24,6 +24,7 @@ import FAQ from "./pages/FAQ";
 import CatalogPage from "./pages/CatalogPage";
 import "./App.css";
 import './styles/shopify-buy-button.css';
+import * as fbPixel from './utils/fbPixel';
 
 const CustomerSSOCallback = () => {
   const navigate = useNavigate();
@@ -45,11 +46,15 @@ const CustomerSSOCallback = () => {
 const AppContent = () => {
   const location = useLocation();
 
+    // Initialize Facebook Pixel on mount
+  useEffect(() => {
+    fbPixel.init();
+    fbPixel.pageview();
+  }, []);
+
   useEffect(() => {
     // Track PageView on route change
-    if (window.fbq) {
-      window.fbq('track', 'PageView');
-    }
+        fbPixel.pageview();
   }, [location]);
 
   return (

@@ -71,23 +71,24 @@ export const CartProvider = ({ children }) => {
       const encodedCartId = encodeURIComponent(idToUse);
       const response = await api.get(`/cart/${encodedCartId}`);
       setCart(response.data);
-            // Handle guest users - load from localStorage
+
+      // Handle guest users - load from localStorage
       if (!user) {
         const guestCart = getGuestCart();
-        
+
         // For guest carts, we store minimal data and display without product details
         // In a full implementation, you'd fetch product details from Shopify
-        const cartItems = guestCart.map(item => ({
+        const cartItems = guestCart.map((item) => ({
           ...item,
           id: item.variantId,
           // Product details would be fetched from Shopify API here
         }));
-        
+
         setCart(cartItems);
         setIsLoading(false);
         return;
       }
-      
+
       // Logged-in user - continue with existing logic
     } catch (error) {
       console.error('Error fetching cart:', error);
@@ -99,21 +100,21 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-    // Merge guest cart with user cart on login
+  // Merge guest cart with user cart on login
   const mergeGuestCart = async () => {
     const guestCart = getGuestCart();
-    
+
     if (guestCart.length === 0) return;
-    
+
     try {
       // Add all guest cart items to user's cart
       for (const item of guestCart) {
         await addToCart(item.variantId, item.quantity);
       }
-      
+
       // Clear guest cart after merging
       clearGuestCart();
-      
+
       toast.success('Your cart items have been saved!');
     } catch (error) {
       console.error('Error merging guest cart:', error);
@@ -160,71 +161,73 @@ export const CartProvider = ({ children }) => {
   };
 
   const addToCart = async (variantId, quantity = 1) => {
-  try {
-        // Handle guest users - use localStorage
-    if (!user) {
-      const guestCart = getGuestCart();
-      const existingItem = guestCart.find(item => item.variantId === variantId);
-      
-      if (existingItem) {
-        existingItem.quantity += quantity;
-      } else {
-        guestCart.push({ variantId, quantity, addedAt: Date.now() });
+    try {
+      // Handle guest users - use localStorage
+      if (!user) {
+        const guestCart = getGuestCart();
+        const existingItem = guestCart.find(
+          (item) => item.variantId === variantId
+        );
+
+        if (existingItem) {
+          existingItem.quantity += quantity;
+        } else {
+          guestCart.push({ variantId, quantity, addedAt: Date.now() });
+        }
+
+        saveGuestCart(guestCart);
+
+        // Show success message
+        toast.success('Added to cart!');
+
+        // Reload cart to update UI
+        await fetchCart();
+        return;
       }
-      
-      saveGuestCart(guestCart);
-      
-      // Show success message
+
+      // Logged-in user - continue with existing logic
+      setIsLoading(true);
+      console.log('🛒 Adding to cart:', { variantId, quantity });
+
+      const cartId = await ensureCart();
+      console.log('🛒 Cart ID:', cartId);
+
+      if (!cartId) {
+        toast.error('Failed to add item to cart');
+        return;
+      }
+
+      const response = await api.post('/cart/add', {
+        cartId,
+        lines: [{ merchandiseId: variantId, quantity }],
+      });
+
+      const updatedCart = response.data;
+      console.log('🛒 Cart response:', updatedCart);
+
+      if (!updatedCart || !updatedCart.id) {
+        throw new Error('Cart update failed');
+      }
+
+      setCart(updatedCart);
+      setCartId(updatedCart.id);
+      await fetchCart(updatedCart.id);
+
       toast.success('Added to cart!');
-      
-      // Reload cart to update UI
-      await fetchCart();
-      return;
+    } catch (error) {
+      console.error('❌ Error adding to cart:', error);
+
+      const message =
+        error.response?.data?.detail ||
+        error.response?.data?.error ||
+        error.message ||
+        'Failed to add to cart';
+
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
     }
-    
-    // Logged-in user - continue with existing logic
-    setIsLoading(true);
-    console.log('🛒 Adding to cart:', { variantId, quantity });
-
-    const cartId = await ensureCart();
-    console.log('🛒 Cart ID:', cartId);
-
-    if (!cartId) {
-      toast.error('Failed to add item to cart');
-      return;
-    }
-
-    const response = await api.post('/cart/add', {
-      cartId,
-      lines: [{ merchandiseId: variantId, quantity }],
-    });
-
-    const updatedCart = response.data;
-    console.log('🛒 Cart response:', updatedCart);
-
-    if (!updatedCart || !updatedCart.id) {
-      throw new Error('Cart update failed');
-    }
-
-    setCart(updatedCart);
-    setCartId(updatedCart.id);
-    await fetchCart(updatedCart.id);
-
-    toast.success('Added to cart!');
-  } catch (error) {
-    console.error('❌ Error adding to cart:', error);
-
-    const message =
-      error.response?.data?.detail ||
-      error.response?.data?.error ||
-      error.message ||
-      'Failed to add to cart';
-
-    toast.error(message);
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   const updateCartItem = async (lineId, quantity) => {
     const cartId = getCartId();
@@ -298,9 +301,11 @@ export const CartProvider = ({ children }) => {
     getCartTotal,
     getCartCount,
     getCheckoutUrl,
-    fetchCart: () => fetchCart(getCartId()),,
-    mergeGuestCart
+    fetchCart: () => fetchCart(getCartId()),
+    mergeGuestCart,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
+
+export default CartProvider;

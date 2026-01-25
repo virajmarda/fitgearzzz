@@ -42,22 +42,17 @@ const Navbar = () => {
   logout(); // this will clear tokens and redirect to https://fitgearzzz.com
 };
 
-  const cartCount = user ? getCartCount() : 0;
-
+  const cartCount = getCartCount(); // Now includes guest cart items from localStorage
   const handleCartClick = () => {
-    if (!user) {
-      setShowAuthModal(true);
-      return;
+        
+    setShowCart(true); // Allow guest users to view cart
     }
-    setShowCart(true);
+
   };
 
   const handleMobileCartClick = () => {
-    if (!user) {
-      setShowAuthModal(true);
-      setShowMenu(false);
-      return;
-    }
+
+    // Allow guest users to view cart on mobile
     setShowCart(true);
     setShowMenu(false);
   };

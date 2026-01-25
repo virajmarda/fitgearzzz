@@ -30,11 +30,14 @@ const CartDrawer = ({ open, onClose }) => {
     };
   }, [open]);
 
-  // Block cart completely if not logged in
-    if (!open) return null; // Allow guest users to view cart
+  // Only render when open
+  if (!open) return null;
 
   const total = getCartTotal();
   const count = getCartCount();
+
+  // cart.lines.edges for Shopify; for guest carts we normalize in CartContext,
+  // but still guard against missing shapes.
   const cartItems = cart?.lines?.edges || [];
 
   const handleCheckout = async () => {
@@ -66,7 +69,10 @@ const CartDrawer = ({ open, onClose }) => {
         data-testid="cart-drawer"
       >
         <div className="flex items-center justify-between p-4 border-b border-zinc-800">
-          <h2 className="font-oswald text-2xl font-bold text-white" data-testid="cart-title">
+          <h2
+            className="font-oswald text-2xl font-bold text-white"
+            data-testid="cart-title"
+          >
             Cart ({count})
           </h2>
           <button
@@ -77,18 +83,18 @@ const CartDrawer = ({ open, onClose }) => {
             <X className="w-6 h-6" />
           </button>
         </div>
-              
+
         {/* Soft login prompt for guest users */}
         {!user && cartItems.length > 0 && (
           <div className="bg-zinc-800/50 border-b border-zinc-700 p-3">
             <p className="text-sm text-zinc-300 text-center">
-              <button 
-                onClick={() => window.location.href = '/login'} 
+              <button
+                onClick={() => (window.location.href = '/login')}
                 className="text-orange-500 hover:text-orange-400 underline"
               >
                 Log in
-              </button>
-              {' '}to save your cart and checkout faster next time!
+              </button>{' '}
+              to save your cart and checkout faster next time!
             </p>
           </div>
         )}
@@ -99,7 +105,10 @@ const CartDrawer = ({ open, onClose }) => {
               <p className="text-zinc-400">Loading cart...</p>
             </div>
           ) : cartItems.length === 0 ? (
-            <div className="text-center py-12" data-testid="empty-cart-message">
+            <div
+              className="text-center py-12"
+              data-testid="empty-cart-message"
+            >
               <p className="text-zinc-400 mb-4">Your cart is empty</p>
               <Button
                 onClick={onClose}
@@ -111,41 +120,69 @@ const CartDrawer = ({ open, onClose }) => {
             </div>
           ) : (
             <div className="space-y-4">
-              {cartItems.map(({ node: item }) => {
-                const product = item.merchandise.product;
-                const variant = item.merchandise;
+              {cartItems.map((edge, index) => {
+                // Support both Shopify shape (edge.node) and any fallback
+                const item = edge?.node || edge || {};
+
+                const merchandise = item.merchandise || {};
+                const product = merchandise.product || {};
+
+                const imageUrl =
+                  product.featuredImage?.url ||
+                  merchandise.featuredImage?.url ||
+                  '/placeholder.png';
+
+                const title =
+                  product.title ||
+                  merchandise.title ||
+                  'Product';
+
+                const priceAmount =
+                  merchandise.priceV2?.amount ??
+                  merchandise.price?.amount ??
+                  merchandise.price ??
+                  0;
+
+                const lineId = item.id || `guest-line-${index}`;
+                const quantity = item.quantity ?? 1;
 
                 return (
                   <div
-                    key={item.id}
+                    key={lineId}
                     className="flex space-x-4 glass-card rounded-2xl p-4"
-                    data-testid={`cart-item-${item.id}`}
+                    data-testid={`cart-item-${lineId}`}
                   >
                     <img
-                      src={product.featuredImage?.url || '/placeholder.png'}
-                      alt={product.title}
-                      className="w-20 h-20 object-cover rounded-2xl"
+                      src={imageUrl}
+                      alt={title}
+                      className="w-20 h-20 object-cover rounded-2xl bg-zinc-800"
                     />
                     <div className="flex-1">
                       <h3
                         className="font-manrope font-semibold text-white text-sm"
                         data-testid="cart-item-name"
                       >
-                        {product.title}
+                        {title}
                       </h3>
-                      {variant.title !== 'Default Title' && (
-                        <p className="text-zinc-400 text-xs">{variant.title}</p>
-                      )}
+                      {merchandise.title &&
+                        merchandise.title !== 'Default Title' && (
+                          <p className="text-zinc-400 text-xs">
+                            {merchandise.title}
+                          </p>
+                        )}
                       <p
                         className="text-orange-500 font-bold mt-1"
                         data-testid="cart-item-price"
                       >
-                        ₹{parseFloat(variant.priceV2.amount).toFixed(2)}
+                        ₹{Number(priceAmount).toFixed(2)}
                       </p>
                       <div className="flex items-center space-x-2 mt-2">
                         <button
                           onClick={() =>
-                            updateCartItem(item.id, Math.max(1, item.quantity - 1))
+                            updateCartItem(
+                              lineId,
+                              Math.max(1, quantity - 1)
+                            )
                           }
                           className="w-6 h-6 flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 text-white rounded-2xl transition-colors"
                           data-testid="decrease-quantity-button"
@@ -156,17 +193,19 @@ const CartDrawer = ({ open, onClose }) => {
                           className="text-white font-semibold w-8 text-center"
                           data-testid="cart-item-quantity"
                         >
-                          {item.quantity}
+                          {quantity}
                         </span>
                         <button
-                          onClick={() => updateCartItem(item.id, item.quantity + 1)}
+                          onClick={() =>
+                            updateCartItem(lineId, quantity + 1)
+                          }
                           className="w-6 h-6 flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 text-white rounded-2xl transition-colors"
                           data-testid="increase-quantity-button"
                         >
                           <Plus className="w-3 h-3" />
                         </button>
                         <button
-                          onClick={() => removeFromCart(item.id)}
+                          onClick={() => removeFromCart(lineId)}
                           className="ml-auto text-red-500 hover:text-red-400 transition-colors"
                           data-testid="remove-item-button"
                         >

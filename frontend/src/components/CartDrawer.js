@@ -91,11 +91,14 @@ const CartDrawer = ({ open, onClose }) => {
           <div className="bg-zinc-800/50 border-b border-zinc-700 p-3">
             <p className="text-sm text-zinc-300 text-center">
               <button
-                onClick={() => (window.location.href = '/login')}
-                className="text-orange-500 hover:text-orange-400 underline"
-              >
-                Log in
-              </button>{' '}
+  onClick={() => {
+    window.location.href = 'https://account.fitgearzzz.com';
+  }}
+  className="text-orange-500 hover:text-orange-400 underline"
+>
+  Log in
+</button>
+{' '}
               to save your cart and checkout faster next time!
             </p>
           </div>

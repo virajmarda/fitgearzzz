@@ -34,11 +34,11 @@ const ProductCard = ({ product }) => {
     e.preventDefault();
     e.stopPropagation();
 
-    // Check authentication first
-    if (!user) {
-      setShowAuth(true);
-      return;
-    }
+    // Check authentication first - COMMENTED OUT TO ALLOW GUEST CART
+//     if (!user) {
+      // setShowAuth(true);
+      // return;
+    // }
 
     // Validate product and variant
     if (!product || !product.variants || !product.variants[0]?.id) {

@@ -7,6 +7,35 @@ const CartContext = createContext();
 
 export const useCart = () => useContext(CartContext);
 
+// Guest cart helpers for localStorage
+const GUEST_CART_KEY = 'fitgearzzz_guest_cart';
+
+const getGuestCart = () => {
+  try {
+    const cart = localStorage.getItem(GUEST_CART_KEY);
+    return cart ? JSON.parse(cart) : [];
+  } catch (error) {
+    console.error('Error loading guest cart:', error);
+    return [];
+  }
+};
+
+const saveGuestCart = (items) => {
+  try {
+    localStorage.setItem(GUEST_CART_KEY, JSON.stringify(items));
+  } catch (error) {
+    console.error('Error saving guest cart:', error);
+  }
+};
+
+const clearGuestCart = () => {
+  try {
+    localStorage.removeItem(GUEST_CART_KEY);
+  } catch (error) {
+    console.error('Error clearing guest cart:', error);
+  }
+};
+
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState(null); // Shopify cart object
   const [isLoading, setIsLoading] = useState(false);
@@ -42,6 +71,24 @@ export const CartProvider = ({ children }) => {
       const encodedCartId = encodeURIComponent(idToUse);
       const response = await api.get(`/cart/${encodedCartId}`);
       setCart(response.data);
+            // Handle guest users - load from localStorage
+      if (!user) {
+        const guestCart = getGuestCart();
+        
+        // For guest carts, we store minimal data and display without product details
+        // In a full implementation, you'd fetch product details from Shopify
+        const cartItems = guestCart.map(item => ({
+          ...item,
+          id: item.variantId,
+          // Product details would be fetched from Shopify API here
+        }));
+        
+        setCart(cartItems);
+        setIsLoading(false);
+        return;
+      }
+      
+      // Logged-in user - continue with existing logic
     } catch (error) {
       console.error('Error fetching cart:', error);
       // Cart might be expired, clear it
@@ -49,6 +96,27 @@ export const CartProvider = ({ children }) => {
       setCart(null);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+    // Merge guest cart with user cart on login
+  const mergeGuestCart = async () => {
+    const guestCart = getGuestCart();
+    
+    if (guestCart.length === 0) return;
+    
+    try {
+      // Add all guest cart items to user's cart
+      for (const item of guestCart) {
+        await addToCart(item.variantId, item.quantity);
+      }
+      
+      // Clear guest cart after merging
+      clearGuestCart();
+      
+      toast.success('Your cart items have been saved!');
+    } catch (error) {
+      console.error('Error merging guest cart:', error);
     }
   };
 
@@ -93,6 +161,28 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = async (variantId, quantity = 1) => {
   try {
+        // Handle guest users - use localStorage
+    if (!user) {
+      const guestCart = getGuestCart();
+      const existingItem = guestCart.find(item => item.variantId === variantId);
+      
+      if (existingItem) {
+        existingItem.quantity += quantity;
+      } else {
+        guestCart.push({ variantId, quantity, addedAt: Date.now() });
+      }
+      
+      saveGuestCart(guestCart);
+      
+      // Show success message
+      toast.success('Added to cart!');
+      
+      // Reload cart to update UI
+      await fetchCart();
+      return;
+    }
+    
+    // Logged-in user - continue with existing logic
     setIsLoading(true);
     console.log('🛒 Adding to cart:', { variantId, quantity });
 
@@ -208,7 +298,8 @@ export const CartProvider = ({ children }) => {
     getCartTotal,
     getCartCount,
     getCheckoutUrl,
-    fetchCart: () => fetchCart(getCartId()),
+    fetchCart: () => fetchCart(getCartId()),,
+    mergeGuestCart
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

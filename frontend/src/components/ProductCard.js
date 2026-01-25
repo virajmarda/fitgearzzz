@@ -34,11 +34,11 @@ const ProductCard = ({ product }) => {
     e.preventDefault();
     e.stopPropagation();
 
-    // Check authentication first
-    if (!user) {
-      setShowAuth(true);
-      return;
-    }
+    // Check authentication first - COMMENTED OUT TO ALLOW GUEST CART
+//     if (!user) {
+      // setShowAuth(true);
+      // return;
+    // }
 
     // Validate product and variant
     if (!product || !product.variants || !product.variants[0]?.id) {
@@ -147,6 +147,11 @@ const ProductCard = ({ product }) => {
       </motion.div>
 
       {/* Auth Modal */}
+          {!user && (
+            <p className="text-xs text-center text-zinc-400 mt-2">
+              💡 <span className="text-orange-500">Log in</span> to save your cart
+            </p>
+          )}
       <AuthModal open={showAuth} onClose={() => setShowAuth(false)} />
     </>
   );

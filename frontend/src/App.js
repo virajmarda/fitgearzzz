@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route, useNavigate, useSearchParams, useLocation } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import { Toaster } from "./components/ui/sonner";
@@ -100,6 +101,7 @@ function App() {
         <BrowserRouter>
           <AppContent />
         </BrowserRouter>
+        <Analytics />
       </CartProvider>
     </AuthProvider>
   );

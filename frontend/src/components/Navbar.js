@@ -43,13 +43,12 @@ const Navbar = () => {
 };
 
   const cartCount = getCartCount(); // Now includes guest cart items from localStorage
+
   const handleCartClick = () => {
-        
-    setShowCart(true); // Allow guest users to view cart
-    }
-
+    // Allow guest users to view cart
+    setShowCart(true);
   };
-
+  
   const handleMobileCartClick = () => {
 
     // Allow guest users to view cart on mobile

@@ -880,7 +880,6 @@ async def create_cart(cart_input: Optional[CartCreateInput] = None):
         }
     }
     """
-    
     variables = {
         "input": {
             "lines": [
@@ -892,15 +891,15 @@ async def create_cart(cart_input: Optional[CartCreateInput] = None):
             ]
         }
     }
-    
+
     result = await shopify_storefront_request(query, variables)
-    
+
     if result.get("data", {}).get("cartCreate", {}).get("userErrors"):
         raise HTTPException(
             status_code=400,
             detail=result["data"]["cartCreate"]["userErrors"]
         )
-    
+
     return result.get("data", {}).get("cartCreate", {}).get("cart", {})
 
 

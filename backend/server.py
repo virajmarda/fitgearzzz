@@ -360,6 +360,13 @@ class ReviewSubmitInput(BaseModel):
     reviewer_name: str
     reviewer_email: EmailStr
 
+class GuestCartLine(BaseModel):
+    merchandiseId: str
+    quantity: int
+
+class GuestCheckoutRequest(BaseModel):
+    lines: List[GuestCartLine]
+
 # ✅ UPDATED: Shopify OAuth Routes - now decodes id_token
 @api_router.post(
     "/shopify-auth/callback", response_model=ShopifyOAuthTokenResponse
@@ -744,6 +751,45 @@ async def submit_review(review_data: ReviewSubmitInput):
     except Exception as e:
         logger.error(f"Error submitting review: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to submit review: {str(e)}")
+
+
+@api_router.post("/cart/guest-checkout")
+async def guest_checkout(payload: GuestCheckoutRequest):
+    """
+    Create a Shopify cart from guest items and return checkoutUrl.
+    """
+    if not payload.lines:
+        raise HTTPException(status_code=400, detail="No lines provided")
+
+    variables = {
+        "input": {
+            "lines": [
+                {
+                    "merchandiseId": line.merchandiseId,
+                    "quantity": line.quantity,
+                }
+                for line in payload.lines
+            ]
+        }
+    }
+
+    # Use your existing Storefront helper
+    result = await shopify_storefront_request(GQL_CART_CREATE, variables)
+
+    cart_create = result.get("data", {}).get("cartCreate", {})
+    user_errors = cart_create.get("userErrors") or []
+    if user_errors:
+        raise HTTPException(
+            status_code=400,
+            detail=user_errors[0].get("message", "Cart error"),
+        )
+
+    cart = cart_create.get("cart") or {}
+    checkout_url = cart.get("checkoutUrl")
+    if not checkout_url:
+        raise HTTPException(status_code=400, detail="No checkout URL returned from Shopify")
+
+    return {"checkoutUrl": checkout_url}
         
 
 # ✅ Checkout using Storefront API

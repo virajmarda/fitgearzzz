@@ -7,41 +7,12 @@ const CartContext = createContext();
 
 export const useCart = () => useContext(CartContext);
 
-// Guest cart helpers for localStorage
-const GUEST_CART_KEY = 'fitgearzzz_guest_cart';
-
-const getGuestCart = () => {
-  try {
-    const cart = localStorage.getItem(GUEST_CART_KEY);
-    return cart ? JSON.parse(cart) : [];
-  } catch (error) {
-    console.error('Error loading guest cart:', error);
-    return [];
-  }
-};
-
-const saveGuestCart = (items) => {
-  try {
-    localStorage.setItem(GUEST_CART_KEY, JSON.stringify(items));
-  } catch (error) {
-    console.error('Error saving guest cart:', error);
-  }
-};
-
-const clearGuestCart = () => {
-  try {
-    localStorage.removeItem(GUEST_CART_KEY);
-  } catch (error) {
-    console.error('Error clearing guest cart:', error);
-  }
-};
-
 export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState(null); // Shopify or guest cart object
+  const [cart, setCart] = useState(null); // Shopify cart object
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
 
-  // Load cart ID from localStorage
+  // Load / store cart ID in localStorage for ALL users (guest + logged-in)
   const getCartId = () => {
     return localStorage.getItem('shopify_cart_id');
   };
@@ -54,50 +25,8 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const buildGuestCartObject = (guestCart) => {
-    return {
-      id: 'guest-cart',
-      isGuest: true,
-      lines: {
-        edges: guestCart.map((item, index) => ({
-          node: {
-            id: `guest-line-${index}`,
-            quantity: item.quantity,
-            merchandise: {
-              id: item.variantId,
-              title: item.title,
-              featuredImage: item.imageUrl ? { url: item.imageUrl } : undefined,
-              priceV2: item.price
-                ? { amount: item.price }
-                : { amount: 0 },
-            },
-          },
-        })),
-      },
-      cost: {
-        totalAmount: {
-          amount: guestCart.reduce(
-            (sum, item) => sum + (item.price || 0) * item.quantity,
-            0
-          ),
-          currencyCode: 'INR',
-        },
-      },
-      checkoutUrl: null, // guests cannot checkout directly
-    };
-  };
-
   const fetchCart = async (cartId) => {
     const idToUse = cartId || getCartId();
-
-    // Guest only, no Shopify cart
-    if (!idToUse && !user) {
-      const guestCart = getGuestCart();
-      const guestCartObject = buildGuestCartObject(guestCart);
-      setCart(guestCartObject);
-      return;
-    }
-
     if (!idToUse) return;
 
     try {
@@ -114,36 +43,16 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  // Fetch existing cart / guest cart on mount
+  // Fetch existing cart on mount
   useEffect(() => {
     const cartId = getCartId();
     if (cartId) {
       fetchCart(cartId);
-    } else if (!user) {
-      fetchCart(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Merge guest cart with user cart on login
-  const mergeGuestCart = async () => {
-    const guestCart = getGuestCart();
-
-    if (guestCart.length === 0) return;
-
-    try {
-      for (const item of guestCart) {
-        await addToCart(item.variantId, item.quantity);
-      }
-
-      clearGuestCart();
-      toast.success('Your cart items have been saved!');
-    } catch (error) {
-      console.error('Error merging guest cart:', error);
-    }
-  };
-
-  // Ensure there is a valid cart and keep local state in sync (logged‑in only)
+  // Ensure there is a valid cart and keep local state in sync
   const ensureCart = async () => {
     let cartId = getCartId();
 
@@ -182,40 +91,8 @@ export const CartProvider = ({ children }) => {
     return cartId;
   };
 
-  const addToCart = async (
-    variantId,
-    quantity = 1,
-    { title, imageUrl, price } = {}
-  ) => {
+  const addToCart = async (variantId, quantity = 1) => {
     try {
-      // GUEST USERS – localStorage
-      if (!user) {
-        const guestCart = getGuestCart();
-        const existingItem = guestCart.find(
-          (item) => item.variantId === variantId
-        );
-
-        if (existingItem) {
-          existingItem.quantity += quantity;
-        } else {
-          guestCart.push({
-            variantId,
-            quantity,
-            addedAt: Date.now(),
-            title: title || 'Product',
-            imageUrl: imageUrl || null,
-            price: typeof price === 'number' ? price : 0,
-          });
-        }
-
-        saveGuestCart(guestCart);
-
-        toast.success('Added to cart!');
-        setCart(buildGuestCartObject(guestCart));
-        return;
-      }
-
-      // LOGGED-IN USERS – Shopify cart
       setIsLoading(true);
       const cartId = await ensureCart();
 
@@ -255,22 +132,8 @@ export const CartProvider = ({ children }) => {
 
   const updateCartItem = async (lineId, quantity) => {
     const cartId = getCartId();
+    if (!cartId) return;
 
-    // Guest: update localStorage
-    if (!user || !cartId || cart?.isGuest) {
-      const guestCart = getGuestCart();
-      const idx = guestCart.findIndex(
-        (_, index) => `guest-line-${index}` === lineId
-      );
-      if (idx === -1) return;
-
-      guestCart[idx].quantity = quantity;
-      saveGuestCart(guestCart);
-      setCart(buildGuestCartObject(guestCart));
-      return;
-    }
-
-    // Logged-in / Shopify
     try {
       setIsLoading(true);
       const response = await api.post('/cart/update', {
@@ -288,17 +151,7 @@ export const CartProvider = ({ children }) => {
 
   const removeFromCart = async (lineId) => {
     const cartId = getCartId();
-
-    // Guest: remove from localStorage
-    if (!user || !cartId || cart?.isGuest) {
-      const guestCart = getGuestCart().filter(
-        (_, index) => `guest-line-${index}` !== lineId
-      );
-      saveGuestCart(guestCart);
-      setCart(buildGuestCartObject(guestCart));
-      toast.success('Item removed from cart');
-      return;
-    }
+    if (!cartId) return;
 
     try {
       setIsLoading(true);
@@ -319,7 +172,6 @@ export const CartProvider = ({ children }) => {
   const clearCart = () => {
     setCartId(null);
     setCart(null);
-    clearGuestCart();
   };
 
   const getCartTotal = () => {
@@ -351,7 +203,7 @@ export const CartProvider = ({ children }) => {
     getCartCount,
     getCheckoutUrl,
     fetchCart: () => fetchCart(getCartId()),
-    mergeGuestCart,
+    // mergeGuestCart no longer needed if everyone uses Shopify cart
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

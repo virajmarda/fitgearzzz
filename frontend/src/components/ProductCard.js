@@ -146,13 +146,6 @@ const ProductCard = ({ product }) => {
         </div>
       </motion.div>
 
-      {/* Auth Modal */}
-          {!user && (
-            <p className="text-xs text-center text-zinc-400 mt-2">
-              💡 <span className="text-orange-500">Log in</span> to save your cart
-            </p>
-          )}
-      <AuthModal open={showAuth} onClose={() => setShowAuth(false)} />
     </>
   );
 };

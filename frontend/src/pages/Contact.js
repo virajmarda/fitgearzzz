@@ -126,7 +126,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-oswald text-lg font-semibold text-white mb-1">Address</h3>
-                    <p className="text-zinc-400 font-manrope">123 Fitness Street<br />Gym City, CA 90210<br />United States</p>
+                    <p className="text-zinc-400 font-manrope">Fitgearzzz Solapur<br />Solapur, Maharashtra<br />India</p>
                   </div>
                 </div>
 
@@ -136,8 +136,8 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-oswald text-lg font-semibold text-white mb-1">Phone</h3>
-                    <a href="tel:+15551234567" className="text-zinc-400 hover:text-orange-500 transition-colors font-manrope">
-                      +1 (555) 123-4567
+                    <a href="tel:+918668623252" className="text-zinc-400 hover:text-orange-500 transition-colors font-manrope">
+                      +91 8668623252
                     </a>
                     <p className="text-zinc-500 text-sm mt-1">Mon-Fri 9am-6pm PST</p>
                   </div>
@@ -149,8 +149,8 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-oswald text-lg font-semibold text-white mb-1">Email</h3>
-                    <a href="mailto:support@fitgear.com" className="text-zinc-400 hover:text-orange-500 transition-colors font-manrope">
-                      support@fitgear.com
+                    <a href="mailto:fitgearzzz@gmail.com" className="text-zinc-400 hover:text-orange-500 transition-colors font-manrope">
+                      fitgearzzz@gmail.com
                     </a>
                     <p className="text-zinc-500 text-sm mt-1">Response within 24 hours</p>
                   </div>

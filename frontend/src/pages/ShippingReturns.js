@@ -30,7 +30,7 @@ const ShippingReturns = () => {
               <Truck className="w-8 h-8 text-orange-500" />
             </div>
             <h3 className="font-oswald text-xl font-bold text-white mb-2">Free Shipping</h3>
-            <p className="text-zinc-400 font-manrope text-sm">On orders over $100</p>
+            <p className="text-zinc-400 font-manrope text-sm">On All Orders</p>
           </motion.div>
 
           <motion.div
@@ -43,7 +43,7 @@ const ShippingReturns = () => {
               <Package className="w-8 h-8 text-blue-500" />
             </div>
             <h3 className="font-oswald text-xl font-bold text-white mb-2">Fast Processing</h3>
-            <p className="text-zinc-400 font-manrope text-sm">Ships within 1-3 days</p>
+            <p className="text-zinc-400 font-manrope text-sm">Ships within 10 days</p>
           </motion.div>
 
           <motion.div
@@ -56,7 +56,7 @@ const ShippingReturns = () => {
               <RefreshCcw className="w-8 h-8 text-orange-500" />
             </div>
             <h3 className="font-oswald text-xl font-bold text-white mb-2">Easy Returns</h3>
-            <p className="text-zinc-400 font-manrope text-sm">30-day return policy</p>
+            <p className="text-zinc-400 font-manrope text-sm">7-day return policy</p>
           </motion.div>
 
           <motion.div
@@ -83,12 +83,9 @@ const ShippingReturns = () => {
           
           <div className="space-y-6 text-zinc-300 font-manrope">
             <div>
-              <h3 className="font-oswald text-xl font-semibold text-orange-500 mb-3">Domestic Shipping (United States)</h3>
+              <h3 className="font-oswald text-xl font-semibold text-orange-500 mb-3">Domestic Shipping (India)</h3>
               <ul className="space-y-2 list-disc list-inside ml-4">
-                <li><strong>Standard Shipping:</strong> $4.99 (5-7 business days)</li>
-                <li><strong>Express Shipping:</strong> $9.99 (2-3 business days)</li>
-                <li><strong>Overnight Shipping:</strong> $19.99 (1 business day)</li>
-                <li><strong>Free Shipping:</strong> Available on all orders over $100</li>
+                <li><strong>Free Shipping:</strong> Available on All orders.</li>
               </ul>
             </div>
 
@@ -128,7 +125,7 @@ const ShippingReturns = () => {
           
           <div className="space-y-6 text-zinc-300 font-manrope">
             <div>
-              <h3 className="font-oswald text-xl font-semibold text-orange-500 mb-3">30-Day Money-Back Guarantee</h3>
+              <h3 className="font-oswald text-xl font-semibold text-orange-500 mb-3">7-Day Money-Back Guarantee</h3>
               <p>
                 We want you to be completely satisfied with your purchase. If you're not happy with your order, you can return most items within 30 days of delivery for a full refund.
               </p>
@@ -138,9 +135,9 @@ const ShippingReturns = () => {
               <h3 className="font-oswald text-xl font-semibold text-orange-500 mb-3">Return Requirements</h3>
               <p>To be eligible for a return:</p>
               <ul className="space-y-2 list-disc list-inside ml-4 mt-2">
-                <li>Items must be unused and in original condition</li>
+                <li>Items are damaged</li>
                 <li>Items must be in original packaging with all tags attached</li>
-                <li>Return must be initiated within 30 days of delivery</li>
+                <li>Return must be initiated within 7 days of delivery</li>
                 <li>Proof of purchase is required</li>
               </ul>
             </div>
@@ -158,7 +155,7 @@ const ShippingReturns = () => {
             <div>
               <h3 className="font-oswald text-xl font-semibold text-orange-500 mb-3">How to Return</h3>
               <ol className="space-y-2 list-decimal list-inside ml-4">
-                <li>Contact our customer service team at support@fitgear.com or call +1 (555) 123-4567</li>
+                <li>Contact our customer service team at fitgearzzz@gmail.com or call +91 8668623252</li>
                 <li>Provide your order number and reason for return</li>
                 <li>We'll send you a prepaid return shipping label</li>
                 <li>Pack the item securely in original packaging</li>

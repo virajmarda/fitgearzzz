@@ -102,7 +102,7 @@ const ShippingReturns = () => {
             <div>
               <h3 className="font-oswald text-xl font-semibold text-orange-500 mb-3">Order Processing</h3>
               <p>
-                Orders are processed Monday through Friday (excluding holidays). Orders placed after 2 PM PST will be processed the next business day. You will receive a confirmation email with tracking information once your order ships.
+                Orders are processed Monday through Friday (excluding holidays). Orders placed after 2 PM IST will be processed the next business day. You will receive a confirmation email with tracking information once your order ships.
               </p>
             </div>
 
@@ -127,7 +127,7 @@ const ShippingReturns = () => {
             <div>
               <h3 className="font-oswald text-xl font-semibold text-orange-500 mb-3">7-Day Money-Back Guarantee</h3>
               <p>
-                We want you to be completely satisfied with your purchase. If you're not happy with your order, you can return most items within 30 days of delivery for a full refund.
+                We want you to be completely satisfied with your purchase. If you're not happy with your order, you can return most items within 7 days of delivery for a full refund.
               </p>
             </div>
 

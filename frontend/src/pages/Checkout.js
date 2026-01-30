@@ -242,10 +242,10 @@ const Checkout = () => {
 
                 <div className="mt-6 text-center">
                   <button
-                    onClick={() => navigate('/cart')}
+                    onClick={() => navigate('/products')}
                     className="text-zinc-400 hover:text-orange-500 transition-colors text-sm"
                   >
-                    ← Back to Cart
+                    ← Continue Shopping
                   </button>
                 </div>
 

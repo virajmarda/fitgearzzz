@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Star, Truck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
@@ -16,6 +16,7 @@ const ProductDetail = () => {
   const { handle } = useParams();
   const { user } = useAuth();
   const { addToCart } = useCart();
+   const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -95,6 +96,47 @@ const ProductDetail = () => {
       console.error('Add to cart error in ProductDetail:', error);
     } finally {
       setIsAdding(false);
+    }
+  };
+
+   const handleBuyNow = async () => {
+    if (!product || !product.variants || !product.variants[0]?.id) {
+      toast.error('Product variant not available');
+      return;
+    }
+
+    const variant = product.variants[0];
+    const variantId = variant.id;
+    const price =
+      variant?.priceV2?.amount != null
+        ? Number(variant.priceV2.amount)
+        : product?.price != null
+        ? Number(product.price)
+        : 0;
+
+    // Create checkout URL with product parameter
+    const checkoutURL = `https://checkout.fitgearzzz.com?productId=${product.id}&variantId=${variantId}&quantity=${quantity}`;
+    
+    try {
+      // Navigate to checkout with product details
+      navigate('/checkout', {
+        state: {
+          directCheckout: true,
+          productId: product.id,
+          variantId: variantId,
+          quantity: quantity,
+          product: {
+            id: product.id,
+            title: product.title,
+            variantId: variantId,
+            price: price,
+            imageUrl: (product.images && product.images[0]) || product.image || null,
+          },
+        },
+      });
+    } catch (error) {
+      console.error('Error in Buy Now:', error);
+      toast.error('Error processing Buy Now');
     }
   };
 
@@ -295,6 +337,12 @@ const ProductDetail = () => {
                   <ShoppingCart className="w-5 h-5 mr-2" />
                   {isAdding ? 'Adding…' : 'Add to Cart'}
                 </Button>
+                                <Button
+              onClick={handleBuyNow}
+              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base uppercase tracking-wide rounded-lg py-6 shadow-lg disabled:opacity-60"
+            >
+              Buy Now
+            </Button>
               </div>
             </div>
           </div>

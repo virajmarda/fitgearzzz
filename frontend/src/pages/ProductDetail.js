@@ -340,7 +340,7 @@ const ProductDetail = () => {
                     
                 <Button
                   onClick={handleBuyNow}
-                  className="flex-1 bg-green-650 hover:bg-green-750 text-white font-semibold text-base uppercase tracking-wide rounded-lg py-6 shadow-lg disabled:opacity-60"
+                  className="flex-1 bg-green-700 hover:bg-green-800 text-white font-semibold text-base uppercase tracking-wide rounded-lg py-6 shadow-lg disabled:opacity-60"
                 >
                  Buy Now
                 </Button>

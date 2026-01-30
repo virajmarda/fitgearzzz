@@ -142,12 +142,12 @@ const Checkout = () => {
                             <p className="text-zinc-400 text-sm">{variant.title}</p>
                           )}
                           <p className="text-zinc-400 text-sm mt-1">
-                            ${parseFloat(variant.priceV2.amount).toFixed(2)} × {item.quantity}
+                            ₹{parseFloat(variant.priceV2.amount).toFixed(2)} × {item.quantity}
                           </p>
                         </div>
                         <div className="text-right">
                           <span className="text-orange-500 font-bold text-lg">
-                            ${(parseFloat(variant.priceV2.amount) * item.quantity).toFixed(2)}
+                            ₹{(parseFloat(variant.priceV2.amount) * item.quantity).toFixed(2)}
                           </span>
                         </div>
                       </div>
@@ -178,7 +178,7 @@ const Checkout = () => {
                     </div>
                     <div>
                       <p className="font-semibold text-white">Multiple Payment Methods</p>
-                      <p className="text-sm text-zinc-400">Credit card, PayPal, and more</p>
+                      <p className="text-sm text-zinc-400">Every Payment method accepted.</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
@@ -187,7 +187,7 @@ const Checkout = () => {
                     </div>
                     <div>
                       <p className="font-semibold text-white">Fast & Free Shipping</p>
-                      <p className="text-sm text-zinc-400">On orders over $100</p>
+                      <p className="text-sm text-zinc-400">On All Orders</p>
                     </div>
                   </div>
                 </div>
@@ -204,7 +204,7 @@ const Checkout = () => {
                 <div className="space-y-4 mb-6">
                   <div className="flex justify-between text-zinc-300">
                     <span>Subtotal ({cartItems.length} {cartItems.length === 1 ? 'item' : 'items'}):</span>
-                    <span className="font-semibold">${subtotal.toFixed(2)}</span>
+                    <span className="font-semibold">₹{subtotal.toFixed(2)}</span>
                   </div>
                   
                   <div className="flex justify-between text-zinc-300">
@@ -217,7 +217,7 @@ const Checkout = () => {
                   <div className="border-t border-zinc-700 pt-4">
                     <div className="flex justify-between text-2xl font-bold">
                       <span className="font-oswald text-white">Total:</span>
-                      <span className="text-orange-500">${total.toFixed(2)}</span>
+                      <span className="text-orange-500">₹{total.toFixed(2)}</span>
                     </div>
                   </div>
                 </div>

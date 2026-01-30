@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/button';
@@ -9,9 +9,12 @@ import { motion } from 'framer-motion';
 
 const Checkout = () => {
   const navigate = useNavigate();
+   const location = useLocation();
   const { user } = useAuth();
   const { cart, isLoading } = useCart();
   const [redirecting, setRedirecting] = useState(false);
+   const [directProduct, setDirectProduct] = useState(null);
+ const [isDirectCheckout, setIsDirectCheckout] = useState(false);
 
   // Get cart items safely
   const cartItems = cart?.lines?.edges || [];
@@ -28,6 +31,15 @@ const Checkout = () => {
       return;
     }
   }, [cart, hasItems, navigate, isLoading]);
+
+   // Handle direct checkout from Buy Now
+ useEffect(() => {
+   if (location?.state?.directCheckout && location?.state?.product) {
+     setDirectProduct(location.state.product);
+     setIsDirectCheckout(true);
+   }
+ }, [location]);
+
 
   const handleProceedToCheckout = () => {
     if (!cart || !cart.checkoutUrl) {

@@ -337,12 +337,14 @@ const ProductDetail = () => {
                   <ShoppingCart className="w-5 h-5 mr-2" />
                   {isAdding ? 'Adding…' : 'Add to Cart'}
                 </Button>
-                                <Button
-              onClick={handleBuyNow}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base uppercase tracking-wide rounded-lg py-6 shadow-lg disabled:opacity-60"
-            >
-              Buy Now
-            </Button>
+                    
+                <Button
+                  onClick={handleBuyNow}
+                  className="flex-1 bg-green-400 hover:bg-green-500 text-white font-semibold text-base uppercase tracking-wide rounded-lg py-6 shadow-lg disabled:opacity-60"
+                >
+                 Buy Now
+                </Button>
+
               </div>
             </div>
           </div>

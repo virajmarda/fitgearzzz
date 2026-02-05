@@ -99,47 +99,35 @@ const ProductDetail = () => {
     }
   };
 
-  const handleBuyNow = async () => {
-    if (!product || !product.variants || !product.variants[0]?.id) {
-      toast.error('Product variant not available');
-      return;
+const handleBuyNow = async () => {
+  if (!product || !product.variants || !product.variants[0]?.id) {
+    toast.error('Product variant not available');
+    return;
+  }
+
+  const variant = product.variants[0];
+  const variantId = variant.id;
+
+  try {
+    // Call backend to create a one‑off Buy Now cart
+    const res = await api.post('/cart/buy-now', {
+      variantId,
+      quantity,
+    });
+
+    const checkoutUrl = res.data?.checkoutUrl;
+
+    if (!checkoutUrl) {
+      throw new Error('No checkout URL returned');
     }
 
-    const variant = product.variants[0];
-    const variantId = variant.id;
-    const price =
-      variant?.priceV2?.amount != null
-        ? Number(variant.priceV2.amount)
-        : product?.price != null
-        ? Number(product.price)
-        : 0;
-
-    const imageUrl =
-      (product.images && product.images[0]) ||
-      product.image ||
-      null;
-
-    try {
-      navigate('/checkout', {
-        state: {
-          directCheckout: true,
-          productId: product.id,
-          variantId,
-          quantity,
-          product: {
-            id: product.id,
-            title: product.title,
-            variantId,
-            price,
-            imageUrl,
-          },
-        },
-      });
-    } catch (error) {
-      console.error('Error in Buy Now:', error);
-      toast.error('Error processing Buy Now');
-    }
-  };
+    // Send user directly to Shopify checkout for THIS product only
+    window.location.href = checkoutUrl; // will be on fitgearzzz.com/checkout
+  } catch (error) {
+    console.error('Error in Buy Now:', error);
+    toast.error('Error processing Buy Now');
+  }
+};
 
   // Loading state
   if (loadingProduct || !product) {

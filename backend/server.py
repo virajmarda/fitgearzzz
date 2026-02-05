@@ -901,6 +901,54 @@ async def create_cart(cart_input: Optional[CartCreateInput] = None):
         )
 
     return result.get("data", {}).get("cartCreate", {}).get("cart", {})
+    
+
+@apirouter.post("/cart/buy-now")
+async def buy_now(line: GuestCartLineBaseModel):
+    """
+    Create a one-off cart with a single line and return its checkout URL.
+    Does NOT touch the user's existing cart.
+    """
+    try:
+        variables = {
+            "input": {
+              "lines": [
+                {
+                  "merchandiseId": line.merchandiseId,
+                  "quantity": line.quantity,
+                }
+              ]
+            }
+        }
+
+        result = await shopifystorefrontrequest(GQLCARTCREATE, variables)
+        cart_create = result.get("data", {}).get("cartCreate")
+
+        if not cart_create:
+            raise HTTPException(status_code=400, detail="cartCreate returned null")
+
+        usererrors = cart_create.get("userErrors") or []
+        if usererrors:
+            raise HTTPException(
+                status_code=400,
+                detail=usererrors[0].get("message", "Cart error"),
+            )
+
+        cart = cart_create.get("cart") or {}
+        checkouturl = cart.get("checkoutUrl")
+        if not checkouturl:
+            raise HTTPException(
+                status_code=400,
+                detail="No checkout URL returned from Shopify",
+            )
+
+        # IMPORTANT: we only return this URL, no cartId is stored anywhere
+        return {"checkoutUrl": checkouturl}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Buy Now error: {e}")
+        raise HTTPException(status_code=500, detail="Buy Now failed")
 
 
 @api_router.post("/cart/add")

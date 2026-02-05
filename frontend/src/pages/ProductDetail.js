@@ -109,9 +109,9 @@ const handleBuyNow = async () => {
   const variantId = variant.id;
 
   try {
-    // Call backend to create a one‑off Buy Now cart
+    // Call backend to create a one-off cart and get checkout URL
     const res = await api.post('/cart/buy-now', {
-      variantId,
+      merchandiseId: variantId,
       quantity,
     });
 
@@ -121,8 +121,8 @@ const handleBuyNow = async () => {
       throw new Error('No checkout URL returned');
     }
 
-    // Send user directly to Shopify checkout for THIS product only
-    window.location.href = checkoutUrl; // will be on fitgearzzz.com/checkout
+    // Redirect directly to Shopify checkout for THIS product only
+    window.location.href = checkoutUrl; // this will be on fitgearzzz.com/checkout
   } catch (error) {
     console.error('Error in Buy Now:', error);
     toast.error('Error processing Buy Now');

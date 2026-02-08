@@ -1,12 +1,13 @@
+// frontend/src/utils/api.js
 import axios from 'axios';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-
+// IMPORTANT: use same-origin /api so the frontend talks to the backend
+// through your reverse proxy (e.g. Vercel rewrites), avoiding CORS.
 const api = axios.create({
-  baseURL: API,
+  baseURL: '/api',
 });
 
+// Attach token if you still need it for your own auth
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {

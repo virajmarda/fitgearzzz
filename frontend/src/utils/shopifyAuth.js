@@ -104,7 +104,7 @@ export async function handleOAuthCallback(code, state) {
   console.log('📤 Exchanging code for tokens via backend...');
 
   try {
-    // IMPORTANT: use same-origin /api route to avoid CORS
+    // Same-origin /api route → proxied to FastAPI backend
     const tokenResponse = await fetch('/api/shopify-auth/callback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -169,6 +169,7 @@ export async function getCustomerFromShopify() {
   try {
     console.log('👤 Fetching customer data via backend...');
 
+    // Same-origin /api route → proxied to FastAPI backend
     const response = await fetch('/api/auth/me', {
       method: 'GET',
       headers: {

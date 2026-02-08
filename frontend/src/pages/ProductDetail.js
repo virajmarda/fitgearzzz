@@ -47,8 +47,19 @@ const ProductDetail = () => {
     const fetchReviews = async () => {
       try {
         setLoadingReviews(true);
-        const res = await api.get(`/reviews/product/${handle}`);
-        setReviews(res.data);
+        // Use widget endpoint because we have a handle, not a product ID
+        const res = await api.get(`/reviews/widget/${handle}`);
+
+        // Adapt these keys if your widget response differs
+        const data = res.data || {};
+        setReviews({
+          reviews: data.reviews || [],
+          rating: data.rating || 0,
+          reviewCount:
+            data.review_count ??
+            data.reviewCount ??
+            (data.reviews ? data.reviews.length : 0),
+        });
       } catch (error) {
         console.error('Error fetching reviews:', error);
       } finally {
@@ -61,6 +72,7 @@ const ProductDetail = () => {
   }, [handle]);
 
   const handleReviewSubmitted = (newReviewData) => {
+    // Expecting newReviewData in same shape as `reviews` state
     setReviews(newReviewData);
   };
 
@@ -99,35 +111,38 @@ const ProductDetail = () => {
     }
   };
 
-const handleBuyNow = async () => {
-  if (!product || !product.variants || !product.variants[0]?.id) {
-    toast.error('Product variant not available');
-    return;
-  }
-
-  const variant = product.variants[0];
-  const variantId = variant.id;
-
-  try {
-    // Call backend to create a one-off cart and get checkout URL
-    const res = await api.post('/cart/buy-now', {
-      merchandiseId: variantId,
-      quantity,
-    });
-
-    const checkoutUrl = res.data?.checkoutUrl;
-
-    if (!checkoutUrl) {
-      throw new Error('No checkout URL returned');
+  const handleBuyNow = async () => {
+    if (!product || !product.variants || !product.variants[0]?.id) {
+      toast.error('Product variant not available');
+      return;
     }
 
-    // Redirect directly to Shopify checkout for THIS product only
-    window.location.href = checkoutUrl; // this will be on fitgearzzz.com/checkout
-  } catch (error) {
-    console.error('Error in Buy Now:', error);
-    toast.error('Error processing Buy Now');
-  }
-};
+    const variant = product.variants[0];
+    const variantId = variant.id;
+
+    try {
+      // Use guest-checkout endpoint to create a one-off cart
+      const res = await api.post('/cart/guest-checkout', {
+        lines: [
+          {
+            merchandiseId: variantId,
+            quantity,
+          },
+        ],
+      });
+
+      const checkoutUrl = res.data?.checkoutUrl;
+      if (!checkoutUrl) {
+        throw new Error('No checkout URL returned');
+      }
+
+      // Redirect directly to Shopify checkout for this product only
+      window.location.href = checkoutUrl;
+    } catch (error) {
+      console.error('Error in Buy Now:', error);
+      toast.error('Error processing Buy Now');
+    }
+  };
 
   // Loading state
   if (loadingProduct || !product) {

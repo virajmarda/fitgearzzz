@@ -744,6 +744,7 @@ async def get_review_widget(product_handle: str):
 async def submit_review(review_data: ReviewSubmitInput):
     """Submit a review to Judge.me via API"""
     try:
+        # Extract numeric product ID
         numeric_id = (
             review_data.product_id.split("/")[-1]
             if "gid://" in review_data.product_id
@@ -755,7 +756,7 @@ async def submit_review(review_data: ReviewSubmitInput):
         payload = {
             "shop_domain": "fitgearzzz.myshopify.com",
             "platform": "shopify",
-            "id": numeric_id,
+            "id": numeric_id,  # Product external_id
             "email": review_data.reviewer_email,
             "name": review_data.reviewer_name,
             "rating": review_data.rating,
@@ -778,7 +779,7 @@ async def submit_review(review_data: ReviewSubmitInput):
             )
             logger.info(f"Judge.me response body: {response.text}")
 
-            if response.status_code in :
+            if response.status_code in [200, 201]:
                 return {
                     "success": True,
                     "message": "Review submitted successfully! It will appear after moderation.",
@@ -808,6 +809,7 @@ async def submit_review(review_data: ReviewSubmitInput):
             status_code=500,
             detail=f"Failed to submit review: {str(e)}",
         )
+
 
 # ========================
 # Cart & checkout

@@ -30,9 +30,8 @@ function AuthCallback() {
           return;
         }
 
-        // MUST match the key used in initiateShopifyLogin
+        // Extra safety check: make sure code_verifier exists
         const codeVerifier = window.sessionStorage.getItem('code_verifier');
-
         if (!codeVerifier) {
           console.error('Missing PKCE code_verifier in sessionStorage');
           toast.error('Authentication failed. Please try again.');
@@ -40,8 +39,8 @@ function AuthCallback() {
           return;
         }
 
-        // Exchange code for tokens
-        await handleOAuthCallback(code, state, codeVerifier);
+        // Exchange code for tokens (shopifyAuth reads code_verifier internally)
+        await handleOAuthCallback(code, state);
 
         // Clear code_verifier after use to prevent reuse
         window.sessionStorage.removeItem('code_verifier');

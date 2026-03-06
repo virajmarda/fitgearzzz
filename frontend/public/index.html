@@ -1,57 +1,157 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- ===== CHARSET & VIEWPORT ===== -->
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="FitGearzzz - Premium Fitness Equipment"
-    />
-    <link rel="icon" href="frontend/public/616917081_122095415727236306_5600152773007905888_n.ico">
-    <title>FitGearzzz - Premium Fitness Equipment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f172a" />
 
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop.
-    -->
+    <!-- ===== PRIMARY SEO TAGS ===== -->
+    <title>FitGearzzz | Premium Home Gym Equipment, Supplements & Fitness Accessories India</title>
+    <meta name="description" content="Shop premium home gym equipment, supplements, and fitness accessories from FitGearzzz. Curated brands, fast pan-India delivery, expert support. Build your dream gym today." />
+    <meta name="keywords" content="gym equipment India, fitness supplements, home workout gear, dumbbells, resistance bands, fitness accessories, strength training, gym belt, knee patches" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="author" content="FitGearzzz" />
+    <meta name="creator" content="FitGearzzz" />
+    <meta name="publisher" content="FitGearzzz" />
+    <meta name="language" content="English" />
+    <meta name="revisit-after" content="7 days" />
+    //fitgearzzz.com/" />
 
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-    -->
+    <!-- ===== OPEN GRAPH (Facebook, WhatsApp, LinkedIn) ===== -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="FitGearzzz" />
+    <meta property="og:locale" content="en_IN" />
+    <meta property="og:title" content="FitGearzzz | Premium Home Gym Equipment & Supplements India" />
+    <meta property="og:description" content="Premium fitness equipment and supplements for your home gym. Fast pan-India shipping, trusted brands, expert advice. Shop now!" />
+    <meta property="og:url" content="https://fitgearzzz.com/" />
+    <meta property="og:image" content="https://fitgearzzz.com/og/fitgearzzz-home-og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="FitGearzzz - Premium Fitness Equipment & Supplements" />
 
-    <!-- Visual Edits (Emergent) -->
+    <!-- ===== TWITTER CARD ===== -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@fitgearzzz" />
+    <meta name="twitter:creator" content="@fitgearzzz" />
+    <meta name="twitter:title" content="FitGearzzz | Premium Fitness Equipment India" />
+    <meta name="twitter:description" content="Premium home gym equipment and supplements with fast delivery across India." />
+    <meta name="twitter:image" content="https://fitgearzzz.com/og/fitgearzzz-home-og.jpg" />
+    <meta name="twitter:image:alt" content="FitGearzzz Premium Fitness Products" />
+
+    <!-- ===== FAVICON & PWA MANIFEST ===== -->
+    /x-icon" href="/616917081_122095415727236306_5600152773007905888_n.ico" />
+    /616917081_122095415727236306_5600152773007905888_n.ico" />
+    /apple-touch-icon.png" />
+    /site.webmanifest" />
+    /xml" href="/sitemap.xml" />
+
+    <!-- ===== STRUCTURED DATA / JSON-LD ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "FitGearzzz",
+      "url": "https://fitgearzzz.com",
+      "logo": "https://fitgearzzz.com/logo.png",
+      "image": "https://fitgearzzz.com/og/fitgearzzz-home-og.jpg",
+      "description": "FitGearzzz is a premium Indian fitness e-commerce platform offering curated home gym equipment, supplements, and performance accessories with fast pan-India shipping and expert support.",
+      "sameAs": [
+        "https://www.facebook.com/profile.php?id=61587089187291",
+        "https://www.instagram.com/infomedia_01",
+        "https://www.youtube.com/@InfoMedia_01"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "Customer Support",
+        "telephone": "+91-8668623252",
+        "email": "fitgearzzz@gmail.com",
+        "areaServed": "IN",
+        "availableLanguage": "en"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Solapur",
+        "addressLocality": "Solapur",
+        "addressRegion": "Maharashtra",
+        "postalCode": "413000",
+        "addressCountry": "IN"
+      },
+      "foundingDate": "2024",
+      "foundingLocation": "Solapur, India",
+      "priceRange": "₹299-₹5000",
+      "areaServed": "IN"
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "FitGearzzz",
+      "url": "https://fitgearzzz.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://fitgearzzz.com/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "FitGearzzz",
+      "image": "https://fitgearzzz.com/logo.png",
+      "description": "Premium fitness equipment and supplements e-commerce store in India",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Solapur",
+        "addressLocality": "Solapur",
+        "addressRegion": "Maharashtra",
+        "postalCode": "413000",
+        "addressCountry": "IN"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "17.6595",
+        "longitude": "75.9064"
+      },
+      "telephone": "+91-8668623252",
+      "url": "https://fitgearzzz.com",
+      "email": "fitgearzzz@gmail.com",
+      "priceRange": "₹299-₹5000"
+    }
+    </script>
+
+    <!-- ===== VISUAL EDITS (EMERGENT) ===== -->
     <script>
-      // Only load visual edit scripts when inside an iframe
       if (window.self !== window.top) {
-        // Load debug monitor script
         var debugMonitorScript = document.createElement('script');
-        debugMonitorScript.src =
-          'https://assets.emergent.sh/scripts/debug-monitor.js';
+        debugMonitorScript.src = 'https://assets.emergent.sh/scripts/debug-monitor.js';
         document.head.appendChild(debugMonitorScript);
 
-        // Configure Tailwind
         window.tailwind = window.tailwind || {};
         tailwind.config = {
           corePlugins: { preflight: false },
         };
 
-        // Load Tailwind CDN
         var tailwindScript = document.createElement('script');
         tailwindScript.src = 'https://cdn.tailwindcss.com';
         document.head.appendChild(tailwindScript);
       }
     </script>
 
-    <!-- Meta Pixel Code -->
+    <!-- ===== META PIXEL CODE 1 (PRIMARY ACCOUNT) ===== -->
     <script>
       !(function (f, b, e, v, n, t, s) {
         if (f.fbq) return;
         n = f.fbq = function () {
-          n.callMethod
-            ? n.callMethod.apply(n, arguments)
-            : n.queue.push(arguments);
+          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
         };
         if (!f._fbq) f._fbq = n;
         n.push = n;
@@ -64,43 +164,39 @@
         s = b.getElementsByTagName(e)[0];
         s.parentNode.insertBefore(t, s);
       })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
-
       fbq('init', '867237629399727');
       fbq('track', 'PageView');
     </script>
     <noscript>
-      <img
-        height="1"
-        width="1"
-        style="display:none"
-        src="https://www.facebook.com/tr?id=867237629399727&ev=PageView&noscript=1"
-      />
+      <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=867237629399727&ev=PageView&noscript=1" />
     </noscript>
-    <!-- End Meta Pixel Code -->
-    <!-- Meta Pixel Code -->
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '1635842960929487');
-fbq('track', 'PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=1635842960929487&ev=PageView&noscript=1"
-/></noscript>
-<!-- End Meta Pixel Code -->
-  </head>
 
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <!-- ===== META PIXEL CODE 2 (SECONDARY ACCOUNT) ===== -->
+    <script>
+      !(function (f, b, e, v, n, t, s) {
+        if (f.fbq) return;
+        n = f.fbq = function () {
+          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+        };
+        if (!f._fbq) f._fbq = n;
+        n.push = n;
+        n.loaded = !0;
+        n.version = '2.0';
+        n.queue = [];
+        t = b.createElement(e);
+        t.async = !0;
+        t.src = v;
+        s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s);
+      })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '1635842960929487');
+      fbq('track', 'PageView');
+    </script>
+    <noscript>
+      <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1635842960929487&ev=PageView&noscript=1" />
+    </noscript>
 
-    <!-- Posthog Analytics -->
+    <!-- ===== POSTHOG ANALYTICS ===== -->
     <script>
       !(function (t, e) {
         var o, n, p, r;
@@ -142,9 +238,7 @@ src="https://www.facebook.com/tr?id=1635842960929487&ev=PageView&noscript=1"
             u.people.toString = function () {
               return u.toString(1) + '.people (stub)';
             };
-            o = 'init capture identify alias people.set people.set_once reset'.split(
-              ' ',
-            );
+            o = 'init capture identify alias people.set people.set_once reset'.split(' ');
             for (n = 0; n < o.length; n++) g(u, o[n]);
             e._i.push([i, s, a]);
           }),
@@ -155,5 +249,17 @@ src="https://www.facebook.com/tr?id=1635842960929487&ev=PageView&noscript=1"
         person_profiles: 'identified_only',
       });
     </script>
+
+    <!-- ===== PRECONNECT FOR PERFORMANCE ===== -->
+    //fonts.googleapis.com" />
+    //fonts.gstatic.com" crossorigin />
+    //connect.facebook.net" />
+    //www.facebook.com" />
+    //us.i.posthog.com" />
+  </head>
+
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
   </body>
 </html>

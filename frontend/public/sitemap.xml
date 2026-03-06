@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0">
+
+  <!-- Homepage - Most important -->
+  <url>
+    oc>https://fitgearzzz.com/</loc>
+    astmod>2026-03-06</lastmod>
+    hangefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Core Pages -->
+  <url>
+    oc>https://fitgearzzz.com/about</loc>
+    astmod>2026-03-06</lastmod>
+    hangefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    oc>https://fitgearzzz.com/contact</loc>
+    astmod>2026-03-06</lastmod>
+    hangefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    oc>https://fitgearzzz.com/faq</loc>
+    astmod>2026-01-15</lastmod>
+    hangefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    oc>https://fitgearzzz.com/shipping</loc>
+    astmod>2026-01-10</lastmod>
+    hangefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- Legal Pages -->
+  <url>
+    oc>https://fitgearzzz.com/privacy</loc>
+    astmod>2026-01-01</lastmod>
+    hangefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    oc>https://fitgearzzz.com/terms</loc>
+    astmod>2026-01-01</lastmod>
+    hangefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <!-- Collections/Categories -->
+  <url>
+    oc>https://fitgearzzz.com/products</loc>
+    astmod>2026-03-06</lastmod>
+    hangefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <url>
+    oc>https://fitgearzzz.com/products?category=Gym%20Equipment</loc>
+    astmod>2026-03-06</lastmod>
+    hangefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    oc>https://fitgearzzz.com/products?category=Supplements</loc>
+    astmod>2026-03-06</lastmod>
+    hangefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    oc>https://fitgearzzz.com/products?category=Apparel</loc>
+    astmod>2026-03-06</lastmod>
+    hangefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    oc>https://fitgearzzz.com/products?category=Accessories</loc>
+    astmod>2026-03-06</lastmod>
+    hangefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Featured Products with Images -->
+  <url>
+    oc>https://fitgearzzz.com/products/knee-patches-pack-of-10-20-30</loc>
+    astmod>2026-03-01</lastmod>
+    hangefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://fitgearzzz.com/images/knee-patches-pack.jpg</image:loc>
+      <image:title>Knee Patches (Pack of 10, 20, 30) - FitGearzzz</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    oc>https://fitgearzzz.com/products/adjustable-counting-grip</loc>
+    astmod>2026-03-01</lastmod>
+    hangefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://fitgearzzz.com/images/adjustable-grip.jpg</image:loc>
+      <image:title>Adjustable Counting Grip - FitGearzzz</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    oc>https://fitgearzzz.com/products/adjustable-waist-trimmer-belt</loc>
+    astmod>2026-03-01</lastmod>
+    hangefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://fitgearzzz.com/images/waist-trimmer.jpg</image:loc>
+      <image:title>Adjustable Waist Trimmer Belt - FitGearzzz</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    oc>https://fitgearzzz.com/products/wireless-charger-time-alarm-clock-led-digital-thermometer-earphone-phone-chargers-fast-charging-dock-station-for-iphone-samsung</loc>
+    astmod>2026-02-28</lastmod>
+    hangefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://fitgearzzz.com/images/wireless-charger.jpg</image:loc>
+      <image:title>Wireless Charger with Time & Alarm - FitGearzzz</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    oc>https://fitgearzzz.com/products/weight-lifting-wrist-straps-for-bodybuilding-powerlifting-strength-training-deadlifts-lifting-straps-padded-neoprene-gym-straps</loc>
+    astmod>2026-02-28</lastmod>
+    hangefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://fitgearzzz.com/images/lifting-straps.jpg</image:loc>
+      <image:title>Weight Lifting Wrist Straps - FitGearzzz</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    oc>https://fitgearzzz.com/products/nylon-fitness-weight-lifting-belt-for-men-women-gym-belts-for-weightlifting-powerlifting-strength-training-squat-or-deadlift</loc>
+    astmod>2026-02-28</lastmod>
+    hangefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://fitgearzzz.com/images/lifting-belt.jpg</image:loc>
+      <image:title>Nylon Fitness Weight Lifting Belt - FitGearzzz</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    oc>https://fitgearzzz.com/products/men-rectangular-sports-electronic-watch-waterproof-50m-night-light-large-screen-alarm-clock-trend-retro-style</loc>
+    astmod>2026-02-28</lastmod>
+    hangefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://fitgearzzz.com/images/sports-watch.jpg</image:loc>
+      <image:title>Men's Sports Electronic Watch - FitGearzzz</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    oc>https://fitgearzzz.com/products/1pcs-fitness-running-cycling-knee-support-braces-elastic-nylon-sport-compression-knee-pad-sleeve-for-basketball-volleyball</loc>
+    astmod>2026-02-28</lastmod>
+    hangefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://fitgearzzz.com/images/knee-support.jpg</image:loc>
+      <image:title>Fitness Knee Support Braces - FitGearzzz</image:title>
+    </image:image>
+  </url>
+
+</urlset>

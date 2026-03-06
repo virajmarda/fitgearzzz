@@ -1,0 +1,30 @@
+# robots.txt for https://fitgearzzz.com
+
+User-agent: *
+Allow: /
+
+# Block non-SEO pages
+Disallow: /cart
+Disallow: /checkout
+Disallow: /account
+Disallow: /login
+Disallow: /register
+Disallow: /orders
+Disallow: /admin
+Disallow: /api/
+
+# Allow CSS/JS for proper rendering
+Allow: /*.js$
+Allow: /*.css$
+Allow: /assets/
+Allow: /static/
+
+# AI crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+# Sitemap location
+Sitemap: https://fitgearzzz.com/sitemap.xml

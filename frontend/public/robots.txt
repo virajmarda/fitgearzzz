@@ -1,9 +1,19 @@
-# robots.txt for https://fitgearzzz.com
+# robots.txt for FitGearzzz
+# Allow all search engines and AI crawlers to index
 
 User-agent: *
 Allow: /
+Allow: /products
+Allow: /collections
+Allow: /blog
+Allow: /about
+Allow: /contact
+Allow: /faq
+Allow: /shipping
+Allow: /privacy
+Allow: /terms
 
-# Block non-SEO pages
+# Block cart, checkout, account pages from indexing
 Disallow: /cart
 Disallow: /checkout
 Disallow: /account
@@ -12,19 +22,40 @@ Disallow: /register
 Disallow: /orders
 Disallow: /admin
 Disallow: /api/
+Disallow: /*.json$
+Disallow: /search?*
+Disallow: /*?sort=
 
-# Allow CSS/JS for proper rendering
-Allow: /*.js$
+# Allow CSS and JS for proper rendering
 Allow: /*.css$
+Allow: /*.js$
 Allow: /assets/
-Allow: /static/
+Allow: /public/
 
-# AI crawlers
+# AI/LLM Crawlers (explicitly allow)
 User-agent: GPTBot
 Allow: /
 
 User-agent: CCBot
 Allow: /
 
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+# Slow down aggressive crawlers
+User-agent: *
+Crawl-delay: 1
+
 # Sitemap location
 Sitemap: https://fitgearzzz.com/sitemap.xml
+Sitemap: https://fitgearzzz.com/products-sitemap.xml
+Sitemap: https://fitgearzzz.com/blog-sitemap.xml

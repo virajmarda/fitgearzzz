@@ -1,0 +1,90 @@
+{
+  "name": "FitGearzzz - Premium Fitness Equipment & Supplements",
+  "short_name": "FitGearzzz",
+  "description": "Premium home gym equipment, supplements, and fitness accessories with fast pan-India delivery",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#ea580c",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/screenshot-540.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshots/screenshot-1280.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "categories": ["shopping", "lifestyle", "health"],
+  "shortcuts": [
+    {
+      "name": "Shop Now",
+      "short_name": "Shop",
+      "description": "Browse all fitness products",
+      "url": "/products?utm_source=pwa_shortcut",
+      "icons": [
+        {
+          "src": "/icons/shop-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Gym Equipment",
+      "short_name": "Gym",
+      "description": "Shop gym equipment",
+      "url": "/products?category=Gym%20Equipment&utm_source=pwa_shortcut",
+      "icons": [
+        {
+          "src": "/icons/gym-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Contact Support",
+      "short_name": "Support",
+      "description": "Get in touch with our team",
+      "url": "/contact?utm_source=pwa_shortcut",
+      "icons": [
+        {
+          "src": "/icons/contact-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

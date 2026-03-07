@@ -26,6 +26,8 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [selectedVariant, setSelectedVariant] = useState(null);
   const [loadingProduct, setLoadingProduct] = useState(true);
   const [reviews, setReviews] = useState({
     reviews: [],

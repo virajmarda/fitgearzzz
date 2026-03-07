@@ -1,29 +1,26 @@
 import React from 'react';
 
-/**
- * ProductDescriptionFormatter Component (No External Dependencies)
- * Renders HTML formatted product descriptions safely
- */
-
-const ProductDescriptionFormatter = ({ description, className = '' }) => {
-  if (!description) {
-    return <div className="text-gray-300">No description available</div>;
+const ProductDescriptionFormatter = ({ description, descriptionHtml }) => {
+  if (!description && !descriptionHtml) {
+    return <div className="text-zinc-400">No description available</div>;
   }
 
-  // Simple HTML sanitization
+  // Use HTML if available (from Shopify), otherwise plain text
+  const htmlContent = descriptionHtml || description;
+
   const sanitizeHtml = (html) => {
     const temp = document.createElement('div');
     temp.innerHTML = html;
 
-    // Remove script tags and dangerous elements
+    // Remove dangerous scripts
     const scripts = temp.querySelectorAll('script, style, iframe, object, embed');
     scripts.forEach(el => el.remove());
 
-    // Remove dangerous attributes
+    // Remove dangerous attributes but keep safe ones
     const allElements = temp.querySelectorAll('*');
     allElements.forEach(el => {
       Array.from(el.attributes).forEach(attr => {
-        if (!['class', 'id', 'style'].includes(attr.name)) {
+        if (!['class', 'id', 'style', 'href', 'src', 'alt', 'title'].includes(attr.name)) {
           el.removeAttribute(attr.name);
         }
       });
@@ -34,11 +31,15 @@ const ProductDescriptionFormatter = ({ description, className = '' }) => {
 
   return (
     <div
-      className={`text-gray-300 leading-relaxed ${className}`}
-      dangerouslySetInnerHTML={{ __html: sanitizeHtml(description) }}
+      className="text-sm sm:text-base text-zinc-300 leading-relaxed"
+      dangerouslySetInnerHTML={{
+        __html: sanitizeHtml(htmlContent),
+      }}
       style={{
         fontSize: '16px',
-        lineHeight: '1.6',
+        lineHeight: '1.75',
+        wordBreak: 'break-word',
+        overflowWrap: 'break-word',
       }}
     />
   );

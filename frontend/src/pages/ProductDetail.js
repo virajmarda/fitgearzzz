@@ -6,6 +6,8 @@ import { Button } from '../components/ui/button';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import AuthModal from '../components/AuthModal';
+import ProductDescriptionFormatter from '../components/ProductDescriptionFormatter';
+import SeoProductSchema from '../components/SeoProductSchema';
 import ReviewsList from '../components/ReviewsList';
 import ReviewForm from '../components/ReviewForm';
 import { toast } from 'sonner';
@@ -180,6 +182,19 @@ const ProductDetail = () => {
 
   return (
     <div className="min-h-screen bg-zinc-950 pt-20 pb-16 px-4 sm:px-6 lg:px-8">
+    <SeoProductSchema
+        name={product.title}
+        description={product.description || product.descriptionHtml}
+        url={`https://fitgearzzz.com/products/${product.handle}`}
+        images={product?.images || []}
+        sku={product.sku || product.id}
+        price={price}
+        currency="INR"
+        availability="https://schema.org/InStock"
+        ratingValue={reviews.rating}
+        reviewCount={reviews.reviewCount}
+        brand="FitGearzzz"
+      />
       <div className="max-w-7xl mx-auto">
         {/* Product layout */}
         <motion.div
@@ -297,19 +312,17 @@ const ProductDetail = () => {
             </div>
 
             {/* Description */}
-            {product.description && (
-              <div className="space-y-2 sm:space-y-3">
-                <h2 className="text-base sm:text-lg font-bold text-white">
-                  Description
-                </h2>
-                <div
-                  className="shopify-rte text-sm sm:text-base text-zinc-300 leading-relaxed"
-                  dangerouslySetInnerHTML={{
-                    __html: product.descriptionHtml || product.description,
-                  }}
-                />
-              </div>
-            )}
+{product.description && (
+  <div className="space-y-2 sm:space-y-3">
+    <h2 className="text-base sm:text-lg font-bold text-white">
+      Description
+    </h2>
+    <ProductDescriptionFormatter
+      description={product.description}
+      descriptionHtml={product.descriptionHtml}
+    />
+  </div>
+)}
 
             {/* Quantity and Add to Cart / Buy Now */}
             <div className="space-y-3 sm:space-y-4">

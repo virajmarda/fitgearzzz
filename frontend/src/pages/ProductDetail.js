@@ -8,6 +8,8 @@ import { useAuth } from '../context/AuthContext';
 import AuthModal from '../components/AuthModal';
 import ProductDescriptionFormatter from '../components/ProductDescriptionFormatter';
 import SeoProductSchema from '../components/SeoProductSchema';
+import VariantSelector from '../components/VariantSelector';
+import variantService from '../services/variantService';
 import ReviewsList from '../components/ReviewsList';
 import ReviewForm from '../components/ReviewForm';
 import { toast } from 'sonner';
@@ -324,50 +326,120 @@ const ProductDetail = () => {
   </div>
 )}
 
-            {/* Quantity and Add to Cart / Buy Now */}
-            <div className="space-y-3 sm:space-y-4">
-              <div className="flex items-center gap-1 text-zinc-300 text-sm sm:text-base">
-                <span className="font-semibold">Quantity:</span>
-              </div>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                <div className="flex items-center bg-zinc-900 rounded-lg w-full sm:w-auto justify-between">
-                  <button
-                    onClick={() =>
-                      setQuantity((q) => Math.max(1, q - 1))
-                    }
-                    className="w-10 h-10 flex items-center justify-center text-zinc-300 hover:text-orange-500 transition-colors font-bold"
-                  >
-                    −
-                  </button>
-                  <span className="w-12 text-center text-white font-semibold">
-                    {quantity}
-                  </span>
-                  <button
-                    onClick={() => setQuantity((q) => q + 1)}
-                    className="w-10 h-10 flex items-center justify-center text-zinc-300 hover:text-orange-500 transition-colors font-bold"
-                  >
-                    +
-                  </button>
-                </div>
+    // STATE MANAGEMENT - Add to your useState
+const [selectedOptions, setSelectedOptions] = useState([]);
+const [selectedVariant, setSelectedVariant] = useState(null);
 
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
-                  <Button
-                    onClick={handleAddToCart}
-                    disabled={product.stock === 0 || isAdding}
-                    className="w-full sm:flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm sm:text-base uppercase tracking-wide rounded-lg py-4 sm:py-6 shadow-lg disabled:opacity-60"
-                  >
-                    <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                    {isAdding ? 'Adding…' : 'Add to Cart'}
-                  </Button>
+// EFFECT - Add after your other useEffects
+useEffect(() => {
+  if (product) {
+    // Initialize selected options with first available value for each
+    const options = variantService.getVariantOptions(product);
+    const initialSelection = options.map(option => ({
+      name: option.name,
+      value: option.values[0],
+    }));
+    setSelectedOptions(initialSelection);
 
-                  <Button
-                    onClick={handleBuyNow}
-                    className="w-full sm:flex-1 bg-green-700 hover:bg-green-800 text-white font-semibold text-sm sm:text-base uppercase tracking-wide rounded-lg py-4 sm:py-6 shadow-lg disabled:opacity-60"
-                  >
-                    Buy Now
-                  </Button>
+    // Find and set the first available variant
+    const variant = variantService.findVariantByOptions(product, initialSelection);
+    setSelectedVariant(variant || product.variants[0]);
+  }
+}, [product]);
+
+// OPTION CHANGE HANDLER
+const handleOptionChange = (optionName, optionValue) => {
+  const newSelection = selectedOptions.map(option =>
+    option.name === optionName
+      ? { ...option, value: optionValue }
+      : option
+  );
+  setSelectedOptions(newSelection);
+
+  const variant = variantService.findVariantByOptions(product, newSelection);
+  setSelectedVariant(variant);
+};
+
+// UPDATE handleAddToCart to use selectedVariant
+const handleAddToCart = async () => {
+  if (!selectedVariant || !selectedVariant.id) {
+    toast.error('Please select all variant options');
+    return;
+  }
+
+  const variantWithPricing = variantService.getVariantWithPricing(selectedVariant);
+
+  try {
+    setIsAdding(true);
+    await addToCart(selectedVariant.id, quantity, {
+      title: `${product.title} - ${selectedOptions.map(s => s.value).join(', ')}`,
+      imageUrl: variantService.getVariantImage(selectedVariant, product.images),
+      price: variantWithPricing.price,
+      variant: selectedOptions,
+    });
+    toast.success('Added to cart!');
+  } catch (error) {
+    console.error('Add to cart error:', error);
+    toast.error('Error adding to cart');
+  } finally {
+    setIsAdding(false);
+  }
+};
+
+// REPLACE YOUR QUANTITY SECTION WITH THIS:
+{/* Variants & Quantity Section */}
+<div className="space-y-6">
+  {/* Variant Selector */}
+  <VariantSelector
+    product={product}
+    selectedOptions={selectedOptions}
+    onOptionChange={handleOptionChange}
+    selectedVariant={selectedVariant}
+  />
+
+  {/* Quantity Selector */}
+  <div className="space-y-3 sm:space-y-4">
+    <div className="flex items-center gap-1 text-zinc-300 text-sm sm:text-base">
+      <span className="font-semibold">Quantity:</span>
+    </div>
+    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+      <div className="flex items-center bg-zinc-900 rounded-lg w-full sm:w-auto justify-between">
+        <button
+          onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+          className="w-10 h-10 flex items-center justify-center text-zinc-300 hover:text-orange-500 transition-colors font-bold"
+        >
+          −
+        </button>
+        <span className="w-12 text-center text-white font-semibold">
+          {quantity}
+        </span>
+        <button
+          onClick={() => setQuantity((q) => q + 1)}
+          className="w-10 h-10 flex items-center justify-center text-zinc-300 hover:text-orange-500 transition-colors font-bold"
+        >
+          +
+        </button>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
+        <Button
+          onClick={handleAddToCart}
+          disabled={!selectedVariant || !variantService.isInStock(selectedVariant) || isAdding}
+          className="w-full sm:flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm sm:text-base uppercase tracking-wide rounded-lg py-4 sm:py-6 shadow-lg disabled:opacity-60"
+        >
+          <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+          {isAdding ? 'Adding…' : 'Add to Cart'}
+        </Button>
+
+        <Button
+          onClick={handleBuyNow}
+          disabled={!selectedVariant || !variantService.isInStock(selectedVariant)}
+          className="w-full sm:flex-1 bg-green-700 hover:bg-green-800 text-white font-semibold text-sm sm:text-base uppercase tracking-wide rounded-lg py-4 sm:py-6 shadow-lg disabled:opacity-60"
+        >
+          Buy Now
+        </Button>
                 </div>
-              </div>
+              </div
             </div>
           </div>
         </motion.div>

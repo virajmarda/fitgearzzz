@@ -1,46 +1,37 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { ShoppingCart, Star, Truck } from "lucide-react";
-import { motion } from "framer-motion";
-import { Button } from "../components/ui/button";
-import { useCart } from "../context/CartContext";
-import { useAuth } from "../context/AuthContext";
-import AuthModal from "../components/AuthModal";
-import ProductDescriptionFormatter from "../components/ProductDescriptionFormatter";
-import SeoProductSchema from "../components/SeoProductSchema";
-import VariantSelector from "../components/VariantSelector";
-import variantService from "../services/variantService";
-import ReviewsList from "../components/ReviewsList";
-import ReviewForm from "../components/ReviewForm";
-import { toast } from "sonner";
-import api from "../utils/api";
-import { fetchProductByHandle } from "../services/shopifyService";
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { ShoppingCart, Star, Truck } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Button } from '../components/ui/button';
+import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import AuthModal from '../components/AuthModal';
+import ProductDescriptionFormatter from '../components/ProductDescriptionFormatter';
+import SeoProductSchema from '../components/SeoProductSchema';
+import ReviewsList from '../components/ReviewsList';
+import ReviewForm from '../components/ReviewForm';
+import { toast } from 'sonner';
+import api from '../utils/api';
+import { fetchProductByHandle } from '../services/shopifyService';
 
 const ProductDetail = () => {
   const { handle } = useParams();
   const { user } = useAuth();
   const { addToCart } = useCart();
+  const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
-
-  const [selectedOptions, setSelectedOptions] = useState([]);
-  const [selectedVariant, setSelectedVariant] = useState(null);
-
   const [loadingProduct, setLoadingProduct] = useState(true);
-
   const [reviews, setReviews] = useState({
     reviews: [],
     rating: 0,
     reviewCount: 0,
   });
-
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [loadingReviews, setLoadingReviews] = useState(true);
-
-  /* ---------------- FETCH PRODUCT ---------------- */
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -49,7 +40,7 @@ const ProductDetail = () => {
         const productData = await fetchProductByHandle(handle);
         setProduct(productData);
       } catch (error) {
-        console.error("Error fetching product:", error);
+        console.error('Error fetching product:', error);
       } finally {
         setLoadingProduct(false);
       }
@@ -58,10 +49,11 @@ const ProductDetail = () => {
     const fetchReviews = async () => {
       try {
         setLoadingReviews(true);
+        // Use widget endpoint because we have a handle, not a product ID
         const res = await api.get(`/reviews/widget/${handle}`);
 
+        // Adapt these keys if your widget response differs
         const data = res.data || {};
-
         setReviews({
           reviews: data.reviews || [],
           rating: data.rating || 0,
@@ -71,7 +63,7 @@ const ProductDetail = () => {
             (data.reviews ? data.reviews.length : 0),
         });
       } catch (error) {
-        console.error("Error fetching reviews:", error);
+        console.error('Error fetching reviews:', error);
       } finally {
         setLoadingReviews(false);
       }
@@ -81,164 +73,88 @@ const ProductDetail = () => {
     fetchReviews();
   }, [handle]);
 
-  /* ---------------- VARIANT INIT ---------------- */
-
-  useEffect(() => {
-    if (!product || !product.variants?.length) return;
-
-    try {
-      const options = variantService.getVariantOptions(product);
-
-      if (options.length > 0) {
-        const initialSelection = options.map((option) => ({
-          name: option.name,
-          value: option.values[0],
-        }));
-
-        setSelectedOptions(initialSelection);
-
-        const variant = variantService.findVariantByOptions(
-          product,
-          initialSelection
-        );
-
-        setSelectedVariant(variant || product.variants[0]);
-      } else {
-        setSelectedVariant(product.variants[0]);
-      }
-    } catch (error) {
-      console.error("Variant init error:", error);
-      setSelectedVariant(product.variants[0]);
-    }
-  }, [product]);
-
-  /* ---------------- OPTION CHANGE ---------------- */
-
-  const handleOptionChange = (optionName, optionValue) => {
-    const newSelection = selectedOptions.map((option) =>
-      option.name === optionName
-        ? { ...option, value: optionValue }
-        : option
-    );
-
-    setSelectedOptions(newSelection);
-
-    const variant = variantService.findVariantByOptions(product, newSelection);
-    setSelectedVariant(variant);
+  const handleReviewSubmitted = (newReviewData) => {
+    // Expecting newReviewData in same shape as `reviews` state
+    setReviews(newReviewData);
   };
 
-  /* ---------------- ADD TO CART ---------------- */
-
   const handleAddToCart = async () => {
-    if (!selectedVariant) {
-      toast.error("Select product variant");
+    if (!product || !product.variants || !product.variants[0]?.id) {
+      toast.error('Product variant not available');
       return;
     }
 
-    const variantPricing = variantService.getVariantWithPricing(selectedVariant);
+    const variant = product.variants[0];
+    const variantId = variant.id;
+
+    const price =
+      variant?.priceV2?.amount != null
+        ? Number(variant.priceV2.amount)
+        : product?.price != null
+        ? Number(product.price)
+        : 0;
+
+    const imageUrl =
+      (product.images && product.images[0]) ||
+      product.image ||
+      null;
 
     try {
       setIsAdding(true);
-
-      await addToCart(selectedVariant.id, quantity, {
-        title: `${product.title} - ${selectedOptions
-          .map((s) => s.value)
-          .join(", ")}`,
-        imageUrl: variantService.getVariantImage(
-          selectedVariant,
-          product.images
-        ),
-        price: variantPricing.price,
+      await addToCart(variantId, quantity, {
+        title: product.title,
+        imageUrl,
+        price,
       });
-
-      toast.success("Added to cart");
     } catch (error) {
-      console.error("Cart error:", error);
-      toast.error("Error adding to cart");
+      console.error('Add to cart error in ProductDetail:', error);
     } finally {
       setIsAdding(false);
     }
   };
 
-  /* ---------------- BUY NOW ---------------- */
-
   const handleBuyNow = async () => {
-    if (!selectedVariant) {
-      toast.error("Select product variant");
+    if (!product || !product.variants || !product.variants[0]?.id) {
+      toast.error('Product variant not available');
       return;
     }
 
+    const variant = product.variants[0];
+    const variantId = variant.id;
+
     try {
-      const res = await api.post("/cart/guest-checkout", {
+      // Use guest-checkout endpoint to create a one-off cart
+      const res = await api.post('/cart/guest-checkout', {
         lines: [
           {
-            merchandiseId: selectedVariant.id,
+            merchandiseId: variantId,
             quantity,
           },
         ],
       });
 
       const checkoutUrl = res.data?.checkoutUrl;
+      if (!checkoutUrl) {
+        throw new Error('No checkout URL returned');
+      }
 
-      if (!checkoutUrl) throw new Error("No checkout URL");
-
+      // Redirect directly to Shopify checkout for this product only
       window.location.href = checkoutUrl;
     } catch (error) {
-      console.error(error);
-      toast.error("Buy now failed");
+      console.error('Error in Buy Now:', error);
+      toast.error('Error processing Buy Now');
     }
   };
 
-  /* ---------------- REVIEW UPDATE ---------------- */
-
-  const handleReviewSubmitted = (newReviewData) => {
-    setReviews(newReviewData);
-  };
-
-  /* ---------------- LOADING ---------------- */
-
+  // Loading state
   if (loadingProduct || !product) {
     return (
-      <div className="min-h-screen bg-zinc-950 pt-20 text-white">
-        Loading product...
-      </div>
-    );
-  }
-
-  /* ---------------- PRICE ---------------- */
-
-  const firstVariant = selectedVariant || product?.variants?.[0];
-
-  const price =
-    firstVariant?.priceV2?.amount != null
-      ? Number(firstVariant.priceV2.amount)
-      : Number(product?.price || 0);
-
-  const compareAt =
-    firstVariant?.compareAtPrice?.amount ??
-    product?.compareAtPrice ??
-    null;
-
-  const compareAtPrice =
-    compareAt && !Number.isNaN(Number(compareAt))
-      ? Number(compareAt)
-      : null;
-
-  const discount =
-    compareAtPrice && compareAtPrice > price
-      ? Math.round(((compareAtPrice - price) / compareAtPrice) * 100)
-      : 0;
-
-  /* ---------------- JSX ---------------- */
-
-  return (
-    <div className="min-h-screen bg-zinc-950 pt-20 pb-16 px-4 sm:px-6 lg:px-8">
-
+      <div className="min-h-screen bg-zinc-950 pt-20 pb-16 px-4 sm:px-6 lg:px-8">
       <SeoProductSchema
         name={product.title}
-        description={product.description}
+        description={product.description || product.descriptionHtml}
         url={`https://fitgearzzz.com/products/${product.handle}`}
-        images={product.images || []}
+        images={product?.images || []}
         sku={product.sku || product.id}
         price={price}
         currency="INR"
@@ -247,225 +163,260 @@ const ProductDetail = () => {
         reviewCount={reviews.reviewCount}
         brand="FitGearzzz"
       />
+        <div className="max-w-7xl mx-auto">
+          <p className="text-zinc-300">Loading product...</p>
+        </div>
+      </div>
+    );
+  }
 
+  // Price calculations
+  const firstVariant = product?.variants?.[0];
+
+  const price =
+    firstVariant?.priceV2?.amount != null
+      ? Number(firstVariant.priceV2.amount)
+      : product?.price != null
+      ? Number(product.price)
+      : 0;
+
+  const compareAtRaw =
+    firstVariant?.compareAtPrice?.amount ?? product?.compareAtPrice;
+
+  const compareAtPrice =
+    compareAtRaw != null && !Number.isNaN(Number(compareAtRaw))
+      ? Number(compareAtRaw)
+      : null;
+
+  const discount =
+    compareAtPrice && compareAtPrice > price
+      ? Math.round(((compareAtPrice - price) / compareAtPrice) * 100)
+      : 0;
+
+  return (
+    <div className="min-h-screen bg-zinc-950 pt-20 pb-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-
+        {/* Product layout */}
         <motion.div
           className="flex flex-col lg:grid lg:grid-cols-2 lg:gap-12 gap-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-
-          {/* IMAGES */}
-
+          {/* Left: Images */}
           <div className="space-y-4">
-
+            {/* Main Image */}
             <div className="relative bg-zinc-900 rounded-2xl overflow-hidden aspect-square">
-
               {discount > 0 && (
-                <div className="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold z-10">
+                <div className="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs sm:text-sm font-bold z-10">
                   -{discount}% OFF
                 </div>
               )}
-
               <img
                 src={
-                  product.images?.[selectedImageIndex] ||
-                  "/placeholder.png"
+                  (product?.images || [])[selectedImageIndex] ||
+                  product?.image ||
+                  '/placeholder.png'
                 }
-                alt={product.title}
+                alt={product?.title}
                 className="w-full h-full object-cover"
               />
             </div>
 
-            {(product.images || []).length > 1 && (
-              <div className="grid grid-cols-4 gap-3">
-
-                {product.images.slice(0, 4).map((img, index) => (
+            {/* Thumbnail Grid */}
+            {(product?.images || []).length > 1 && (
+              <div className="grid grid-cols-4 gap-2 sm:gap-3">
+                {(product?.images || []).slice(0, 4).map((img, index) => (
                   <button
+                    type="button"
                     key={index}
                     onClick={() => setSelectedImageIndex(index)}
-                    className={`aspect-square rounded-lg overflow-hidden border-2 ${
+                    className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
                       selectedImageIndex === index
-                        ? "border-orange-500"
-                        : "border-zinc-800"
+                        ? 'border-orange-500 scale-105'
+                        : 'border-zinc-800 hover:border-zinc-600'
                     }`}
                   >
                     <img
                       src={img}
-                      alt=""
+                      alt={`${product?.title} ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
+                    {index === 3 &&
+                      (product?.images || []).length > 4 && (
+                        <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+                          <span className="text-white text-lg sm:text-2xl font-bold">
+                            +{(product?.images || []).length - 4}
+                          </span>
+                        </div>
+                      )}
                   </button>
                 ))}
-
               </div>
             )}
-
           </div>
 
-          {/* PRODUCT INFO */}
+          {/* Right: Info */}
+          <div className="space-y-5 lg:space-y-6">
+            {/* Brand and Stock */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-3 py-1 bg-zinc-800 text-zinc-200 rounded-full text-xs sm:text-sm font-semibold">
+                Fitgearzzz
+              </span>
+              <span className="px-3 py-1 bg-green-900/30 text-green-400 border border-green-400/30 rounded-full text-xs sm:text-sm font-semibold">
+                In Stock
+              </span>
+            </div>
 
-          <div className="space-y-6">
-
-            <h1 className="text-3xl font-bold text-white">
+            {/* Title */}
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-snug">
               {product.title}
             </h1>
 
-            {/* RATING */}
-
+            {/* Rating */}
             <div className="flex items-center gap-2">
-
-              <div className="flex">
-                {[1, 2, 3, 4, 5].map((star) => (
+              <div className="flex items-center gap-1">
+                {[1, 2, 3, 4].map((star) => (
                   <Star
                     key={star}
-                    className="w-4 h-4 text-yellow-400 fill-yellow-400"
+                    className="w-4 h-4 sm:w-5 sm:h-5 fill-yellow-400 text-yellow-400"
                   />
                 ))}
+                <Star className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-600" />
               </div>
-
-              <span className="text-zinc-400 text-sm">
+              <span className="text-xs sm:text-sm text-zinc-400">
                 {reviews.rating.toFixed(1)} ({reviews.reviewCount} reviews)
               </span>
-
             </div>
 
-            {/* PRICE */}
-
-            <div>
-
-              <span className="text-4xl font-bold text-white">
-                ₹{price.toFixed(2)}
-              </span>
-
-              {discount > 0 && compareAtPrice && (
-                <span className="ml-3 line-through text-zinc-500">
-                  ₹{compareAtPrice}
+            {/* Price */}
+            <div className="space-y-2">
+              <div className="flex items-baseline gap-2 sm:gap-3">
+                <span className="text-3xl sm:text-4xl font-bold text-white">
+                  ₹{price.toFixed(2)}
                 </span>
-              )}
-
-              <div className="flex items-center gap-2 text-green-400 mt-2">
-                <Truck className="w-4 h-4" />
-                Free Shipping
+                {discount > 0 && compareAtPrice && (
+                  <>
+                    <span className="text-sm sm:text-lg text-zinc-500 line-through">
+                      ₹{compareAtPrice.toFixed(2)}
+                    </span>
+                    <span className="px-2 sm:px-3 py-1 bg-red-500 text-white rounded-md text-xs sm:text-sm font-semibold">
+                      SAVE ₹{(compareAtPrice - price).toFixed(2)}
+                    </span>
+                  </>
+                )}
               </div>
-
+              <div className="flex items-center gap-2 text-green-400 text-sm">
+                <Truck className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="font-semibold">Free Shipping</span>
+              </div>
             </div>
 
-            {/* DESCRIPTION */}
+          {/* Description */}
+{product.description && (
+  <div className="space-y-2 sm:space-y-3">
+    <h2 className="text-base sm:text-lg font-bold text-white">
+      Description
+    </h2>
+    <ProductDescriptionFormatter
+      description={product.description}
+      descriptionHtml={product.descriptionHtml}
+    />
+  </div>
+)}
 
-            {product.description && (
-              <ProductDescriptionFormatter
-                description={product.description}
-                descriptionHtml={product.descriptionHtml}
-              />
-            )}
+            {/* Quantity and Add to Cart / Buy Now */}
+            <div className="space-y-3 sm:space-y-4">
+              <div className="flex items-center gap-1 text-zinc-300 text-sm sm:text-base">
+                <span className="font-semibold">Quantity:</span>
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                <div className="flex items-center bg-zinc-900 rounded-lg w-full sm:w-auto justify-between">
+                  <button
+                    onClick={() =>
+                      setQuantity((q) => Math.max(1, q - 1))
+                    }
+                    className="w-10 h-10 flex items-center justify-center text-zinc-300 hover:text-orange-500 transition-colors font-bold"
+                  >
+                    −
+                  </button>
+                  <span className="w-12 text-center text-white font-semibold">
+                    {quantity}
+                  </span>
+                  <button
+                    onClick={() => setQuantity((q) => q + 1)}
+                    className="w-10 h-10 flex items-center justify-center text-zinc-300 hover:text-orange-500 transition-colors font-bold"
+                  >
+                    +
+                  </button>
+                </div>
 
-            {/* VARIANTS */}
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
+                  <Button
+                    onClick={handleAddToCart}
+                    disabled={product.stock === 0 || isAdding}
+                    className="w-full sm:flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm sm:text-base uppercase tracking-wide rounded-lg py-4 sm:py-6 shadow-lg disabled:opacity-60"
+                  >
+                    <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                    {isAdding ? 'Adding…' : 'Add to Cart'}
+                  </Button>
 
-            <VariantSelector
-              product={product}
-              selectedOptions={selectedOptions}
-              onOptionChange={handleOptionChange}
-              selectedVariant={selectedVariant}
-            />
-
-            {/* QUANTITY */}
-
-            <div className="flex items-center gap-4">
-
-              <button
-                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                className="px-4 py-2 bg-zinc-900 text-white"
-              >
-                -
-              </button>
-
-              <span className="text-white">{quantity}</span>
-
-              <button
-                onClick={() => setQuantity((q) => q + 1)}
-                className="px-4 py-2 bg-zinc-900 text-white"
-              >
-                +
-              </button>
-
+                  <Button
+                    onClick={handleBuyNow}
+                    className="w-full sm:flex-1 bg-green-700 hover:bg-green-800 text-white font-semibold text-sm sm:text-base uppercase tracking-wide rounded-lg py-4 sm:py-6 shadow-lg disabled:opacity-60"
+                  >
+                    Buy Now
+                  </Button>
+                </div>
+              </div>
             </div>
-
-            {/* BUTTONS */}
-
-            <div className="flex gap-4">
-
-              <Button
-                onClick={handleAddToCart}
-                disabled={!selectedVariant || isAdding}
-                className="flex-1 bg-orange-500 hover:bg-orange-600"
-              >
-                <ShoppingCart className="w-4 h-4 mr-2" />
-                {isAdding ? "Adding..." : "Add to Cart"}
-              </Button>
-
-              <Button
-                onClick={handleBuyNow}
-                disabled={!selectedVariant}
-                className="flex-1 bg-green-700 hover:bg-green-800"
-              >
-                Buy Now
-              </Button>
-
-            </div>
-
           </div>
-
         </motion.div>
 
-        {/* REVIEWS */}
-
+        {/* Reviews Section */}
         <div className="mt-16">
-
-          <h2 className="text-3xl text-white font-bold mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-8 uppercase">
             Customer Reviews
           </h2>
-
-          <div className="grid lg:grid-cols-2 gap-8">
-
-            <ReviewsList
-              reviews={reviews.reviews}
-              rating={reviews.rating}
-              reviewCount={reviews.reviewCount}
-            />
-
-            {user ? (
-              <ReviewForm
-                product={product}
-                user={user}
-                onReviewSubmitted={handleReviewSubmitted}
-              />
-            ) : (
-              <div className="bg-zinc-900 p-8 rounded-2xl text-center">
-
-                <p className="text-zinc-400 mb-4">
-                  Please log in to write a review
-                </p>
-
-                <Button
-                  onClick={() => setShowAuth(true)}
-                  className="bg-orange-500 hover:bg-orange-600"
-                >
-                  Log In
-                </Button>
-
-              </div>
-            )}
-
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div>
+              {loadingReviews ? (
+                <div className="bg-zinc-900 rounded-2xl p-8 text-center">
+                  <p className="text-zinc-400">Loading reviews...</p>
+                </div>
+              ) : (
+                <ReviewsList
+                  reviews={reviews.reviews}
+                  rating={reviews.rating}
+                  reviewCount={reviews.reviewCount}
+                />
+              )}
+            </div>
+            <div>
+              {user ? (
+                <ReviewForm
+                  product={product}
+                  user={user}
+                  onReviewSubmitted={handleReviewSubmitted}
+                />
+              ) : (
+                <div className="bg-zinc-900 rounded-2xl p-8 text-center">
+                  <p className="text-zinc-400 mb-4">
+                    Please log in to write a review
+                  </p>
+                  <Button
+                    onClick={() => setShowAuth(true)}
+                    className="bg-orange-500 hover:bg-orange-600 text-white font-semibold uppercase tracking-wide rounded-lg"
+                  >
+                    Log In to Review
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
-
         </div>
-
       </div>
 
       <AuthModal open={showAuth} onClose={() => setShowAuth(false)} />
-
     </div>
   );
 };

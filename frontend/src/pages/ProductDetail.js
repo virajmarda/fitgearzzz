@@ -150,19 +150,6 @@ const ProductDetail = () => {
   if (loadingProduct || !product) {
     return (
       <div className="min-h-screen bg-zinc-950 pt-20 pb-16 px-4 sm:px-6 lg:px-8">
-      <SeoProductSchema
-        name={product.id}
-        description={product.description || product.descriptionHtml}
-        url={`https://fitgearzzz.com/products/${product.handle}`}
-        images={product?.images || []}
-        sku={product.sku || product.id}
-        price={price}
-        currency="INR"
-        availability="https://schema.org/InStock"
-        ratingValue={reviews.rating}
-        reviewCount={reviews.reviewCount}
-        brand="FitGearzzz"
-      />
         <div className="max-w-7xl mx-auto">
           <p className="text-zinc-300">Loading product...</p>
         </div>
@@ -195,6 +182,19 @@ const ProductDetail = () => {
 
   return (
     <div className="min-h-screen bg-zinc-950 pt-20 pb-16 px-4 sm:px-6 lg:px-8">
+    <SeoProductSchema
+        name={product.name}
+        description={product.description || product.descriptionHtml}
+        url={`https://fitgearzzz.com/products/${product.handle}`}
+        images={product?.images || []}
+        sku={product.sku || product.id}
+        price={price}
+        currency="INR"
+        availability="https://schema.org/InStock"
+        ratingValue={reviews.rating}
+        reviewCount={reviews.reviewCount}
+        brand="FitGearzzz"
+      />
       <div className="max-w-7xl mx-auto">
         {/* Product layout */}
         <motion.div

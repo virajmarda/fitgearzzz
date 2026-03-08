@@ -151,7 +151,7 @@ const ProductDetail = () => {
     return (
       <div className="min-h-screen bg-zinc-950 pt-20 pb-16 px-4 sm:px-6 lg:px-8">
       <SeoProductSchema
-        name={product.title}
+        name={product.id}
         description={product.description || product.descriptionHtml}
         url={`https://fitgearzzz.com/products/${product.handle}`}
         images={product?.images || []}

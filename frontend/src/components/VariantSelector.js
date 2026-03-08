@@ -18,9 +18,10 @@ const VariantSelector = ({
     <div className="space-y-6">
       {options.map(option => (
         <div key={option.id} className="space-y-3">
+
           {/* Option Label */}
           <div className="flex items-center justify-between">
-            abel className="text-sm font-semibold text-white uppercase tracking-wider">
+            <label className="text-sm font-semibold text-white uppercase tracking-wider">
               {option.name}
             </label>
             <span className="text-xs text-zinc-400">
@@ -31,6 +32,7 @@ const VariantSelector = ({
           {/* Option Values Grid */}
           <div className="flex flex-wrap gap-3">
             {option.values.map(value => {
+
               const isSelected =
                 selectedOptions.find(s => s.name === option.name)?.value === value;
 
@@ -69,18 +71,21 @@ const VariantSelector = ({
                   `}
                 >
                   {value}
+
                   {isSelected && (
                     <Check className="w-4 h-4 ml-2 inline-block" />
                   )}
+
                 </button>
               );
             })}
           </div>
 
-          {/* Color Swatches (if it's a color option) */}
+          {/* Color Swatches */}
           {option.name.toLowerCase() === 'color' && (
             <div className="flex flex-wrap gap-3 mt-4">
               {option.values.map(value => (
+
                 <button
                   key={`swatch-${value}`}
                   onClick={() => onOptionChange(option.name, value)}
@@ -96,9 +101,11 @@ const VariantSelector = ({
                     backgroundColor: getColorValue(value),
                   }}
                 />
+
               ))}
             </div>
           )}
+
         </div>
       ))}
 
@@ -106,26 +113,31 @@ const VariantSelector = ({
       {selectedVariant && (
         <div className="pt-4 border-t border-zinc-800">
           {variantService.isInStock(selectedVariant) ? (
+
             <div className="flex items-center gap-2 text-green-400 text-sm font-semibold">
               <div className="w-2 h-2 bg-green-400 rounded-full" />
               In Stock
             </div>
+
           ) : (
+
             <div className="flex items-center gap-2 text-red-400 text-sm font-semibold">
               <div className="w-2 h-2 bg-red-400 rounded-full" />
               Out of Stock
             </div>
+
           )}
         </div>
       )}
+
     </div>
   );
 };
 
-/**
- * Helper to convert color names to hex values
- */
+/* Convert color names to HEX */
+
 const getColorValue = (colorName) => {
+
   const colorMap = {
     black: '#000000',
     white: '#ffffff',
@@ -142,7 +154,8 @@ const getColorValue = (colorName) => {
   };
 
   const lowerName = colorName.toLowerCase();
-  return colorMap[lowerName] || '#6b7280'; // Default gray
+
+  return colorMap[lowerName] || '#6b7280';
 };
 
 export default VariantSelector;

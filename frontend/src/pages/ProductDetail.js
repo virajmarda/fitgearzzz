@@ -332,22 +332,35 @@ const ProductDetail = () => {
 const [selectedOptions, setSelectedOptions] = useState([]);
 const [selectedVariant, setSelectedVariant] = useState(null);
 
-// EFFECT - Add after your other useEffects
+// INITIALIZE VARIANT SELECTION
 useEffect(() => {
-  if (product) {
-    // Initialize selected options with first available value for each
-    const options = variantService.getVariantOptions(product);
-    const initialSelection = options.map(option => ({
-      name: option.name,
-      value: option.values[0],
-    }));
-    setSelectedOptions(initialSelection);
+  if (product && product.variants && product.variants.length > 0) {
+    try {
+      // Initialize selected options with first available value for each
+      const options = variantService.getVariantOptions(product);
+      
+      if (options.length > 0) {
+        const initialSelection = options.map(option => ({
+          name: option.name,
+          value: option.values[0],
+        }));
+        
+        setSelectedOptions(initialSelection);
 
-    // Find and set the first available variant
-    const variant = variantService.findVariantByOptions(product, initialSelection);
-    setSelectedVariant(variant || product.variants[0]);
+        // Find and set the first available variant
+        const variant = variantService.findVariantByOptions(product, initialSelection);
+        setSelectedVariant(variant || product.variants[0]);
+      } else {
+        // If no options, just set first variant
+        setSelectedVariant(product.variants[0]);
+      }
+    } catch (error) {
+      console.error('Error initializing variants:', error);
+      setSelectedVariant(product.variants[0]);
+    }
   }
 }, [product]);
+
 
 // OPTION CHANGE HANDLER
 const handleOptionChange = (optionName, optionValue) => {

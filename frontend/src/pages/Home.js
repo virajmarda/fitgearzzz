@@ -48,7 +48,7 @@ const Home = () => {
       <section className="relative h-screen flex items-center justify-center overflow-hidden" data-testid="hero-section">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1561570121-c8219daec12b?crop=entropy&cs=srgb&fm=jpg&q=85"
+            src="https://avada.website/gym/wp-content/uploads/sites/9/2015/05/home-banner.jpg"
             alt="Fitness Hero"
             className="w-full h-full object-cover"
           />

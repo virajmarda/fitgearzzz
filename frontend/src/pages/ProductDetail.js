@@ -24,6 +24,9 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+    const [selectedVariant, setSelectedVariant] = useState(null);
+  const [pincode, setPincode] = useState('');
+  const [deliveryEstimate, setDeliveryEstimate] = useState(null);
   const [loadingProduct, setLoadingProduct] = useState(true);
   const [reviews, setReviews] = useState({
     reviews: [],
@@ -72,6 +75,13 @@ const ProductDetail = () => {
     fetchProduct();
     fetchReviews();
   }, [handle]);
+
+    // Initialize selected variant when product loads
+  useEffect(() => {
+    if (product?.variants && product.variants.length > 0) {
+      setSelectedVariant(product.variants[0]);
+    }
+  }, [product]);
 
   const handleReviewSubmitted = (newReviewData) => {
     // Expecting newReviewData in same shape as `reviews` state
@@ -327,21 +337,31 @@ const ProductDetail = () => {
             {/* Quantity and Add to Cart / Buy Now */}
             <div className="space-y-3 sm:space-y-4">
               <div className="flex items-center gap-1 text-zinc-300 text-sm sm:text-base">
-                            {/* Product Variant Selector */}
-              <div className="mb-6">
-                <p className="text-sm font-semibold text-white mb-3">Select Pack:</p>
-                <div className="flex gap-3">
-                  <button className="px-6 py-3 bg-orange-500 border-2 border-orange-500 text-white font-semibold rounded-lg transition-all">
-                    Pack of 10
-                  </button>
-                  <button className="px-6 py-3 bg-transparent border-2 border-zinc-700 text-white font-semibold rounded-lg hover:border-orange-500 transition-all">
-                    Pack of 20
-                  </button>
-                  <button className="px-6 py-3 bg-transparent border-2 border-zinc-700 text-white font-semibold rounded-lg hover:border-orange-500 transition-all">
-                    Pack of 30
-                  </button>
+                            {/* Product Variant Selector - Only show if product has multiple variants */}
+              {product?.variants && product.variants.length > 1 && (
+                <div className="mb-8">
+                  <p className="text-sm font-semibold text-white mb-3">Select Option:</p>
+                  <div className="flex flex-wrap gap-3">
+                    {product.variants.map((variant) => (
+                      <button
+                        key={variant.id}
+                        onClick={() => setSelectedVariant(variant)}
+                        className={`px-6 py-3 border-2 rounded-lg font-semibold transition-all ${
+                          selectedVariant?.id === variant.id
+                            ? 'bg-orange-500 border-orange-500 text-white'
+                            : 'bg-transparent border-zinc-700 text-white hover:border-orange-500'
+                        } ${
+                          !variant.availableForSale ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
+                        disabled={!variant.availableForSale}
+                      >
+                        {variant.title}
+                        {!variant.availableForSale && ' (Sold Out)'}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
                 <span className="font-semibold">Quantity:</span>
               </div>
@@ -411,22 +431,37 @@ const ProductDetail = () => {
               </div>
 
               {/* Pincode Delivery Estimator */}
-              <div className="mt-6 p-4 bg-zinc-900 rounded-lg">
+              <div className="mt-8 p-4 bg-zinc-900 rounded-lg">
                 <p className="text-sm font-semibold text-white mb-3">Check Delivery</p>
                 <div className="flex gap-2">
                   <input
                     type="text"
+                    value={pincode}
+                    onChange={(e) => setPincode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                     placeholder="Enter Pincode"
                     maxLength="6"
                     className="flex-1 px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white text-sm focus:outline-none focus:border-orange-500"
                   />
-                  <button className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition-colors">
+                  <button 
+                    onClick={() => {
+                      if (pincode.length === 6) {
+                        setDeliveryEstimate('3-5 business days');
+                      }
+                    }}
+                    className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50"
+                    disabled={pincode.length !== 6}
+                  >
                     Check
                   </button>
                 </div>
-                <p className="text-xs text-zinc-400 mt-2">Usually delivered in 3-5 business days</p>
+                {deliveryEstimate && (
+                  <p className="text-sm text-green-400 mt-3 flex items-center gap-2">
+                    <span className="text-green-400">✓</span>
+                    Usually delivered in {deliveryEstimate}
+                  </p>
+                )}
               </div>
-                </div>
+  </div>
               </div>
             </div>
           </div>

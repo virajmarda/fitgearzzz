@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Star, , Heart, Share2, ChevronRight, AlertCircle, Package, Check, RotateCcw, Shield, BadgeCheckTruck } from 'lucide-react';
+import { ShoppingCart, Star, , Heart, Share2, ChevronRight, AlertCircle, Package, Check, RotateCcw, Shield, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { useCart } from '../context/CartContext';
@@ -358,7 +358,7 @@ const ProductDetail = () => {
                 
                 {/* Social Proof */}
                 <div className="flex items-center gap-2 text-sm">
-                  <BadgeCheckTruck className="w-4 h-4 text-blue-400" />
+                  <Users className="w-4 h-4 text-blue-400" />
                   <span className="text-zinc-400">
                     <span className="font-semibold text-white">1,247</span> people purchased this
                   </span>

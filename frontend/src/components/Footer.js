@@ -19,13 +19,13 @@ const Footer = () => {
               <a href="https://www.facebook.com/profile.php?id=61587089187291" className="w-10 h-10 rounded-full bg-zinc-800/50 flex items-center justify-center text-zinc-400 hover:text-orange-500 hover:bg-zinc-800 transition-all" data-testid="facebook-link">
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-zinc-800/50 flex items-center justify-center text-zinc-400 hover:text-orange-500 hover:bg-zinc-800 transition-all" data-testid="twitter-link">
+              <a href="https://twitter.com/fitgearzzz" className="w-10 h-10 rounded-full bg-zinc-800/50 flex items-center justify-center text-zinc-400 hover:text-orange-500 hover:bg-zinc-800 transition-all" data-testid="twitter-link">
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="https://www.instagram.com/infomedia_01?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" className="w-10 h-10 rounded-full bg-zinc-800/50 flex items-center justify-center text-zinc-400 hover:text-orange-500 hover:bg-zinc-800 transition-all" data-testid="instagram-link">
+              <a href="https://www.instagram.com/fitgearzzz?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" className="w-10 h-10 rounded-full bg-zinc-800/50 flex items-center justify-center text-zinc-400 hover:text-orange-500 hover:bg-zinc-800 transition-all" data-testid="instagram-link">
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="http://www.youtube.com/@InfoMedia_01" className="w-10 h-10 rounded-full bg-zinc-800/50 flex items-center justify-center text-zinc-400 hover:text-orange-500 hover:bg-zinc-800 transition-all" data-testid="youtube-link">
+              <a href="http://www.youtube.com/@fitgearzzz" className="w-10 h-10 rounded-full bg-zinc-800/50 flex items-center justify-center text-zinc-400 hover:text-orange-500 hover:bg-zinc-800 transition-all" data-testid="youtube-link">
                 <Youtube className="w-5 h-5" />
               </a>
             </div>

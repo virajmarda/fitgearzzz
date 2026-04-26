@@ -327,6 +327,22 @@ const ProductDetail = () => {
             {/* Quantity and Add to Cart / Buy Now */}
             <div className="space-y-3 sm:space-y-4">
               <div className="flex items-center gap-1 text-zinc-300 text-sm sm:text-base">
+                            {/* Product Variant Selector */}
+              <div className="mb-6">
+                <p className="text-sm font-semibold text-white mb-3">Select Pack:</p>
+                <div className="flex gap-3">
+                  <button className="px-6 py-3 bg-orange-500 border-2 border-orange-500 text-white font-semibold rounded-lg transition-all">
+                    Pack of 10
+                  </button>
+                  <button className="px-6 py-3 bg-transparent border-2 border-zinc-700 text-white font-semibold rounded-lg hover:border-orange-500 transition-all">
+                    Pack of 20
+                  </button>
+                  <button className="px-6 py-3 bg-transparent border-2 border-zinc-700 text-white font-semibold rounded-lg hover:border-orange-500 transition-all">
+                    Pack of 30
+                  </button>
+                </div>
+              </div>
+
                 <span className="font-semibold">Quantity:</span>
               </div>
               <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
@@ -366,6 +382,50 @@ const ProductDetail = () => {
                   >
                     Buy Now
                   </Button>
+
+                                    {/* Trust Badges */}
+              <div className="mt-6 pt-6 border-t border-zinc-800">
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div className="flex flex-col items-center gap-2">
+                    <Truck className="w-6 h-6 text-orange-500" />
+                    <div>
+                      <p className="text-xs font-semibold text-white">COD Available</p>
+                      <p className="text-xs text-zinc-400">Pay on Delivery</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center gap-2">
+                    <ShoppingCart className="w-6 h-6 text-green-500" />
+                    <div>
+                      <p className="text-xs font-semibold text-white">Easy Returns</p>
+                      <p className="text-xs text-zinc-400">7 Days Return</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center gap-2">
+                    <Star className="w-6 h-6 text-blue-500" />
+                    <div>
+                      <p className="text-xs font-semibold text-white">100% Original</p>
+                      <p className="text-xs text-zinc-400">Verified Products</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Pincode Delivery Estimator */}
+              <div className="mt-6 p-4 bg-zinc-900 rounded-lg">
+                <p className="text-sm font-semibold text-white mb-3">Check Delivery</p>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Enter Pincode"
+                    maxLength="6"
+                    className="flex-1 px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white text-sm focus:outline-none focus:border-orange-500"
+                  />
+                  <button className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition-colors">
+                    Check
+                  </button>
+                </div>
+                <p className="text-xs text-zinc-400 mt-2">Usually delivered in 3-5 business days</p>
+              </div>
                 </div>
               </div>
             </div>

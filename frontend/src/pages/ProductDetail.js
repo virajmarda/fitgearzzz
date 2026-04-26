@@ -464,7 +464,6 @@ const ProductDetail = () => {
                 <MessageCircle className="w-4 h-4" />
                 <span>Ask a Question</span>
               </button>
-            </div>
 
                                     {/* Trust Badges */}
               <div className="mt-6 pt-6 border-t border-zinc-800">

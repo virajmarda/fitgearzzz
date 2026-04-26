@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Star, Truck } from 'lucide-react';
+import { ShoppingCart, Star, , Heart, Share2, ChevronRight, AlertCircle, Package, Check, RotateCcw, Shield, BadgeCheckTruck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { useCart } from '../context/CartContext';
@@ -25,6 +25,10 @@ const ProductDetail = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
     const [selectedVariant, setSelectedVariant] = useState(null);
+    const [showShareMenu, setShowShareMenu] = useState(false);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
+  const [currentStock, setCurrentStock] = useState(null);
   const [pincode, setPincode] = useState('');
   const [deliveryEstimate, setDeliveryEstimate] = useState(null);
   const [loadingProduct, setLoadingProduct] = useState(true);
@@ -282,6 +286,28 @@ const ProductDetail = () => {
               {product.title}
             </h1>
 
+              {/* Share & Wishlist Actions */}
+              <div className="flex items-center gap-3 my-3">
+                <button
+                  onClick={() => setShowShareMenu(!showShareMenu)}
+                  className="flex items-center gap-2 px-4 py-2 border border-zinc-700 rounded-lg hover:bg-zinc-800 transition"
+                >
+                  <Share2 className="w-4 h-4" />
+                  <span className="text-sm">Share</span>
+                </button>
+                <button
+                  onClick={() => setIsInWishlist(!isInWishlist)}
+                  className={`flex items-center gap-2 px-4 py-2 border rounded-lg transition ${
+                    isInWishlist 
+                      ? 'bg-red-500/20 border-red-500 text-red-500' 
+                      : 'border-zinc-700 hover:bg-zinc-800'
+                  }`}
+                >
+                  <Heart className={`w-4 h-4 ${isInWishlist ? 'fill-current' : ''}`} />
+                  <span className="text-sm">{isInWishlist ? 'Saved' : 'Save'}</span>
+                </button>
+              </div>
+
             {/* Rating */}
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
@@ -318,6 +344,33 @@ const ProductDetail = () => {
               <div className="flex items-center gap-2 text-green-400 text-sm">
                 <Truck className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span className="font-semibold">Free Shipping</span>
+              </div>
+
+                              {/* Urgency & Scarcity Indicators */}
+              <div className="space-y-2 my-3">
+                {/* Stock Scarcity */}
+                <div className="flex items-center gap-2 text-sm">
+                  <AlertCircle className="w-4 h-4 text-orange-500" />
+                  <span className="text-orange-400">
+                    Only <span className="font-bold">8 left</span> in stock - Order soon!
+                  </span>
+                </div>
+                
+                {/* Social Proof */}
+                <div className="flex items-center gap-2 text-sm">
+                  <BadgeCheckTruck className="w-4 h-4 text-blue-400" />
+                  <span className="text-zinc-400">
+                    <span className="font-semibold text-white">1,247</span> people purchased this
+                  </span>
+                </div>
+                
+                {/* Urgency Timer */}
+                <div className="flex items-center gap-2 text-sm">
+                  <Clock className="w-4 h-4 text-red-400" />
+                  <span className="text-red-400 font-medium">
+                    Sale ends in 4 hours 23 minutes
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -402,6 +455,16 @@ const ProductDetail = () => {
                   >
                     Buy Now
                   </Button>
+
+              {/* Ask a Question Button */}
+              <button
+                onClick={() => toast.info('Question feature coming soon!')}
+                className="w-full sm:w-auto px-6 py-3 border border-zinc-700 rounded-lg hover:bg-zinc-800 transition flex items-center justify-center gap-2"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>Ask a Question</span>
+              </button>
+            </div>
 
                                     {/* Trust Badges */}
               <div className="mt-6 pt-6 border-t border-zinc-800">

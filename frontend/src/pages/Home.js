@@ -117,7 +117,7 @@ const Home = () => {
                 <Truck className="w-8 h-8 text-orange-500" />
               </div>
               <h3 className="font-oswald text-xl font-bold text-white mb-2">Fast Shipping</h3>
-              <p className="text-zinc-400 font-manrope">Free delivery on orders over $100</p>
+              <p className="text-zinc-400 font-manrope">Free delivery on orders over ₹999</p>
             </div>
           </div>
         </div>

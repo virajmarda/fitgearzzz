@@ -418,8 +418,7 @@ const ProductDetail = () => {
 
                 <span className="font-semibold">Quantity:</span>
               </div>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                <div className="flex items-center bg-zinc-900 rounded-lg w-full sm:w-auto justify-between">
+            <div className="space-y-4">                <div className="flex items-center bg-zinc-900 rounded-lg w-full sm:w-auto justify-between">
                   <button
                     onClick={() =>
                       setQuantity((q) => Math.max(1, q - 1))

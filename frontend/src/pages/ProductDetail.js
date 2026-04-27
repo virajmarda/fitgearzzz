@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Star, Truck, Share2, Heart, AlertCircle } from 'lucide-react';
+import { ShoppingCart, Star, Truck, Share2, Heart, AlertCircle, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { useCart } from '../context/CartContext';

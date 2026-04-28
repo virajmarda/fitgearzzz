@@ -506,7 +506,7 @@ const ProductDetail = () => {
                         </tr>
                       ))
                                  ) : (
-                      {Object.keys(productSpecs).length > 0 ? (
+                                      Object.keys(productSpecs).length > 0 ? (
                       
                       {Object.entries(productSpecs).map(([key, value], index) => (
                         <tr key={index} className={index % 2 === 0 ? 'bg-zinc-800/50' : ''}>
@@ -522,7 +522,7 @@ const ProductDetail = () => {
                         </td>
                       </tr>
                     )}
-                    )}
+                    
                   </tbody>
                 </table>
               </div>

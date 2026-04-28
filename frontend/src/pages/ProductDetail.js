@@ -521,7 +521,8 @@ const ProductDetail = () => {
                           No specifications available
                         </td>
                       </tr>
-                    )}
+                                  ))
+                                                          )}
                     
                   </tbody>
                 </table>

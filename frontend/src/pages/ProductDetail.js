@@ -507,11 +507,13 @@ const ProductDetail = () => {
                       ))
                     ) : (
                       {Object.keys(productSpecs).length > 0 ? (
-                      Object.entries(productSpecs).map(([key, value], index) => (
+                      
+                      {Object.entries(productSpecs).map(([key, value], index) => (
                         <tr key={index} className={index % 2 === 0 ? 'bg-zinc-800/50' : ''}>
                           <td className="px-6 py-4 font-semibold text-zinc-300 border-r border-zinc-700">{key}</td>
                           <td className="px-6 py-4 text-zinc-400">{value}</td>
                         </tr>
+                      }
                       ))
                     ) : (
                       <tr>

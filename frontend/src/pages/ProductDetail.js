@@ -515,14 +515,14 @@ const ProductDetail = () => {
                         </tr>
                       
                       ))
-                    ) : (
+                                  ) : (
                       <tr>
                         <td colSpan="2" className="px-6 py-4 text-center text-zinc-400">
                           No specifications available
                         </td>
                       </tr>
-                                  ))
-                                                          )}
+                                                )
+                                                                                  )}
                     
                   </tbody>
                 </table>

@@ -209,11 +209,9 @@ const ProductDetail = () => {
         reviewCount={reviews.reviewCount}
         brand="FitGearzzz"
       />
-      <div className="max-w-7xl mx-auto">
-        {/* Product layout */}
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">        {/* Product layout */}
         <motion.div
-          className="flex flex-col lg:grid lg:grid-cols-2 lg:gap-12 gap-8"
-          initial={{ opacity: 0, y: 20 }}
+        className="flex flex-col lg:grid lg:grid-cols-[58%_42%] lg:gap-16 gap-10 py-8"          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
           {/* Left: Images */}

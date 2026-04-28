@@ -217,7 +217,8 @@ const ProductDetail = () => {
           animate={{ opacity: 1, y: 0 }}
         >
           {/* Left: Images */}
-          <div className="space-y-4">
+          <div className="420
+            ">
             {/* Main Image */}
             <div className="relative bg-zinc-900 rounded-2xl overflow-hidden aspect-square">
               {discount > 0 && (
@@ -388,7 +389,8 @@ const ProductDetail = () => {
 )}
 
             {/* Quantity and Add to Cart / Buy Now */}
-            <div className="space-y-3 sm:space-y-4">
+            <div className="space-y-3 sm:442
+              ">
               <div className="flex items-center gap-1 text-zinc-300 text-sm sm:text-base">
                             {/* Product Variant Selector - Only show if product has multiple variants */}
               {product?.variants && product.variants.length > 1 && (
@@ -418,7 +420,8 @@ const ProductDetail = () => {
 
                 <span className="font-semibold">Quantity:</span>
               </div>
-            <div className="space-y-4">                <div className="flex items-center bg-zinc-900 rounded-lg w-full sm:w-auto justify-between">
+            <div className="423
+                  ">                <div className="flex items-center bg-zinc-900 rounded-lg w-full sm:w-auto justify-between">
                   <button
                     onClick={() =>
                       setQuantity((q) => Math.max(1, q - 1))
@@ -438,8 +441,7 @@ const ProductDetail = () => {
                   </button>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
-                  <Button
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">                  <Button
                     onClick={handleAddToCart}
                     disabled={product.stock === 0 || isAdding}
                     className="w-full sm:flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm sm:text-base uppercase tracking-wide rounded-lg py-4 sm:py-6 shadow-lg disabled:opacity-60"
@@ -466,8 +468,7 @@ const ProductDetail = () => {
 
                                     {/* Trust Badges */}
               <div className="mt-6 pt-6 border-t border-zinc-800">
-                <div className="grid grid-cols-3 gap-4 text-center">
-                  <div className="flex flex-col items-center gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">                  <div className="flex flex-col items-center gap-2">
                     <Truck className="w-6 h-6 text-orange-500" />
                     <div>
                       <p className="text-xs font-semibold text-white">COD Available</p>

@@ -386,6 +386,199 @@ const ProductDetail = () => {
   </div>
 )}
 
+            {/* Product Specifications */}
+            <div className="mt-12">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-6 uppercase">
+                Product Specifications
+              </h2>
+              <div className="bg-zinc-900 rounded-2xl overflow-hidden">
+                <table className="w-full">
+                  <tbody>
+                    {product.metafields?.specifications ? (
+                      Object.entries(JSON.parse(product.metafields.specifications)).map(([key, value], index) => (
+                        <tr key={index} className={index % 2 === 0 ? 'bg-zinc-800/50' : ''}>
+                          <td className="px-6 py-4 font-semibold text-zinc-300 border-r border-zinc-700">{key}</td>
+                          <td className="px-6 py-4 text-zinc-400">{value}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <>
+                        <tr className="bg-zinc-800/50">
+                          <td className="px-6 py-4 font-semibold text-zinc-300 border-r border-zinc-700">Brand</td>
+                          <td className="px-6 py-4 text-zinc-400">Fitgearzzz</td>
+                        </tr>
+                        <tr>
+                          <td className="px-6 py-4 font-semibold text-zinc-300 border-r border-zinc-700">Material</td>
+                          <td className="px-6 py-4 text-zinc-400">High-Quality ABS & Steel</td>
+                        </tr>
+                        <tr className="bg-zinc-800/50">
+                          <td className="px-6 py-4 font-semibold text-zinc-300 border-r border-zinc-700">Weight</td>
+                          <td className="px-6 py-4 text-zinc-400">316 gm</td>
+                        </tr>
+                        <tr>
+                          <td className="px-6 py-4 font-semibold text-zinc-300 border-r border-zinc-700">Dimensions</td>
+                          <td className="px-6 py-4 text-zinc-400">21 x 14 x 7 cm</td>
+                        </tr>
+                        <tr className="bg-zinc-800/50">
+                          <td className="px-6 py-4 font-semibold text-zinc-300 border-r border-zinc-700">Resistance Range</td>
+                          <td className="px-6 py-4 text-zinc-400">Adjustable 10-40 kg</td>
+                        </tr>
+                        <tr>
+                          <td className="px-6 py-4 font-semibold text-zinc-300 border-r border-zinc-700">Color</td>
+                          <td className="px-6 py-4 text-zinc-400">Assorted</td>
+                        </tr>
+                        <tr className="bg-zinc-800/50">
+                          <td className="px-6 py-4 font-semibold text-zinc-300 border-r border-zinc-700">Warranty</td>
+                          <td className="px-6 py-4 text-zinc-400">6 Months Manufacturer Warranty</td>
+                        </tr>
+                      </>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Key Features & Benefits */}
+            <div className="mt-12">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-6 uppercase">
+                Key Features & Benefits
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-zinc-900 rounded-2xl p-6 hover:bg-zinc-800 transition-colors">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-orange-500 p-3 rounded-lg shrink-0">
+                      <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-2">Adjustable Resistance</h3>
+                      <p className="text-zinc-400">Easily adjust resistance from 10kg to 40kg to match your strength level and training goals.</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-zinc-900 rounded-2xl p-6 hover:bg-zinc-800 transition-colors">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-orange-500 p-3 rounded-lg shrink-0">
+                      <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-2">Digital Counter</h3>
+                      <p className="text-zinc-400">Built-in electronic counter tracks your reps automatically, helping you monitor progress.</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-zinc-900 rounded-2xl p-6 hover:bg-zinc-800 transition-colors">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-orange-500 p-3 rounded-lg shrink-0">
+                      <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-2">Ergonomic Design</h3>
+                      <p className="text-zinc-400">Non-slip handles provide comfortable grip during intense workouts, preventing hand fatigue.</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-zinc-900 rounded-2xl p-6 hover:bg-zinc-800 transition-colors">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-orange-500 p-3 rounded-lg shrink-0">
+                      <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-2">Recovery & Rehab</h3>
+                      <p className="text-zinc-400">Perfect for physical therapy, injury recovery, and building hand strength for musicians and athletes.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Shipping & Returns Information */}
+            <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-zinc-900 rounded-2xl p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="bg-orange-500 p-2 rounded-lg">
+                    <Truck className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">Shipping Information</h3>
+                </div>
+                <div className="space-y-3 text-zinc-400">
+                  <p className="flex items-start gap-2">
+                    <span className="text-orange-500 mt-1">✓</span>
+                    <span>Free shipping on all orders across India</span>
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="text-orange-500 mt-1">✓</span>
+                    <span>Estimated delivery: 3-7 business days</span>
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="text-orange-500 mt-1">✓</span>
+                    <span>Track your order in real-time</span>
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="text-orange-500 mt-1">✓</span>
+                    <span>Secure packaging for safe delivery</span>
+                  </p>
+                </div>
+              </div>
+              <div className="bg-zinc-900 rounded-2xl p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="bg-orange-500 p-2 rounded-lg">
+                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-white">Returns & Exchange</h3>
+                </div>
+                <div className="space-y-3 text-zinc-400">
+                  <p className="flex items-start gap-2">
+                    <span className="text-orange-500 mt-1">✓</span>
+                    <span>7-day easy return & exchange policy</span>
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="text-orange-500 mt-1">✓</span>
+                    <span>Full refund if product is defective</span>
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="text-orange-500 mt-1">✓</span>
+                    <span>Free return pickup from your doorstep</span>
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="text-orange-500 mt-1">✓</span>
+                    <span>100% original & authentic products</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Why Choose FitGearzzz */}
+            <div className="mt-12 bg-gradient-to-r from-orange-500/10 to-orange-600/10 rounded-2xl p-8 border border-orange-500/20">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-6 uppercase text-center">
+                Why Choose FitGearzzz?
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+                <div>
+                  <div className="text-4xl font-bold text-orange-500 mb-2">100K+</div>
+                  <div className="text-zinc-300 font-medium">Happy Customers</div>
+                </div>
+                <div>
+                  <div className="text-4xl font-bold text-orange-500 mb-2">4.8★</div>
+                  <div className="text-zinc-300 font-medium">Average Rating</div>
+                </div>
+                <div>
+                  <div className="text-4xl font-bold text-orange-500 mb-2">24/7</div>
+                  <div className="text-zinc-300 font-medium">Customer Support</div>
+                </div>
+              </div>
+            </div>
+
+
             {/* Quantity and Add to Cart / Buy Now */}
             <div className="space-y-3 sm:442
               ">
@@ -568,6 +761,83 @@ const ProductDetail = () => {
               )}
             </div>
           </div>
+
+                            {/* You May Also Like - Related Products */}
+            <div className="mt-16">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-8 uppercase text-center">
+                You May Also Like
+              </h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                {/* Placeholder for related products - would fetch from API in production */}
+                <div className="bg-zinc-900 rounded-2xl overflow-hidden hover:scale-105 transition-transform cursor-pointer">
+                  <div className="aspect-square bg-zinc-800 relative">
+                    <img src="/api/placeholder/300/300" alt="Related Product" className="w-full h-full object-cover" />
+                    <div className="absolute top-2 right-2 bg-orange-500 text-white px-2 py-1 rounded text-xs font-bold">20% OFF</div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-bold text-white text-sm mb-1 line-clamp-2">Push Up Board</h3>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-orange-500 font-bold">₹799</span>
+                      <span className="text-zinc-500 text-sm line-through">₹999</span>
+                    </div>
+                    <div className="flex items-center text-xs text-zinc-400">
+                      <span className="text-yellow-500">★★★★☆</span>
+                      <span className="ml-1">(156)</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-zinc-900 rounded-2xl overflow-hidden hover:scale-105 transition-transform cursor-pointer">
+                  <div className="aspect-square bg-zinc-800 relative">
+                    <img src="/api/placeholder/300/300" alt="Related Product" className="w-full h-full object-cover" />
+                    <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">BESTSELLER</div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-bold text-white text-sm mb-1 line-clamp-2">Resistance Bands Set</h3>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-orange-500 font-bold">₹899</span>
+                      <span className="text-zinc-500 text-sm line-through">₹1199</span>
+                    </div>
+                    <div className="flex items-center text-xs text-zinc-400">
+                      <span className="text-yellow-500">★★★★★</span>
+                      <span className="ml-1">(342)</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-zinc-900 rounded-2xl overflow-hidden hover:scale-105 transition-transform cursor-pointer">
+                  <div className="aspect-square bg-zinc-800 relative">
+                    <img src="/api/placeholder/300/300" alt="Related Product" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-bold text-white text-sm mb-1 line-clamp-2">Yoga Mat Premium</h3>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-orange-500 font-bold">₹649</span>
+                      <span className="text-zinc-500 text-sm line-through">₹899</span>
+                    </div>
+                    <div className="flex items-center text-xs text-zinc-400">
+                      <span className="text-yellow-500">★★★★☆</span>
+                      <span className="ml-1">(89)</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-zinc-900 rounded-2xl overflow-hidden hover:scale-105 transition-transform cursor-pointer">
+                  <div className="aspect-square bg-zinc-800 relative">
+                    <img src="/api/placeholder/300/300" alt="Related Product" className="w-full h-full object-cover" />
+                    <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded text-xs font-bold">NEW</div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-bold text-white text-sm mb-1 line-clamp-2">Wrist Strengthener</h3>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-orange-500 font-bold">₹499</span>
+                    </div>
+                    <div className="flex items-center text-xs text-zinc-400">
+                      <span className="text-yellow-500">★★★★★</span>
+                      <span className="ml-1">(203)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
         </div>
       </div>
 

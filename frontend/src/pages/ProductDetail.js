@@ -6,7 +6,6 @@ import { Button } from '../components/ui/button';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import AuthModal from '../components/AuthModal';
-// import ProductDescriptionFormatter from '../components/ProductDescriptionFormatter';
 import SeoProductSchema from '../components/SeoProductSchema';
 import ReviewsList from '../components/ReviewsList';
 import ReviewForm from '../components/ReviewForm';
@@ -483,11 +482,14 @@ const ProductDetail = () => {
     <h2 className="text-base sm:text-lg font-bold text-white">
       Description
     </h2>
-    <ProductDescriptionFormatter
-      description={product.description}
-      descriptionHtml={product.descriptionHtml}
-    />
-  </div>
+{product.descriptionHtml ? (
+              <div 
+                className="text-zinc-300 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+              />
+            ) : (
+              <p className="text-zinc-300 leading-relaxed">{product.description}</p>
+            )}
 )}
 
             {/* Product Specifications */}

@@ -1,4 +1,4 @@
-, Award, ArrowRight };import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight,  Award, Truck, TrendingUp } from 'lucide-react';

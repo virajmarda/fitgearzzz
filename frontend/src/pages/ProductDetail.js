@@ -6,7 +6,7 @@ import { Button } from '../components/ui/button';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import AuthModal from '../components/AuthModal';
-import ProductDescriptionFormatter from '../components/ProductDescriptionFormatter';
+// import ProductDescriptionFormatter from '../components/ProductDescriptionFormatter'; // temporarily disabled - using inline HTML renderer
 import SeoProductSchema from '../components/SeoProductSchema';
 import ReviewsList from '../components/ReviewsList';
 import ReviewForm from '../components/ReviewForm';
@@ -483,9 +483,11 @@ const ProductDetail = () => {
     <h2 className="text-base sm:text-lg font-bold text-white">
       Description
     </h2>
-<ProductDescriptionFormatter
-                    description={product.description}
-                    descriptionHtml={product.descriptionHtml}
+<div
+                    className="prose prose-invert max-w-none text-zinc-300 leading-relaxed"
+                    dangerouslySetInnerHTML={{
+                      __html: product.descriptionHtml || product.description || ''
+                    }}
                   />
                           </div>
 )}

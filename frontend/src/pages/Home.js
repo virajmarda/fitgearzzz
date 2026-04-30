@@ -21,6 +21,8 @@ const Home = () => {
       console.error('Error fetching products:', error);
     } finally {
       setLoading(false);
+          }
+            };
 
         
 
@@ -211,6 +213,8 @@ const Home = () => {
                         <ArrowRight className="ml-2 w-5 h-5" />
                       </motion.div>
                     </div>
+                              </div>
+                                      </div>
                   </motion.div>
                 </Link>
               );

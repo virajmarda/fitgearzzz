@@ -21,8 +21,8 @@ const Home = () => {
       console.error('Error fetching products:', error);
     } finally {
       setLoading(false);
-    }
-  };
+
+        
 
   const categories = [
     {

@@ -3,16 +3,21 @@ import { SHOPIFY_STORE_DOMAIN, STOREFRONT_ACCESS_TOKEN, STOREFRONT_API_URL, getC
 
 const shopifyFetch = async (query, variables = {}) => {
   console.log('Shopify GraphQL Request:', { query, variables });
+
+    const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
   
   try {
     const response = await fetch(STOREFRONT_API_URL, {
       method: 'POST',
+            signal: controller.signal,
       headers: {
         'Content-Type': 'application/json',
         'X-Shopify-Storefront-Access-Token': STOREFRONT_ACCESS_TOKEN,
       },
       body: JSON.stringify({ query, variables }),
     });
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -28,6 +33,7 @@ const shopifyFetch = async (query, variables = {}) => {
     
     return data.data;
   } catch (error) {
+        clearTimeout(timeoutId);
     console.error('Shopify fetch error:', error);
     throw error;
   }

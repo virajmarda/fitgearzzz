@@ -213,18 +213,10 @@ const Home = () => {
                         <ArrowRight className="ml-2 w-5 h-5" />
                       </motion.div>
                     </div>
-                              </div>
-                                      </div>
                   </motion.div>
                 </Link>
               );
             })}
-          </div>
-        </div>
-                  </div>
-                </motion.div>
-              </Link>
-            ))}
           </div>
         </div>
       </section>

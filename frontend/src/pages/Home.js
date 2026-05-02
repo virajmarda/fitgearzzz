@@ -49,7 +49,7 @@ const Home = () => {
       <section className="relative h-screen flex items-center justify-center overflow-hidden" data-testid="hero-section">
         <div className="absolute inset-0">
           <img
-            src="C:\Users\SHREE\Downloads\ChatGPT Image May 2, 2026, 04_19_29 PM.png"
+                        src="/hero-banner.png"
             alt="Fitness Hero"
             className="w-full h-full object-cover"
           />

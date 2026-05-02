@@ -49,7 +49,7 @@ const Home = () => {
       <section className="relative h-screen flex items-center justify-center overflow-hidden" data-testid="hero-section">
         <div className="absolute inset-0">
           <img
-            src="https://avada.website/gym/wp-content/uploads/sites/9/2015/05/home-banner.jpg"
+            src="https://chatgpt.com/s/m_69f5d796cf488191befdbb31cfe07b86"
             alt="Fitness Hero"
             className="w-full h-full object-cover"
           />

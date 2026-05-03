@@ -6,6 +6,8 @@ import { CartProvider } from "./context/CartContext";
 import { Toaster } from "./components/ui/sonner";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import WhatsAppButton from './components/WhatsAppButton';
+import BackToTop from './components/BackToTop';
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
@@ -107,6 +109,8 @@ function App() {
           <AppContent />
         </BrowserRouter>
         <Analytics />
+            <WhatsAppButton />
+        <BackToTop />
       </CartProvider>
     </AuthProvider>
   );

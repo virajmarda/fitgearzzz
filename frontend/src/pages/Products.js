@@ -94,7 +94,7 @@ const Products = () => {
     filters.search && { key: 'search', label: `Search: "${filters.search}"` },
     filters.brand && { key: 'brand', label: `Brand: ${filters.brand}` },
     filters.minRating > 0 && { key: 'minRating', label: `Rating: ${filters.minRating}+ \u2605` },
-    (filters.minPrice > 0 || filters.maxPrice < 5000) && { key: 'priceRange', label: `Price: \u20b9${filters.minPrice}-\u20b9${filters.maxPrice}` },
+    (filters.minPrice > 0 || filters.maxPrice < 5000) && { key: 'priceRange', label: `Price: ₹${filters.minPrice}-₹${filters.maxPrice}` },
   ].filter(Boolean);
 
   // Pagination
@@ -209,7 +209,7 @@ const Products = () => {
               {/* Price Range */}
               <div>
                 <label className="text-zinc-300 text-sm font-semibold block mb-2">
-                  Price: \u20b9{filters.minPrice} - \u20b9{filters.maxPrice}
+                  Price: ₹{filters.minPrice} - ₹{filters.maxPrice}
                 </label>
                 <input
                   type="range"

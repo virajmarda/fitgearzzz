@@ -66,7 +66,7 @@ const uspItems = [
     title: 'COD Available', 
     desc: 'Pay on delivery across all of India.',
     gradient: 'from-purple-500 to-pink-500',
-    stat: '₹0'0',
+            stat: '₹0',
     statLabel: 'Advance'
   },
   { 

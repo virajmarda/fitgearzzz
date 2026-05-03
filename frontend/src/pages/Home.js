@@ -66,7 +66,7 @@ const uspItems = [
     title: 'COD Available', 
     desc: 'Pay on delivery across all of India.',
     gradient: 'from-purple-500 to-pink-500',
-    stat: '₹0',
+    stat: '₹0'0',
     statLabel: 'Advance'
   },
   { 
@@ -273,7 +273,7 @@ const Home = () => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" justify-items-center>
             {uspItems.map((item, i) => (
               <motion.div
                 key={i}

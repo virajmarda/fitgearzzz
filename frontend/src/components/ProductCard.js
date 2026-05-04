@@ -13,7 +13,7 @@ const ProductCard = ({ product }) => {
   const [isAdding, setIsAdding] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [isInWishlist, setIsInWishlist] = useState(false);
-  const [showQuickView, setShowQuickView] = useState(false);
+
 
   const originalPrice =
     product.variants?.[0]?.compareAtPrice?.amount != null

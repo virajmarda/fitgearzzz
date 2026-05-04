@@ -108,14 +108,14 @@ const Navbar = () => {
                       className="block px-4 py-2 text-green-400 hover:text-green-300 hover:bg-zinc-800 transition-colors font-semibold"
                       onClick={() => setShowCategoryDropdown(false)}
                     >
-                      ✨ New Arrivals
+                       New Arrivals
                     </Link>
                     <Link
                       to="/products?tag=sale"
                       className="block px-4 py-2 text-orange-400 hover:text-orange-300 hover:bg-zinc-800 transition-colors font-semibold"
                       onClick={() => setShowCategoryDropdown(false)}
                     >
-                      🔥 Sale
+                       Sale
                     </Link>
                   </div>
                 )}

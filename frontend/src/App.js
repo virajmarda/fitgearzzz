@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useNavigate, useSearchParams, useLocation
 import { Analytics } from "@vercel/analytics/react";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
+import { WishlistProvider } from './context/WishlistContext';
 import { Toaster } from "./components/ui/sonner";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -19,6 +20,7 @@ import Admin from "./pages/Admin";
 import AuthCallback from "./pages/AuthCallback";
 import CustomerLogout from "./pages/CustomerLogout";
 import About from "./pages/About";
+import Wishlist from './pages/Wishlist';
 import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
@@ -70,6 +72,7 @@ const AppContent = () => {
           <Route path="/catalog" element={<CatalogPage />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/profile" element={<Profile />} />
+                <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/customer_identity/logout" element={<CustomerLogout />} />
           <Route path="/customer_authentication/sso_hint" element={<CustomerSSOCallback />} />
@@ -105,13 +108,15 @@ function App() {
   return (
     <AuthProvider>
       <CartProvider>
+            <WishlistProvider>
         <BrowserRouter>
           <AppContent />
         </BrowserRouter>
         <Analytics />
             <WhatsAppButton />
         <BackToTop />
-      </CartProvider>
+            </WishlistProvider>  
+    </CartProvider>
     </AuthProvider>
   );
 }

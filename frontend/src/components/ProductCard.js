@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Star, ShoppingCart, Heart, Eye } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useWishlist } from '../context/WishlistContext';
 import { motion } from 'framer-motion';
 import AuthModal from '../components/AuthModal';
 import { toast } from 'sonner';
@@ -10,10 +11,10 @@ import { toast } from 'sonner';
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
   const { user } = useAuth();
+    const { toggleWishlist, isInWishlist: checkIsInWishlist } = useWishlist();
   const [isAdding, setIsAdding] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
-  const [isInWishlist, setIsInWishlist] = useState(false);
-
+  
 
   const originalPrice =
     product.variants?.[0]?.compareAtPrice?.amount != null
@@ -83,14 +84,14 @@ const ProductCard = ({ product }) => {
 
         {/* Wishlist button */}
         <button
-          onClick={handleWishlist}
+          onClick={() => toggleWishlist(product)}
           className={`absolute top-3 right-3 z-10 p-2 rounded-full transition-all ${
             isInWishlist
               ? 'bg-red-500 text-white'
               : 'bg-zinc-800/80 text-zinc-300 hover:bg-red-500 hover:text-white'
           }`}
         >
-          <Heart className="w-4 h-4" fill={isInWishlist ? 'currentColor' : 'none'} />
+          <Heart className="w-4 h-4" fill={checkIsInWishlist(product.id) ? 'currentColor' : 'none'} />
         </button>
 
         {/* Product Image */}

@@ -302,8 +302,7 @@ const ProductDetail = () => {
                   <span className="text-2xl text-gray-500 line-through">${selectedVariant.compare_at_price}</span>
                 )}
                 {discount > 0 && (
-                  <span className="text-green-600 font-semibold">Save ${(selectedVariant.compare_at_price - selectedVariant.price).toFixed(2)}</span>
-                )}
+                <span className="inline-block bg-orange-500 text-white px-3 py-1 rounded-md text-sm font-bold">{Math.round(((selectedVariant.compare_at_price - selectedVariant.price) / selectedVariant.compare_at_price) * 100)}% OFF</span>                )}
               </div>
               <p className="text-sm text-gray-600 mt-1">Inclusive of all taxes</p>
             </div>

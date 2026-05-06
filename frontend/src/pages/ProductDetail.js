@@ -141,7 +141,7 @@ const ProductDetail = () => {
   }
 
   const averageRating = 4.5; // In production, calculate from reviews
-  const totalReviews = 128; // In production, fetch from API
+  const totalReviews = product?.reviewCount || Math.floor(Math.random() * 500) + 50; // In production, fetch from API
   const inStock = selectedVariant?.inventory_quantity > 0;
   const discount = selectedVariant?.compare_at_price ? 
     Math.round(((selectedVariant.compare_at_price - selectedVariant.price) / selectedVariant.compare_at_price) * 100) : 0;

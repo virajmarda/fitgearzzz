@@ -30,10 +30,10 @@ const trustBadges = [
 ];
 
 const testimonials = [
-  { name: 'Rahul S.', city: 'Mumbai', rating: 5, text: 'Amazing quality products! The knee patches worked wonders for my recovery. Fast shipping too.', avatar: 'R' },
+  { name: 'Rahul S.', city: 'Mumbai', rating: 4, text: 'Amazing quality products! The knee patches worked wonders for my recovery. Fast shipping too.', avatar: 'R' },
   { name: 'Priya K.', city: 'Bangalore', rating: 5, text: 'Finally a fitness store that delivers what it promises. The wrist straps are top-notch for heavy lifting.', avatar: 'P' },
   { name: 'Amit D.', city: 'Delhi', rating: 5, text: 'Been using FitGearzzz for 6 months now. Best prices and genuine products every single time.', avatar: 'A' },
-  { name: 'Sneha M.', city: 'Pune', rating: 5, text: 'The waist trimmer belt is excellent. Lost 3 inches in 2 months! Super happy with the purchase.', avatar: 'S' },
+  { name: 'Sneha M.', city: 'Pune', rating: 4, text: 'The waist trimmer belt is excellent. Lost 3 inches in 2 months! Super happy with the purchase.', avatar: 'S' },
 ];
 
 const uspItems = [
@@ -159,7 +159,7 @@ const Home = () => {
             transition={{ delay: 0.2 }}
             className="text-zinc-300 text-lg md:text-xl max-w-xl mx-auto mb-8"
           >
-            Premium fitness equipment & supplements to fuel your journey to greatness
+            Premium fitness products gearing to fuel your journey to greatness
           </motion.p>
 
           <motion.div
@@ -300,7 +300,7 @@ const Home = () => {
             </h2>
 
             <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
-              We don't just sell fitness gear. We deliver excellence, trust, and results.
+              We don't just sell FITNESS GEARS.. We deliver EXCELLENCE, TRUST and RESULTS.
             </p>
           </motion.div>
 
@@ -363,25 +363,25 @@ const Home = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
               <div>
                 <Award className="w-8 h-8 text-white mx-auto mb-2" />
-                <p className="text-white font-bold text-3xl mb-1">10K+</p>
+                <p className="text-white font-bold text-3xl mb-1">100+</p>
                 <p className="text-orange-100 text-sm">Happy Customers</p>
               </div>
 
               <div>
                 <TrendingUp className="w-8 h-8 text-white mx-auto mb-2" />
-                <p className="text-white font-bold text-3xl mb-1">98%</p>
+                <p className="text-white font-bold text-3xl mb-1">92%</p>
                 <p className="text-orange-100 text-sm">Satisfaction Rate</p>
               </div>
 
               <div>
                 <Package className="w-8 h-8 text-white mx-auto mb-2" />
-                <p className="text-white font-bold text-3xl mb-1">50K+</p>
+                <p className="text-white font-bold text-3xl mb-1">1000+</p>
                 <p className="text-orange-100 text-sm">Products Delivered</p>
               </div>
 
               <div>
                 <Star className="w-8 h-8 text-white mx-auto mb-2" />
-                <p className="text-white font-bold text-3xl mb-1">4.9/5</p>
+                <p className="text-white font-bold text-3xl mb-1">4.5/5</p>
                 <p className="text-orange-100 text-sm">Average Rating</p>
               </div>
             </div>

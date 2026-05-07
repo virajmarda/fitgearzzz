@@ -20,10 +20,11 @@ const AnnouncementBar = () => {
 
   return (
       <div className="bg-black text-white py-2.5 px-4 relative">      <div className="max-w-7xl mx-auto flex items-center justify-center text-center">
-        <div className="max-w-7xl mx-auto flex items-center justify-center t          <p className="text-sm tracking-wide font-medium uppercase">
-      </div>
-      <button
-        onClick={() => setIsVisible(false)}
+        <div className="max-w-7xl mx-auto flex items-center justify-center text-center">      
+              <p className="text-sm tracking-wide font-med
+            {messages[currentIndex].text}
+          </p>
+        </div>
         className="absolute right-4 top-1/2 -translate-y-1/2 hover:bg-orange-600 p-1 rounded transition-colors"
         aria-label="Close announcement"
       >

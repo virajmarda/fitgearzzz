@@ -9,7 +9,7 @@ import { Input } from './ui/input';
 import AuthModal from './AuthModal';
 
 const categories = [
-  { name: 'Gym Equipment', slug: 'Gym%20Equipment' },
+  { name: 'Gym Equipment', slug: 'Gym Equipment' },
   { name: 'Supplements', slug: 'Supplements' },
   { name: 'Apparel', slug: 'Apparel' },
   { name: 'Accessories', slug: 'Accessories' },

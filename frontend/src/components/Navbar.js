@@ -8,11 +8,8 @@ import {
   Heart,
   ChevronDown,
   Dumbbell,
-  Flame,
-  Info,
   BookOpen,
-  Mail,
-  Tag
+  Mail
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -57,11 +54,6 @@ const featuredShopLinks = [
     name: 'Best Sellers',
     to: '/products?tag=bestseller',
     description: 'Most loved by customers',
-  },
-  {
-    name: 'Shop by Deals',
-    to: '/deals',
-    description: 'Limited-time offers and savings',
   },
 ];
 
@@ -223,27 +215,19 @@ const Navbar = () => {
               </div>
 
               <Link
-                to="/deals"
-                className="flex items-center gap-1 text-zinc-300 hover:text-orange-500 transition-colors font-manrope"
-              >
-                <Tag className="w-4 h-4" />
-                Deals
-              </Link>
-
-              <Link
                 to="/about"
-                className="flex items-center gap-1 text-zinc-300 hover:text-orange-500 transition-colors font-manrope"
+                className="text-zinc-300 hover:text-orange-500 transition-colors font-manrope"
               >
-                <Info className="w-4 h-4" />
-                About
+                About Us
               </Link>
 
               <Link
                 to="/blog"
-                className="flex items-center gap-1 text-zinc-300 hover:text-orange-500 transition-colors font-manrope"
+                className="text-zinc-300 hover:text-orange-500 transition-colors"
+                aria-label="Blog"
+                title="Blog"
               >
-                <BookOpen className="w-4 h-4" />
-                Blog
+                <BookOpen className="w-5 h-5" />
               </Link>
 
               <Link
@@ -402,13 +386,6 @@ const Navbar = () => {
               >
                 New Arrivals
               </Link>
-              <Link
-                to="/deals"
-                onClick={() => setShowMenu(false)}
-                className="block py-1.5 text-zinc-400 hover:text-orange-500"
-              >
-                Deals
-              </Link>
             </div>
 
             <Link
@@ -416,7 +393,7 @@ const Navbar = () => {
               onClick={() => setShowMenu(false)}
               className="block py-2 text-zinc-300 hover:text-orange-500"
             >
-              About
+              About Us
             </Link>
 
             <Link

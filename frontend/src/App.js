@@ -21,6 +21,7 @@ import Admin from "./pages/Admin";
 import AuthCallback from "./pages/AuthCallback";
 import CustomerLogout from "./pages/CustomerLogout";
 import About from "./pages/About";
+import Blog from "./pages/Blog";
 import Wishlist from './pages/Wishlist';
 import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -83,6 +84,7 @@ const AppContent = () => {
           <Route path="/admin" element={<Admin />} />
           <Route path="/products/:handle" element={<ProductDetail />} />
           <Route path="/about" element={<About />} />
+          <Route path="/blog" element={<Blog />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />

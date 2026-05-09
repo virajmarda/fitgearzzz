@@ -154,39 +154,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Shop by Category */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
-        <h2 className="font-oswald text-3xl font-bold text-white text-center mb-10 uppercase tracking-wide">
-          Shop by Category
-        </h2>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {categories.map((category, index) => (
-            <motion.div
-              key={index}
-              whileHover={{ scale: 1.03 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Link
-                to={`/products?category=${category.slug}`}
-                className="relative block rounded-2xl overflow-hidden aspect-square group"
-              >
-                <img
-                  src={category.image}
-                  alt={category.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <h3 className="font-oswald text-white text-xl font-bold">{category.name}</h3>
-                  <p className="text-orange-400 text-sm font-semibold">Shop Now →</p>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </section>
 
       {/* Featured Products */}
       <section className="max-w-7xl mx-auto px-4 py-8 pb-16">
@@ -341,40 +308,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
-        <h2 className="font-oswald text-3xl font-bold text-white text-center mb-10 uppercase tracking-wide">
-          What Our Customers Say
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {testimonials.map((t, i) => (
-            <div
-              key={i}
-              className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 hover:border-orange-500/40 transition-colors"
-            >
-              <div className="flex items-center gap-1 mb-3">
-                {[...Array(t.rating)].map((_, j) => (
-                  <Star key={j} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                ))}
-              </div>
-
-              <p className="text-zinc-300 text-sm leading-relaxed mb-4">"{t.text}"</p>
-
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-sm">
-                  {t.avatar}
-                </div>
-                <div>
-                  <p className="text-white font-semibold text-sm">{t.name}</p>
-                  <p className="text-zinc-500 text-xs">{t.city}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
+      
       {/* Newsletter Section */}
       <section className="bg-gradient-to-r from-orange-600 to-orange-500 py-16">
         <div className="max-w-2xl mx-auto px-4 text-center">

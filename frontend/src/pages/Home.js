@@ -136,67 +136,7 @@ const Home = () => {
 
       {/* Social Proof Section */}
       <SocialProof />
-      {/* Hero Section */}
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1600&q=85')" }}
-        >
-          <div className="absolute inset-0 bg-zinc-950/70" />
-        </div>
-
-        <div className="relative z-10 text-center px-4">
-          <motion.p
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-orange-500 font-semibold uppercase tracking-widest text-sm mb-4"
-          >
-            India's #1 Fitness Store
-          </motion.p>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="font-oswald text-5xl md:text-7xl font-bold text-white uppercase tracking-tight leading-none mb-6"
-          >
-            Unleash Your
-            <br />
-            <span className="text-orange-500">Inner Strength</span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-zinc-300 text-lg md:text-xl max-w-xl mx-auto mb-8"
-          >
-            Premium fitness products gearing to fuel your journey to greatness
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-          >
-            <Link
-              to="/products"
-              className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider px-8 py-4 rounded-full text-lg transition-colors"
-            >
-              Shop Now <ArrowRight className="w-5 h-5" />
-            </Link>
-
-            <Link
-              to="/products?tag=sale"
-              className="inline-flex items-center gap-2 border-2 border-white text-white hover:bg-white hover:text-zinc-900 font-oswald uppercase tracking-wider px-8 py-4 rounded-full text-lg transition-colors"
-            >
-              View Deals
-            </Link>
-          </motion.div>
-        </div>
-      </section>
-
+            
       {/* Trust Badges Strip */}
       <section className="bg-zinc-900 border-y border-zinc-800 py-6">
         <div className="max-w-7xl mx-auto px-4">

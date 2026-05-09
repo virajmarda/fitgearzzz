@@ -21,6 +21,9 @@ import {
 } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { fetchProducts } from '../services/shopifyService';
+import HeroPremium from '../components/HeroPremium';
+import CategoryShowcase from '../components/CategoryShowcase';
+import SocialProof from '../components/SocialProof';
 
 const trustBadges = [
   { icon: <Truck className="w-7 h-7 text-orange-500" />, title: 'Free Shipping', sub: 'On all orders above ₹499' },
@@ -124,6 +127,15 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-zinc-950">
+
+          {/* Premium Hero Section */}
+      <HeroPremium />
+
+      {/* Premium Category Showcase */}
+      <CategoryShowcase />
+
+      {/* Social Proof Section */}
+      <SocialProof />
       {/* Hero Section */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
         <div

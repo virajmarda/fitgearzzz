@@ -159,30 +159,7 @@ const SocialProof = () => {
           </div>
         </div>
 
-        {/* Stats Section - Now integrated within SocialProof */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20"
-        >
-          <div className="text-center p-8 bg-gradient-to-br from-zinc-900/50 to-zinc-800/50 rounded-2xl border border-zinc-700/30 backdrop-blur-sm">
-            <div className="text-5xl font-bold text-white mb-2">50,000+</div>
-            <div className="text-zinc-400 text-lg">Happy Customers</div>
-          </div>
-          <div className="text-center p-8 bg-gradient-to-br from-zinc-900/50 to-zinc-800/50 rounded-2xl border border-zinc-700/30 backdrop-blur-sm">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <div className="text-5xl font-bold text-white">4.9</div>
-              <Star className="w-8 h-8 text-orange-400 fill-orange-400" />
-            </div>
-            <div className="text-zinc-400 text-lg">Average Rating</div>
-          </div>
-          <div className="text-center p-8 bg-gradient-to-br from-zinc-900/50 to-zinc-800/50 rounded-2xl border border-zinc-700/30 backdrop-blur-sm">
-            <div className="text-5xl font-bold text-white mb-2">15,000+</div>
-            <div className="text-zinc-400 text-lg">5-Star Reviews</div>
-          </div>
-        </motion.div>
-      </div>
+        div>
     </section>
   );
 };

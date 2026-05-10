@@ -159,7 +159,7 @@ const SocialProof = () => {
           </div>
         </div>
 
-        div>
+
     </section>
   );
 };

@@ -272,40 +272,6 @@ const Home = () => {
             ))}
           </div>
 
-          {/* Trust metrics banner */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mt-16 bg-gradient-to-r from-orange-600 to-orange-500 rounded-2xl p-8"
-          >
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-              <div>
-                <Award className="w-8 h-8 text-white mx-auto mb-2" />
-                <p className="text-white font-bold text-3xl mb-1">100+</p>
-                <p className="text-orange-100 text-sm">Happy Customers</p>
-              </div>
-
-              <div>
-                <TrendingUp className="w-8 h-8 text-white mx-auto mb-2" />
-                <p className="text-white font-bold text-3xl mb-1">92%</p>
-                <p className="text-orange-100 text-sm">Satisfaction Rate</p>
-              </div>
-
-              <div>
-                <Package className="w-8 h-8 text-white mx-auto mb-2" />
-                <p className="text-white font-bold text-3xl mb-1">1000+</p>
-                <p className="text-orange-100 text-sm">Products Delivered</p>
-              </div>
-
-              <div>
-                <Star className="w-8 h-8 text-white mx-auto mb-2" />
-                <p className="text-white font-bold text-3xl mb-1">4.5/5</p>
-                <p className="text-orange-100 text-sm">Average Rating</p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
       </section>
 
       

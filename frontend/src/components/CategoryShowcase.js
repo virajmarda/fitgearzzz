@@ -48,9 +48,8 @@ const categories = [
 
 const CategoryShowcase = () => {
   return (
-    <section className="py-20 bg-gradient-to-b from-white to-zinc-50">
+    <section className="py-20 bg-zinc-950">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -59,14 +58,16 @@ const CategoryShowcase = () => {
           transition={{ duration: 0.6 }}
           className="text-center max-w-3xl mx-auto mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 text-orange-600 text-sm font-medium mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-sm font-medium mb-4">
             <Sparkles className="w-4 h-4" />
             <span>SHOP BY CATEGORY</span>
           </div>
-          <h2 className="text-4xl lg:text-5xl font-bold text-zinc-900 mb-4">
+
+          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">
             Find Your Perfect Gear
           </h2>
-          <p className="text-xl text-zinc-600">
+
+          <p className="text-xl text-zinc-400">
             Explore our curated collection of premium fitness products
           </p>
         </motion.div>
@@ -75,6 +76,7 @@ const CategoryShowcase = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {categories.map((category, index) => {
             const Icon = category.icon;
+
             return (
               <motion.div
                 key={category.id}
@@ -85,7 +87,7 @@ const CategoryShowcase = () => {
               >
                 <Link
                   to={category.link}
-                  className="group relative block h-[400px] rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500"
+                  className="group relative block h-[400px] rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900 shadow-xl transition-all duration-500 hover:border-zinc-700 hover:shadow-2xl"
                 >
                   {/* Background Image */}
                   <div className="absolute inset-0">
@@ -93,22 +95,24 @@ const CategoryShowcase = () => {
                       className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
                       style={{ backgroundImage: `url('${category.image}')` }}
                     />
-                    {/* Gradient Overlay */}
-                    <div className={`absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500`} />
+                    {/* Dark Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-black/10 opacity-90 transition-opacity duration-500 group-hover:opacity-95" />
                   </div>
 
                   {/* Content */}
                   <div className="relative h-full flex flex-col justify-end p-6">
                     {/* Icon Badge */}
                     <div className="absolute top-6 right-6">
-                      <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${category.color} flex items-center justify-center shadow-lg`}>
+                      <div
+                        className={`w-12 h-12 rounded-full bg-gradient-to-br ${category.color} flex items-center justify-center shadow-lg`}
+                      >
                         <Icon className="w-6 h-6 text-white" />
                       </div>
                     </div>
 
                     {/* Product Count Badge */}
                     <div className="absolute top-6 left-6">
-                      <div className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 text-white text-sm font-medium">
+                      <div className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white text-sm font-medium">
                         {category.products} Products
                       </div>
                     </div>
@@ -130,8 +134,8 @@ const CategoryShowcase = () => {
                     </div>
                   </div>
 
-                  {/* Hover Border Glow */}
-                  <div className={`absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-white/30 transition-all duration-500`} />
+                  {/* Hover Border */}
+                  <div className="absolute inset-0 rounded-2xl border border-transparent group-hover:border-white/10 transition-all duration-500" />
                 </Link>
               </motion.div>
             );

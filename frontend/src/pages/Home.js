@@ -271,6 +271,8 @@ const Home = () => {
             ))}
           </div>
 
+      </div>
+      </section>
 
       
       {/* Newsletter Section */}

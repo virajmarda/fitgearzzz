@@ -125,7 +125,9 @@ const Home = () => {
     { name: 'Accessories', image: 'https://images.unsplash.com/photo-1592999641298-434e28c11d14?w=400&q=80', slug: 'Accessories' },
   ];
 
-  return (
+  273
+    310
+      
     <div className="min-h-screen bg-zinc-950">
 
           {/* Premium Hero Section */}
@@ -153,7 +155,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
 
       {/* Featured Products */}
       <section className="max-w-7xl mx-auto px-4 py-8 pb-16">

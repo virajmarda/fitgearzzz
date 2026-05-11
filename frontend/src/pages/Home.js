@@ -125,8 +125,6 @@ const Home = () => {
     { name: 'Accessories', image: 'https://images.unsplash.com/photo-1592999641298-434e28c11d14?w=400&q=80', slug: 'Accessories' },
   ];
 
-  273
-    310
       
     <div className="min-h-screen bg-zinc-950">
 

@@ -272,7 +272,6 @@ const Home = () => {
             ))}
           </div>
 
-      </section>
 
       
       {/* Newsletter Section */}

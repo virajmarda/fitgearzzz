@@ -125,7 +125,7 @@ const Home = () => {
     { name: 'Accessories', image: 'https://images.unsplash.com/photo-1592999641298-434e28c11d14?w=400&q=80', slug: 'Accessories' },
   ];
 
-      
+      return (
     <div className="min-h-screen bg-zinc-950">
 
           {/* Premium Hero Section */}
@@ -311,5 +311,5 @@ const Home = () => {
         </div>
       </section>
     </div
-};
-export default Home;
+  );
+};export default Home;

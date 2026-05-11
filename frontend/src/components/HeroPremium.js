@@ -9,7 +9,7 @@ const HeroPremium = () => {
       {/* Dynamic Background with Image */}
       <div className="absolute inset-0">
         {/* Background Image with Overlay */}
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage: `url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070')`,
@@ -19,7 +19,7 @@ const HeroPremium = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent"></div>
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/50"></div>
         </div>
-        
+
         {/* Animated accent gradients */}
         <motion.div
           animate={{
@@ -29,7 +29,7 @@ const HeroPremium = () => {
           transition={{
             duration: 8,
             repeat: Infinity,
-            ease: "easeInOut"
+            ease: 'easeInOut',
           }}
           className="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-500 rounded-full filter blur-[150px] opacity-30"
         />
@@ -39,7 +39,6 @@ const HeroPremium = () => {
       <div className="relative z-10 h-full max-w-7xl mx-auto px-6 lg:px-8">
         <div className="h-full flex items-center">
           <div className="max-w-3xl space-y-8">
-            
             {/* Trust Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -48,10 +47,12 @@ const HeroPremium = () => {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 backdrop-blur-sm border border-orange-500/20"
             >
               <Shield className="w-4 h-4 text-orange-400" />
-              <span className="text-orange-400 text-sm font-medium">India's #1 Fitness Destination</span>
+              <span className="text-orange-400 text-sm font-medium">
+                India&apos;s #1 Fitness Destination
+              </span>
             </motion.div>
 
-            {/* Main Headline - Massive & Bold */}
+            {/* Main Headline */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -73,7 +74,9 @@ const HeroPremium = () => {
               className="text-xl lg:text-2xl text-zinc-300 font-light max-w-2xl leading-relaxed"
             >
               Premium fitness equipment engineered for champions.
-              <span className="block mt-2 text-white font-medium">Transform your body, elevate your performance.</span>
+              <span className="block mt-2 text-white font-medium">
+                Transform your body, elevate your performance.
+              </span>
             </motion.p>
 
             {/* CTA Buttons */}
@@ -91,7 +94,7 @@ const HeroPremium = () => {
                 <ArrowRight className="relative z-10 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </Link>
-              
+
               <button className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-md text-white font-semibold text-lg rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300">
                 <Play className="w-5 h-5" fill="currentColor" />
                 <span>Watch Story</span>
@@ -103,7 +106,7 @@ const HeroPremium = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8 }}
-              className="flex items-center gap-8 pt-8 border-t border-white/10"
+              className="flex items-center gap-8 pt-8"
             >
               <div className="flex items-center gap-2">
                 <Star className="w-5 h-5 text-orange-400 fill-orange-400" />
@@ -112,9 +115,9 @@ const HeroPremium = () => {
                   <div className="text-zinc-400 text-sm">15K+ Reviews</div>
                 </div>
               </div>
-              
+
               <div className="h-12 w-px bg-white/10"></div>
-              
+
               <div className="flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-green-400" />
                 <div>
@@ -122,15 +125,14 @@ const HeroPremium = () => {
                   <div className="text-zinc-400 text-sm">Active Users</div>
                 </div>
               </div>
-              
+
               <div className="h-12 w-px bg-white/10"></div>
-              
+
               <div>
                 <div className="text-white font-bold text-lg">Free Shipping</div>
                 <div className="text-zinc-400 text-sm">Orders above ₹999</div>
               </div>
             </motion.div>
-
           </div>
         </div>
       </div>
@@ -149,7 +151,12 @@ const HeroPremium = () => {
         >
           <span className="text-xs uppercase tracking-wider">Scroll</span>
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
           </svg>
         </motion.div>
       </motion.div>

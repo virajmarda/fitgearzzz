@@ -58,9 +58,9 @@ const HeroPremium = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <h1 className="text-6xl lg:text-8xl font-black text-white leading-[0.95] tracking-tight">
-                TRANSFORM YOUR POTENTIAL
-                <span className="block mt-2 bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 bg-clip-text text-transparent">
+            <h1 className="text-5xl lg:text-7xl font-serif font-black text-white leading-[0.95] tracking-tight">
+              TRANSFORM YOUR POTENTIAL
+              <span className="block mt-2 bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 bg-clip-text text-transparent">
                   TRANSFORM YOUR LIFE
                 </span>
               </h1>

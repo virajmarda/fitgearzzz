@@ -38,7 +38,7 @@ const HeroPremium = () => {
       {/* Content Container */}
       <div className="relative z-10 h-full max-w-7xl mx-auto px-6 lg:px-8">
         <div className="h-full flex items-center">
-          <div className="max-w-3xl space-y-8">
+          <div className="max-w-3xl space-y-8 mt-12">
             {/* Trust Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -59,10 +59,8 @@ const HeroPremium = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
             >
             <h1 className="text-5xl lg:text-7xl font-sans font-black text-white leading-[0.95] tracking-tight">
-              TRANSFORM YOUR POTENTIAL
-              <span className="block mt-2 bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 bg-clip-text text-transparent">
-                  TRANSFORM YOUR LIFE
-                </span>
+              transform your potential              <span className="block mt-2 bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 bg-clip-text text-transparent">
+              transform your life                </span>
               </h1>
             </motion.div>
 

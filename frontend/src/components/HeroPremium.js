@@ -59,9 +59,7 @@ const HeroPremium = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
             >
             <h1 className="text-5xl lg:text-7xl font-sans font-black text-white leading-[0.95] tracking-tight">
-              transform your potential              <span className="block mt-2 bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 bg-clip-text text-transparent">
-              transform your life                </span>
-              </h1>
+              Transform your life              </h1>
             </motion.div>
 
             {/* Subheadline */}

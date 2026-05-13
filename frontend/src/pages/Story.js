@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause, Volume2, VolumeX, X, Award, Users, Target, TrendingUp, Heart, Zap } from 'lucide-react';
-import { Helmet } from 'react-helmet';
 
 const Story = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -86,13 +85,7 @@ const Story = () => {
   };
 
   return (
-    <>
-      <Helmet>
-        <title>Our Story - FitGearzzz | India's #1 Fitness Equipment Brand</title>
-        <meta name="description" content="Discover the journey of FitGearzzz - from a vision to India's most trusted fitness equipment brand serving 50K+ fitness enthusiasts." />
-      </Helmet>
-
-      <div className="min-h-screen bg-black text-white">
+    iv className="min-h-screen bg-black text-white">
         {/* Hero Video Section */}
         <section className="relative h-screen overflow-hidden">
           {/* Background Video/Image */}
@@ -362,7 +355,6 @@ const Story = () => {
           )}
         </AnimatePresence>
       </div>
-    </>
   );
 };
 

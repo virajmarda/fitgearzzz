@@ -96,11 +96,9 @@ const HeroPremium = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </Link>
 
-              <button className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-md text-white font-semibold text-lg rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300">
-                <Play className="w-5 h-5" fill="currentColor" />
+            <Link to="/story" className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-md text-white rounded-full border border-white/20 hover:bg-white/20 transition-all">                <Play className="w-5 h-5" fill="currentColor" />
                 <span>Watch Story</span>
-              </button>
-            </motion.div>
+            </Link>            </motion.div>
 
             {/* Stats Bar */}
             <motion.div

@@ -53,11 +53,14 @@ const Story = () => {
   }, [sections]);
 
   const scrollToSection = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById(id)?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
   };
 
   return (
-    <div className="min-h-screen bg-[#05070b] text-white overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden bg-[#05070b] text-white">
       <StoryStyles />
 
       <ProgressRail
@@ -79,9 +82,10 @@ const Story = () => {
 
 const ProgressRail = ({ sections, activeSection, onNavigate }) => {
   return (
-    <div className="hidden lg:flex fixed right-8 top-1/2 -translate-y-1/2 z-50 flex-col gap-3">
+    <div className="fixed right-8 top-1/2 z-50 hidden -translate-y-1/2 lg:flex flex-col gap-3">
       {sections.map((section) => {
         const isActive = activeSection === section.id;
+
         return (
           <button
             key={section.id}
@@ -98,6 +102,7 @@ const ProgressRail = ({ sections, activeSection, onNavigate }) => {
             >
               {section.label}
             </span>
+
             <span
               className={`block rounded-full border transition-all duration-300 ${
                 isActive
@@ -121,15 +126,15 @@ const HeroSection = ({ onScrollNext }) => {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 md:px-10"
+      className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 md:px-10"
     >
       <motion.div style={{ y: glowY }} className="absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(249,115,22,0.16),transparent_28%),radial-gradient(circle_at_80%_25%,rgba(255,255,255,0.07),transparent_18%),radial-gradient(circle_at_50%_75%,rgba(234,88,12,0.18),transparent_26%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,#040507_0%,#05070b_28%,#0a0d12_100%)]" />
-        <div className="absolute inset-0 opacity-[0.08] story-grid" />
+        <div className="story-grid absolute inset-0 opacity-[0.08]" />
       </motion.div>
 
-      <div className="relative z-10 max-w-6xl w-full">
+      <div className="relative z-10 w-full max-w-6xl">
         <motion.div
           style={{ y: textY, opacity: textOpacity }}
           initial={{ opacity: 0, y: 50 }}
@@ -144,17 +149,17 @@ const HeroSection = ({ onScrollNext }) => {
             </span>
           </div>
 
-          <p className="mb-4 text-[11px] md:text-[12px] uppercase tracking-[0.4em] text-orange-300/90">
+          <p className="mb-4 text-[11px] uppercase tracking-[0.4em] text-orange-300/90">
             FitGearzzz / Brand Narrative
           </p>
 
           <h1 className="max-w-5xl font-serif text-5xl leading-[0.95] md:text-7xl xl:text-[7.5rem]">
             This is not
             <span className="block text-white/60"> about fitness gear.</span>
-            <span className="block mt-2 text-white">It is about who refuses to quit.</span>
+            <span className="mt-2 block text-white">It is about who refuses to quit.</span>
           </h1>
 
-          <p className="mt-8 max-w-2xl text-base md:text-xl leading-8 text-white/72">
+          <p className="mt-8 max-w-2xl text-base leading-8 text-white/72 md:text-xl">
             FitGearzzz was built for the person who shows up before the applause,
             before the transformation, before anyone notices. This page is not a video.
             It is a living, scrolling story designed to feel like a film you walk through.
@@ -162,7 +167,7 @@ const HeroSection = ({ onScrollNext }) => {
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <button
-              onClick={() => onScrollNext()}
+              onClick={onScrollNext}
               className="group inline-flex min-h-[52px] items-center gap-3 rounded-full bg-orange-400 px-7 py-3 text-[12px] font-semibold uppercase tracking-[0.24em] text-black transition-all duration-300 hover:bg-orange-300 hover:shadow-[0_15px_50px_rgba(251,146,60,0.35)]"
             >
               Enter the Story
@@ -181,7 +186,7 @@ const HeroSection = ({ onScrollNext }) => {
 
       <button
         onClick={onScrollNext}
-        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 flex flex-col items-center gap-3 text-white/55 transition hover:text-white"
+        className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3 text-white/55 transition hover:text-white"
         aria-label="Scroll to next section"
       >
         <span className="text-[10px] uppercase tracking-[0.35em]">Scroll</span>
@@ -215,9 +220,10 @@ const ProblemSection = () => {
   return (
     <section
       id="problem"
-      className="relative min-h-screen flex items-center px-6 py-24 md:px-10 lg:px-16"
+      className="relative flex min-h-screen items-center px-6 py-24 md:px-10 lg:px-16"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_20%,rgba(255,255,255,0.04),transparent_18%),radial-gradient(circle_at_80%_80%,rgba(249,115,22,0.12),transparent_25%)]" />
+
       <div className="relative z-10 mx-auto grid w-full max-w-7xl gap-14 lg:grid-cols-[0.9fr,1.1fr]">
         <motion.div
           initial={{ opacity: 0, x: -28 }}
@@ -228,10 +234,12 @@ const ProblemSection = () => {
           <p className="mb-4 text-[11px] uppercase tracking-[0.35em] text-orange-300/90">
             Chapter I / The Pain
           </p>
+
           <h2 className="max-w-xl font-serif text-4xl leading-tight md:text-6xl">
             Before a brand is born,
             <span className="block text-white/55">frustration writes the first line.</span>
           </h2>
+
           <p className="mt-8 max-w-xl text-base leading-8 text-white/70">
             FitGearzzz did not begin as a business fantasy. It began as a reaction to
             disappointment, repetition, weak products, and a market that often looked
@@ -242,6 +250,7 @@ const ProblemSection = () => {
         <div className="grid gap-5">
           {cards.map((card, index) => {
             const Icon = card.icon;
+
             return (
               <motion.div
                 key={card.title}
@@ -249,13 +258,15 @@ const ProblemSection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.25 }}
                 transition={{ duration: 0.8, delay: index * 0.08 }}
-                className="group relative overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.045] p-7 md:p-9 backdrop-blur-md transition duration-500 hover:border-orange-300/30 hover:bg-white/[0.06]"
+                className="group relative overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.045] p-7 backdrop-blur-md transition duration-500 hover:border-orange-300/30 hover:bg-white/[0.06] md:p-9"
               >
                 <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(249,115,22,0.0),rgba(249,115,22,0.08),rgba(255,255,255,0.0))] opacity-0 transition duration-500 group-hover:opacity-100" />
+
                 <div className="relative z-10 flex items-start gap-5">
                   <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
                     <Icon className="h-6 w-6 text-orange-300" />
                   </div>
+
                   <div>
                     <h3 className="text-xl font-semibold text-white">{card.title}</h3>
                     <p className="mt-3 max-w-xl text-[15px] leading-7 text-white/68">
@@ -304,10 +315,12 @@ const OriginSection = () => {
           <p className="mb-4 text-[11px] uppercase tracking-[0.35em] text-orange-300/90">
             Chapter II / The Origin
           </p>
+
           <h2 className="font-serif text-4xl leading-tight md:text-6xl">
             Every powerful brand begins
             <span className="block text-white/58">with a refusal.</span>
           </h2>
+
           <p className="mt-8 text-base leading-8 text-white/70">
             This was the turning point. Not the moment of success, but the moment
             of no return. The choice to stop waiting for better and start shaping it.
@@ -322,7 +335,8 @@ const OriginSection = () => {
             transition={{ duration: 0.9 }}
             className="relative overflow-hidden rounded-[34px] border border-white/10 bg-[linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-8 md:p-10"
           >
-            <div className="absolute inset-0 story-noise opacity-[0.08]" />
+            <div className="story-noise absolute inset-0 opacity-[0.08]" />
+
             <div className="relative z-10 flex h-full flex-col justify-between">
               <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/10 bg-black/20 px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-white/72">
                 Founder energy
@@ -341,7 +355,8 @@ const OriginSection = () => {
           </motion.div>
 
           <div className="relative">
-            <div className="absolute left-[18px] top-0 bottom-0 w-px bg-gradient-to-b from-orange-300 via-white/20 to-transparent" />
+            <div className="absolute bottom-0 left-[18px] top-0 w-px bg-gradient-to-b from-orange-300 via-white/20 to-transparent" />
+
             <div className="space-y-8">
               {timeline.map((item, index) => (
                 <motion.div
@@ -355,6 +370,7 @@ const OriginSection = () => {
                   <span className="absolute left-0 top-1 flex h-10 w-10 items-center justify-center rounded-full border border-orange-300/30 bg-orange-400/15 text-[11px] font-semibold tracking-[0.2em] text-orange-200">
                     {item.year}
                   </span>
+
                   <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-6 md:p-7">
                     <h3 className="text-xl font-semibold">{item.title}</h3>
                     <p className="mt-3 max-w-xl text-[15px] leading-7 text-white/68">
@@ -393,6 +409,7 @@ const CraftSection = () => {
   return (
     <section id="craft" className="relative min-h-screen px-6 py-24 md:px-10 lg:px-16">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_10%,rgba(249,115,22,0.10),transparent_22%),radial-gradient(circle_at_20%_80%,rgba(255,255,255,0.05),transparent_18%)]" />
+
       <div className="relative z-10 mx-auto max-w-7xl">
         <div className="grid items-end gap-12 lg:grid-cols-[0.95fr,1.05fr]">
           <motion.div
@@ -404,6 +421,7 @@ const CraftSection = () => {
             <p className="mb-4 text-[11px] uppercase tracking-[0.35em] text-orange-300/90">
               Chapter III / The Craft
             </p>
+
             <h2 className="font-serif text-4xl leading-tight md:text-6xl">
               Premium is not decoration.
               <span className="block text-white/56">Premium is control.</span>
@@ -435,7 +453,10 @@ const CraftSection = () => {
             >
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-orange-300/60 to-transparent opacity-60" />
               <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-orange-400/10 blur-3xl transition duration-500 group-hover:bg-orange-400/20" />
-              <p className="text-[11px] uppercase tracking-[0.3em] text-white/42">{feature.stat}</p>
+
+              <p className="text-[11px] uppercase tracking-[0.3em] text-white/42">
+                {feature.stat}
+              </p>
               <h3 className="mt-6 text-2xl font-semibold leading-tight">{feature.title}</h3>
               <p className="mt-5 text-[15px] leading-7 text-white/68">{feature.text}</p>
             </motion.div>
@@ -479,10 +500,12 @@ const TribeSection = () => {
           <p className="mb-4 text-[11px] uppercase tracking-[0.35em] text-orange-300/90">
             Chapter IV / The Tribe
           </p>
+
           <h2 className="font-serif text-4xl leading-tight md:text-6xl">
             A brand becomes unforgettable
             <span className="block text-white/56">when people see themselves inside it.</span>
           </h2>
+
           <p className="mt-8 text-base leading-8 text-white/70">
             This chapter is about belonging. The strongest fitness brands do not just
             sell equipment. They create identity, energy, and a culture users want to
@@ -500,12 +523,15 @@ const TribeSection = () => {
               transition={{ duration: 0.75, delay: index * 0.08 }}
               className="group relative overflow-hidden rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.025))] p-7"
             >
-              <div className="absolute inset-0 opacity-0 transition duration-500 group-hover:opacity-100 bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.14),transparent_35%)]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.14),transparent_35%)] opacity-0 transition duration-500 group-hover:opacity-100" />
+
               <div className="relative z-10">
                 <div className="mb-10 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-black/20">
                   <Users className="h-6 w-6 text-orange-300" />
                 </div>
+
                 <p className="text-lg leading-8 text-white/86">“{story.quote}”</p>
+
                 <p className="mt-8 text-[11px] uppercase tracking-[0.28em] text-white/45">
                   {story.name}
                 </p>
@@ -550,10 +576,12 @@ const FutureSection = () => {
           <p className="mb-4 text-[11px] uppercase tracking-[0.35em] text-orange-300/90">
             Chapter V / The Future
           </p>
-          <h2 className="font-serif text-4xl leading-tight md:text-6xl text-white">
+
+          <h2 className="text-white font-serif text-4xl leading-tight md:text-6xl">
             The final goal is not attention.
             <span className="block text-white/56">It is legacy.</span>
           </h2>
+
           <p className="mt-8 text-base leading-8 text-white/70">
             FitGearzzz should feel like the beginning of a larger world: premium,
             disciplined, distinctive, and impossible to confuse with anyone else.
@@ -563,6 +591,7 @@ const FutureSection = () => {
         <div className="mt-14 grid gap-5 md:grid-cols-3">
           {pillars.map((pillar, index) => {
             const Icon = pillar.icon;
+
             return (
               <motion.div
                 key={pillar.title}
@@ -575,6 +604,7 @@ const FutureSection = () => {
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-orange-300/25 bg-orange-400/10">
                   <Icon className="h-6 w-6 text-orange-300" />
                 </div>
+
                 <h3 className="mt-7 text-2xl font-semibold">{pillar.title}</h3>
                 <p className="mt-4 text-[15px] leading-7 text-white/68">{pillar.text}</p>
               </motion.div>
@@ -590,9 +620,10 @@ const FinaleSection = () => {
   return (
     <section
       id="finale"
-      className="relative min-h-screen flex items-center px-6 py-24 md:px-10 lg:px-16"
+      className="relative flex min-h-screen items-center px-6 py-24 md:px-10 lg:px-16"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(249,115,22,0.15),transparent_28%)]" />
+
       <motion.div
         initial={{ opacity: 0, y: 34 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -603,10 +634,12 @@ const FinaleSection = () => {
         <p className="mb-4 text-[11px] uppercase tracking-[0.35em] text-orange-300/90">
           Epilogue
         </p>
+
         <h2 className="font-serif text-4xl leading-tight md:text-6xl xl:text-7xl">
           If this story feels personal,
           <span className="block text-white/58">that is the point.</span>
         </h2>
+
         <p className="mx-auto mt-8 max-w-2xl text-base leading-8 text-white/70 md:text-lg">
           FitGearzzz is for people who are done with average, done with generic,
           and ready to train with more intention. The next chapter begins when
@@ -621,6 +654,7 @@ const FinaleSection = () => {
             Explore The Gear
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </a>
+
           <a
             href="/contact"
             className="inline-flex min-h-[54px] items-center rounded-full border border-white/15 px-8 py-3 text-[12px] font-semibold uppercase tracking-[0.25em] text-white/85 transition-all duration-300 hover:border-white/35 hover:bg-white/6"
@@ -634,7 +668,7 @@ const FinaleSection = () => {
 };
 
 const StoryStyles = () => (
-  <style>{
+  <style>{`
     .story-grid {
       background-image:
         linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
@@ -663,7 +697,7 @@ const StoryStyles = () => (
         scroll-behavior: auto;
       }
     }
-  }</style>
+  `}</style>
 );
 
 export default Story;

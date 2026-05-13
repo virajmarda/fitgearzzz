@@ -85,8 +85,8 @@ const Story = () => {
   };
 
   return (
-    iv className="min-h-screen bg-black text-white">
-        {/* Hero Video Section */}
+        <div className="min-h-screen bg-black text-white"> 
+  {/* Hero Video Section */}
         <section className="relative h-screen overflow-hidden">
           {/* Background Video/Image */}
           <div className="absolute inset-0">

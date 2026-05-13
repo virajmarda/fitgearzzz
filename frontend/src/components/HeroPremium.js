@@ -15,7 +15,6 @@ const HeroPremium = () => {
             backgroundImage: `url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070')`,
           }}
         >
-          {/* Gradient Overlays for depth */}
           <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent"></div>
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/50"></div>
         </div>
@@ -38,7 +37,7 @@ const HeroPremium = () => {
       {/* Content Container */}
       <div className="relative z-10 h-full max-w-7xl mx-auto px-6 lg:px-8">
         <div className="h-full flex items-center">
-          <div className="max-w-3xl space-y-8 mt-12">
+          <div className="max-w-4xl space-y-8 mt-12">
             {/* Trust Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -58,13 +57,14 @@ const HeroPremium = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-            <h1 className="text-5xl lg:text-7xl font-sans font-black text-white leading-[0.95] tracking-tight">
-              Transform your potential <br/>
-                            <span className="block mt-2 bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 bg-clip-text text-transparent">
-                              Transform your life
-                            </span>
-            </h1>
-          </motion.div>
+              <h1 className="font-sans text-[clamp(2.7rem,6vw,5.8rem)] font-light text-white leading-[0.96] tracking-[-0.03em] max-w-4xl">
+                <span className="block whitespace-nowrap">Transform your potential</span>
+                <span className="block mt-1 whitespace-nowrap text-zinc-200">
+                  Transform your life.
+                </span>
+              </h1>
+            </motion.div>
+
             {/* Subheadline */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}

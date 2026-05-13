@@ -1,111 +1,164 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, ShieldCheck, Truck, BadgeCheck } from 'lucide-react';
+import { ArrowRight, Play, Star, TrendingUp, Shield } from 'lucide-react';
 
 const HeroPremium = () => {
   return (
-    <section className="relative min-h-[92vh] overflow-hidden bg-black text-white">
+    <section className="relative h-[90vh] min-h-[600px] max-h-[800px] overflow-hidden bg-black">
+      {/* Dynamic Background with Image */}
       <div className="absolute inset-0">
+        {/* Background Image with Overlay */}
         <div
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070')",
+            backgroundImage: `url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070')`,
           }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/50"></div>
+        </div>
+
+        {/* Animated accent gradients */}
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.5, 0.3],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          className="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-500 rounded-full filter blur-[150px] opacity-30"
         />
-        <div className="absolute inset-0 bg-black/60" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/75 to-black/20" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 min-h-[92vh] flex items-center">
-        <div className="max-w-3xl pt-20 pb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm px-4 py-2 mb-6"
-          >
-            <ShieldCheck className="w-4 h-4 text-orange-400" />
-            <span className="text-sm text-zinc-200 font-medium tracking-wide">
-              Performance gear. Trusted delivery.
-            </span>
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 22 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-[clamp(3rem,7vw,6.2rem)] leading-[0.92] tracking-[-0.045em] font-semibold max-w-4xl"
-          >
-            Built for
-            <span className="block text-orange-500">serious training</span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="mt-6 text-lg sm:text-xl text-zinc-300 leading-relaxed max-w-2xl"
-          >
-            Premium fitness and recovery gear for everyday athletes who want better performance, cleaner quality, and a shopping experience they can trust.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 mt-10"
-          >
-            <Link
-              to="/products"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-orange-500 hover:bg-orange-600 px-7 py-4 text-white font-semibold transition-colors duration-200"
+      {/* Content Container */}
+      <div className="relative z-10 h-full max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="h-full flex items-center">
+          <div className="max-w-4xl space-y-8 mt-12">
+            {/* Trust Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 backdrop-blur-sm border border-orange-500/20"
             >
-              Shop Bestsellers
-              <ArrowRight className="w-5 h-5" />
-            </Link>
+              <Shield className="w-4 h-4 text-orange-400" />
+              <span className="text-orange-400 text-sm font-medium">
+                India&apos;s #1 Fitness Destination
+              </span>
+            </motion.div>
 
-            <Link
-              to="/categories"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 px-7 py-4 text-white font-medium backdrop-blur-sm transition-colors duration-200"
+            {/* Main Headline */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
             >
-              Explore Categories
-            </Link>
-          </motion.div>
+              <h1 className="font-sans text-[clamp(2.7rem,6vw,5.8rem)] font-light text-white leading-[0.96] tracking-[-0.03em] max-w-4xl">
+                <span className="block whitespace-nowrap">Transform your potential</span>
+                <span className="block mt-1 whitespace-nowrap text-zinc-200">
+                  Transform your life.
+                </span>
+              </h1>
+            </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.4 }}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10 max-w-2xl"
-          >
-            <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm px-4 py-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Truck className="w-4 h-4 text-orange-400" />
-                <span className="text-sm font-medium text-white">Fast Dispatch</span>
-              </div>
-              <p className="text-sm text-zinc-400">Quick order processing across India.</p>
-            </div>
+            {/* Subheadline */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-xl lg:text-2xl text-zinc-300 font-light max-w-2xl leading-relaxed"
+            >
+              Premium fitness equipment engineered for champions.
+              <span className="block mt-2 text-white font-medium">
+                Transform your body, elevate your performance.
+              </span>
+            </motion.p>
 
-            <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm px-4 py-4">
-              <div className="flex items-center gap-2 mb-2">
-                <BadgeCheck className="w-4 h-4 text-orange-400" />
-                <span className="text-sm font-medium text-white">Secure Checkout</span>
-              </div>
-              <p className="text-sm text-zinc-400">Protected payments and reliable ordering.</p>
-            </div>
+            {/* CTA Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="flex flex-col sm:flex-row gap-4 pt-4"
+            >
+              <Link
+                to="/products"
+                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-lg rounded-xl shadow-2xl shadow-orange-500/50 hover:shadow-orange-500/70 transform hover:scale-105 transition-all duration-300 overflow-hidden"
+              >
+                <span className="relative z-10">Shop Now</span>
+                <ArrowRight className="relative z-10 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              </Link>
 
-            <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm px-4 py-4">
-              <div className="flex items-center gap-2 mb-2">
-                <ShieldCheck className="w-4 h-4 text-orange-400" />
-                <span className="text-sm font-medium text-white">7-Day Returns</span>
+              <button className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-md text-white font-semibold text-lg rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300">
+                <Play className="w-5 h-5" fill="currentColor" />
+                <span>Watch Story</span>
+              </button>
+            </motion.div>
+
+            {/* Stats Bar */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="flex items-center gap-8 pt-8"
+            >
+              <div className="flex items-center gap-2">
+                <Star className="w-5 h-5 text-orange-400 fill-orange-400" />
+                <div>
+                  <div className="text-white font-bold text-lg">4.9/5</div>
+                  <div className="text-zinc-400 text-sm">15K+ Reviews</div>
+                </div>
               </div>
-              <p className="text-sm text-zinc-400">Simple support when you need help.</p>
-            </div>
-          </motion.div>
+
+              <div className="h-12 w-px bg-white/10"></div>
+
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-green-400" />
+                <div>
+                  <div className="text-white font-bold text-lg">50K+</div>
+                  <div className="text-zinc-400 text-sm">Active Users</div>
+                </div>
+              </div>
+
+              <div className="h-12 w-px bg-white/10"></div>
+
+              <div>
+                <div className="text-white font-bold text-lg">Free Shipping</div>
+                <div className="text-zinc-400 text-sm">Orders above ₹999</div>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </div>
+
+      {/* Scroll Indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5 }}
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden lg:block"
+      >
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ repeat: Infinity, duration: 1.5 }}
+          className="flex flex-col items-center gap-2 text-white/50"
+        >
+          <span className="text-xs uppercase tracking-wider">Scroll</span>
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </motion.div>
+      </motion.div>
     </section>
   );
 };

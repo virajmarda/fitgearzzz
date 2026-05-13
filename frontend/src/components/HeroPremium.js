@@ -57,10 +57,12 @@ const HeroPremium = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <h1 className="font-sans text-[clamp(2.9rem,6vw,5.8rem)] font-[350] text-white leading-[0.95] tracking-[-0.045em] max-w-4xl">
-                <span className="block whitespace-nowrap">Transform your potential</span>
-                <span className="block whitespace-nowrap text-zinc-200">
-                  Transform your life.
+              <h1 className="font-sans text-[clamp(2.9rem,6vw,5.8rem)] font-[350] leading-[0.95] tracking-[-0.045em] max-w-4xl">
+                <span className="block whitespace-nowrap text-white">
+                  Transform your <span className="text-orange-500">potential</span>
+                </span>
+                <span className="block whitespace-nowrap text-white">
+                  Transform your <span className="text-orange-500">life.</span>
                 </span>
               </h1>
             </motion.div>

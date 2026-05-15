@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./styles/Story.css";
+import "./Story.css";
 
 const chapters = [
   {

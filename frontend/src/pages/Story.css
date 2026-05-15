@@ -4,14 +4,14 @@
   min-height: 100vh;
 }
 
-/* HERO */
+/* HERO (same idea as before, kept for completeness) */
 
 .story-hero {
   position: relative;
   min-height: 100vh;
   display: flex;
   align-items: center;
-  padding: 96px 7vw 72px; /* top padding so text doesn't touch navbar */
+  padding: 96px 7vw 72px;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -201,6 +201,118 @@
   color: #e5e7eb;
 }
 
+/* MAIN SHELL + CURVE */
+
+.story-main-shell {
+  position: relative;
+  padding: 32px 0 96px;
+}
+
+.story-curve-wrapper {
+  position: absolute;
+  left: 50%;
+  top: 40px;
+  transform: translateX(-50%);
+  width: 420px;
+  height: 1400px;
+  pointer-events: none;
+  opacity: 0.35;
+  mix-blend-mode: screen;
+}
+
+.story-curve {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 18px 55px rgba(15, 23, 42, 0.9));
+}
+
+.story-curve-node {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: radial-gradient(circle at center, rgba(249, 115, 22, 0.85), transparent 70%);
+  box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.0);
+  transition: box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+  opacity: 0.65;
+}
+
+/* Approximate node alignment for each act */
+.story-curve-node.node-1 { top: 130px; left: 46%; }
+.story-curve-node.node-2 { top: 420px; left: 54%; }
+.story-curve-node.node-3 { top: 750px; left: 46%; }
+.story-curve-node.node-4 { top: 1090px; left: 54%; }
+
+.story-curve-node.is-active {
+  box-shadow: 0 0 0 10px rgba(249, 115, 22, 0.26);
+  transform: scale(1.05);
+  opacity: 1;
+}
+
+/* PREQUEL SECTION */
+
+.story-prequel {
+  padding: 40px 7vw 24px;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.story-prequel.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.story-prequel-inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 2.8rem;
+  align-items: flex-start;
+}
+
+.story-prequel-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #9ca3af;
+  font-size: 0.78rem;
+  margin-bottom: 0.75rem;
+}
+
+.story-prequel-title {
+  font-size: clamp(1.6rem, 2.4vw + 0.5rem, 2.2rem);
+  margin-bottom: 0.9rem;
+}
+
+.story-prequel-text {
+  font-size: 0.97rem;
+  line-height: 1.7;
+  color: #d1d5db;
+  margin-bottom: 0.6rem;
+}
+
+.story-prequel-aside {
+  border-radius: 20px;
+  padding: 1.4rem 1.5rem;
+  background: radial-gradient(circle at top, rgba(15, 23, 42, 1), rgba(15, 23, 42, 0.85));
+  border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.story-prequel-aside-label {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin-bottom: 0.4rem;
+}
+
+.story-prequel-aside-text {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #e5e7eb;
+}
+
 /* CHAPTERS */
 
 .story-main {
@@ -254,6 +366,13 @@
   font-size: 0.97rem;
   line-height: 1.7;
   color: #d1d5db;
+  margin-bottom: 0.7rem;
+}
+
+.story-chapter-detail {
+  font-size: 0.94rem;
+  line-height: 1.7;
+  color: #9ca3af;
 }
 
 .story-chapter-visual-card {
@@ -292,7 +411,71 @@
   color: #e5e7eb;
 }
 
-/* TRIBE SECTION */
+/* TURNING POINT */
+
+.story-turning {
+  padding: 64px 7vw 40px;
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.story-turning.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.story-turning-inner {
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.story-turning-header {
+  max-width: 620px;
+  margin-bottom: 1.8rem;
+}
+
+.story-turning-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #9ca3af;
+  font-size: 0.78rem;
+  margin-bottom: 0.6rem;
+}
+
+.story-turning-title {
+  font-size: clamp(1.6rem, 2.3vw + 0.5rem, 2.3rem);
+}
+
+.story-turning-grid {
+  margin-top: 1.8rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.6rem;
+}
+
+.story-turning-card {
+  border-radius: 20px;
+  padding: 1.4rem 1.3rem 1.5rem;
+  background: radial-gradient(circle at top, rgba(15, 23, 42, 1), rgba(15, 23, 42, 0.85));
+  border: 1px solid rgba(148, 163, 184, 0.35);
+}
+
+.story-turning-label {
+  font-size: 0.86rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #9ca3af;
+  margin-bottom: 0.5rem;
+}
+
+.story-turning-text {
+  font-size: 0.94rem;
+  line-height: 1.7;
+  color: #e5e7eb;
+}
+
+/* TRIBE SECTION (same structure as earlier, adjusted for consistency) */
 
 .story-tribe {
   padding: 72px 7vw 96px;
@@ -378,11 +561,65 @@
   gap: 0.9rem;
 }
 
+/* FUTURE SECTION */
+
+.story-future {
+  padding: 64px 7vw 80px;
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.story-future.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.story-future-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.story-future-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #9ca3af;
+  font-size: 0.78rem;
+  margin-bottom: 0.75rem;
+}
+
+.story-future-title {
+  font-size: clamp(1.6rem, 2.3vw + 0.6rem, 2.3rem);
+  margin-bottom: 1rem;
+}
+
+.story-future-text {
+  font-size: 0.96rem;
+  line-height: 1.7;
+  color: #d1d5db;
+  margin-bottom: 0.8rem;
+}
+
+.story-future-actions {
+  margin-top: 1.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+
 /* RESPONSIVE */
 
 @media (min-width: 1024px) {
   .story-progress {
     display: block;
+  }
+}
+
+@media (max-width: 992px) {
+  .story-curve-wrapper {
+    opacity: 0.18;
+    width: 320px;
   }
 }
 
@@ -394,6 +631,10 @@
 
   .story-hero-actions {
     justify-content: flex-start;
+  }
+
+  .story-prequel-inner {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .story-chapter {
@@ -408,6 +649,14 @@
     direction: ltr;
   }
 
+  .story-turning {
+    padding: 52px 6vw 36px;
+  }
+
+  .story-turning-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .story-tribe {
     padding: 60px 6vw 80px;
   }
@@ -418,6 +667,10 @@
 
   .story-progress {
     display: none;
+  }
+
+  .story-curve-wrapper {
+    display: none; /* keep mobile clean and performant */
   }
 }
 

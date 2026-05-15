@@ -7,28 +7,36 @@ const chapters = [
     label: "Act I",
     title: "The wake-up call",
     kicker: "Origin",
-    text: "FitGearzzz was born from that one moment when excuses finally felt heavier than the weights. No fancy gym, no sponsorships—just raw frustration and a resolve to build gear that never lets you hide from your potential.",
+    text: "Before FitGearzzz, there was just that one heavy feeling: scrolling fitness videos at 1:30 AM, promising that tomorrow would be different while the same excuses played in the background. No fancy gym. No perfect setup. Just a body that was tired of its own stories.",
+    detail:
+      "It was in those late-night gaps between study sessions and overthinking that the idea hit: what if the gear itself removed excuses? No slipping grips. No flimsy bands. No equipment that failed when motivation was already fragile. One decision: build gear so honest that it forced you to be honest with yourself.",
   },
   {
     id: "act-2",
     label: "Act II",
     title: "Built in the grind",
     kicker: "Relentless testing",
-    text: "Every strap, every band, every piece of gear was tested in real sweat—late-night sessions, cramped rooms, and makeshift setups. If something slipped, tore, or failed, it never made it to the store.",
+    text: "FitGearzzz didn’t start in a boardroom. It started in cramped rooms, iron that didn’t match, and music so loud it drowned every doubt. Every strap, band, and handle was abused in real sessions, not studio tests.",
+    detail:
+      "Workouts were the lab. If a strap slipped in the tenth set, it was redesigned. If a band snapped under real tension, it never made it past the door. Nights blurred into mornings, with spreadsheets on one side, order labels on the other, and prototypes thrown on the floor in between. The rule was simple: if it can’t survive our worst days, it doesn’t deserve your best days.",
   },
   {
     id: "act-3",
     label: "Act III",
     title: "From one room to a tribe",
-    kicker: "Community",
-    text: "What started as orders from a single room turned into a tribe of people who chose discipline over doubt. FitGearzzz became less about products and more about a promise to never go back to the old version of yourself.",
+    kicker: "Momentum",
+    text: "The first orders lived in a single room: boxes stacked near a study table, printer cables snaking around dumbbells. No one saw those nights—but they felt the result when the gear arrived at their door.",
+    detail:
+      "DMs turned into progress photos. Short reviews turned into stories. People wrote about their first unbroken set, the morning they didn’t skip, the day they chose a workout over a party. FitGearzzz quietly transformed from ‘products shipped’ to ‘chapters written’ by people who were tired of quitting on themselves.",
   },
   {
     id: "act-4",
     label: "Act IV",
     title: "This is your chapter",
     kicker: "Where you enter",
-    text: "The story is unfinished on purpose. Every time you pick up a FitGearzzz product, you’re writing the next line—one more rep, one more early morning, one more version of you that refuses to quit.",
+    text: "Every story needs the moment where the main character decides enough is enough. This page is that moment for you.",
+    detail:
+      "Maybe you’re reading this between two tabs. Maybe you’ve promised yourself a ‘fresh start’ more times than you can count. FitGearzzz doesn’t promise shortcuts. It promises that every time you choose to show up, the gear will be there—no drama, no excuses, just you versus the work. From here, every rep is a sentence, every set is a paragraph, and months of consistency become a whole new book with your name on the cover.",
   },
 ];
 
@@ -60,7 +68,7 @@ function useInView(options = {}) {
 const Story = () => {
   const [activeChapter, setActiveChapter] = useState(chapters[0].id);
 
-  // Track active section for progress indicator
+  // Track active section for progress indicator + curve
   useEffect(() => {
     const sectionEls = chapters.map((c) => document.getElementById(c.id));
     const observer = new IntersectionObserver(
@@ -111,7 +119,7 @@ const Story = () => {
               className="story-btn story-btn-primary"
               onClick={scrollToFirstChapter}
             >
-              Start the story
+              Start the journey
             </button>
             <a href="/products" className="story-btn story-btn-secondary">
               Explore the gear
@@ -146,21 +154,65 @@ const Story = () => {
         </div>
       </aside>
 
-      {/* MANIFESTO BLOCK */}
+      {/* MANIFESTO + MAIN SHELL WITH CURVE */}
       <ManifestoBlock />
 
-      {/* CHAPTERS */}
-      <main className="story-main">
-        {chapters.map((chapter, index) => (
-          <StoryChapter
-            key={chapter.id}
-            chapter={chapter}
-            index={index}
-          />
-        ))}
+      <div className="story-main-shell">
+        <JourneyCurve activeChapter={activeChapter} />
 
-        <TribeSection />
-      </main>
+        <main className="story-main">
+          <PrequelSection />
+
+          {chapters.map((chapter, index) => (
+            <StoryChapter
+              key={chapter.id}
+              chapter={chapter}
+              index={index}
+            />
+          ))}
+
+          <TurningPointSection />
+          <TribeSection />
+          <FutureSection />
+        </main>
+      </div>
+    </div>
+  );
+};
+
+const JourneyCurve = ({ activeChapter }) => {
+  return (
+    <div className="story-curve-wrapper" aria-hidden="true">
+      <svg
+        className="story-curve"
+        viewBox="0 0 300 1400"
+        preserveAspectRatio="none"
+      >
+        <defs>
+          <linearGradient id="curveGradient" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="rgba(148,163,184,0.3)" />
+            <stop offset="45%" stopColor="rgba(249,115,22,0.6)" />
+            <stop offset="100%" stopColor="rgba(148,163,184,0.25)" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M 60 40
+             C 210 160, 40 320, 200 460
+             S 40 760, 210 900
+             S 40 1160, 200 1300"
+          fill="none"
+          stroke="url(#curveGradient)"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeDasharray="8 14"
+        />
+      </svg>
+
+      {/* Subtle glowing nodes roughly aligned with chapter cards */}
+      <div className={`story-curve-node node-1 ${activeChapter === "act-1" ? "is-active" : ""}`} />
+      <div className={`story-curve-node node-2 ${activeChapter === "act-2" ? "is-active" : ""}`} />
+      <div className={`story-curve-node node-3 ${activeChapter === "act-3" ? "is-active" : ""}`} />
+      <div className={`story-curve-node node-4 ${activeChapter === "act-4" ? "is-active" : ""}`} />
     </div>
   );
 };
@@ -183,6 +235,44 @@ const ManifestoBlock = () => {
   );
 };
 
+const PrequelSection = () => {
+  const [ref, inView] = useInView();
+
+  return (
+    <section
+      ref={ref}
+      className={`story-prequel ${inView ? "is-visible" : ""}`}
+    >
+      <div className="story-prequel-inner">
+        <div className="story-prequel-copy">
+          <p className="story-prequel-kicker">Before FitGearzzz</p>
+          <h2 className="story-prequel-title">
+            Every brand starts as a quiet problem.
+          </h2>
+          <p className="story-prequel-text">
+            For us, it was that loop of starting, stopping, and starting again.
+            Training with gear that slipped when hands got sweaty. Bands that
+            snapped mid-set. Equipment that felt like it was designed for
+            pretty photos, not ugly work.
+          </p>
+          <p className="story-prequel-text">
+            FitGearzzz was imagined as the opposite: gear that feels invisible
+            when you are locked in—no drama, no distractions, just you and the
+            work you promised yourself you would do.
+          </p>
+        </div>
+        <div className="story-prequel-aside">
+          <p className="story-prequel-aside-label">The question</p>
+          <p className="story-prequel-aside-text">
+            What if the best version of you wasn’t waiting for a perfect gym,
+            coach, or timing—just gear that refused to let you off the hook?
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const StoryChapter = ({ chapter, index }) => {
   const [ref, inView] = useInView();
   const isEven = index % 2 === 0;
@@ -200,6 +290,7 @@ const StoryChapter = ({ chapter, index }) => {
           <p className="story-chapter-kicker">{chapter.kicker}</p>
           <h2 className="story-chapter-title">{chapter.title}</h2>
           <p className="story-chapter-text">{chapter.text}</p>
+          <p className="story-chapter-detail">{chapter.detail}</p>
         </div>
 
         <div className="story-chapter-visual">
@@ -210,13 +301,61 @@ const StoryChapter = ({ chapter, index }) => {
             </p>
             <p className="story-chapter-visual-line">
               {index === 0 &&
-                "From a single room, packing orders between study sessions and late-night workouts."}
+                "From a single desk with scribbled plans and a pair of worn-out dumbbells, the decision was made: no more fragile gear and no more fragile mindset."}
               {index === 1 &&
-                "Gear tested in real sweat—doors locked, music loud, reps until the room felt like a furnace."}
+                "Prototypes were thrown on the floor, stitched again, pulled until fingers burned. Designs went through more sets than most people’s New Year resolutions."}
               {index === 2 &&
-                "DMs from strangers turning into progress photos and stories of lives quietly being rebuilt."}
+                "Names in the order list turned into faces, progress screenshots, and late-night messages from people who finally felt momentum instead of guilt."}
               {index === 3 &&
-                "Every time you add one more rep, the story writes one more line. This chapter has your name on it."}
+                "Every time you choose to show up—no matter how small the session—you bend the curve of this story in your favor."}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const TurningPointSection = () => {
+  const [ref, inView] = useInView();
+
+  return (
+    <section
+      ref={ref}
+      className={`story-turning ${inView ? "is-visible" : ""}`}
+    >
+      <div className="story-turning-inner">
+        <div className="story-turning-header">
+          <p className="story-turning-kicker">The turning point</p>
+          <h2 className="story-turning-title">
+            Every journey has a day that changes everything.
+          </h2>
+        </div>
+        <div className="story-turning-grid">
+          <div className="story-turning-card">
+            <p className="story-turning-label">The decision</p>
+            <p className="story-turning-text">
+              For us, it was choosing to stop waiting for “someday” and launch
+              with what we had. For you, it might be this exact scroll—the
+              moment you decide that the next six months will not look like the
+              last six.
+            </p>
+          </div>
+          <div className="story-turning-card">
+            <p className="story-turning-label">The test</p>
+            <p className="story-turning-text">
+              We promised that if the gear failed, we would fix it fast and in
+              public. That same honesty is what we expect from you: show up,
+              even when the session is short, and own both the wins and the
+              missed days.
+            </p>
+          </div>
+          <div className="story-turning-card">
+            <p className="story-turning-label">The proof</p>
+            <p className="story-turning-text">
+              Thousands of workouts later, the story is clear: consistency
+              beats motivation, and reliable gear makes consistency easier to
+              choose. The rest of this page—and your life—flows from that truth.
             </p>
           </div>
         </div>
@@ -277,6 +416,44 @@ const TribeSection = () => {
           </a>
           <a href="/contact" className="story-btn story-btn-secondary">
             Talk to the team
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const FutureSection = () => {
+  const [ref, inView] = useInView();
+
+  return (
+    <section
+      ref={ref}
+      className={`story-future ${inView ? "is-visible" : ""}`}
+    >
+      <div className="story-future-inner">
+        <p className="story-future-kicker">The pages ahead</p>
+        <h2 className="story-future-title">
+          The story doesn’t end here.
+        </h2>
+        <p className="story-future-text">
+          This page is just the prologue. The real story is what happens when
+          you take the next step: the first session with new straps, the first
+          early alarm you don’t snooze, the first month you don’t fall back
+          into old patterns.
+        </p>
+        <p className="story-future-text">
+          FitGearzzz will keep improving the gear. You keep writing the
+          chapters. Together, the journey bends away from excuses and towards
+          the person you always said you wanted to become.
+        </p>
+
+        <div className="story-future-actions">
+          <a href="/products" className="story-btn story-btn-primary">
+            Start with one product
+          </a>
+          <a href="/contact" className="story-btn story-btn-secondary">
+            Build a custom setup
           </a>
         </div>
       </div>

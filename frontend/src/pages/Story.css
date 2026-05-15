@@ -1,10 +1,12 @@
+/* Root */
+
 .story-page {
   background: #02040a;
   color: #f9fafb;
   min-height: 100vh;
 }
 
-/* HERO (same idea as before, kept for completeness) */
+/* HERO */
 
 .story-hero {
   position: relative;
@@ -17,40 +19,83 @@
 }
 
 .story-hero-inner {
-  max-width: 720px;
+  max-width: 760px;
   position: relative;
   z-index: 2;
 }
 
-.story-hero-kicker {
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  font-size: 0.8rem;
-  color: #9ca3af;
-  margin-bottom: 0.75rem;
+/* Hero pill */
+
+.story-hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  margin-bottom: 0.85rem;
 }
 
+.story-hero-pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: radial-gradient(circle at center, #f97316, transparent 70%);
+}
+
+.story-hero-pill-text {
+  font-size: 0.76rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+/* Hero typography */
+
 .story-hero-title {
-  font-size: clamp(2.4rem, 3.4vw + 1rem, 3.8rem);
+  font-size: clamp(2.3rem, 3.3vw + 1rem, 3.6rem);
   line-height: 1.05;
   font-weight: 700;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.1rem;
 }
 
 .story-hero-subtitle {
   font-size: 0.98rem;
-  line-height: 1.6;
+  line-height: 1.7;
   color: #d1d5db;
-  max-width: 34rem;
-  margin-bottom: 1.8rem;
+  max-width: 38rem;
+  margin-bottom: 1.6rem;
 }
 
-.story-hero-actions {
+/* Hero meta */
+
+.story-hero-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.85rem;
-  margin-bottom: 2.4rem;
+  gap: 1.2rem;
+  margin-bottom: 2rem;
 }
+
+.story-hero-meta-item {
+  min-width: 120px;
+}
+
+.story-hero-meta-label {
+  display: block;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  margin-bottom: 0.2rem;
+}
+
+.story-hero-meta-value {
+  font-size: 0.9rem;
+  color: #e5e7eb;
+}
+
+/* Buttons */
 
 .story-btn {
   border-radius: 999px;
@@ -89,6 +134,15 @@
   transform: translateY(-1px);
 }
 
+/* Hero actions + scroll */
+
+.story-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-bottom: 2.2rem;
+}
+
 .story-hero-scroll {
   display: inline-flex;
   flex-direction: column;
@@ -105,6 +159,8 @@
   display: block;
 }
 
+/* Hero background accents */
+
 .story-hero-bg-accent {
   position: absolute;
   right: -120px;
@@ -117,7 +173,22 @@
   pointer-events: none;
 }
 
-/* PROGRESS INDICATOR */
+.story-hero-bg-rings {
+  position: absolute;
+  left: -40px;
+  top: 80px;
+  width: 260px;
+  height: 260px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  box-shadow:
+    0 0 0 28px rgba(15, 23, 42, 0.95),
+    0 0 0 40px rgba(15, 23, 42, 1);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* PROGRESS INDICATOR (desktop) */
 
 .story-progress {
   position: fixed;
@@ -201,7 +272,7 @@
   color: #e5e7eb;
 }
 
-/* MAIN SHELL + CURVE */
+/* MAIN SHELL + CURVED JOURNEY LINE */
 
 .story-main-shell {
   position: relative;
@@ -237,7 +308,8 @@
   opacity: 0.65;
 }
 
-/* Approximate node alignment for each act */
+/* approximate node alignment for each act */
+
 .story-curve-node.node-1 { top: 130px; left: 46%; }
 .story-curve-node.node-2 { top: 420px; left: 54%; }
 .story-curve-node.node-3 { top: 750px; left: 46%; }
@@ -313,11 +385,13 @@
   color: #e5e7eb;
 }
 
-/* CHAPTERS */
+/* MAIN */
 
 .story-main {
   padding: 24px 0 80px;
 }
+
+/* CHAPTERS */
 
 .story-chapter {
   padding: 64px 7vw;
@@ -475,7 +549,7 @@
   color: #e5e7eb;
 }
 
-/* TRIBE SECTION (same structure as earlier, adjusted for consistency) */
+/* TRIBE SECTION */
 
 .story-tribe {
   padding: 72px 7vw 96px;
@@ -629,8 +703,8 @@
     align-items: flex-start;
   }
 
-  .story-hero-actions {
-    justify-content: flex-start;
+  .story-hero-meta {
+    gap: 0.9rem;
   }
 
   .story-prequel-inner {

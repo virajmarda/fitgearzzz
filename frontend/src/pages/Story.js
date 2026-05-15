@@ -53,10 +53,10 @@ const Story = () => {
   }, [sections]);
 
   const scrollToSection = (id) => {
-    document.getElementById(id)?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   return (
@@ -82,7 +82,7 @@ const Story = () => {
 
 const ProgressRail = ({ sections, activeSection, onNavigate }) => {
   return (
-    <div className="fixed right-8 top-1/2 z-50 hidden -translate-y-1/2 lg:flex flex-col gap-3">
+    <div className="fixed right-8 top-1/2 z-50 hidden -translate-y-1/2 flex-col gap-3 lg:flex">
       {sections.map((section) => {
         const isActive = activeSection === section.id;
 
@@ -94,6 +94,7 @@ const ProgressRail = ({ sections, activeSection, onNavigate }) => {
               isActive ? 'opacity-100' : 'opacity-50 hover:opacity-90'
             }`}
             aria-label={`Go to ${section.label}`}
+            type="button"
           >
             <span
               className={`text-[10px] uppercase tracking-[0.28em] transition-all duration-300 ${
@@ -149,7 +150,7 @@ const HeroSection = ({ onScrollNext }) => {
             </span>
           </div>
 
-          <p className="mb-4 text-[11px] uppercase tracking-[0.4em] text-orange-300/90">
+          <p className="mb-4 text-[11px] uppercase tracking-[0.4em] text-orange-300/90 md:text-[12px]">
             FitGearzzz / Brand Narrative
           </p>
 
@@ -161,14 +162,16 @@ const HeroSection = ({ onScrollNext }) => {
 
           <p className="mt-8 max-w-2xl text-base leading-8 text-white/72 md:text-xl">
             FitGearzzz was built for the person who shows up before the applause,
-            before the transformation, before anyone notices. This page is not a video.
-            It is a living, scrolling story designed to feel like a film you walk through.
+            before the transformation, before anyone notices. This page is not a
+            video. It is a living, scrolling story designed to feel like a film
+            you walk through.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <button
               onClick={onScrollNext}
               className="group inline-flex min-h-[52px] items-center gap-3 rounded-full bg-orange-400 px-7 py-3 text-[12px] font-semibold uppercase tracking-[0.24em] text-black transition-all duration-300 hover:bg-orange-300 hover:shadow-[0_15px_50px_rgba(251,146,60,0.35)]"
+              type="button"
             >
               Enter the Story
               <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -188,6 +191,7 @@ const HeroSection = ({ onScrollNext }) => {
         onClick={onScrollNext}
         className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3 text-white/55 transition hover:text-white"
         aria-label="Scroll to next section"
+        type="button"
       >
         <span className="text-[10px] uppercase tracking-[0.35em]">Scroll</span>
         <span className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-md">
@@ -213,7 +217,7 @@ const ProblemSection = () => {
     {
       icon: Target,
       title: 'The problem was trust.',
-      text: 'In fitness, one weak detail breaks momentum. Bad gear doesn’t just disappoint. It interrupts identity.',
+      text: 'In fitness, one weak detail breaks momentum. Bad gear does not just disappoint. It interrupts identity.',
     },
   ];
 
@@ -241,9 +245,9 @@ const ProblemSection = () => {
           </h2>
 
           <p className="mt-8 max-w-xl text-base leading-8 text-white/70">
-            FitGearzzz did not begin as a business fantasy. It began as a reaction to
-            disappointment, repetition, weak products, and a market that often looked
-            stronger online than it felt in real life.
+            FitGearzzz did not begin as a business fantasy. It began as a reaction
+            to disappointment, repetition, weak products, and a market that often
+            looked stronger online than it felt in real life.
           </p>
         </motion.div>
 
@@ -260,7 +264,7 @@ const ProblemSection = () => {
                 transition={{ duration: 0.8, delay: index * 0.08 }}
                 className="group relative overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.045] p-7 backdrop-blur-md transition duration-500 hover:border-orange-300/30 hover:bg-white/[0.06] md:p-9"
               >
-                <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(249,115,22,0.0),rgba(249,115,22,0.08),rgba(255,255,255,0.0))] opacity-0 transition duration-500 group-hover:opacity-100" />
+                <div className="absolute inset-0 opacity-0 transition duration-500 group-hover:opacity-100 bg-[linear-gradient(120deg,rgba(249,115,22,0.0),rgba(249,115,22,0.08),rgba(255,255,255,0.0))]" />
 
                 <div className="relative z-10 flex items-start gap-5">
                   <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
@@ -347,6 +351,7 @@ const OriginSection = () => {
                   “The story was never about selling products. It was about building
                   a standard people could feel.”
                 </p>
+
                 <p className="mt-6 text-sm uppercase tracking-[0.3em] text-white/45">
                   FitGearzzz philosophy
                 </p>
@@ -453,12 +458,15 @@ const CraftSection = () => {
             >
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-orange-300/60 to-transparent opacity-60" />
               <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-orange-400/10 blur-3xl transition duration-500 group-hover:bg-orange-400/20" />
-
               <p className="text-[11px] uppercase tracking-[0.3em] text-white/42">
                 {feature.stat}
               </p>
-              <h3 className="mt-6 text-2xl font-semibold leading-tight">{feature.title}</h3>
-              <p className="mt-5 text-[15px] leading-7 text-white/68">{feature.text}</p>
+              <h3 className="mt-6 text-2xl font-semibold leading-tight">
+                {feature.title}
+              </h3>
+              <p className="mt-5 text-[15px] leading-7 text-white/68">
+                {feature.text}
+              </p>
             </motion.div>
           ))}
         </div>
@@ -470,7 +478,7 @@ const CraftSection = () => {
 const TribeSection = () => {
   const stories = [
     {
-      quote: 'I didn’t need hype. I needed gear and a brand that respected the grind.',
+      quote: 'I did not need hype. I needed gear and a brand that respected the grind.',
       name: 'The disciplined beginner',
     },
     {
@@ -507,9 +515,9 @@ const TribeSection = () => {
           </h2>
 
           <p className="mt-8 text-base leading-8 text-white/70">
-            This chapter is about belonging. The strongest fitness brands do not just
-            sell equipment. They create identity, energy, and a culture users want to
-            carry publicly.
+            This chapter is about belonging. The strongest fitness brands do not
+            just sell equipment. They create identity, energy, and a culture users
+            want to carry publicly.
           </p>
         </motion.div>
 
@@ -577,7 +585,7 @@ const FutureSection = () => {
             Chapter V / The Future
           </p>
 
-          <h2 className="text-white font-serif text-4xl leading-tight md:text-6xl">
+          <h2 className="font-serif text-4xl leading-tight text-white md:text-6xl">
             The final goal is not attention.
             <span className="block text-white/56">It is legacy.</span>
           </h2>
@@ -606,7 +614,9 @@ const FutureSection = () => {
                 </div>
 
                 <h3 className="mt-7 text-2xl font-semibold">{pillar.title}</h3>
-                <p className="mt-4 text-[15px] leading-7 text-white/68">{pillar.text}</p>
+                <p className="mt-4 text-[15px] leading-7 text-white/68">
+                  {pillar.text}
+                </p>
               </motion.div>
             );
           })}
@@ -695,6 +705,10 @@ const StoryStyles = () => (
     @media (prefers-reduced-motion: reduce) {
       html {
         scroll-behavior: auto;
+      }
+
+      .animate-bounce {
+        animation: none !important;
       }
     }
   `}</style>

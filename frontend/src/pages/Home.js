@@ -20,7 +20,7 @@ import ProductCard from '../components/ProductCard';
 import { fetchProducts } from '../services/shopifyService';
 import HeroPremium from '../components/HeroPremium';
 import CategoryShowcase from '../components/CategoryShowcase';
-import SocialProof from '../components/SocialProof';
+import InfiniteReviews from '../components/InfiniteReviews';
 
 const trustBadges = [
   {
@@ -162,7 +162,7 @@ const Home = () => {
       <CategoryShowcase />
 
       {/* Social Proof Section */}
-      <SocialProof />
+      <InfiniteReviews />
 
       {/* Trust Badges Strip */}
       <section className="bg-zinc-900 border-y border-zinc-800 py-6">

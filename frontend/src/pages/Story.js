@@ -281,11 +281,7 @@ const Story = () => {
         <div className="story-hero-bg-rings" />
       </section>
 
-      <StageDial
-        stages={stages}
-        activeStage={activeStage}
-        onStageClick={(id) => scrollToStage(id)}
-      />
+      <StageDial stages={stages} activeStage={activeStage} />
 
       <ManifestoBlock />
 
@@ -316,84 +312,106 @@ const Story = () => {
   );
 };
 
-const StageDial = ({ stages, activeStage, onStageClick }) => {
-  const [dialAngle, setDialAngle] = useState(0);
+const StageDial = ({ stages, activeStage }) => {
+  const [angle, setAngle] = useState(-90);
 
   useEffect(() => {
     const idx = stages.findIndex((s) => s.id === activeStage);
     if (idx === -1) return;
 
     const total = stages.length;
-    const start = -78;
-    const end = 78;
+    const start = -110; // top-left
+    const end = 110; // top-right
     const step = (end - start) / Math.max(total - 1, 1);
-    setDialAngle(start + idx * step);
+    const nextAngle = start + idx * step;
+    setAngle(nextAngle);
   }, [activeStage, stages]);
 
   const activeIndex = stages.findIndex((s) => s.id === activeStage);
-  const activeData = stages[activeIndex] || stages[0];
+  const activeStageData = activeIndex >= 0 ? stages[activeIndex] : stages[0];
 
   return (
-    <aside className="story-watch-dial" aria-label="Story stage dial">
+    <aside className="story-watch-dial" aria-hidden="false">
       <div className="story-watch-dial-wrap">
-        <div className="story-watch-dial-face">
-          <div className="story-watch-arc story-watch-arc-outer" />
-          <div className="story-watch-arc story-watch-arc-inner" />
+        <svg
+          className="story-watch-svg"
+          viewBox="0 0 200 220"
+          preserveAspectRatio="xMidYMid meet"
+        >
+          <g transform="translate(0,10)">
+            {/* OUTER FULL RING */}
+            <circle
+              cx="100"
+              cy="100"
+              r="82"
+              className="story-watch-ring story-watch-ring-outer"
+            />
+            {/* INNER FULL RING */}
+            <circle
+              cx="100"
+              cy="100"
+              r="56"
+              className="story-watch-ring story-watch-ring-inner"
+            />
 
-          {stages.map((stage, index) => {
-            const total = stages.length;
-            const start = -78;
-            const end = 78;
-            const step = (end - start) / Math.max(total - 1, 1);
-            const angle = start + index * step;
-            const rad = (angle * Math.PI) / 180;
+            {/* DASHED ARC (RIGHT SIDE) */}
+            <circle
+              cx="100"
+              cy="100"
+              r="82"
+              className="story-watch-arc-dashed"
+            />
 
-            const dotR = 77;
-            const dx = 100 + dotR * Math.cos(rad);
-            const dy = 100 + dotR * Math.sin(rad);
-            const isActive = activeStage === stage.id;
+            {/* TICKS: ONE PER STAGE */}
+            {stages.map((stage, index) => {
+              const total = stages.length;
+              const start = -110;
+              const end = 110;
+              const step = (end - start) / Math.max(total - 1, 1);
+              const a = start + index * step;
+              const rad = (a * Math.PI) / 180;
 
-            return (
-              <button
-                key={stage.id}
-                className={`story-watch-stop ${isActive ? "is-active" : ""}`}
-                style={{
-                  left: `${dx}px`,
-                  top: `${dy}px`,
-                }}
-                onClick={() => onStageClick(stage.id)}
-                aria-label={`Go to ${stage.label}`}
-              >
-                <svg
-                  className="story-watch-stop-line"
-                  width="38"
-                  height="38"
-                  viewBox="0 0 38 38"
-                  style={{
-                    transform: `translate(-50%, -50%) rotate(${angle}deg)`,
-                  }}
-                >
-                  <line x1="19" y1="5" x2="19" y2="33" />
-                </svg>
-                <span className="story-watch-stop-hit" />
-              </button>
-            );
-          })}
+              const rInner = 68;
+              const rOuter = 82;
+              const x1 = 100 + rInner * Math.cos(rad);
+              const y1 = 100 + rInner * Math.sin(rad);
+              const x2 = 100 + rOuter * Math.cos(rad);
+              const y2 = 100 + rOuter * Math.sin(rad);
 
-          <div
-            className="story-watch-hand"
-            style={{
-              transform: `translateY(-50%) rotate(${dialAngle}deg)`,
-            }}
-          >
-            <span className="story-watch-hand-core" />
-            <span className="story-watch-hand-tip" />
-          </div>
-        </div>
+              return (
+                <line
+                  key={stage.id}
+                  x1={x1}
+                  y1={y1}
+                  x2={x2}
+                  y2={y2}
+                  className="story-watch-tick"
+                />
+              );
+            })}
+
+            {/* HAND */}
+            <g
+              className="story-watch-hand"
+              transform={`rotate(${angle} 100 100)`}
+            >
+              {/* Hand stem */}
+              <line x1="100" y1="100" x2="100" y2="34" />
+              {/* Pivot */}
+              <circle cx="100" cy="100" r="6" className="story-watch-hand-pivot" />
+              {/* Tip */}
+              <circle cx="100" cy="34" r="5" className="story-watch-hand-tip" />
+            </g>
+          </g>
+        </svg>
 
         <div className="story-watch-readout">
-          <span className="story-watch-readout-index">{activeData.index}</span>
-          <span className="story-watch-readout-label">{activeData.label}</span>
+          <span className="story-watch-readout-index">
+            {activeStageData.index}
+          </span>
+          <span className="story-watch-readout-label">
+            {activeStageData.label.toUpperCase()}
+          </span>
         </div>
       </div>
     </aside>

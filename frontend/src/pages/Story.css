@@ -178,7 +178,7 @@
   pointer-events: none;
 }
 
-/* WATCH DIAL */
+/* WATCH DIAL – PROFESSIONAL VERSION */
 
 .story-watch-dial {
   position: fixed;
@@ -186,7 +186,7 @@
   top: 50%;
   transform: translateY(-50%);
   z-index: 30;
-  width: 210px;
+  width: 220px;
   height: 260px;
   display: none;
   pointer-events: none;
@@ -196,141 +196,93 @@
   position: relative;
   width: 100%;
   height: 100%;
-  pointer-events: none;
 }
 
-.story-watch-dial-face {
+.story-watch-svg {
   position: absolute;
-  right: -34px;
-  top: 18px;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  pointer-events: none;
+  right: -40px; /* controls how much is cropped by edge */
+  top: 0;
+  width: 210px;
+  height: 210px;
 }
 
-.story-watch-arc {
-  position: absolute;
-  border-radius: 50%;
-  border: 4px solid transparent;
-  border-left-color: rgba(255, 255, 255, 0.92);
-  border-top-color: rgba(255, 255, 255, 0.92);
-  border-bottom-color: rgba(255, 255, 255, 0.92);
-  border-right: none;
+/* Base rings */
+
+.story-watch-ring {
+  fill: none;
+  stroke-linecap: round;
 }
 
-.story-watch-arc-outer {
-  inset: 0;
-  opacity: 0.94;
+.story-watch-ring-outer {
+  stroke: rgba(229, 231, 235, 0.9);
+  stroke-width: 3.2;
 }
 
-.story-watch-arc-inner {
-  inset: 17px;
-  opacity: 0.86;
+.story-watch-ring-inner {
+  stroke: rgba(156, 163, 175, 0.6);
+  stroke-width: 2;
 }
 
-.story-watch-stop {
-  position: absolute;
-  width: 38px;
-  height: 38px;
-  transform: translate(-50%, -50%);
-  background: transparent;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  pointer-events: auto;
-}
+/* Dashed arc on outer ring (right side only) */
 
-.story-watch-stop-line {
-  position: absolute;
-  inset: 0;
-  overflow: visible;
-}
-
-.story-watch-stop-line line {
-  stroke: rgba(255, 255, 255, 0.95);
+.story-watch-arc-dashed {
+  fill: none;
+  stroke: rgba(249, 250, 251, 0.9);
   stroke-width: 3.2;
   stroke-linecap: round;
-  transition: stroke 0.2s ease;
+  stroke-dasharray: 8 10;
+  stroke-dashoffset: 34;
+  transform-origin: 100px 100px;
+  transform: rotate(25deg);
 }
 
-.story-watch-stop.is-active .story-watch-stop-line line {
-  stroke: #f97316;
+/* Ticks for each stage */
+
+.story-watch-tick {
+  stroke: rgba(229, 231, 235, 0.9);
+  stroke-width: 2.2;
+  stroke-linecap: round;
 }
 
-.story-watch-stop-hit {
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-}
+/* Hand */
 
 .story-watch-hand {
-  position: absolute;
-  left: 100px;
-  top: 50%;
-  width: 86px;
-  height: 2px;
-  transform-origin: 0% 50%;
-  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: none;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.story-watch-hand::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  width: 72px;
-  height: 2px;
-  transform: translateY(-50%);
-  background: linear-gradient(
-    to right,
-    rgba(249, 115, 22, 0.15),
-    rgba(249, 115, 22, 0.96)
-  );
-  border-radius: 999px;
+.story-watch-hand line {
+  stroke: rgba(249, 115, 22, 0.88);
+  stroke-width: 3;
+  stroke-linecap: round;
 }
 
-.story-watch-hand-core {
-  position: absolute;
-  left: -6px;
-  top: 50%;
-  width: 12px;
-  height: 12px;
-  transform: translateY(-50%);
-  border-radius: 999px;
-  background: #f97316;
-  box-shadow: 0 0 0 6px rgba(249, 115, 22, 0.14);
+.story-watch-hand-pivot {
+  fill: #f97316;
+  stroke: rgba(0, 0, 0, 0.35);
+  stroke-width: 1.2;
 }
 
 .story-watch-hand-tip {
-  position: absolute;
-  right: 6px;
-  top: 50%;
-  width: 10px;
-  height: 10px;
-  transform: translateY(-50%);
-  border-radius: 999px;
-  background: #fff;
-  box-shadow:
-    0 0 0 3px rgba(249, 115, 22, 0.22),
-    0 0 24px rgba(249, 115, 22, 0.34);
+  fill: #f9fafb;
+  stroke: rgba(249, 115, 22, 0.7);
+  stroke-width: 2.2;
 }
+
+/* Label under dial */
 
 .story-watch-readout {
   position: absolute;
-  right: 26px;
-  bottom: 8px;
+  right: 40px;
+  bottom: 6px;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 0.18rem;
-  text-align: right;
+  align-items: flex-start;
+  gap: 0.2rem;
   pointer-events: none;
 }
 
 .story-watch-readout-index {
-  font-size: 0.76rem;
+  font-size: 0.75rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: #f97316;
@@ -338,10 +290,10 @@
 }
 
 .story-watch-readout-label {
-  font-size: 0.8rem;
-  letter-spacing: 0.12em;
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #e5e7eb;
+  color: #f9fafb;
 }
 
 /* MANIFESTO */
@@ -377,7 +329,7 @@
   color: #e5e7eb;
 }
 
-/* MAIN */
+/* MAIN & CURVE */
 
 .story-main-shell {
   position: relative;
@@ -387,8 +339,6 @@
 .story-main {
   padding: 24px 0 80px;
 }
-
-/* CURVE */
 
 .story-curve-wrapper {
   position: absolute;
@@ -498,6 +448,10 @@
 .story-timeline-pill-index {
   font-variant-numeric: tabular-nums;
   opacity: 0.75;
+}
+
+.story-timeline-pill-label {
+  white-space: nowrap;
 }
 
 .story-timeline-pill.is-active {

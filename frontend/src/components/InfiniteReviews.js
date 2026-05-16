@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';import { Star } from 'lucide-react';
+import React from 'react';
+import { Star } from 'lucide-react';
 
 const reviews = [
   { id: 1, name: "Rajesh Kumar", rating: 5, text: "Absolutely fantastic quality! The dumbbells feel premium and solid. Highly recommend FitGearzzz!", location: "Mumbai" },
@@ -19,40 +20,7 @@ const reviews = [
 ];
 
 const InfiniteReviews = () => {
-  const scrollRef = useRef(null);
-  const [isPaused, setIsPaused] = useState(false);
-  useEffect(() => {
-    const scrollContainer = scrollRef.current;
-    if (!scrollContainer) return;
-
-    let scrollAmount = 0;
-    const scrollSpeed = 2.0; // pixels per frame    let animationId;
-
-    const scroll = () => {
-      if (!isPaused && scrollContainer) {
-        scrollAmount += scrollSpeed;
-        scrollContainer.scrollLeft = scrollAmount;
-
-        // Reset when we've scrolled through half (one set of reviews)
-        const maxScroll = scrollContainer.scrollWidth / 2;
-        if (scrollAmount >= maxScroll) {
-          scrollAmount = 0;
-        }
-      }
-      animationId = requestAnimationFrame(scroll);
-    };
-
-    animationId = requestAnimationFrame(scroll);
-
-    return () => {
-      if (animationId) {
-        cancelAnimationFrame(animationId);
-      }
-    };
-  }, [isPaused]);
-
-  // Double the reviews for seamless infinite scroll
-  const doubledReviews = [...reviews, ...reviews];
+  const allReviews = [...reviews, ...reviews];
 
   return (
     <section className="py-20 bg-gradient-to-b from-zinc-900 to-black overflow-hidden">
@@ -66,62 +34,70 @@ const InfiniteReviews = () => {
       </div>
 
       <div className="relative">
-        {/* Left gradient fade */}
         <div className="absolute left-0 top-0 bottom-0 w-24 md:w-48 bg-gradient-to-r from-black via-black to-transparent z-10 pointer-events-none"></div>
-        
-        {/* Right gradient fade */}
         <div className="absolute right-0 top-0 bottom-0 w-24 md:w-48 bg-gradient-to-l from-black via-black to-transparent z-10 pointer-events-none"></div>
 
-        {/* Scrolling container */}
-        <div 
-          ref={scrollRef}
-          className="flex gap-6 overflow-x-hidden scroll-smooth"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {doubledReviews.map((review, index) => (
-            <div
-              key={`${review.id}-${index}`}
-              className="flex-shrink-0 w-80 md:w-96 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-orange-500/50 hover:scale-105 transition-all duration-300"
-            >
-              {/* Rating stars */}
-              <div className="flex gap-1 mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`w-5 h-5 ${
-                      i < review.rating
-                        ? 'fill-orange-500 text-orange-500'
-                        : 'text-gray-600'
-                    }`}
-                  />
-                ))}
-              </div>
-
-              {/* Review text */}
-              <p className="text-gray-300 text-base leading-relaxed mb-6">
-                "{review.text}"
-              </p>
-
-              {/* Reviewer info */}
-              <div className="flex items-center gap-3 pt-4 border-t border-white/10">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-bold text-lg">
-                  {review.name.charAt(0)}
+        <div className="scroll-container">
+          <div className="scroll-content">
+            {allReviews.map((review, index) => (
+              <div
+                key={`${review.id}-${index}`}
+                className="review-card flex-shrink-0 w-80 md:w-96 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-orange-500/50 hover:scale-105 transition-all duration-300"
+              >
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`w-5 h-5 ${
+                        i < review.rating
+                          ? 'fill-orange-500 text-orange-500'
+                          : 'text-gray-600'
+                      }`}
+                    />
+                  ))}
                 </div>
-                <div>
-                  <div className="text-white font-semibold">{review.name}</div>
-                  <div className="text-gray-500 text-sm">{review.location}</div>
+                <p className="text-gray-300 text-base leading-relaxed mb-6">
+                  "{review.text}"
+                </p>
+                <div className="flex items-center gap-3 pt-4 border-t border-white/10">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-bold text-lg">
+                    {review.name.charAt(0)}
+                  </div>
+                  <div>
+                    <div className="text-white font-semibold">{review.name}</div>
+                    <div className="text-gray-500 text-sm">{review.location}</div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
       <style jsx>{`
-        div::-webkit-scrollbar {
-          display: none;
+        .scroll-container {
+          display: flex;
+          overflow: hidden;
+        }
+
+        .scroll-content {
+          display: flex;
+          gap: 1.5rem;
+          animation: scroll 120s linear infinite;
+          will-change: transform;
+        }
+
+        .scroll-content:hover {
+          animation-play-state: paused;
+        }
+
+        @keyframes scroll {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
         }
       `}</style>
     </section>

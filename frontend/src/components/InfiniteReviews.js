@@ -28,8 +28,7 @@ const InfiniteReviews = () => {
     if (!scrollContainer) return;
 
     let scrollAmount = 0;
-    const scrollSpeed = 02.05; // pixels per frame
-    let animationId;
+    const scrollSpeed = 2.0; // pixels per frame    let animationId;
 
     const scroll = () => {
       if (!isPaused && scrollContainer) {

@@ -104,6 +104,7 @@ const keySignals = [
   },
 ];
 
+// simple tick sound using Web Audio (no external file)
 const playDialSound = () => {
   if (typeof window === "undefined") return;
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -156,9 +157,9 @@ const Story = () => {
   const [curveNodes, setCurveNodes] = useState([]);
   const [curveHeight, setCurveHeight] = useState(0);
 
+  // track which stage is in view
   useEffect(() => {
     const sectionEls = stages.map((s) => document.getElementById(s.id));
-
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -176,38 +177,44 @@ const Story = () => {
     return () => observer.disconnect();
   }, []);
 
+  // compute curve node positions so each point aligns with its stage
   useEffect(() => {
     const updateCurve = () => {
-      const container = document.querySelector(".story-main-shell");
-      if (!container) return;
+      const shell = document.querySelector(".story-main-shell");
+      if (!shell) return;
 
-      const containerTop =
-        container.getBoundingClientRect().top + window.scrollY;
-
+      const shellRect = shell.getBoundingClientRect();
       const newNodes = stages.map((stage) => {
         const el = document.getElementById(stage.id);
         if (!el) return null;
         const rect = el.getBoundingClientRect();
-        const centerY =
-          rect.top + window.scrollY - containerTop + rect.height / 2;
+        const centerY = rect.top - shellRect.top + rect.height / 2;
         return centerY;
       });
 
+      const valid = newNodes.filter((y) => y != null);
+      const maxY =
+        valid.length > 0 ? valid.reduce((m, y) => Math.max(m, y), 0) : 0;
+
       setCurveNodes(newNodes);
-      setCurveHeight(container.scrollHeight);
+      setCurveHeight(maxY + 200);
     };
 
     updateCurve();
     window.addEventListener("resize", updateCurve);
-    return () => window.removeEventListener("resize", updateCurve);
+    window.addEventListener("scroll", updateCurve);
+
+    return () => {
+      window.removeEventListener("resize", updateCurve);
+      window.removeEventListener("scroll", updateCurve);
+    };
   }, []);
 
   const scrollToStage = (id) => {
     const el = document.getElementById(id);
     if (!el) return;
-
     const rect = el.getBoundingClientRect();
-    const offset = 80;
+    const offset = 80; // header spacing
     const targetTop = rect.top + window.scrollY - offset;
 
     window.scrollTo({
@@ -220,43 +227,31 @@ const Story = () => {
 
   return (
     <div className="story-page">
+      {/* HERO */}
       <section className="story-hero" id="top">
         <div className="story-hero-inner">
           <div className="story-hero-pill">
             <span className="story-hero-pill-dot" />
-            <span className="story-hero-pill-text">The FitGearzzz journey</span>
+            <span className="story-hero-pill-text">A true progress story</span>
           </div>
 
           <h1 className="story-hero-title">
-            It did not start with an idea.
+            A problem stayed.
             <br />
-            It started with a problem that refused to leave.
+            A stronger system was built around it.
           </h1>
 
           <p className="story-hero-subtitle">
-            This page follows that problem as it moved through thought,
-            planning, process, early progress, the current reality, and the
-            next set of decisions. Every stage is here on purpose.
+            This is not mythology. It is the real sequence of stages that took
+            FitGearzzz from a persistent problem to a more disciplined way of
+            supporting serious training.
           </p>
 
-          <div className="story-hero-meta">
-            <div className="story-hero-meta-item">
-              <span className="story-hero-meta-label">Stages</span>
-              <span className="story-hero-meta-value">Problem → Future plans</span>
-            </div>
-            <div className="story-hero-meta-item">
-              <span className="story-hero-meta-label">Tone</span>
-              <span className="story-hero-meta-value">
-                Realistic, precise, deliberate
-              </span>
-            </div>
-            <div className="story-hero-meta-item">
-              <span className="story-hero-meta-label">Focus</span>
-              <span className="story-hero-meta-value">
-                How progress actually happened
-              </span>
-            </div>
-          </div>
+          <p className="story-hero-trailer">
+            Scroll like you are watching a trailer: each stage reveals what
+            changed, why it mattered, and how it still shapes what you see on
+            the site today.
+          </p>
 
           <div className="story-hero-actions">
             <button
@@ -273,7 +268,7 @@ const Story = () => {
           <div className="story-hero-scroll">
             <span className="story-hero-scroll-line" />
             <span className="story-hero-scroll-label">
-              Scroll to follow each stage
+              Scroll to follow the stages
             </span>
           </div>
         </div>
@@ -282,6 +277,7 @@ const Story = () => {
         <div className="story-hero-bg-rings" />
       </section>
 
+      {/* RIGHT-SIDE SEMI-CIRCLE DIAL (DESKTOP) */}
       <StageDial
         stages={stages}
         activeStage={activeStage}
@@ -291,8 +287,10 @@ const Story = () => {
         }}
       />
 
+      {/* MANIFESTO */}
       <ManifestoBlock />
 
+      {/* TIMELINE + STAGES + CURVE */}
       <div className="story-main-shell">
         <JourneyCurve
           stages={stages}
@@ -312,7 +310,11 @@ const Story = () => {
           />
 
           {stages.map((stage, index) => (
-            <StageSection key={stage.id} stage={stage} index={index} />
+            <StageSection
+              key={stage.id}
+              stage={stage}
+              index={index}
+            />
           ))}
 
           <SignalsSection />
@@ -326,11 +328,16 @@ const Story = () => {
 const StageDial = ({ stages, activeStage, onStageClick }) => {
   const [dialAngle, setDialAngle] = useState(0);
 
+  // map active stage to pointer angle along the semi-circle
   useEffect(() => {
     const idx = stages.findIndex((s) => s.id === activeStage);
     if (idx === -1) return;
-    const step = 360 / stages.length;
-    setDialAngle(idx * step);
+    const total = stages.length;
+    const start = -80; // top
+    const end = 80; // bottom
+    const step = (end - start) / Math.max(total - 1, 1);
+    const angle = start + idx * step;
+    setDialAngle(angle);
   }, [activeStage, stages]);
 
   const activeIndex = stages.findIndex((s) => s.id === activeStage);
@@ -339,7 +346,7 @@ const StageDial = ({ stages, activeStage, onStageClick }) => {
   return (
     <aside className="story-dial">
       <div className="story-dial-inner">
-        <div className="story-dial-ring">
+        <div className="story-dial-semi">
           <div
             className="story-dial-pointer"
             style={{
@@ -351,13 +358,16 @@ const StageDial = ({ stages, activeStage, onStageClick }) => {
 
           {stages.map((stage, index) => {
             const total = stages.length;
-            const step = 360 / total;
-            const baseAngle = -90;
-            const angle = baseAngle + index * step;
+            const start = -80;
+            const end = 80;
+            const step = (end - start) / Math.max(total - 1, 1);
+            const angle = start + index * step;
             const rad = (angle * Math.PI) / 180;
-            const radius = 62;
-            const x = 50 + radius * Math.cos(rad);
-            const y = 50 + radius * Math.sin(rad);
+            const radius = 54;
+            const cx = 100; // center at right edge
+            const cy = 50;
+            const x = cx + radius * Math.cos(rad);
+            const y = cy + radius * Math.sin(rad);
             const isActive = activeStage === stage.id;
 
             return (
@@ -366,7 +376,6 @@ const StageDial = ({ stages, activeStage, onStageClick }) => {
                 className={`story-dial-dot ${isActive ? "is-active" : ""}`}
                 style={{ "--x": `${x}%`, "--y": `${y}%` }}
                 onClick={() => onStageClick(stage.id)}
-                type="button"
               >
                 <span className="story-dial-dot-index">{stage.index}</span>
               </button>
@@ -411,7 +420,6 @@ const JourneyCurve = ({
             <stop offset="100%" stopColor="rgba(148,163,184,0.24)" />
           </linearGradient>
         </defs>
-
         <path
           d="
             M 80 40
@@ -431,7 +439,6 @@ const JourneyCurve = ({
         if (y == null) return null;
         const stage = stages[i];
         const isActive = stage && stage.id === activeStage;
-
         return (
           <div
             key={stage.id}
@@ -480,7 +487,6 @@ const TimelineStrip = ({ stages, activeStage, onStageClick }) => {
                 activeStage === stage.id ? "is-active" : ""
               }`}
               onClick={() => onStageClick(stage.id)}
-              type="button"
             >
               <span className="story-timeline-pill-index">
                 {stage.index}
@@ -516,7 +522,6 @@ const StageSection = ({ stage, index }) => {
           <h2 className="story-stage-title">{stage.title}</h2>
           <p className="story-stage-summary">{stage.summary}</p>
           <p className="story-stage-tension">{stage.tension}</p>
-
           <div className="story-stage-key">
             <span className="story-stage-key-label">Key turning point</span>
             <p className="story-stage-key-text">{stage.keyPoint}</p>

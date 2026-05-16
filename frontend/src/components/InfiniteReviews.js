@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { Star } from 'lucide-react';
 
 const reviews = [
@@ -110,37 +110,8 @@ const reviews = [
 ];
 
 const InfiniteReviews = () => {
-  const scrollContainerRef = useRef(null);
-
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    let animationId;
-    let scrollPosition = 0;
-    const scrollSpeed = 0.5;
-
-    const animate = () => {
-      scrollPosition += scrollSpeed;
-      
-      if (container.scrollLeft >= container.scrollWidth / 2) {
-        scrollPosition = 0;
-      }
-      
-      container.scrollLeft = scrollPosition;
-      animationId = requestAnimationFrame(animate);
-    };
-
-    animationId = requestAnimationFrame(animate);
-
-    return () => {
-      if (animationId) {
-        cancelAnimationFrame(animationId);
-      }
-    };
-  }, []);
-
-  const doubledReviews = [...reviews, ...reviews];
+  // Triple the reviews for seamless infinite scroll
+  const tripleReviews = [...reviews, ...reviews, ...reviews];
 
   return (
     <section className="py-20 bg-gradient-to-b from-zinc-900 to-black overflow-hidden">
@@ -154,25 +125,18 @@ const InfiniteReviews = () => {
       </div>
 
       <div className="relative">
-        {/* Gradient overlays for fade effect */}
-        <div className="absolute left-0 top-0 bottom-0 w-32 md:w-64 bg-gradient-to-r from-black via-black/80 to-transparent z-10 pointer-events-none"></div>
-        <div className="absolute right-0 top-0 bottom-0 w-32 md:w-64 bg-gradient-to-l from-black via-black/80 to-transparent z-10 pointer-events-none"></div>
+        {/* Left gradient fade */}
+        <div className="absolute left-0 top-0 bottom-0 w-24 md:w-48 bg-gradient-to-r from-black via-black to-transparent z-10 pointer-events-none"></div>
+        
+        {/* Right gradient fade */}
+        <div className="absolute right-0 top-0 bottom-0 w-24 md:w-48 bg-gradient-to-l from-black via-black to-transparent z-10 pointer-events-none"></div>
 
-        {/* Scrolling container */}
-        <div
-          ref={scrollContainerRef}
-          className="flex gap-6 overflow-x-hidden scroll-smooth"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {doubledReviews.map((review, index) => (
+        {/* Infinite scrolling container */}
+        <div className="review-scroll-container flex gap-6">
+          {tripleReviews.map((review, index) => (
             <div
               key={`${review.id}-${index}`}
-              className="flex-shrink-0 w-80 md:w-96 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-orange-500/50 transition-all duration-300"
-              style={{
-                opacity: '0.4',
-                animation: `fadeInOut 20s linear infinite`,
-                animationDelay: `${index * 0.5}s`
-              }}
+              className="review-card flex-shrink-0 w-80 md:w-96 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-orange-500/50 hover:scale-105 transition-all duration-300"
             >
               {/* Rating stars */}
               <div className="flex gap-1 mb-4">
@@ -208,17 +172,33 @@ const InfiniteReviews = () => {
         </div>
       </div>
 
-      {/* CSS for center card focus effect */}
+      {/* CSS Animation for infinite scroll */}
       <style jsx>{`
-        @keyframes fadeInOut {
-          0%, 100% { 
-            opacity: 0.3;
-            transform: scale(0.95);
+        .review-scroll-container {
+          animation: scroll 60s linear infinite;
+          will-change: transform;
+        }
+
+        .review-scroll-container:hover {
+          animation-play-state: paused;
+        }
+
+        @keyframes scroll {
+          0% {
+            transform: translateX(0);
           }
-          50% { 
-            opacity: 1;
-            transform: scale(1);
+          100% {
+            transform: translateX(calc(-100% / 3));
           }
+        }
+
+        .review-scroll-container::-webkit-scrollbar {
+          display: none;
+        }
+
+        .review-scroll-container {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
       `}</style>
     </section>

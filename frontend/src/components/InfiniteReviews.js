@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from 'react';
-import { Star } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';import { Star } from 'lucide-react';
 
 const reviews = [
   { id: 1, name: "Rajesh Kumar", rating: 5, text: "Absolutely fantastic quality! The dumbbells feel premium and solid. Highly recommend FitGearzzz!", location: "Mumbai" },
@@ -21,8 +20,7 @@ const reviews = [
 
 const InfiniteReviews = () => {
   const scrollRef = useRef(null);
-  const [isPaused, setIsPaused] = React.useState(false);
-
+  const [isPaused, setIsPaused] = useState(false);
   useEffect(() => {
     const scrollContainer = scrollRef.current;
     if (!scrollContainer) return;

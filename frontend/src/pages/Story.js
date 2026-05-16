@@ -18,7 +18,8 @@ const stages = [
     id: "stage-thought",
     index: "02",
     label: "Thought",
-    title: "The question formed: what if the gear was as disciplined as the people using it?",
+    title:
+      "The question formed: what if the gear was as disciplined as the people using it?",
     summary:
       "Instead of accepting the situation as normal, the journey continued with a more precise question about what training equipment should really do.",
     tension:
@@ -103,6 +104,29 @@ const keySignals = [
   },
 ];
 
+// simple tick sound using Web Audio (no external file)
+const playDialSound = () => {
+  if (typeof window === "undefined") return;
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return;
+
+  const ctx = new AudioCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = "triangle";
+  osc.frequency.setValueAtTime(850, ctx.currentTime);
+  gain.gain.setValueAtTime(0.18, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start();
+  osc.stop(ctx.currentTime + 0.15);
+  osc.onended = () => ctx.close();
+};
+
 function useInView(options = {}) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
@@ -130,7 +154,10 @@ function useInView(options = {}) {
 
 const Story = () => {
   const [activeStage, setActiveStage] = useState(stages[0].id);
+  const [curveNodes, setCurveNodes] = useState([]);
+  const [curveHeight, setCurveHeight] = useState(0);
 
+  // track which stage is in view
   useEffect(() => {
     const sectionEls = stages.map((s) => document.getElementById(s.id));
     const observer = new IntersectionObserver(
@@ -150,11 +177,42 @@ const Story = () => {
     return () => observer.disconnect();
   }, []);
 
+  // compute curve node positions so each point aligns with its stage
+  useEffect(() => {
+    const updateCurve = () => {
+      const container = document.querySelector(".story-main-shell");
+      if (!container) return;
+
+      const containerTop =
+        container.getBoundingClientRect().top + window.scrollY;
+
+      const newNodes = stages.map((stage) => {
+        const el = document.getElementById(stage.id);
+        if (!el) return null;
+        const rect = el.getBoundingClientRect();
+        const centerY =
+          rect.top + window.scrollY - containerTop + rect.height / 2;
+        return centerY;
+      });
+
+      setCurveNodes(newNodes);
+      setCurveHeight(container.scrollHeight);
+    };
+
+    updateCurve();
+    window.addEventListener("resize", updateCurve);
+    return () => window.removeEventListener("resize", updateCurve);
+  }, []);
+
   const scrollToStage = (id) => {
     const el = document.getElementById(id);
     if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const offset = 80; // header spacing
+    const targetTop = rect.top + window.scrollY - offset;
+
     window.scrollTo({
-      top: el.offsetTop - 90,
+      top: targetTop,
       behavior: "smooth",
     });
   };
@@ -190,11 +248,15 @@ const Story = () => {
             </div>
             <div className="story-hero-meta-item">
               <span className="story-hero-meta-label">Tone</span>
-              <span className="story-hero-meta-value">Realistic, precise, deliberate</span>
+              <span className="story-hero-meta-value">
+                Realistic, precise, deliberate
+              </span>
             </div>
             <div className="story-hero-meta-item">
               <span className="story-hero-meta-label">Focus</span>
-              <span className="story-hero-meta-value">How progress actually happened</span>
+              <span className="story-hero-meta-value">
+                How progress actually happened
+              </span>
             </div>
           </div>
 
@@ -222,25 +284,36 @@ const Story = () => {
         <div className="story-hero-bg-rings" />
       </section>
 
-      {/* STAGE SPINE NAV (DESKTOP) */}
-      <StageSpine
+      {/* RIGHT-SIDE DIAL NAV (DESKTOP) */}
+      <StageDial
         stages={stages}
         activeStage={activeStage}
-        onStageClick={scrollToStage}
+        onStageClick={(id) => {
+          playDialSound();
+          scrollToStage(id);
+        }}
       />
 
       {/* MANIFESTO */}
       <ManifestoBlock />
 
-      {/* TIMELINE STRIP + STAGES */}
+      {/* TIMELINE + STAGES + CURVE */}
       <div className="story-main-shell">
-        <JourneyCurve activeStage={activeStage} />
+        <JourneyCurve
+          stages={stages}
+          activeStage={activeStage}
+          curveNodes={curveNodes}
+          curveHeight={curveHeight}
+        />
 
         <main className="story-main">
           <TimelineStrip
             stages={stages}
             activeStage={activeStage}
-            onStageClick={scrollToStage}
+            onStageClick={(id) => {
+              playDialSound();
+              scrollToStage(id);
+            }}
           />
 
           {stages.map((stage, index) => (
@@ -259,38 +332,90 @@ const Story = () => {
   );
 };
 
-const StageSpine = ({ stages, activeStage, onStageClick }) => {
+const StageDial = ({ stages, activeStage, onStageClick }) => {
+  const [dialAngle, setDialAngle] = useState(0);
+
+  useEffect(() => {
+    const idx = stages.findIndex((s) => s.id === activeStage);
+    if (idx === -1) return;
+    const step = 360 / stages.length;
+    setDialAngle(idx * step);
+  }, [activeStage]);
+
+  const activeIndex = stages.findIndex((s) => s.id === activeStage);
+  const activeStageData = stages[activeIndex] || stages[0];
+
   return (
-    <aside className="story-spine">
-      <div className="story-spine-rail">
-        {stages.map((stage) => (
-          <button
-            key={stage.id}
-            className={`story-spine-node ${
-              activeStage === stage.id ? "is-active" : ""
-            }`}
-            onClick={() => onStageClick(stage.id)}
-            aria-label={stage.label}
+    <aside className="story-dial">
+      <div className="story-dial-inner">
+        <div className="story-dial-ring">
+          <div
+            className="story-dial-pointer"
+            style={{
+              transform: `translate(-50%, -50%) rotate(${dialAngle}deg)`,
+            }}
           >
-            <span className="story-spine-node-index">{stage.index}</span>
-            <span className="story-spine-node-label">{stage.label}</span>
-          </button>
-        ))}
+            <span className="story-dial-pointer-head" />
+          </div>
+
+          {stages.map((stage, index) => {
+            const total = stages.length;
+            const step = 360 / total;
+            const baseAngle = -90; // start at top
+            const angle = baseAngle + index * step;
+            const rad = (angle * Math.PI) / 180;
+            const radius = 62;
+            const x = 50 + radius * Math.cos(rad);
+            const y = 50 + radius * Math.sin(rad);
+            const isActive = activeStage === stage.id;
+
+            return (
+              <button
+                key={stage.id}
+                className={`story-dial-dot ${isActive ? "is-active" : ""}`}
+                style={{ "--x": `${x}%`, "--y": `${y}%` }}
+                onClick={() => onStageClick(stage.id)}
+              >
+                <span className="story-dial-dot-index">
+                  {stage.index}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="story-dial-label">
+          <span className="story-dial-label-index">
+            {activeStageData.index}
+          </span>
+          <span className="story-dial-label-text">
+            {activeStageData.label}
+          </span>
+        </div>
       </div>
     </aside>
   );
 };
 
-const JourneyCurve = ({ activeStage }) => {
+const JourneyCurve = ({
+  stages,
+  activeStage,
+  curveNodes,
+  curveHeight,
+}) => {
   return (
-    <div className="story-curve-wrapper" aria-hidden="true">
+    <div
+      className="story-curve-wrapper"
+      style={{ height: curveHeight || 0 }}
+      aria-hidden="true"
+    >
       <svg
         className="story-curve"
         viewBox="0 0 320 1800"
         preserveAspectRatio="none"
       >
         <defs>
-          <linearGradient id="curveGradient" x1="0" y1="0" x2="1" y2="1">
+          earGradient id="curveGradient" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="rgba(148,163,184,0.28)" />
             <stop offset="45%" stopColor="rgba(249,115,22,0.62)" />
             <stop offset="100%" stopColor="rgba(148,163,184,0.24)" />
@@ -311,14 +436,18 @@ const JourneyCurve = ({ activeStage }) => {
         />
       </svg>
 
-      {stages.map((stage, i) => (
-        <div
-          key={stage.id}
-          className={`story-curve-node node-${i + 1} ${
-            activeStage === stage.id ? "is-active" : ""
-          }`}
-        />
-      ))}
+      {curveNodes.map((y, i) => {
+        if (y == null) return null;
+        const stage = stages[i];
+        const isActive = stage && stage.id === activeStage;
+        return (
+          <div
+            key={stage.id}
+            className={`story-curve-node ${isActive ? "is-active" : ""}`}
+            style={{ top: y }}
+          />
+        );
+      })}
     </div>
   );
 };
@@ -436,7 +565,9 @@ const SignalsSection = () => {
     >
       <div className="story-signals-inner">
         <div className="story-section-heading">
-          <p className="story-section-kicker">Signals that the story is working</p>
+          <p className="story-section-kicker">
+            Signals that the story is working
+          </p>
           <h2 className="story-section-title">
             How you know this journey has weight behind it.
           </h2>

@@ -104,7 +104,6 @@ const keySignals = [
   },
 ];
 
-// simple tick sound using Web Audio (no external file)
 const playDialSound = () => {
   if (typeof window === "undefined") return;
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -157,9 +156,9 @@ const Story = () => {
   const [curveNodes, setCurveNodes] = useState([]);
   const [curveHeight, setCurveHeight] = useState(0);
 
-  // track which stage is in view
   useEffect(() => {
     const sectionEls = stages.map((s) => document.getElementById(s.id));
+
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -177,7 +176,6 @@ const Story = () => {
     return () => observer.disconnect();
   }, []);
 
-  // compute curve node positions so each point aligns with its stage
   useEffect(() => {
     const updateCurve = () => {
       const container = document.querySelector(".story-main-shell");
@@ -207,8 +205,9 @@ const Story = () => {
   const scrollToStage = (id) => {
     const el = document.getElementById(id);
     if (!el) return;
+
     const rect = el.getBoundingClientRect();
-    const offset = 80; // header spacing
+    const offset = 80;
     const targetTop = rect.top + window.scrollY - offset;
 
     window.scrollTo({
@@ -221,7 +220,6 @@ const Story = () => {
 
   return (
     <div className="story-page">
-      {/* HERO */}
       <section className="story-hero" id="top">
         <div className="story-hero-inner">
           <div className="story-hero-pill">
@@ -284,7 +282,6 @@ const Story = () => {
         <div className="story-hero-bg-rings" />
       </section>
 
-      {/* RIGHT-SIDE DIAL NAV (DESKTOP) */}
       <StageDial
         stages={stages}
         activeStage={activeStage}
@@ -294,10 +291,8 @@ const Story = () => {
         }}
       />
 
-      {/* MANIFESTO */}
       <ManifestoBlock />
 
-      {/* TIMELINE + STAGES + CURVE */}
       <div className="story-main-shell">
         <JourneyCurve
           stages={stages}
@@ -317,11 +312,7 @@ const Story = () => {
           />
 
           {stages.map((stage, index) => (
-            <StageSection
-              key={stage.id}
-              stage={stage}
-              index={index}
-            />
+            <StageSection key={stage.id} stage={stage} index={index} />
           ))}
 
           <SignalsSection />
@@ -340,7 +331,7 @@ const StageDial = ({ stages, activeStage, onStageClick }) => {
     if (idx === -1) return;
     const step = 360 / stages.length;
     setDialAngle(idx * step);
-  }, [activeStage]);
+  }, [activeStage, stages]);
 
   const activeIndex = stages.findIndex((s) => s.id === activeStage);
   const activeStageData = stages[activeIndex] || stages[0];
@@ -361,7 +352,7 @@ const StageDial = ({ stages, activeStage, onStageClick }) => {
           {stages.map((stage, index) => {
             const total = stages.length;
             const step = 360 / total;
-            const baseAngle = -90; // start at top
+            const baseAngle = -90;
             const angle = baseAngle + index * step;
             const rad = (angle * Math.PI) / 180;
             const radius = 62;
@@ -375,10 +366,9 @@ const StageDial = ({ stages, activeStage, onStageClick }) => {
                 className={`story-dial-dot ${isActive ? "is-active" : ""}`}
                 style={{ "--x": `${x}%`, "--y": `${y}%` }}
                 onClick={() => onStageClick(stage.id)}
+                type="button"
               >
-                <span className="story-dial-dot-index">
-                  {stage.index}
-                </span>
+                <span className="story-dial-dot-index">{stage.index}</span>
               </button>
             );
           })}
@@ -415,12 +405,13 @@ const JourneyCurve = ({
         preserveAspectRatio="none"
       >
         <defs>
-          earGradient id="curveGradient" x1="0" y1="0" x2="1" y2="1">
+          <linearGradient id="curveGradient" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="rgba(148,163,184,0.28)" />
             <stop offset="45%" stopColor="rgba(249,115,22,0.62)" />
             <stop offset="100%" stopColor="rgba(148,163,184,0.24)" />
           </linearGradient>
         </defs>
+
         <path
           d="
             M 80 40
@@ -440,6 +431,7 @@ const JourneyCurve = ({
         if (y == null) return null;
         const stage = stages[i];
         const isActive = stage && stage.id === activeStage;
+
         return (
           <div
             key={stage.id}
@@ -488,6 +480,7 @@ const TimelineStrip = ({ stages, activeStage, onStageClick }) => {
                 activeStage === stage.id ? "is-active" : ""
               }`}
               onClick={() => onStageClick(stage.id)}
+              type="button"
             >
               <span className="story-timeline-pill-index">
                 {stage.index}
@@ -523,6 +516,7 @@ const StageSection = ({ stage, index }) => {
           <h2 className="story-stage-title">{stage.title}</h2>
           <p className="story-stage-summary">{stage.summary}</p>
           <p className="story-stage-tension">{stage.tension}</p>
+
           <div className="story-stage-key">
             <span className="story-stage-key-label">Key turning point</span>
             <p className="story-stage-key-text">{stage.keyPoint}</p>

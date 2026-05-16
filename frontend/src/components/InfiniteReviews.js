@@ -110,8 +110,8 @@ const reviews = [
 ];
 
 const InfiniteReviews = () => {
-  // Triple the reviews for seamless infinite scroll
-  const tripleReviews = [...reviews, ...reviews, ...reviews];
+  // Double the reviews for seamless infinite scroll
+  const doubleReviews = [...reviews, ...reviews];
 
   return (
     <section className="py-20 bg-gradient-to-b from-zinc-900 to-black overflow-hidden">
@@ -133,7 +133,7 @@ const InfiniteReviews = () => {
 
         {/* Infinite scrolling container */}
         <div className="review-scroll-container flex gap-6">
-          {tripleReviews.map((review, index) => (
+          {doubleReviews.map((review, index) => (
             <div
               key={`${review.id}-${index}`}
               className="review-card flex-shrink-0 w-80 md:w-96 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-orange-500/50 hover:scale-105 transition-all duration-300"
@@ -175,7 +175,7 @@ const InfiniteReviews = () => {
       {/* CSS Animation for infinite scroll */}
       <style jsx>{`
         .review-scroll-container {
-          animation: scroll 60s linear infinite;
+          animation: scroll 90s linear infinite;
           will-change: transform;
         }
 
@@ -188,7 +188,7 @@ const InfiniteReviews = () => {
             transform: translateX(0);
           }
           100% {
-            transform: translateX(calc(-100% / 3));
+            transform: translateX(-50%);
           }
         }
 

@@ -1,46 +1,105 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Story.css";
 
-const chapters = [
+const stages = [
   {
-    id: "act-1",
-    label: "Act I",
-    title: "It started with a problem",
-    kicker: "The gap",
-    text:
-      "Before this brand existed, there was a simple, frustrating pattern: people were serious about changing, but the tools around them were not. Gear slipped when effort peaked, bands snapped mid-session, and most products were built for polished photos instead of real progress.",
-    detail:
-      "The deeper we looked, the clearer the gap became. Workouts were built on discipline and discomfort, yet the equipment was built around shortcuts and aesthetics. There was no single, reliable ecosystem designed for people who genuinely wanted to show up, not just pose. The problem was not motivation alone; it was the environment that made staying consistent harder than it needed to be.",
+    id: "stage-problem",
+    index: "01",
+    label: "Problem",
+    title: "It started with something that would not go away.",
+    summary:
+      "The issue was simple to describe but hard to ignore: people were serious about training, but the tools around them were not designed with the same seriousness.",
+    tension:
+      "Sessions were interrupted by slipping grips, unreliable materials, and products that looked acceptable in a listing but collapsed under real effort.",
+    keyPoint:
+      "The first stage of the journey was not excitement. It was discomfort—realizing that the market was crowded, but the solutions still felt incomplete.",
   },
   {
-    id: "act-2",
-    label: "Act II",
-    title: "Many attempts, honest failures",
-    kicker: "The search",
-    text:
-      "The first instinct was not to build something new, but to search harder. Dozens of products were tested, mixed, matched, and combined, hoping the right setup already existed somewhere.",
-    detail:
-      "It didn’t. Some solutions were strong but uncomfortable. Others looked promising but broke under real pressure. Over time, a pattern emerged: whenever effort was at its highest, the gear was at its weakest. Those honest failures made one thing obvious—waiting for a perfect solution was just another form of delay. If the right system did not exist, it needed to be built from the ground up.",
+    id: "stage-thought",
+    index: "02",
+    label: "Thought",
+    title: "The question formed: what if the gear was as disciplined as the people using it?",
+    summary:
+      "Instead of accepting the situation as normal, the journey continued with a more precise question about what training equipment should really do.",
+    tension:
+      "Most options were chasing aesthetics or trends. Very few focused on consistency, durability, and the feeling of confidence when you pick something up again and again.",
+    keyPoint:
+      "The thought was not to add one more product to the noise, but to build a more considered standard around what gear should be.",
   },
   {
-    id: "act-3",
-    label: "Act III",
-    title: "Designing the solution",
-    kicker: "The build",
-    text:
-      "The brand was created around a single principle: equipment should disappear in the moment of effort. No distractions, no drama, no fragile finishes—just tools that feel almost invisible when focus is at its peak.",
-    detail:
-      "Every detail was questioned: grip texture, band tension, stitching strength, materials, and how each element behaved on the hundredth use, not the first. Prototypes were refined, ruined, and rebuilt. The solution was not a single product but a connected system, designed to support the full journey from first attempt to long-term discipline.",
+    id: "stage-plan",
+    index: "03",
+    label: "Plan",
+    title: "A structured plan was drawn, not just another idea.",
+    summary:
+      "The next stage turned that thought into a framework: define the expectations, map the gaps, and decide what a better system would look like.",
+    tension:
+      "Every plan looks neat on paper. The challenge was to design one that would still hold under pressure, repetition, and real-world constraints.",
+    keyPoint:
+      "The plan focused on three pillars: reliability of products, clarity of presentation, and an experience that respected the time and focus of the user.",
   },
   {
-    id: "act-4",
-    label: "Act IV",
-    title: "Progress in motion",
-    kicker: "The journey now",
-    text:
-      "Once the solution was real, the real story began. People started using the gear not as an accessory, but as a quiet constant in their routine.",
-    detail:
-      "Sessions became more consistent, not because everything felt easy, but because the environment finally stopped working against the person using it. The brand evolved from a response to a problem into a platform for steady, measurable progress. The journey is still moving—new ideas, new iterations, and new ways to remove friction from the path between intention and action.",
+    id: "stage-process",
+    index: "04",
+    label: "Process",
+    title: "The process began: tests, rejections, and recalibrations.",
+    summary:
+      "This was the longest stage. Materials, suppliers, ideas, and structures were tested, compared, and, when necessary, discarded.",
+    tension:
+      "Some directions looked promising but failed under repetition. Others passed technical checks but did not feel right in the hand or in actual use.",
+    keyPoint:
+      "Progress here was measured less in quick wins and more in what survived strict evaluation. Anything that introduced doubt did not move forward.",
+  },
+  {
+    id: "stage-progress",
+    index: "05",
+    label: "Progress",
+    title: "The results started to line up in the same direction.",
+    summary:
+      "Once the process tightened, the signs of progress became visible. Customers began to notice the difference in how the experience felt.",
+    tension:
+      "Even then, the question remained: was this progress temporary, or was it the beginning of something that could scale without losing its standards?",
+    keyPoint:
+      "The answer came through repetition: more orders handled with consistency, more sessions powered without friction, more feedback confirming that the direction was working.",
+  },
+  {
+    id: "stage-current",
+    index: "06",
+    label: "Current scenario",
+    title: "Today, the system is stable, but intentionally unfinished.",
+    summary:
+      "FitGearzzz now operates with clearer standards, more refined curation, and a sharper understanding of what its role is in people’s training routines.",
+    tension:
+      "Stability is not the same as completion. The current stage still carries pressure: to keep improving, to avoid shortcuts, and to stay aligned with the original problem that started everything.",
+    keyPoint:
+      "Right now, the journey is in a phase where the foundation is strong enough to support growth, but flexible enough to keep evolving.",
+  },
+  {
+    id: "stage-future",
+    index: "07",
+    label: "Future plans",
+    title: "The next moves are already being designed.",
+    summary:
+      "The story does not end at a working system. The next stages involve deeper refinement, smarter experiences, and more connected support for people who train seriously.",
+    tension:
+      "The risk in any progress story is comfort. The plan is to avoid that by treating every new stage as a responsibility, not just a milestone.",
+    keyPoint:
+      "Upcoming work focuses on better guidance, more intelligent product experiences, and a journey that feels even more personal without ever losing its discipline.",
+  },
+];
+
+const keySignals = [
+  {
+    title: "Clear friction point",
+    text: "The journey began only when the real problem was defined precisely enough to act on.",
+  },
+  {
+    title: "Structured evaluation",
+    text: "Ideas were not trusted by default. They had to pass through deliberate testing and comparison.",
+  },
+  {
+    title: "Consistent direction",
+    text: "Once the right standard appeared, every part of the brand was aligned to support it.",
   },
 ];
 
@@ -70,18 +129,18 @@ function useInView(options = {}) {
 }
 
 const Story = () => {
-  const [activeChapter, setActiveChapter] = useState(chapters[0].id);
+  const [activeStage, setActiveStage] = useState(stages[0].id);
 
-  // Track active section for progress indicator + curve
   useEffect(() => {
-    const sectionEls = chapters.map((c) => document.getElementById(c.id));
+    const sectionEls = stages.map((s) => document.getElementById(s.id));
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
         if (visible[0]) {
-          setActiveChapter(visible[0].target.id);
+          setActiveStage(visible[0].target.id);
         }
       },
       { threshold: 0.35 }
@@ -91,16 +150,16 @@ const Story = () => {
     return () => observer.disconnect();
   }, []);
 
-  const scrollToChapter = (id) => {
+  const scrollToStage = (id) => {
     const el = document.getElementById(id);
     if (!el) return;
     window.scrollTo({
-      top: el.offsetTop - 80,
+      top: el.offsetTop - 90,
       behavior: "smooth",
     });
   };
 
-  const scrollToFirstChapter = () => scrollToChapter(chapters[0].id);
+  const scrollToFirstStage = () => scrollToStage(stages[0].id);
 
   return (
     <div className="story-page">
@@ -109,52 +168,52 @@ const Story = () => {
         <div className="story-hero-inner">
           <div className="story-hero-pill">
             <span className="story-hero-pill-dot" />
-            <span className="story-hero-pill-text">Watch the brand story</span>
+            <span className="story-hero-pill-text">The FitGearzzz journey</span>
           </div>
 
           <h1 className="story-hero-title">
-            It didn’t begin with a logo.
+            It did not start with an idea.
             <br />
-            It began with a problem no one was fixing.
+            It started with a problem that refused to leave.
           </h1>
 
           <p className="story-hero-subtitle">
-            This page is the journey from that first problem to a working
-            solution: the attempts that failed, the work that followed, and the
-            key moments that turned an idea into a progressing reality.
+            This page follows that problem as it moved through thought,
+            planning, process, early progress, the current reality, and the
+            next set of decisions. Every stage is here on purpose.
           </p>
 
           <div className="story-hero-meta">
             <div className="story-hero-meta-item">
-              <span className="story-hero-meta-label">Structure</span>
-              <span className="story-hero-meta-value">Problem → Attempts → Solution → Progress</span>
+              <span className="story-hero-meta-label">Stages</span>
+              <span className="story-hero-meta-value">Problem → Future plans</span>
+            </div>
+            <div className="story-hero-meta-item">
+              <span className="story-hero-meta-label">Tone</span>
+              <span className="story-hero-meta-value">Realistic, precise, deliberate</span>
             </div>
             <div className="story-hero-meta-item">
               <span className="story-hero-meta-label">Focus</span>
-              <span className="story-hero-meta-value">Real use, not appearance</span>
-            </div>
-            <div className="story-hero-meta-item">
-              <span className="story-hero-meta-label">Status</span>
-              <span className="story-hero-meta-value">Story in motion</span>
+              <span className="story-hero-meta-value">How progress actually happened</span>
             </div>
           </div>
 
           <div className="story-hero-actions">
             <button
               className="story-btn story-btn-primary"
-              onClick={scrollToFirstChapter}
+              onClick={scrollToFirstStage}
             >
-              Begin Act I
+              Enter Stage 01
             </button>
-            <a href="/" className="story-btn story-btn-secondary">
-              Back to home
+            <a href="/products" className="story-btn story-btn-secondary">
+              View the current results
             </a>
           </div>
 
           <div className="story-hero-scroll">
             <span className="story-hero-scroll-line" />
             <span className="story-hero-scroll-label">
-              Scroll to follow the curve
+              Scroll to follow each stage
             </span>
           </div>
         </div>
@@ -163,71 +222,87 @@ const Story = () => {
         <div className="story-hero-bg-rings" />
       </section>
 
-      {/* PROGRESS INDICATOR (DESKTOP) */}
-      <aside className="story-progress">
-        <div className="story-progress-rail">
-          {chapters.map((chapter) => (
-            <button
-              key={chapter.id}
-              className={`story-progress-dot ${
-                activeChapter === chapter.id ? "is-active" : ""
-              }`}
-              onClick={() => scrollToChapter(chapter.id)}
-            >
-              <span className="story-progress-dot-label">
-                {chapter.label}
-              </span>
-            </button>
-          ))}
-        </div>
-      </aside>
+      {/* STAGE SPINE NAV (DESKTOP) */}
+      <StageSpine
+        stages={stages}
+        activeStage={activeStage}
+        onStageClick={scrollToStage}
+      />
 
-      {/* MANIFESTO + MAIN SHELL WITH CURVE */}
+      {/* MANIFESTO */}
       <ManifestoBlock />
 
+      {/* TIMELINE STRIP + STAGES */}
       <div className="story-main-shell">
-        <JourneyCurve activeChapter={activeChapter} />
+        <JourneyCurve activeStage={activeStage} />
 
         <main className="story-main">
-          <PrequelSection />
+          <TimelineStrip
+            stages={stages}
+            activeStage={activeStage}
+            onStageClick={scrollToStage}
+          />
 
-          {chapters.map((chapter, index) => (
-            <StoryChapter
-              key={chapter.id}
-              chapter={chapter}
+          {stages.map((stage, index) => (
+            <StageSection
+              key={stage.id}
+              stage={stage}
               index={index}
             />
           ))}
 
-          <TurningPointSection />
-          <TribeSection />
-          <FutureSection />
+          <SignalsSection />
+          <ClosingSection />
         </main>
       </div>
     </div>
   );
 };
 
-const JourneyCurve = ({ activeChapter }) => {
+const StageSpine = ({ stages, activeStage, onStageClick }) => {
+  return (
+    <aside className="story-spine">
+      <div className="story-spine-rail">
+        {stages.map((stage) => (
+          <button
+            key={stage.id}
+            className={`story-spine-node ${
+              activeStage === stage.id ? "is-active" : ""
+            }`}
+            onClick={() => onStageClick(stage.id)}
+            aria-label={stage.label}
+          >
+            <span className="story-spine-node-index">{stage.index}</span>
+            <span className="story-spine-node-label">{stage.label}</span>
+          </button>
+        ))}
+      </div>
+    </aside>
+  );
+};
+
+const JourneyCurve = ({ activeStage }) => {
   return (
     <div className="story-curve-wrapper" aria-hidden="true">
       <svg
         className="story-curve"
-        viewBox="0 0 300 1400"
+        viewBox="0 0 320 1800"
         preserveAspectRatio="none"
       >
         <defs>
           <linearGradient id="curveGradient" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="rgba(148,163,184,0.3)" />
-            <stop offset="45%" stopColor="rgba(249,115,22,0.6)" />
-            <stop offset="100%" stopColor="rgba(148,163,184,0.25)" />
+            <stop offset="0%" stopColor="rgba(148,163,184,0.28)" />
+            <stop offset="45%" stopColor="rgba(249,115,22,0.62)" />
+            <stop offset="100%" stopColor="rgba(148,163,184,0.24)" />
           </linearGradient>
         </defs>
         <path
-          d="M 60 40
-             C 210 160, 40 320, 200 460
-             S 40 760, 210 900
-             S 40 1160, 200 1300"
+          d="
+            M 80 40
+            C 250 220, 40 420, 240 620
+            S 40 900, 240 1100
+            S 40 1380, 240 1580
+          "
           fill="none"
           stroke="url(#curveGradient)"
           strokeWidth="3"
@@ -236,27 +311,14 @@ const JourneyCurve = ({ activeChapter }) => {
         />
       </svg>
 
-      {/* Subtle glowing nodes roughly aligned with chapter cards */}
-      <div
-        className={`story-curve-node node-1 ${
-          activeChapter === "act-1" ? "is-active" : ""
-        }`}
-      />
-      <div
-        className={`story-curve-node node-2 ${
-          activeChapter === "act-2" ? "is-active" : ""
-        }`}
-      />
-      <div
-        className={`story-curve-node node-3 ${
-          activeChapter === "act-3" ? "is-active" : ""
-        }`}
-      />
-      <div
-        className={`story-curve-node node-4 ${
-          activeChapter === "act-4" ? "is-active" : ""
-        }`}
-      />
+      {stages.map((stage, i) => (
+        <div
+          key={stage.id}
+          className={`story-curve-node node-${i + 1} ${
+            activeStage === stage.id ? "is-active" : ""
+          }`}
+        />
+      ))}
     </div>
   );
 };
@@ -269,92 +331,93 @@ const ManifestoBlock = () => {
       ref={ref}
       className={`story-manifesto ${inView ? "is-visible" : ""}`}
     >
-      <p className="story-manifesto-label">Principle</p>
+      <p className="story-manifesto-label">Perspective</p>
       <p className="story-manifesto-text">
-        When people are serious about changing, the tools around them should be
-        equally serious. This brand exists so that effort is never wasted
-        because of weak equipment, poor design, or shortcuts.
+        Real progress stories rarely move in straight lines. They move through
+        tension: a problem that stays, ideas that fail, plans that change, and
+        a solution that slowly proves it belongs.
       </p>
     </section>
   );
 };
 
-const PrequelSection = () => {
+const TimelineStrip = ({ stages, activeStage, onStageClick }) => {
   const [ref, inView] = useInView();
 
   return (
     <section
       ref={ref}
-      className={`story-prequel ${inView ? "is-visible" : ""}`}
+      className={`story-timeline-strip ${inView ? "is-visible" : ""}`}
     >
-      <div className="story-prequel-inner">
-        <div className="story-prequel-copy">
-          <p className="story-prequel-kicker">Before the solution</p>
-          <h2 className="story-prequel-title">
-            The environment made consistency harder than it should be.
-          </h2>
-          <p className="story-prequel-text">
-            People were willing to put in the work, but the tools in their
-            hands were built for marketing angles and highlight reels. Handles
-            looked premium until they were actually used. Surfaces were smooth
-            for photos but slippery in real sessions. Most gear was designed to
-            be seen, not to be trusted.
-          </p>
-          <p className="story-prequel-text">
-            The idea of this brand was not to create yet another product line,
-            but to rebuild the training environment so that it stopped fighting
-            the person using it. The story that follows is how that idea turned
-            into a system.
-          </p>
-        </div>
-        <div className="story-prequel-aside">
-          <p className="story-prequel-aside-label">Core question</p>
-          <p className="story-prequel-aside-text">
-            What if every piece of equipment around you was designed to stay
-            quiet and reliable, so you could focus only on the work that
-            actually changes your life?
-          </p>
+      <div className="story-timeline-inner">
+        <p className="story-timeline-label">Stages of the journey</p>
+        <div className="story-timeline-track">
+          {stages.map((stage) => (
+            <button
+              key={stage.id}
+              className={`story-timeline-pill ${
+                activeStage === stage.id ? "is-active" : ""
+              }`}
+              onClick={() => onStageClick(stage.id)}
+            >
+              <span className="story-timeline-pill-index">
+                {stage.index}
+              </span>
+              <span className="story-timeline-pill-label">
+                {stage.label}
+              </span>
+            </button>
+          ))}
         </div>
       </div>
     </section>
   );
 };
 
-const StoryChapter = ({ chapter, index }) => {
+const StageSection = ({ stage, index }) => {
   const [ref, inView] = useInView();
   const isEven = index % 2 === 0;
 
   return (
     <section
-      id={chapter.id}
+      id={stage.id}
       ref={ref}
-      className={`story-chapter ${inView ? "is-visible" : ""} ${
+      className={`story-stage ${inView ? "is-visible" : ""} ${
         isEven ? "is-even" : "is-odd"
       }`}
     >
-      <div className="story-chapter-inner">
-        <div className="story-chapter-copy">
-          <p className="story-chapter-kicker">{chapter.kicker}</p>
-          <h2 className="story-chapter-title">{chapter.title}</h2>
-          <p className="story-chapter-text">{chapter.text}</p>
-          <p className="story-chapter-detail">{chapter.detail}</p>
+      <div className="story-stage-inner">
+        <div className="story-stage-copy">
+          <p className="story-stage-kicker">
+            Stage {stage.index} · {stage.label}
+          </p>
+          <h2 className="story-stage-title">{stage.title}</h2>
+          <p className="story-stage-summary">{stage.summary}</p>
+          <p className="story-stage-tension">{stage.tension}</p>
+          <div className="story-stage-key">
+            <span className="story-stage-key-label">Key turning point</span>
+            <p className="story-stage-key-text">{stage.keyPoint}</p>
+          </div>
         </div>
 
-        <div className="story-chapter-visual">
-          <div className="story-chapter-visual-card">
-            <div className="story-chapter-visual-gradient" />
-            <p className="story-chapter-visual-tag">
-              {chapter.label}
-            </p>
-            <p className="story-chapter-visual-line">
+        <div className="story-stage-evidence">
+          <div className="story-stage-card">
+            <p className="story-stage-card-label">Focus in this stage</p>
+            <p className="story-stage-card-text">
               {index === 0 &&
-                "It became clear that the real obstacle was not a lack of desire, but an environment that constantly interrupted momentum just when it was most fragile."}
+                "Name the problem clearly enough that it cannot be ignored or explained away."}
               {index === 1 &&
-                "Those deliberate failures were the turning point: instead of searching for the perfect product, the focus shifted to designing one that earned trust through performance, not promises."}
+                "Think beyond trends and ask what would stand up to real training conditions."}
               {index === 2 &&
-                "Prototypes moved from sketches to consistent use. Every improvement came from asking a simple question: does this make it easier to stay committed over months, not just days?"}
+                "Design a plan that can survive contact with deadlines, budgets, and reality."}
               {index === 3 &&
-                "With each iteration and each new user, the story shifted from frustration to measurable progress—and that shift is still underway right now."}
+                "Let testing be honest enough that weak ideas are removed quickly, not protected."}
+              {index === 4 &&
+                "Protect consistency: repeat wins, study failures, and remove friction step by step."}
+              {index === 5 &&
+                "Keep the system stable while still questioning where it can be sharper."}
+              {index === 6 &&
+                "Decide on the next upgrades with the same seriousness as the first solution."}
             </p>
           </div>
         </div>
@@ -363,150 +426,66 @@ const StoryChapter = ({ chapter, index }) => {
   );
 };
 
-const TurningPointSection = () => {
+const SignalsSection = () => {
   const [ref, inView] = useInView();
 
   return (
     <section
       ref={ref}
-      className={`story-turning ${inView ? "is-visible" : ""}`}
+      className={`story-signals ${inView ? "is-visible" : ""}`}
     >
-      <div className="story-turning-inner">
-        <div className="story-turning-header">
-          <p className="story-turning-kicker">Key turning points</p>
-          <h2 className="story-turning-title">
-            From isolated problem to shared solution.
+      <div className="story-signals-inner">
+        <div className="story-section-heading">
+          <p className="story-section-kicker">Signals that the story is working</p>
+          <h2 className="story-section-title">
+            How you know this journey has weight behind it.
           </h2>
         </div>
-        <div className="story-turning-grid">
-          <div className="story-turning-card">
-            <p className="story-turning-label">Recognition</p>
-            <p className="story-turning-text">
-              The first shift came when the problem was named clearly: people
-              were serious about their goals, but the equipment was not built
-              to match that seriousness. Once the problem was defined, every
-              decision around design became sharper.
-            </p>
-          </div>
-          <div className="story-turning-card">
-            <p className="story-turning-label">First release</p>
-            <p className="story-turning-text">
-              The next turning point was committing to a public release. Instead
-              of waiting for perfection, the brand launched with the standard
-              that any flaw discovered would be fixed quickly and transparently.
-              That decision created a direct feedback loop between real use and
-              rapid improvement.
-            </p>
-          </div>
-          <div className="story-turning-card">
-            <p className="story-turning-label">Momentum</p>
-            <p className="story-turning-text">
-              As more people used the gear, the story moved from theory to
-              proof. Consistency improved, sessions felt smoother, and the
-              equipment turned into a quiet constant. The brand became less
-              about what it looked like and more about the results it
-              supported.
-            </p>
-          </div>
+
+        <div className="story-signals-grid">
+          {keySignals.map((signal) => (
+            <div key={signal.title} className="story-signal-card">
+              <p className="story-signal-title">{signal.title}</p>
+              <p className="story-signal-text">{signal.text}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
   );
 };
 
-const TribeSection = () => {
+const ClosingSection = () => {
   const [ref, inView] = useInView();
 
   return (
     <section
       ref={ref}
-      className={`story-tribe ${inView ? "is-visible" : ""}`}
+      className={`story-closing ${inView ? "is-visible" : ""}`}
     >
-      <div className="story-tribe-inner">
-        <p className="story-tribe-kicker">The people behind the numbers</p>
-        <h2 className="story-tribe-title">
-          A community built on effort, not noise.
+      <div className="story-closing-inner">
+        <p className="story-closing-kicker">Where you enter the story</p>
+        <h2 className="story-closing-title">
+          The next stage is written by how you choose to train.
         </h2>
-        <p className="story-tribe-text">
-          The brand’s progress is measured less in followers and more in quiet
-          metrics: sessions completed, streaks maintained, and people who moved
-          from starting over to steadily moving forward.
+        <p className="story-closing-text">
+          The journey behind FitGearzzz is not a fantasy. It is a sequence of
+          decisions made in response to a real problem. What happens next is
+          measured by how well the products support your own progress, session
+          after session.
+        </p>
+        <p className="story-closing-text">
+          If the story has done its job, you leave this page with one clear
+          thought: the tools you use should match the effort you are willing to
+          give. Everything here is built to support that decision.
         </p>
 
-        <div className="story-tribe-grid">
-          <div className="story-tribe-card">
-            <p className="story-tribe-stat">50K+</p>
-            <p className="story-tribe-label">Workouts supported</p>
-            <p className="story-tribe-desc">
-              Sessions where the equipment stayed out of the way, letting
-              effort stay front and center.
-            </p>
-          </div>
-          <div className="story-tribe-card">
-            <p className="story-tribe-stat">4.9 / 5</p>
-            <p className="story-tribe-label">Average rating</p>
-            <p className="story-tribe-desc">
-              Feedback from people who judge gear not by how it looks on a
-              shelf, but how it feels on the tenth set.
-            </p>
-          </div>
-          <div className="story-tribe-card">
-            <p className="story-tribe-stat">1</p>
-            <p className="story-tribe-label">Decision</p>
-            <p className="story-tribe-desc">
-              The same decision every person makes: keep letting the environment
-              decide the outcome, or choose tools that finally match the level
-              of commitment.
-            </p>
-          </div>
-        </div>
-
-        <div className="story-tribe-cta">
+        <div className="story-closing-actions">
           <a href="/products" className="story-btn story-btn-primary">
-            Explore the system
+            Continue the journey in the store
           </a>
           <a href="/contact" className="story-btn story-btn-secondary">
-            Talk to the team
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const FutureSection = () => {
-  const [ref, inView] = useInView();
-
-  return (
-    <section
-      ref={ref}
-      className={`story-future ${inView ? "is-visible" : ""}`}
-    >
-      <div className="story-future-inner">
-        <p className="story-future-kicker">What comes next</p>
-        <h2 className="story-future-title">
-          The problem is smaller. The work continues.
-        </h2>
-        <p className="story-future-text">
-          The original problem that started this story has been reduced, but
-          not erased. There will always be new challenges, new conditions, and
-          new demands on the body and mind. The brand’s role is to keep
-          removing unnecessary friction so that energy can stay where it
-          matters most.
-        </p>
-        <p className="story-future-text">
-          Every new product, update, and iteration is measured against a simple
-          standard: does this make it easier for someone serious about change
-          to stay on track for longer? If the answer is no, it does not ship.
-          That is how this story continues to move in the right direction.
-        </p>
-
-        <div className="story-future-actions">
-          <a href="/products" className="story-btn story-btn-primary">
-            See current solutions
-          </a>
-          <a href="/contact" className="story-btn story-btn-secondary">
-            Suggest what’s missing
+            Share your feedback
           </a>
         </div>
       </div>

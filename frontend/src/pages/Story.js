@@ -6,126 +6,102 @@ const stages = [
     id: "stage-problem",
     index: "01",
     label: "Problem",
-    title: "It started with something that would not go away.",
+    title: "It started with a problem that stayed visible.",
     summary:
-      "The issue was simple to describe but hard to ignore: people were serious about training, but the tools around them were not designed with the same seriousness.",
+      "The first stage began with a simple but persistent gap: people were serious about training, but the tools around them often lacked the same seriousness.",
     tension:
-      "Sessions were interrupted by slipping grips, unreliable materials, and products that looked acceptable in a listing but collapsed under real effort.",
+      "Products looked acceptable in listings and ads, yet too many failed under real effort, repeated use, and the practical demands of disciplined routines.",
     keyPoint:
-      "The first stage of the journey was not excitement. It was discomfort—realizing that the market was crowded, but the solutions still felt incomplete.",
+      "The real issue was not lack of choice. It was the lack of dependable, confidence-building fitness tools that felt truly resolved.",
   },
   {
     id: "stage-thought",
     index: "02",
     label: "Thought",
-    title:
-      "The question formed: what if the gear was as disciplined as the people using it?",
+    title: "The next step was not action first. It was sharper thinking.",
     summary:
-      "Instead of accepting the situation as normal, the journey continued with a more precise question about what training equipment should really do.",
+      "Before building anything meaningful, the problem had to be understood more precisely. That meant questioning what good training gear should actually deliver.",
     tension:
-      "Most options were chasing aesthetics or trends. Very few focused on consistency, durability, and the feeling of confidence when you pick something up again and again.",
+      "The market rewarded appearance and novelty too easily. But consistency, usability, and trust were the standards that mattered most over time.",
     keyPoint:
-      "The thought was not to add one more product to the noise, but to build a more considered standard around what gear should be.",
+      "This stage reframed the journey: the goal was not to add more products, but to build a more dependable standard around them.",
   },
   {
     id: "stage-plan",
     index: "03",
     label: "Plan",
-    title: "A structured plan was drawn, not just another idea.",
+    title: "A proper plan gave the story structure.",
     summary:
-      "The next stage turned that thought into a framework: define the expectations, map the gaps, and decide what a better system would look like.",
+      "Once the problem and thought process were clearer, the journey moved into a planning stage built around standards, not assumptions.",
     tension:
-      "Every plan looks neat on paper. The challenge was to design one that would still hold under pressure, repetition, and real-world constraints.",
+      "Every plan looks convincing in theory. The real test was whether the plan could survive pressure, constraints, and repeated scrutiny.",
     keyPoint:
-      "The plan focused on three pillars: reliability of products, clarity of presentation, and an experience that respected the time and focus of the user.",
+      "The plan centered on three pillars: reliable product choices, clearer presentation, and an experience designed to reduce friction at every point.",
   },
   {
     id: "stage-process",
     index: "04",
     label: "Process",
-    title: "The process began: tests, rejections, and recalibrations.",
+    title: "Then came the long process of testing and refining.",
     summary:
-      "This was the longest stage. Materials, suppliers, ideas, and structures were tested, compared, and, when necessary, discarded.",
+      "This was the most demanding stage. Ideas, suppliers, formats, and selections were compared carefully, then improved or removed when they did not hold up.",
     tension:
-      "Some directions looked promising but failed under repetition. Others passed technical checks but did not feel right in the hand or in actual use.",
+      "Some options looked promising but failed in actual use. Others worked technically, yet still lacked the confidence or clarity the brand needed to represent.",
     keyPoint:
-      "Progress here was measured less in quick wins and more in what survived strict evaluation. Anything that introduced doubt did not move forward.",
+      "The process created discipline. It made sure that only decisions strong enough to survive repetition could move forward.",
   },
   {
     id: "stage-progress",
     index: "05",
     label: "Progress",
-    title: "The results started to line up in the same direction.",
+    title: "Progress became visible when the system started holding together.",
     summary:
-      "Once the process tightened, the signs of progress became visible. Customers began to notice the difference in how the experience felt.",
+      "Once the process improved, the outcomes became more coherent. The experience began to feel stronger, clearer, and more trustworthy across touchpoints.",
     tension:
-      "Even then, the question remained: was this progress temporary, or was it the beginning of something that could scale without losing its standards?",
+      "The challenge at this stage was consistency: ensuring that progress was not a short-term spike, but the beginning of a repeatable pattern.",
     keyPoint:
-      "The answer came through repetition: more orders handled with consistency, more sessions powered without friction, more feedback confirming that the direction was working.",
+      "Progress showed up through alignment—better selection, better presentation, and a more stable standard behind the brand.",
   },
   {
     id: "stage-current",
     index: "06",
-    label: "Current scenario",
-    title: "Today, the system is stable, but intentionally unfinished.",
+    label: "Current",
+    title: "The current stage is stable, but intentionally unfinished.",
     summary:
-      "FitGearzzz now operates with clearer standards, more refined curation, and a sharper understanding of what its role is in people’s training routines.",
+      "Today, the system is more mature. The brand has more clarity, more structure, and a stronger understanding of the role it plays in serious training routines.",
     tension:
-      "Stability is not the same as completion. The current stage still carries pressure: to keep improving, to avoid shortcuts, and to stay aligned with the original problem that started everything.",
+      "But stability creates its own risk. The pressure now is not just to maintain quality, but to keep evolving without losing the discipline that made progress possible.",
     keyPoint:
-      "Right now, the journey is in a phase where the foundation is strong enough to support growth, but flexible enough to keep evolving.",
+      "The current scenario is not an endpoint. It is a controlled platform for better execution, better refinement, and smarter growth.",
   },
   {
     id: "stage-future",
     index: "07",
-    label: "Future plans",
-    title: "The next moves are already being designed.",
+    label: "Future",
+    title: "The next chapter is being designed with the same discipline.",
     summary:
-      "The story does not end at a working system. The next stages involve deeper refinement, smarter experiences, and more connected support for people who train seriously.",
+      "The future is not about random expansion. It is about improving the experience with more precision, more depth, and more relevance to the people using it.",
     tension:
-      "The risk in any progress story is comfort. The plan is to avoid that by treating every new stage as a responsibility, not just a milestone.",
+      "Growth can weaken a story when it introduces noise. The responsibility now is to scale what works without diluting the original standard.",
     keyPoint:
-      "Upcoming work focuses on better guidance, more intelligent product experiences, and a journey that feels even more personal without ever losing its discipline.",
+      "The next moves focus on stronger product experiences, sharper storytelling, and a brand journey that feels more intelligent at every stage.",
   },
 ];
 
 const keySignals = [
   {
-    title: "Clear friction point",
-    text: "The journey began only when the real problem was defined precisely enough to act on.",
+    title: "The problem was clearly named",
+    text: "Progress began only after the real issue was identified with enough precision to guide decisions.",
   },
   {
-    title: "Structured evaluation",
-    text: "Ideas were not trusted by default. They had to pass through deliberate testing and comparison.",
+    title: "Weak paths were rejected early",
+    text: "The journey improved because testing was honest enough to remove attractive but weak directions.",
   },
   {
-    title: "Consistent direction",
-    text: "Once the right standard appeared, every part of the brand was aligned to support it.",
+    title: "The system became repeatable",
+    text: "The real sign of maturity was consistency: better outcomes appearing through structure, not luck.",
   },
 ];
-
-// simple tick sound using Web Audio (no external file)
-const playDialSound = () => {
-  if (typeof window === "undefined") return;
-  const AudioCtx = window.AudioContext || window.webkitAudioContext;
-  if (!AudioCtx) return;
-
-  const ctx = new AudioCtx();
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-
-  osc.type = "triangle";
-  osc.frequency.setValueAtTime(850, ctx.currentTime);
-  gain.gain.setValueAtTime(0.18, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
-
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-
-  osc.start();
-  osc.stop(ctx.currentTime + 0.15);
-  osc.onended = () => ctx.close();
-};
 
 function useInView(options = {}) {
   const ref = useRef(null);
@@ -140,7 +116,7 @@ function useInView(options = {}) {
         if (entry.isIntersecting) setInView(true);
       },
       {
-        threshold: 0.2,
+        threshold: 0.22,
         ...options,
       }
     );
@@ -152,14 +128,36 @@ function useInView(options = {}) {
   return [ref, inView];
 }
 
+const playDialSound = () => {
+  if (typeof window === "undefined") return;
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return;
+
+  const ctx = new AudioCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = "triangle";
+  osc.frequency.setValueAtTime(920, ctx.currentTime);
+  gain.gain.setValueAtTime(0.12, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.12);
+  osc.onended = () => ctx.close();
+};
+
 const Story = () => {
   const [activeStage, setActiveStage] = useState(stages[0].id);
   const [curveNodes, setCurveNodes] = useState([]);
   const [curveHeight, setCurveHeight] = useState(0);
+  const prevStageRef = useRef(stages[0].id);
 
-  // track which stage is in view
   useEffect(() => {
     const sectionEls = stages.map((s) => document.getElementById(s.id));
+
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -167,7 +165,8 @@ const Story = () => {
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
 
         if (visible[0]) {
-          setActiveStage(visible[0].target.id);
+          const nextId = visible[0].target.id;
+          setActiveStage(nextId);
         }
       },
       { threshold: 0.35 }
@@ -177,14 +176,21 @@ const Story = () => {
     return () => observer.disconnect();
   }, []);
 
-  // compute curve node positions so each point aligns with its stage
+  useEffect(() => {
+    if (prevStageRef.current !== activeStage) {
+      playDialSound();
+      prevStageRef.current = activeStage;
+    }
+  }, [activeStage]);
+
   useEffect(() => {
     const updateCurve = () => {
       const shell = document.querySelector(".story-main-shell");
       if (!shell) return;
 
       const shellRect = shell.getBoundingClientRect();
-      const newNodes = stages.map((stage) => {
+
+      const nodes = stages.map((stage) => {
         const el = document.getElementById(stage.id);
         if (!el) return null;
         const rect = el.getBoundingClientRect();
@@ -192,17 +198,16 @@ const Story = () => {
         return centerY;
       });
 
-      const valid = newNodes.filter((y) => y != null);
-      const maxY =
-        valid.length > 0 ? valid.reduce((m, y) => Math.max(m, y), 0) : 0;
+      const valid = nodes.filter((n) => n != null);
+      const maxY = valid.length ? Math.max(...valid) : 0;
 
-      setCurveNodes(newNodes);
-      setCurveHeight(maxY + 200);
+      setCurveNodes(nodes);
+      setCurveHeight(maxY + 220);
     };
 
     updateCurve();
     window.addEventListener("resize", updateCurve);
-    window.addEventListener("scroll", updateCurve);
+    window.addEventListener("scroll", updateCurve, { passive: true });
 
     return () => {
       window.removeEventListener("resize", updateCurve);
@@ -213,9 +218,9 @@ const Story = () => {
   const scrollToStage = (id) => {
     const el = document.getElementById(id);
     if (!el) return;
+
     const rect = el.getBoundingClientRect();
-    const offset = 80; // header spacing
-    const targetTop = rect.top + window.scrollY - offset;
+    const targetTop = rect.top + window.scrollY - 84;
 
     window.scrollTo({
       top: targetTop,
@@ -227,12 +232,11 @@ const Story = () => {
 
   return (
     <div className="story-page">
-      {/* HERO */}
       <section className="story-hero" id="top">
         <div className="story-hero-inner">
           <div className="story-hero-pill">
             <span className="story-hero-pill-dot" />
-            <span className="story-hero-pill-text">A true progress story</span>
+            <span className="story-hero-pill-text">A progress story</span>
           </div>
 
           <h1 className="story-hero-title">
@@ -242,15 +246,15 @@ const Story = () => {
           </h1>
 
           <p className="story-hero-subtitle">
-            This is not mythology. It is the real sequence of stages that took
-            FitGearzzz from a persistent problem to a more disciplined way of
-            supporting serious training.
+            This page tells the journey in stages: a visible problem, a sharper
+            way of thinking, a stronger plan, a longer process, measurable
+            progress, the current scenario, and the future being built from it.
           </p>
 
           <p className="story-hero-trailer">
-            Scroll like you are watching a trailer: each stage reveals what
-            changed, why it mattered, and how it still shapes what you see on
-            the site today.
+            Read it like a trailer in motion: each scroll reveals one more turn
+            in how FitGearzzz moved from friction toward structure, clarity, and
+            confidence.
           </p>
 
           <div className="story-hero-actions">
@@ -258,17 +262,17 @@ const Story = () => {
               className="story-btn story-btn-primary"
               onClick={scrollToFirstStage}
             >
-              Enter Stage 01
+              Start the journey
             </button>
             <a href="/products" className="story-btn story-btn-secondary">
-              View the current results
+              See the current outcome
             </a>
           </div>
 
           <div className="story-hero-scroll">
             <span className="story-hero-scroll-line" />
             <span className="story-hero-scroll-label">
-              Scroll to follow the stages
+              Scroll through the stages
             </span>
           </div>
         </div>
@@ -277,20 +281,14 @@ const Story = () => {
         <div className="story-hero-bg-rings" />
       </section>
 
-      {/* RIGHT-SIDE SEMI-CIRCLE DIAL (DESKTOP) */}
       <StageDial
         stages={stages}
         activeStage={activeStage}
-        onStageClick={(id) => {
-          playDialSound();
-          scrollToStage(id);
-        }}
+        onStageClick={(id) => scrollToStage(id)}
       />
 
-      {/* MANIFESTO */}
       <ManifestoBlock />
 
-      {/* TIMELINE + STAGES + CURVE */}
       <div className="story-main-shell">
         <JourneyCurve
           stages={stages}
@@ -303,18 +301,11 @@ const Story = () => {
           <TimelineStrip
             stages={stages}
             activeStage={activeStage}
-            onStageClick={(id) => {
-              playDialSound();
-              scrollToStage(id);
-            }}
+            onStageClick={(id) => scrollToStage(id)}
           />
 
           {stages.map((stage, index) => (
-            <StageSection
-              key={stage.id}
-              stage={stage}
-              index={index}
-            />
+            <StageSection key={stage.id} stage={stage} index={index} />
           ))}
 
           <SignalsSection />
@@ -328,68 +319,81 @@ const Story = () => {
 const StageDial = ({ stages, activeStage, onStageClick }) => {
   const [dialAngle, setDialAngle] = useState(0);
 
-  // map active stage to pointer angle along the semi-circle
   useEffect(() => {
     const idx = stages.findIndex((s) => s.id === activeStage);
     if (idx === -1) return;
+
     const total = stages.length;
-    const start = -80; // top
-    const end = 80; // bottom
+    const start = -78;
+    const end = 78;
     const step = (end - start) / Math.max(total - 1, 1);
-    const angle = start + idx * step;
-    setDialAngle(angle);
+    setDialAngle(start + idx * step);
   }, [activeStage, stages]);
 
   const activeIndex = stages.findIndex((s) => s.id === activeStage);
-  const activeStageData = stages[activeIndex] || stages[0];
+  const activeData = stages[activeIndex] || stages[0];
 
   return (
-    <aside className="story-dial">
-      <div className="story-dial-inner">
-        <div className="story-dial-semi">
-          <div
-            className="story-dial-pointer"
-            style={{
-              transform: `translate(-50%, -50%) rotate(${dialAngle}deg)`,
-            }}
-          >
-            <span className="story-dial-pointer-head" />
-          </div>
+    <aside className="story-watch-dial" aria-label="Story stage dial">
+      <div className="story-watch-dial-wrap">
+        <div className="story-watch-dial-face">
+          <div className="story-watch-arc story-watch-arc-outer" />
+          <div className="story-watch-arc story-watch-arc-inner" />
 
           {stages.map((stage, index) => {
             const total = stages.length;
-            const start = -80;
-            const end = 80;
+            const start = -78;
+            const end = 78;
             const step = (end - start) / Math.max(total - 1, 1);
             const angle = start + index * step;
             const rad = (angle * Math.PI) / 180;
-            const radius = 54;
-            const cx = 100; // center at right edge
-            const cy = 50;
-            const x = cx + radius * Math.cos(rad);
-            const y = cy + radius * Math.sin(rad);
+
+            const dotR = 77;
+            const dx = 100 + dotR * Math.cos(rad);
+            const dy = 100 + dotR * Math.sin(rad);
             const isActive = activeStage === stage.id;
 
             return (
               <button
                 key={stage.id}
-                className={`story-dial-dot ${isActive ? "is-active" : ""}`}
-                style={{ "--x": `${x}%`, "--y": `${y}%` }}
+                className={`story-watch-stop ${isActive ? "is-active" : ""}`}
+                style={{
+                  left: `${dx}px`,
+                  top: `${dy}px`,
+                }}
                 onClick={() => onStageClick(stage.id)}
+                aria-label={`Go to ${stage.label}`}
               >
-                <span className="story-dial-dot-index">{stage.index}</span>
+                <svg
+                  className="story-watch-stop-line"
+                  width="38"
+                  height="38"
+                  viewBox="0 0 38 38"
+                  style={{
+                    transform: `translate(-50%, -50%) rotate(${angle}deg)`,
+                  }}
+                >
+                  <line x1="19" y1="5" x2="19" y2="33" />
+                </svg>
+                <span className="story-watch-stop-hit" />
               </button>
             );
           })}
+
+          <div
+            className="story-watch-hand"
+            style={{
+              transform: `translateY(-50%) rotate(${dialAngle}deg)`,
+            }}
+          >
+            <span className="story-watch-hand-core" />
+            <span className="story-watch-hand-tip" />
+          </div>
         </div>
 
-        <div className="story-dial-label">
-          <span className="story-dial-label-index">
-            {activeStageData.index}
-          </span>
-          <span className="story-dial-label-text">
-            {activeStageData.label}
-          </span>
+        <div className="story-watch-readout">
+          <span className="story-watch-readout-index">{activeData.index}</span>
+          <span className="story-watch-readout-label">{activeData.label}</span>
         </div>
       </div>
     </aside>
@@ -415,17 +419,17 @@ const JourneyCurve = ({
       >
         <defs>
           <linearGradient id="curveGradient" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="rgba(148,163,184,0.28)" />
-            <stop offset="45%" stopColor="rgba(249,115,22,0.62)" />
-            <stop offset="100%" stopColor="rgba(148,163,184,0.24)" />
+            <stop offset="0%" stopColor="rgba(148,163,184,0.24)" />
+            <stop offset="45%" stopColor="rgba(249,115,22,0.5)" />
+            <stop offset="100%" stopColor="rgba(148,163,184,0.2)" />
           </linearGradient>
         </defs>
         <path
           d="
             M 80 40
-            C 250 220, 40 420, 240 620
-            S 40 900, 240 1100
-            S 40 1380, 240 1580
+            C 250 210, 40 400, 240 610
+            S 40 900, 240 1110
+            S 40 1390, 240 1600
           "
           fill="none"
           stroke="url(#curveGradient)"
@@ -439,6 +443,7 @@ const JourneyCurve = ({
         if (y == null) return null;
         const stage = stages[i];
         const isActive = stage && stage.id === activeStage;
+
         return (
           <div
             key={stage.id}
@@ -461,9 +466,10 @@ const ManifestoBlock = () => {
     >
       <p className="story-manifesto-label">Perspective</p>
       <p className="story-manifesto-text">
-        Real progress stories rarely move in straight lines. They move through
-        tension: a problem that stays, ideas that fail, plans that change, and
-        a solution that slowly proves it belongs.
+        Strong stories are not born from perfection. They are built through a
+        recurring sequence: a problem becomes visible, weak paths are tested and
+        rejected, a better system emerges, and progress proves itself through
+        repetition.
       </p>
     </section>
   );
@@ -488,12 +494,8 @@ const TimelineStrip = ({ stages, activeStage, onStageClick }) => {
               }`}
               onClick={() => onStageClick(stage.id)}
             >
-              <span className="story-timeline-pill-index">
-                {stage.index}
-              </span>
-              <span className="story-timeline-pill-label">
-                {stage.label}
-              </span>
+              <span className="story-timeline-pill-index">{stage.index}</span>
+              <span className="story-timeline-pill-label">{stage.label}</span>
             </button>
           ))}
         </div>
@@ -522,30 +524,31 @@ const StageSection = ({ stage, index }) => {
           <h2 className="story-stage-title">{stage.title}</h2>
           <p className="story-stage-summary">{stage.summary}</p>
           <p className="story-stage-tension">{stage.tension}</p>
+
           <div className="story-stage-key">
-            <span className="story-stage-key-label">Key turning point</span>
+            <span className="story-stage-key-label">Turning point</span>
             <p className="story-stage-key-text">{stage.keyPoint}</p>
           </div>
         </div>
 
         <div className="story-stage-evidence">
           <div className="story-stage-card">
-            <p className="story-stage-card-label">Focus in this stage</p>
+            <p className="story-stage-card-label">What defined this stage</p>
             <p className="story-stage-card-text">
               {index === 0 &&
-                "Name the problem clearly enough that it cannot be ignored or explained away."}
+                "A real problem was identified clearly enough that it could no longer be ignored."}
               {index === 1 &&
-                "Think beyond trends and ask what would stand up to real training conditions."}
+                "The right question replaced vague ambition and gave the journey sharper direction."}
               {index === 2 &&
-                "Design a plan that can survive contact with deadlines, budgets, and reality."}
+                "Structure entered the process through standards, priorities, and a more disciplined plan."}
               {index === 3 &&
-                "Let testing be honest enough that weak ideas are removed quickly, not protected."}
+                "Testing became a filter. Weak ideas were removed before they could shape the brand."}
               {index === 4 &&
-                "Protect consistency: repeat wins, study failures, and remove friction step by step."}
+                "Progress appeared when quality, presentation, and confidence began aligning together."}
               {index === 5 &&
-                "Keep the system stable while still questioning where it can be sharper."}
+                "The system matured into something stable enough to support growth without losing its center."}
               {index === 6 &&
-                "Decide on the next upgrades with the same seriousness as the first solution."}
+                "The future became a responsibility: to refine what works rather than expanding without judgment."}
             </p>
           </div>
         </div>
@@ -564,11 +567,9 @@ const SignalsSection = () => {
     >
       <div className="story-signals-inner">
         <div className="story-section-heading">
-          <p className="story-section-kicker">
-            Signals that the story is working
-          </p>
+          <p className="story-section-kicker">Signals of real progress</p>
           <h2 className="story-section-title">
-            How you know this journey has weight behind it.
+            Signs that the journey has depth behind it.
           </h2>
         </div>
 
@@ -594,28 +595,27 @@ const ClosingSection = () => {
       className={`story-closing ${inView ? "is-visible" : ""}`}
     >
       <div className="story-closing-inner">
-        <p className="story-closing-kicker">Where you enter the story</p>
+        <p className="story-closing-kicker">Where this story meets you</p>
         <h2 className="story-closing-title">
-          The next stage is written by how you choose to train.
+          Every stage matters only if the result supports real effort.
         </h2>
         <p className="story-closing-text">
-          The journey behind FitGearzzz is not a fantasy. It is a sequence of
-          decisions made in response to a real problem. What happens next is
-          measured by how well the products support your own progress, session
-          after session.
+          The journey behind FitGearzzz is not designed as mythology. It is a
+          sequence of responses to a genuine problem, refined into a stronger
+          system over time.
         </p>
         <p className="story-closing-text">
-          If the story has done its job, you leave this page with one clear
-          thought: the tools you use should match the effort you are willing to
-          give. Everything here is built to support that decision.
+          If this page works the way it should, it leaves one clear impression:
+          the tools used in training should feel as disciplined as the people
+          using them.
         </p>
 
         <div className="story-closing-actions">
           <a href="/products" className="story-btn story-btn-primary">
-            Continue the journey in the store
+            Continue into the collection
           </a>
           <a href="/contact" className="story-btn story-btn-secondary">
-            Share your feedback
+            Connect with FitGearzzz
           </a>
         </div>
       </div>

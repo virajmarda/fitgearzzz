@@ -288,7 +288,7 @@ const StageDial = ({ stages, activeStage }) => {
 
     const total = stages.length;
     const start = -130;
-    const end = 130;
+    const end = 110;
     const step = (end - start) / Math.max(total - 1, 1);
     setAngle(start + idx * step);
   }, [activeStage, stages]);
@@ -298,34 +298,29 @@ const StageDial = ({ stages, activeStage }) => {
       <div className="story-watch-dial-wrap">
         <svg
           className="story-watch-svg"
-          viewBox="0 0 320 320"
+          viewBox="0 0 360 360"
           preserveAspectRatio="xMidYMid meet"
         >
-          <g transform="translate(160 160)">
-            <circle r="118" className="dial-ring dial-ring-main" />
-            <circle r="92" className="dial-ring dial-ring-secondary" />
+          <g transform="translate(180 180)">
+            <circle r="116" className="dial-ring dial-ring-main" />
+            <circle r="86" className="dial-ring dial-ring-secondary" />
 
             <path
-              d="M -78 -88 A 118 118 0 0 1 78 -88"
+              d="M -70 -92 A 116 116 0 0 1 70 -92"
               className="dial-arc-accent"
-            />
-
-            <path
-              d="M -95 70 A 118 118 0 0 0 0 118 A 118 118 0 0 0 95 70"
-              className="dial-arc-dashed"
             />
 
             {stages.map((stage, index) => {
               const start = -130;
-              const end = 130;
+              const end = 110;
               const step = (end - start) / Math.max(stages.length - 1, 1);
               const tickAngle = start + index * step;
               const rad = (tickAngle * Math.PI) / 180;
 
-              const x1 = Math.cos(rad) * 102;
-              const y1 = Math.sin(rad) * 102;
-              const x2 = Math.cos(rad) * 118;
-              const y2 = Math.sin(rad) * 118;
+              const x1 = Math.cos(rad) * 98;
+              const y1 = Math.sin(rad) * 98;
+              const x2 = Math.cos(rad) * 116;
+              const y2 = Math.sin(rad) * 116;
 
               return (
                 <line
@@ -341,11 +336,14 @@ const StageDial = ({ stages, activeStage }) => {
 
             <g
               className="dial-hand"
-              style={{ transform: `rotate(${angle}deg)`, transformOrigin: "center" }}
+              style={{
+                transform: `rotate(${angle}deg)`,
+                transformOrigin: "center",
+              }}
             >
-              <line x1="0" y1="0" x2="0" y2="-86" className="dial-hand-line" />
+              <line x1="0" y1="0" x2="-58" y2="58" className="dial-hand-line" />
+              <circle cx="-58" cy="58" r="5.5" className="dial-hand-tip-glow" />
               <circle cx="0" cy="0" r="6" className="dial-hand-core" />
-              <circle cx="0" cy="-86" r="5" className="dial-hand-tip" />
             </g>
           </g>
         </svg>
@@ -398,7 +396,8 @@ const JourneyCurve = ({
         const stage = stages[i];
         const isActive = stage && stage.id === activeStage;
 
-        return (
+        return
+        (
           <div
             key={stage.id}
             className={`story-curve-node ${isActive ? "is-active" : ""}`}

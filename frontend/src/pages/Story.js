@@ -8,11 +8,11 @@ const stages = [
     label: "Problem",
     title: "It started with a problem that stayed visible.",
     summary:
-      "The first stage began with a simple but persistent gap: people were serious about training, but the tools around them often lacked the same seriousness.",
+      "The first stage began with a persistent gap: people were serious about training, but the tools around them often lacked the same seriousness.",
     tension:
       "Products looked acceptable in listings and ads, yet too many failed under real effort, repeated use, and the practical demands of disciplined routines.",
     keyPoint:
-      "The real issue was not lack of choice. It was the lack of dependable, confidence-building fitness tools that felt truly resolved.",
+      "The issue was not lack of choice. It was the lack of dependable, confidence-building tools that felt truly resolved.",
   },
   {
     id: "stage-thought",
@@ -36,7 +36,7 @@ const stages = [
     tension:
       "Every plan looks convincing in theory. The real test was whether the plan could survive pressure, constraints, and repeated scrutiny.",
     keyPoint:
-      "The plan centered on three pillars: reliable product choices, clearer presentation, and an experience designed to reduce friction at every point.",
+      "The plan centered on reliable product choices, clearer presentation, and an experience designed to reduce friction at every point.",
   },
   {
     id: "stage-process",
@@ -88,18 +88,18 @@ const stages = [
   },
 ];
 
-const keySignals = [
+const signals = [
   {
-    title: "The problem was clearly named",
-    text: "Progress began only after the real issue was identified with enough precision to guide decisions.",
+    title: "The problem was named clearly",
+    text: "Progress only started once the issue was defined with enough precision to guide strong decisions.",
   },
   {
-    title: "Weak paths were rejected early",
-    text: "The journey improved because testing was honest enough to remove attractive but weak directions.",
+    title: "Weak options were rejected",
+    text: "The journey improved because attractive but unreliable paths were filtered out early.",
   },
   {
     title: "The system became repeatable",
-    text: "The real sign of maturity was consistency: better outcomes appearing through structure, not luck.",
+    text: "The real sign of maturity was consistency: better outcomes appearing through structure rather than luck.",
   },
 ];
 
@@ -116,7 +116,7 @@ function useInView(options = {}) {
         if (entry.isIntersecting) setInView(true);
       },
       {
-        threshold: 0.22,
+        threshold: 0.2,
         ...options,
       }
     );
@@ -128,35 +128,13 @@ function useInView(options = {}) {
   return [ref, inView];
 }
 
-const playDialSound = () => {
-  if (typeof window === "undefined") return;
-  const AudioCtx = window.AudioContext || window.webkitAudioContext;
-  if (!AudioCtx) return;
-
-  const ctx = new AudioCtx();
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-
-  osc.type = "triangle";
-  osc.frequency.setValueAtTime(920, ctx.currentTime);
-  gain.gain.setValueAtTime(0.12, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
-
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-  osc.start();
-  osc.stop(ctx.currentTime + 0.12);
-  osc.onended = () => ctx.close();
-};
-
 const Story = () => {
   const [activeStage, setActiveStage] = useState(stages[0].id);
   const [curveNodes, setCurveNodes] = useState([]);
   const [curveHeight, setCurveHeight] = useState(0);
-  const prevStageRef = useRef(stages[0].id);
 
   useEffect(() => {
-    const sectionEls = stages.map((s) => document.getElementById(s.id));
+    const sections = stages.map((s) => document.getElementById(s.id));
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -165,23 +143,15 @@ const Story = () => {
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
 
         if (visible[0]) {
-          const nextId = visible[0].target.id;
-          setActiveStage(nextId);
+          setActiveStage(visible[0].target.id);
         }
       },
-      { threshold: 0.35 }
+      { threshold: 0.38 }
     );
 
-    sectionEls.forEach((el) => el && observer.observe(el));
+    sections.forEach((el) => el && observer.observe(el));
     return () => observer.disconnect();
   }, []);
-
-  useEffect(() => {
-    if (prevStageRef.current !== activeStage) {
-      playDialSound();
-      prevStageRef.current = activeStage;
-    }
-  }, [activeStage]);
 
   useEffect(() => {
     const updateCurve = () => {
@@ -194,8 +164,7 @@ const Story = () => {
         const el = document.getElementById(stage.id);
         if (!el) return null;
         const rect = el.getBoundingClientRect();
-        const centerY = rect.top - shellRect.top + rect.height / 2;
-        return centerY;
+        return rect.top - shellRect.top + rect.height / 2;
       });
 
       const valid = nodes.filter((n) => n != null);
@@ -220,10 +189,8 @@ const Story = () => {
     if (!el) return;
 
     const rect = el.getBoundingClientRect();
-    const targetTop = rect.top + window.scrollY - 84;
-
     window.scrollTo({
-      top: targetTop,
+      top: rect.top + window.scrollY - 84,
       behavior: "smooth",
     });
   };
@@ -246,13 +213,13 @@ const Story = () => {
           </h1>
 
           <p className="story-hero-subtitle">
-            This page tells the journey in stages: a visible problem, a sharper
-            way of thinking, a stronger plan, a longer process, measurable
-            progress, the current scenario, and the future being built from it.
+            This page tells the journey in stages: a visible problem, sharper
+            thinking, a stronger plan, a longer process, measurable progress,
+            the current scenario, and the future being built from it.
           </p>
 
           <p className="story-hero-trailer">
-            Read it like a trailer in motion: each scroll reveals one more turn
+            Read it like a trailer in motion. Each scroll reveals one more turn
             in how FitGearzzz moved from friction toward structure, clarity, and
             confidence.
           </p>
@@ -297,7 +264,7 @@ const Story = () => {
           <TimelineStrip
             stages={stages}
             activeStage={activeStage}
-            onStageClick={(id) => scrollToStage(id)}
+            onStageClick={scrollToStage}
           />
 
           {stages.map((stage, index) => (
@@ -313,69 +280,68 @@ const Story = () => {
 };
 
 const StageDial = ({ stages, activeStage }) => {
-  const [angle, setAngle] = useState(-90);
+  const [angle, setAngle] = useState(-95);
 
   useEffect(() => {
     const idx = stages.findIndex((s) => s.id === activeStage);
     if (idx === -1) return;
 
     const total = stages.length;
-    const start = -110; // top-left
-    const end = 110; // top-right
+    const start = -112;
+    const end = 112;
     const step = (end - start) / Math.max(total - 1, 1);
-    const nextAngle = start + idx * step;
-    setAngle(nextAngle);
+    setAngle(start + idx * step);
   }, [activeStage, stages]);
 
   const activeIndex = stages.findIndex((s) => s.id === activeStage);
   const activeStageData = activeIndex >= 0 ? stages[activeIndex] : stages[0];
 
   return (
-    <aside className="story-watch-dial" aria-hidden="false">
+    <aside className="story-watch-dial" aria-hidden="true">
       <div className="story-watch-dial-wrap">
         <svg
           className="story-watch-svg"
-          viewBox="0 0 200 220"
+          viewBox="0 0 220 240"
           preserveAspectRatio="xMidYMid meet"
         >
-          <g transform="translate(0,10)">
-            {/* OUTER FULL RING */}
+          <g transform="translate(8,20)">
             <circle
-              cx="100"
+              cx="110"
               cy="100"
-              r="82"
+              r="84"
               className="story-watch-ring story-watch-ring-outer"
             />
-            {/* INNER FULL RING */}
+
             <circle
-              cx="100"
+              cx="110"
               cy="100"
-              r="56"
+              r="62"
               className="story-watch-ring story-watch-ring-inner"
             />
 
-            {/* DASHED ARC (RIGHT SIDE) */}
-            <circle
-              cx="100"
-              cy="100"
-              r="82"
+            <path
+              d="M 51 39 A 84 84 0 0 1 169 39"
+              className="story-watch-arc-highlight"
+            />
+
+            <path
+              d="M 162 166 A 84 84 0 0 1 110 184 A 84 84 0 0 1 58 166"
               className="story-watch-arc-dashed"
             />
 
-            {/* TICKS: ONE PER STAGE */}
             {stages.map((stage, index) => {
               const total = stages.length;
-              const start = -110;
-              const end = 110;
+              const start = -112;
+              const end = 112;
               const step = (end - start) / Math.max(total - 1, 1);
               const a = start + index * step;
               const rad = (a * Math.PI) / 180;
 
-              const rInner = 68;
-              const rOuter = 82;
-              const x1 = 100 + rInner * Math.cos(rad);
+              const rInner = 73;
+              const rOuter = 88;
+              const x1 = 110 + rInner * Math.cos(rad);
               const y1 = 100 + rInner * Math.sin(rad);
-              const x2 = 100 + rOuter * Math.cos(rad);
+              const x2 = 110 + rOuter * Math.cos(rad);
               const y2 = 100 + rOuter * Math.sin(rad);
 
               return (
@@ -390,17 +356,29 @@ const StageDial = ({ stages, activeStage }) => {
               );
             })}
 
-            {/* HAND */}
             <g
               className="story-watch-hand"
-              transform={`rotate(${angle} 100 100)`}
+              transform={`rotate(${angle} 110 100)`}
             >
-              {/* Hand stem */}
-              <line x1="100" y1="100" x2="100" y2="34" />
-              {/* Pivot */}
-              <circle cx="100" cy="100" r="6" className="story-watch-hand-pivot" />
-              {/* Tip */}
-              <circle cx="100" cy="34" r="5" className="story-watch-hand-tip" />
+              <line
+                x1="110"
+                y1="100"
+                x2="110"
+                y2="40"
+                className="story-watch-hand-line"
+              />
+              <circle
+                cx="110"
+                cy="100"
+                r="5.5"
+                className="story-watch-hand-pivot"
+              />
+              <circle
+                cx="110"
+                cy="40"
+                r="4.8"
+                className="story-watch-hand-tip"
+              />
             </g>
           </g>
         </svg>
@@ -437,21 +415,21 @@ const JourneyCurve = ({
       >
         <defs>
           <linearGradient id="curveGradient" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="rgba(148,163,184,0.24)" />
-            <stop offset="45%" stopColor="rgba(249,115,22,0.5)" />
-            <stop offset="100%" stopColor="rgba(148,163,184,0.2)" />
+            <stop offset="0%" stopColor="rgba(148,163,184,0.2)" />
+            <stop offset="45%" stopColor="rgba(249,115,22,0.42)" />
+            <stop offset="100%" stopColor="rgba(148,163,184,0.16)" />
           </linearGradient>
         </defs>
         <path
           d="
-            M 80 40
-            C 250 210, 40 400, 240 610
-            S 40 900, 240 1110
-            S 40 1390, 240 1600
+            M 82 40
+            C 252 210, 44 400, 242 610
+            S 44 900, 242 1110
+            S 44 1390, 242 1600
           "
           fill="none"
           stroke="url(#curveGradient)"
-          strokeWidth="3"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeDasharray="8 14"
         />
@@ -503,6 +481,7 @@ const TimelineStrip = ({ stages, activeStage, onStageClick }) => {
     >
       <div className="story-timeline-inner">
         <p className="story-timeline-label">Stages of the journey</p>
+
         <div className="story-timeline-track">
           {stages.map((stage) => (
             <button
@@ -539,6 +518,7 @@ const StageSection = ({ stage, index }) => {
           <p className="story-stage-kicker">
             Stage {stage.index} · {stage.label}
           </p>
+
           <h2 className="story-stage-title">{stage.title}</h2>
           <p className="story-stage-summary">{stage.summary}</p>
           <p className="story-stage-tension">{stage.tension}</p>
@@ -592,7 +572,7 @@ const SignalsSection = () => {
         </div>
 
         <div className="story-signals-grid">
-          {keySignals.map((signal) => (
+          {signals.map((signal) => (
             <div key={signal.title} className="story-signal-card">
               <p className="story-signal-title">{signal.title}</p>
               <p className="story-signal-text">{signal.text}</p>
@@ -617,11 +597,13 @@ const ClosingSection = () => {
         <h2 className="story-closing-title">
           Every stage matters only if the result supports real effort.
         </h2>
+
         <p className="story-closing-text">
-          The journey behind FitGearzzz is not designed as mythology. It is a
-          sequence of responses to a genuine problem, refined into a stronger
-          system over time.
+          The journey behind FitGearzzz is not mythology. It is a sequence of
+          responses to a genuine problem, refined into a stronger system over
+          time.
         </p>
+
         <p className="story-closing-text">
           If this page works the way it should, it leaves one clear impression:
           the tools used in training should feel as disciplined as the people

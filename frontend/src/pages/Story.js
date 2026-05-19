@@ -219,7 +219,7 @@ const Story = () => {
           </p>
 
           <p className="story-hero-trailer">
-            Read it like a trailer in motion. Each scroll reveals one more turn
+            Read it like a moving narrative. Each scroll reveals one more turn
             in how FitGearzzz moved from friction toward structure, clarity, and
             confidence.
           </p>
@@ -280,69 +280,52 @@ const Story = () => {
 };
 
 const StageDial = ({ stages, activeStage }) => {
-  const [angle, setAngle] = useState(-95);
+  const [angle, setAngle] = useState(-110);
 
   useEffect(() => {
     const idx = stages.findIndex((s) => s.id === activeStage);
     if (idx === -1) return;
 
     const total = stages.length;
-    const start = -112;
-    const end = 112;
+    const start = -130;
+    const end = 130;
     const step = (end - start) / Math.max(total - 1, 1);
     setAngle(start + idx * step);
   }, [activeStage, stages]);
-
-  const activeIndex = stages.findIndex((s) => s.id === activeStage);
-  const activeStageData = activeIndex >= 0 ? stages[activeIndex] : stages[0];
 
   return (
     <aside className="story-watch-dial" aria-hidden="true">
       <div className="story-watch-dial-wrap">
         <svg
           className="story-watch-svg"
-          viewBox="0 0 220 240"
+          viewBox="0 0 320 320"
           preserveAspectRatio="xMidYMid meet"
         >
-          <g transform="translate(8,20)">
-            <circle
-              cx="110"
-              cy="100"
-              r="84"
-              className="story-watch-ring story-watch-ring-outer"
-            />
+          <g transform="translate(160 160)">
+            <circle r="118" className="dial-ring dial-ring-main" />
+            <circle r="92" className="dial-ring dial-ring-secondary" />
 
-            <circle
-              cx="110"
-              cy="100"
-              r="62"
-              className="story-watch-ring story-watch-ring-inner"
+            <path
+              d="M -78 -88 A 118 118 0 0 1 78 -88"
+              className="dial-arc-accent"
             />
 
             <path
-              d="M 51 39 A 84 84 0 0 1 169 39"
-              className="story-watch-arc-highlight"
-            />
-
-            <path
-              d="M 162 166 A 84 84 0 0 1 110 184 A 84 84 0 0 1 58 166"
-              className="story-watch-arc-dashed"
+              d="M -95 70 A 118 118 0 0 0 0 118 A 118 118 0 0 0 95 70"
+              className="dial-arc-dashed"
             />
 
             {stages.map((stage, index) => {
-              const total = stages.length;
-              const start = -112;
-              const end = 112;
-              const step = (end - start) / Math.max(total - 1, 1);
-              const a = start + index * step;
-              const rad = (a * Math.PI) / 180;
+              const start = -130;
+              const end = 130;
+              const step = (end - start) / Math.max(stages.length - 1, 1);
+              const tickAngle = start + index * step;
+              const rad = (tickAngle * Math.PI) / 180;
 
-              const rInner = 73;
-              const rOuter = 88;
-              const x1 = 110 + rInner * Math.cos(rad);
-              const y1 = 100 + rInner * Math.sin(rad);
-              const x2 = 110 + rOuter * Math.cos(rad);
-              const y2 = 100 + rOuter * Math.sin(rad);
+              const x1 = Math.cos(rad) * 102;
+              const y1 = Math.sin(rad) * 102;
+              const x2 = Math.cos(rad) * 118;
+              const y2 = Math.sin(rad) * 118;
 
               return (
                 <line
@@ -351,46 +334,21 @@ const StageDial = ({ stages, activeStage }) => {
                   y1={y1}
                   x2={x2}
                   y2={y2}
-                  className="story-watch-tick"
+                  className="dial-tick"
                 />
               );
             })}
 
             <g
-              className="story-watch-hand"
-              transform={`rotate(${angle} 110 100)`}
+              className="dial-hand"
+              style={{ transform: `rotate(${angle}deg)`, transformOrigin: "center" }}
             >
-              <line
-                x1="110"
-                y1="100"
-                x2="110"
-                y2="40"
-                className="story-watch-hand-line"
-              />
-              <circle
-                cx="110"
-                cy="100"
-                r="5.5"
-                className="story-watch-hand-pivot"
-              />
-              <circle
-                cx="110"
-                cy="40"
-                r="4.8"
-                className="story-watch-hand-tip"
-              />
+              <line x1="0" y1="0" x2="0" y2="-86" className="dial-hand-line" />
+              <circle cx="0" cy="0" r="6" className="dial-hand-core" />
+              <circle cx="0" cy="-86" r="5" className="dial-hand-tip" />
             </g>
           </g>
         </svg>
-
-        <div className="story-watch-readout">
-          <span className="story-watch-readout-index">
-            {activeStageData.index}
-          </span>
-          <span className="story-watch-readout-label">
-            {activeStageData.label.toUpperCase()}
-          </span>
-        </div>
       </div>
     </aside>
   );

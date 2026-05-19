@@ -396,8 +396,7 @@ const JourneyCurve = ({
         const stage = stages[i];
         const isActive = stage && stage.id === activeStage;
 
-        return
-        (
+        return (
           <div
             key={stage.id}
             className={`story-curve-node ${isActive ? "is-active" : ""}`}

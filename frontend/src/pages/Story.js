@@ -341,14 +341,67 @@ const StageDial = ({ stages, activeStage }) => {
                 transformOrigin: "center",
               }}
             >
-              <line x1="0" y1="0" x2="-58" y2="58" className="dial-hand-line" />
-              <circle cx="-58" cy="58" r="5.5" className="dial-hand-tip-glow" />
-              <circle cx="0" cy="0" r="6" className="dial-hand-core" />
+              <path
+                className="dial-hand-shape"
+                d="
+                  M 0 -4
+                  L 66 -2.2
+                  L 82 0
+                  L 66 2.2
+                  L 0 4
+                  Q -8 4 -12 0
+                  Q -8 -4 0 -4
+                  Z
+                "
+              />
+
+              <line
+                x1="8"
+                y1="0"
+                x2="68"
+                y2="0"
+                className="dial-hand-core-line"
+              />
+
+              <path
+                className="dial-hand-tail"
+                d="
+                  M -10 -2.5
+                  L -28 -1.5
+                  L -36 0
+                  L -28 1.5
+                  L -10 2.5
+                  Z
+                "
+              />
+
+              <circle className="dial-hand-joint" cx="0" cy="0" r="8.5" />
+              <circle className="dial-hand-joint-inner" cx="0" cy="0" r="3.8" />
+              <circle className="dial-hand-tip" cx="82" cy="0" r="4.2" />
             </g>
           </g>
         </svg>
       </div>
     </aside>
+  );
+};
+
+const ManifestoBlock = () => {
+  const [ref, inView] = useInView();
+
+  return (
+    <section
+      ref={ref}
+      className={`story-manifesto ${inView ? "is-visible" : ""}`}
+    >
+      <p className="story-manifesto-label">Perspective</p>
+      <p className="story-manifesto-text">
+        Strong stories are not born from perfection. They are built through a
+        recurring sequence: a problem becomes visible, weak paths are tested and
+        rejected, a better system emerges, and progress proves itself through
+        repetition.
+      </p>
+    </section>
   );
 };
 
@@ -405,25 +458,6 @@ const JourneyCurve = ({
         );
       })}
     </div>
-  );
-};
-
-const ManifestoBlock = () => {
-  const [ref, inView] = useInView();
-
-  return (
-    <section
-      ref={ref}
-      className={`story-manifesto ${inView ? "is-visible" : ""}`}
-    >
-      <p className="story-manifesto-label">Perspective</p>
-      <p className="story-manifesto-text">
-        Strong stories are not born from perfection. They are built through a
-        recurring sequence: a problem becomes visible, weak paths are tested and
-        rejected, a better system emerges, and progress proves itself through
-        repetition.
-      </p>
-    </section>
   );
 };
 

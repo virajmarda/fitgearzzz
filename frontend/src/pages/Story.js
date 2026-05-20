@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./Story.css";
 
 const stages = [
@@ -13,6 +13,9 @@ const stages = [
       "Products looked acceptable in listings and ads, yet too many failed under real effort, repeated use, and the practical demands of disciplined routines.",
     keyPoint:
       "The issue was not lack of choice. It was the lack of dependable, confidence-building tools that felt truly resolved.",
+    evidence:
+      "A real problem was identified clearly enough that it could no longer be ignored.",
+    accent: "Visible gap",
   },
   {
     id: "stage-thought",
@@ -25,6 +28,9 @@ const stages = [
       "The market rewarded appearance and novelty too easily. But consistency, usability, and trust were the standards that mattered most over time.",
     keyPoint:
       "This stage reframed the journey: the goal was not to add more products, but to build a more dependable standard around them.",
+    evidence:
+      "The right question replaced vague ambition and gave the journey sharper direction.",
+    accent: "Sharper standard",
   },
   {
     id: "stage-plan",
@@ -37,6 +43,9 @@ const stages = [
       "Every plan looks convincing in theory. The real test was whether the plan could survive pressure, constraints, and repeated scrutiny.",
     keyPoint:
       "The plan centered on reliable product choices, clearer presentation, and an experience designed to reduce friction at every point.",
+    evidence:
+      "Structure entered the process through standards, priorities, and a more disciplined plan.",
+    accent: "Structured intent",
   },
   {
     id: "stage-process",
@@ -49,6 +58,9 @@ const stages = [
       "Some options looked promising but failed in actual use. Others worked technically, yet still lacked the confidence or clarity the brand needed to represent.",
     keyPoint:
       "The process created discipline. It made sure that only decisions strong enough to survive repetition could move forward.",
+    evidence:
+      "Testing became a filter. Weak ideas were removed before they could shape the brand.",
+    accent: "Pressure-tested",
   },
   {
     id: "stage-progress",
@@ -61,6 +73,9 @@ const stages = [
       "The challenge at this stage was consistency: ensuring that progress was not a short-term spike, but the beginning of a repeatable pattern.",
     keyPoint:
       "Progress showed up through alignment—better selection, better presentation, and a more stable standard behind the brand.",
+    evidence:
+      "Progress appeared when quality, presentation, and confidence began aligning together.",
+    accent: "Clearer outcomes",
   },
   {
     id: "stage-current",
@@ -73,6 +88,9 @@ const stages = [
       "But stability creates its own risk. The pressure now is not just to maintain quality, but to keep evolving without losing the discipline that made progress possible.",
     keyPoint:
       "The current scenario is not an endpoint. It is a controlled platform for better execution, better refinement, and smarter growth.",
+    evidence:
+      "The system matured into something stable enough to support growth without losing its center.",
+    accent: "Stable base",
   },
   {
     id: "stage-future",
@@ -85,6 +103,9 @@ const stages = [
       "Growth can weaken a story when it introduces noise. The responsibility now is to scale what works without diluting the original standard.",
     keyPoint:
       "The next moves focus on stronger product experiences, sharper storytelling, and a brand journey that feels more intelligent at every stage.",
+    evidence:
+      "The future became a responsibility: to refine what works rather than expanding without judgment.",
+    accent: "Smarter growth",
   },
 ];
 
@@ -109,11 +130,13 @@ function useInView(options = {}) {
 
   useEffect(() => {
     const element = ref.current;
-    if (!element) return;
+    if (!element) return undefined;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) setInView(true);
+        if (entry.isIntersecting) {
+          setInView(true);
+        }
       },
       {
         threshold: 0.2,
@@ -132,70 +155,98 @@ const Story = () => {
   const [activeStage, setActiveStage] = useState(stages[0].id);
   const [curveNodes, setCurveNodes] = useState([]);
   const [curveHeight, setCurveHeight] = useState(0);
+  const mainShellRef = useRef(null);
+
+  const stageMap = useMemo(
+    () => Object.fromEntries(stages.map((stage) => [stage.id, stage])),
+    []
+  );
+
+  const updateCurve = useCallback(() => {
+    const shell = mainShellRef.current;
+    if (!shell) return;
+
+    const shellRect = shell.getBoundingClientRect();
+
+    const nodes = stages.map((stage) => {
+      const el = document.getElementById(stage.id);
+      if (!el) return null;
+      const rect = el.getBoundingClientRect();
+      return rect.top - shellRect.top + rect.height / 2;
+    });
+
+    const valid = nodes.filter((value) => value != null);
+    const maxY = valid.length ? Math.max(...valid) : 0;
+
+    setCurveNodes(nodes);
+    setCurveHeight(maxY + 220);
+  }, []);
 
   useEffect(() => {
-    const sections = stages.map((s) => document.getElementById(s.id));
+    const sectionElements = stages
+      .map((stage) => document.getElementById(stage.id))
+      .filter(Boolean);
+
+    if (!sectionElements.length) return undefined;
 
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
-          .filter((e) => e.isIntersecting)
+          .filter((entry) => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
 
-        if (visible[0]) {
+        if (visible[0]?.target?.id) {
           setActiveStage(visible[0].target.id);
         }
       },
-      { threshold: 0.38 }
+      {
+        threshold: [0.25, 0.4, 0.6, 0.75],
+        rootMargin: "-12% 0px -20% 0px",
+      }
     );
 
-    sections.forEach((el) => el && observer.observe(el));
+    sectionElements.forEach((el) => observer.observe(el));
+
     return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
-    const updateCurve = () => {
-      const shell = document.querySelector(".story-main-shell");
-      if (!shell) return;
+    updateCurve();
 
-      const shellRect = shell.getBoundingClientRect();
+    let ticking = false;
 
-      const nodes = stages.map((stage) => {
-        const el = document.getElementById(stage.id);
-        if (!el) return null;
-        const rect = el.getBoundingClientRect();
-        return rect.top - shellRect.top + rect.height / 2;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        updateCurve();
+        ticking = false;
       });
-
-      const valid = nodes.filter((n) => n != null);
-      const maxY = valid.length ? Math.max(...valid) : 0;
-
-      setCurveNodes(nodes);
-      setCurveHeight(maxY + 220);
     };
 
-    updateCurve();
     window.addEventListener("resize", updateCurve);
-    window.addEventListener("scroll", updateCurve, { passive: true });
+    window.addEventListener("load", updateCurve);
+    window.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
       window.removeEventListener("resize", updateCurve);
-      window.removeEventListener("scroll", updateCurve);
+      window.removeEventListener("load", updateCurve);
+      window.removeEventListener("scroll", onScroll);
     };
-  }, []);
+  }, [updateCurve]);
 
-  const scrollToStage = (id) => {
+  const scrollToStage = useCallback((id) => {
     const el = document.getElementById(id);
     if (!el) return;
 
     const rect = el.getBoundingClientRect();
     window.scrollTo({
-      top: rect.top + window.scrollY - 84,
+      top: rect.top + window.scrollY - 104,
       behavior: "smooth",
     });
-  };
+  }, []);
 
-  const scrollToFirstStage = () => scrollToStage(stages[0].id);
+  const activeStageData = stageMap[activeStage] || stages[0];
 
   return (
     <div className="story-page">
@@ -206,6 +257,10 @@ const Story = () => {
             <span className="story-hero-pill-text">A progress story</span>
           </div>
 
+          <p className="story-hero-eyebrow">
+            Built around discipline, not decoration.
+          </p>
+
           <h1 className="story-hero-title">
             A problem stayed.
             <br />
@@ -213,13 +268,13 @@ const Story = () => {
           </h1>
 
           <p className="story-hero-subtitle">
-            This page tells the journey in stages: a visible problem, sharper
+            This page follows the journey in stages: a visible problem, sharper
             thinking, a stronger plan, a longer process, measurable progress,
-            the current scenario, and the future being built from it.
+            the current scenario, and the future being designed from it.
           </p>
 
           <p className="story-hero-trailer">
-            Read it like a moving narrative. Each scroll reveals one more turn
+            Read it like a moving narrative. Each scroll reveals another layer
             in how FitGearzzz moved from friction toward structure, clarity, and
             confidence.
           </p>
@@ -227,13 +282,28 @@ const Story = () => {
           <div className="story-hero-actions">
             <button
               className="story-btn story-btn-primary"
-              onClick={scrollToFirstStage}
+              onClick={() => scrollToStage(stages[0].id)}
             >
               Start the journey
             </button>
             <a href="/products" className="story-btn story-btn-secondary">
               See the current outcome
             </a>
+          </div>
+
+          <div className="story-hero-meta">
+            <div className="story-hero-meta-card">
+              <span className="story-hero-meta-label">Current stage</span>
+              <strong className="story-hero-meta-value">
+                {activeStageData.index} · {activeStageData.label}
+              </strong>
+            </div>
+            <div className="story-hero-meta-card">
+              <span className="story-hero-meta-label">Narrative mode</span>
+              <strong className="story-hero-meta-value">
+                Long-form scroll story
+              </strong>
+            </div>
           </div>
 
           <div className="story-hero-scroll">
@@ -252,7 +322,7 @@ const Story = () => {
 
       <ManifestoBlock />
 
-      <div className="story-main-shell">
+      <div className="story-main-shell" ref={mainShellRef}>
         <JourneyCurve
           stages={stages}
           activeStage={activeStage}
@@ -283,13 +353,14 @@ const StageDial = ({ stages, activeStage }) => {
   const [angle, setAngle] = useState(-110);
 
   useEffect(() => {
-    const idx = stages.findIndex((s) => s.id === activeStage);
+    const idx = stages.findIndex((stage) => stage.id === activeStage);
     if (idx === -1) return;
 
     const total = stages.length;
     const start = -130;
     const end = 110;
     const step = (end - start) / Math.max(total - 1, 1);
+
     setAngle(start + idx * step);
   }, [activeStage, stages]);
 
@@ -354,7 +425,6 @@ const StageDial = ({ stages, activeStage }) => {
                   Z
                 "
               />
-
               <line
                 x1="8"
                 y1="0"
@@ -362,7 +432,6 @@ const StageDial = ({ stages, activeStage }) => {
                 y2="0"
                 className="dial-hand-core-line"
               />
-
               <path
                 className="dial-hand-tail"
                 d="
@@ -374,7 +443,6 @@ const StageDial = ({ stages, activeStage }) => {
                   Z
                 "
               />
-
               <circle className="dial-hand-joint" cx="0" cy="0" r="8.5" />
               <circle className="dial-hand-joint-inner" cx="0" cy="0" r="3.8" />
               <circle className="dial-hand-tip" cx="82" cy="0" r="4.2" />
@@ -405,12 +473,7 @@ const ManifestoBlock = () => {
   );
 };
 
-const JourneyCurve = ({
-  stages,
-  activeStage,
-  curveNodes,
-  curveHeight,
-}) => {
+const JourneyCurve = ({ stages, activeStage, curveNodes, curveHeight }) => {
   return (
     <div
       className="story-curve-wrapper"
@@ -424,9 +487,9 @@ const JourneyCurve = ({
       >
         <defs>
           <linearGradient id="curveGradient" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="rgba(148,163,184,0.2)" />
-            <stop offset="45%" stopColor="rgba(249,115,22,0.42)" />
-            <stop offset="100%" stopColor="rgba(148,163,184,0.16)" />
+            <stop offset="0%" stopColor="rgba(148,163,184,0.18)" />
+            <stop offset="45%" stopColor="rgba(249,115,22,0.48)" />
+            <stop offset="100%" stopColor="rgba(148,163,184,0.18)" />
           </linearGradient>
         </defs>
         <path
@@ -447,7 +510,7 @@ const JourneyCurve = ({
       {curveNodes.map((y, i) => {
         if (y == null) return null;
         const stage = stages[i];
-        const isActive = stage && stage.id === activeStage;
+        const isActive = stage?.id === activeStage;
 
         return (
           <div
@@ -476,10 +539,12 @@ const TimelineStrip = ({ stages, activeStage, onStageClick }) => {
           {stages.map((stage) => (
             <button
               key={stage.id}
+              type="button"
               className={`story-timeline-pill ${
                 activeStage === stage.id ? "is-active" : ""
               }`}
               onClick={() => onStageClick(stage.id)}
+              aria-pressed={activeStage === stage.id}
             >
               <span className="story-timeline-pill-index">{stage.index}</span>
               <span className="story-timeline-pill-label">{stage.label}</span>
@@ -522,22 +587,12 @@ const StageSection = ({ stage, index }) => {
         <div className="story-stage-evidence">
           <div className="story-stage-card">
             <p className="story-stage-card-label">What defined this stage</p>
-            <p className="story-stage-card-text">
-              {index === 0 &&
-                "A real problem was identified clearly enough that it could no longer be ignored."}
-              {index === 1 &&
-                "The right question replaced vague ambition and gave the journey sharper direction."}
-              {index === 2 &&
-                "Structure entered the process through standards, priorities, and a more disciplined plan."}
-              {index === 3 &&
-                "Testing became a filter. Weak ideas were removed before they could shape the brand."}
-              {index === 4 &&
-                "Progress appeared when quality, presentation, and confidence began aligning together."}
-              {index === 5 &&
-                "The system matured into something stable enough to support growth without losing its center."}
-              {index === 6 &&
-                "The future became a responsibility: to refine what works rather than expanding without judgment."}
-            </p>
+            <p className="story-stage-card-text">{stage.evidence}</p>
+          </div>
+
+          <div className="story-stage-card story-stage-card-accent">
+            <p className="story-stage-card-label">Stage signal</p>
+            <p className="story-stage-card-text">{stage.accent}</p>
           </div>
         </div>
       </div>

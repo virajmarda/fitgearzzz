@@ -124,6 +124,16 @@ const signals = [
   },
 ];
 
+const dialToneMap = {
+  "stage-problem": "problem",
+  "stage-thought": "thought",
+  "stage-plan": "plan",
+  "stage-process": "build",
+  "stage-progress": "build",
+  "stage-current": "future",
+  "stage-future": "future",
+};
+
 function useInView(options = {}) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
@@ -167,7 +177,6 @@ const Story = () => {
     if (!shell) return;
 
     const shellRect = shell.getBoundingClientRect();
-
     const nodes = stages.map((stage) => {
       const el = document.getElementById(stage.id);
       if (!el) return null;
@@ -206,7 +215,6 @@ const Story = () => {
     );
 
     sectionElements.forEach((el) => observer.observe(el));
-
     return () => observer.disconnect();
   }, []);
 
@@ -214,7 +222,6 @@ const Story = () => {
     updateCurve();
 
     let ticking = false;
-
     const onScroll = () => {
       if (ticking) return;
       ticking = true;
@@ -250,16 +257,21 @@ const Story = () => {
 
   return (
     <div className="story-page">
-      <section className="story-hero" id="top">
+      <StageDial stages={stages} activeStage={activeStage} />
+
+      <header className="story-hero">
+        <div className="story-hero-bg-rings" />
+        <div className="story-hero-bg-accent" />
+
         <div className="story-hero-inner">
           <div className="story-hero-pill">
             <span className="story-hero-pill-dot" />
             <span className="story-hero-pill-text">A progress story</span>
           </div>
 
-          <p className="story-hero-eyebrow">
+          <div className="story-hero-eyebrow">
             Built around discipline, not decoration.
-          </p>
+          </div>
 
           <h1 className="story-hero-title">
             A problem stayed.
@@ -269,13 +281,13 @@ const Story = () => {
 
           <p className="story-hero-subtitle">
             This page follows the journey in stages: a visible problem, sharper
-            thinking, a stronger plan, a longer process, measurable progress,
-            the current scenario, and the future being designed from it.
+            thinking, a stronger plan, a longer process, measurable progress, the
+            current scenario, and the future being designed from it.
           </p>
 
           <p className="story-hero-trailer">
-            Read it like a moving narrative. Each scroll reveals another layer
-            in how FitGearzzz moved from friction toward structure, clarity, and
+            Read it like a moving narrative. Each scroll reveals another layer in
+            how FitGearzzz moved from friction toward structure, clarity, and
             confidence.
           </p>
 
@@ -286,7 +298,8 @@ const Story = () => {
             >
               Start the journey
             </button>
-            <a href="/products" className="story-btn story-btn-secondary">
+
+            <a className="story-btn story-btn-secondary" href="/products">
               See the current outcome
             </a>
           </div>
@@ -294,15 +307,14 @@ const Story = () => {
           <div className="story-hero-meta">
             <div className="story-hero-meta-card">
               <span className="story-hero-meta-label">Current stage</span>
-              <strong className="story-hero-meta-value">
+              <span className="story-hero-meta-value">
                 {activeStageData.index} · {activeStageData.label}
-              </strong>
+              </span>
             </div>
+
             <div className="story-hero-meta-card">
               <span className="story-hero-meta-label">Narrative mode</span>
-              <strong className="story-hero-meta-value">
-                Long-form scroll story
-              </strong>
+              <span className="story-hero-meta-value">Long-form scroll story</span>
             </div>
           </div>
 
@@ -313,12 +325,7 @@ const Story = () => {
             </span>
           </div>
         </div>
-
-        <div className="story-hero-bg-accent" />
-        <div className="story-hero-bg-rings" />
-      </section>
-
-      <StageDial stages={stages} activeStage={activeStage} />
+      </header>
 
       <ManifestoBlock />
 
@@ -330,27 +337,32 @@ const Story = () => {
           curveHeight={curveHeight}
         />
 
+        <TimelineStrip
+          stages={stages}
+          activeStage={activeStage}
+          onStageClick={scrollToStage}
+        />
+
         <main className="story-main">
-          <TimelineStrip
-            stages={stages}
-            activeStage={activeStage}
-            onStageClick={scrollToStage}
-          />
-
           {stages.map((stage, index) => (
-            <StageSection key={stage.id} stage={stage} index={index} />
+            <StageSection
+              key={stage.id}
+              stage={stage}
+              index={index}
+            />
           ))}
-
-          <SignalsSection />
-          <ClosingSection />
         </main>
       </div>
+
+      <SignalsSection />
+      <ClosingSection />
     </div>
   );
 };
 
 const StageDial = ({ stages, activeStage }) => {
-  const [angle, setAngle] = useState(-110);
+  const [isDialMorphing, setIsDialMorphing] = useState(false);
+  const [angle, setAngle] = useState(-130);
 
   useEffect(() => {
     const idx = stages.findIndex((stage) => stage.id === activeStage);
@@ -364,93 +376,90 @@ const StageDial = ({ stages, activeStage }) => {
     setAngle(start + idx * step);
   }, [activeStage, stages]);
 
+  useEffect(() => {
+    setIsDialMorphing(true);
+    const timer = setTimeout(() => setIsDialMorphing(false), 1350);
+    return () => clearTimeout(timer);
+  }, [activeStage]);
+
+  const tone = dialToneMap[activeStage] || "problem";
+
   return (
-    <aside className="story-watch-dial" aria-hidden="true">
-      <div className="story-watch-dial-wrap">
+    <div className="story-watch-dial" aria-hidden="true">
+      <div
+        className={`story-watch-dial-wrap ${isDialMorphing ? "is-morphing" : ""}`}
+        data-tone={tone}
+      >
         <svg
           className="story-watch-svg"
           viewBox="0 0 360 360"
-          preserveAspectRatio="xMidYMid meet"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <g transform="translate(180 180)">
-            <circle r="116" className="dial-ring dial-ring-main" />
-            <circle r="86" className="dial-ring dial-ring-secondary" />
+          <circle className="dial-ring dial-ring-main" cx="180" cy="180" r="118" />
+          <circle className="dial-ring dial-ring-secondary" cx="180" cy="180" r="84" />
+          <circle className="dial-core" cx="180" cy="180" r="58" />
+          <circle className="dial-orbit" cx="180" cy="180" r="102" />
 
-            <path
-              d="M -70 -92 A 116 116 0 0 1 70 -92"
-              className="dial-arc-accent"
-            />
+          <path
+            className="dial-arc-accent"
+            d="M84 112 A118 118 0 0 1 170 62"
+          />
 
-            {stages.map((stage, index) => {
-              const start = -130;
-              const end = 110;
-              const step = (end - start) / Math.max(stages.length - 1, 1);
-              const tickAngle = start + index * step;
-              const rad = (tickAngle * Math.PI) / 180;
+          {stages.map((stage, index) => {
+            const start = -130;
+            const end = 110;
+            const step = (end - start) / Math.max(stages.length - 1, 1);
+            const tickAngle = start + index * step;
+            const rad = (tickAngle * Math.PI) / 180;
+            const x1 = 180 + Math.cos(rad) * 98;
+            const y1 = 180 + Math.sin(rad) * 98;
+            const x2 = 180 + Math.cos(rad) * 116;
+            const y2 = 180 + Math.sin(rad) * 116;
 
-              const x1 = Math.cos(rad) * 98;
-              const y1 = Math.sin(rad) * 98;
-              const x2 = Math.cos(rad) * 116;
-              const y2 = Math.sin(rad) * 116;
+            const isActive = stage.id === activeStage;
 
-              return (
-                <line
-                  key={stage.id}
-                  x1={x1}
-                  y1={y1}
-                  x2={x2}
-                  y2={y2}
-                  className="dial-tick"
-                />
-              );
-            })}
-
-            <g
-              className="dial-hand"
-              style={{
-                transform: `rotate(${angle}deg)`,
-                transformOrigin: "center",
-              }}
-            >
-              <path
-                className="dial-hand-shape"
-                d="
-                  M 0 -4
-                  L 66 -2.2
-                  L 82 0
-                  L 66 2.2
-                  L 0 4
-                  Q -8 4 -12 0
-                  Q -8 -4 0 -4
-                  Z
-                "
-              />
+            return (
               <line
-                x1="8"
-                y1="0"
-                x2="68"
-                y2="0"
-                className="dial-hand-core-line"
+                key={stage.id}
+                className={`dial-tick ${isActive ? "" : "tick-soft"}`}
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
               />
-              <path
-                className="dial-hand-tail"
-                d="
-                  M -10 -2.5
-                  L -28 -1.5
-                  L -36 0
-                  L -28 1.5
-                  L -10 2.5
-                  Z
-                "
-              />
-              <circle className="dial-hand-joint" cx="0" cy="0" r="8.5" />
-              <circle className="dial-hand-joint-inner" cx="0" cy="0" r="3.8" />
-              <circle className="dial-hand-tip" cx="82" cy="0" r="4.2" />
-            </g>
+            );
+          })}
+
+          <g
+            className="dial-hand"
+            style={{
+              transform: `rotate(${angle}deg)`,
+              transformOrigin: "180px 180px",
+            }}
+          >
+            <path
+              className="dial-hand-shape"
+              d="M180 180 L248 124 Q254 119 259 124 Q264 130 259 136 L192 188 Z"
+            />
+            <line
+              className="dial-hand-core-line"
+              x1="185"
+              y1="176"
+              x2="248"
+              y2="129"
+            />
+            <path
+              className="dial-hand-tail"
+              d="M176 184 L165 196 L180 188 Z"
+            />
+            <circle className="dial-hand-joint" cx="180" cy="180" r="10" />
+            <circle className="dial-hand-joint-inner" cx="180" cy="180" r="4.5" />
+            <circle className="dial-hand-tip" cx="258" cy="130" r="4.8" />
           </g>
         </svg>
       </div>
-    </aside>
+    </div>
   );
 };
 
@@ -462,7 +471,7 @@ const ManifestoBlock = () => {
       ref={ref}
       className={`story-manifesto ${inView ? "is-visible" : ""}`}
     >
-      <p className="story-manifesto-label">Perspective</p>
+      <div className="story-manifesto-label">Perspective</div>
       <p className="story-manifesto-text">
         Strong stories are not born from perfection. They are built through a
         recurring sequence: a problem becomes visible, weak paths are tested and
@@ -474,36 +483,28 @@ const ManifestoBlock = () => {
 };
 
 const JourneyCurve = ({ stages, activeStage, curveNodes, curveHeight }) => {
+  if (!curveNodes.length || !curveHeight) return null;
+
   return (
     <div
       className="story-curve-wrapper"
-      style={{ height: curveHeight || 0 }}
+      style={{ height: `${curveHeight}px` }}
       aria-hidden="true"
     >
       <svg
         className="story-curve"
-        viewBox="0 0 320 1800"
+        width="420"
+        height={curveHeight}
+        viewBox={`0 0 420 ${curveHeight}`}
         preserveAspectRatio="none"
       >
-        <defs>
-          <linearGradient id="curveGradient" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="rgba(148,163,184,0.18)" />
-            <stop offset="45%" stopColor="rgba(249,115,22,0.48)" />
-            <stop offset="100%" stopColor="rgba(148,163,184,0.18)" />
-          </linearGradient>
-        </defs>
         <path
-          d="
-            M 82 40
-            C 252 210, 44 400, 242 610
-            S 44 900, 242 1110
-            S 44 1390, 242 1600
-          "
+          d={`M210 20 C 310 ${curveHeight * 0.16}, 110 ${curveHeight * 0.34}, 210 ${
+            curveHeight * 0.5
+          } S 320 ${curveHeight * 0.82}, 210 ${curveHeight - 40}`}
+          stroke="rgba(249, 115, 22, 0.22)"
+          strokeWidth="1.5"
           fill="none"
-          stroke="url(#curveGradient)"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeDasharray="8 14"
         />
       </svg>
 
@@ -513,10 +514,10 @@ const JourneyCurve = ({ stages, activeStage, curveNodes, curveHeight }) => {
         const isActive = stage?.id === activeStage;
 
         return (
-          <div
+          <span
             key={stage.id}
             className={`story-curve-node ${isActive ? "is-active" : ""}`}
-            style={{ top: y }}
+            style={{ top: `${y}px` }}
           />
         );
       })}
@@ -533,21 +534,21 @@ const TimelineStrip = ({ stages, activeStage, onStageClick }) => {
       className={`story-timeline-strip ${inView ? "is-visible" : ""}`}
     >
       <div className="story-timeline-inner">
-        <p className="story-timeline-label">Stages of the journey</p>
+        <div className="story-timeline-label">Stages of the journey</div>
 
         <div className="story-timeline-track">
           {stages.map((stage) => (
             <button
               key={stage.id}
-              type="button"
               className={`story-timeline-pill ${
                 activeStage === stage.id ? "is-active" : ""
               }`}
               onClick={() => onStageClick(stage.id)}
               aria-pressed={activeStage === stage.id}
+              type="button"
             >
               <span className="story-timeline-pill-index">{stage.index}</span>
-              <span className="story-timeline-pill-label">{stage.label}</span>
+              <span>{stage.label}</span>
             </button>
           ))}
         </div>
@@ -558,41 +559,39 @@ const TimelineStrip = ({ stages, activeStage, onStageClick }) => {
 
 const StageSection = ({ stage, index }) => {
   const [ref, inView] = useInView();
-  const isEven = index % 2 === 0;
+  const isOdd = index % 2 === 1;
 
   return (
     <section
       id={stage.id}
       ref={ref}
-      className={`story-stage ${inView ? "is-visible" : ""} ${
-        isEven ? "is-even" : "is-odd"
-      }`}
+      className={`story-stage ${isOdd ? "is-odd" : ""} ${inView ? "is-visible" : ""}`}
     >
       <div className="story-stage-inner">
         <div className="story-stage-copy">
-          <p className="story-stage-kicker">
+          <div className="story-stage-kicker">
             Stage {stage.index} · {stage.label}
-          </p>
+          </div>
 
           <h2 className="story-stage-title">{stage.title}</h2>
           <p className="story-stage-summary">{stage.summary}</p>
           <p className="story-stage-tension">{stage.tension}</p>
 
           <div className="story-stage-key">
-            <span className="story-stage-key-label">Turning point</span>
-            <p className="story-stage-key-text">{stage.keyPoint}</p>
+            <div className="story-stage-key-label">Turning point</div>
+            <div className="story-stage-key-text">{stage.keyPoint}</div>
           </div>
         </div>
 
         <div className="story-stage-evidence">
           <div className="story-stage-card">
-            <p className="story-stage-card-label">What defined this stage</p>
-            <p className="story-stage-card-text">{stage.evidence}</p>
+            <div className="story-stage-card-label">What defined this stage</div>
+            <div className="story-stage-card-text">{stage.evidence}</div>
           </div>
 
           <div className="story-stage-card story-stage-card-accent">
-            <p className="story-stage-card-label">Stage signal</p>
-            <p className="story-stage-card-text">{stage.accent}</p>
+            <div className="story-stage-card-label">Stage signal</div>
+            <div className="story-stage-card-text">{stage.accent}</div>
           </div>
         </div>
       </div>
@@ -610,7 +609,7 @@ const SignalsSection = () => {
     >
       <div className="story-signals-inner">
         <div className="story-section-heading">
-          <p className="story-section-kicker">Signals of real progress</p>
+          <div className="story-section-kicker">Signals of real progress</div>
           <h2 className="story-section-title">
             Signs that the journey has depth behind it.
           </h2>
@@ -619,8 +618,8 @@ const SignalsSection = () => {
         <div className="story-signals-grid">
           {signals.map((signal) => (
             <div key={signal.title} className="story-signal-card">
-              <p className="story-signal-title">{signal.title}</p>
-              <p className="story-signal-text">{signal.text}</p>
+              <div className="story-signal-title">{signal.title}</div>
+              <div className="story-signal-text">{signal.text}</div>
             </div>
           ))}
         </div>
@@ -638,28 +637,27 @@ const ClosingSection = () => {
       className={`story-closing ${inView ? "is-visible" : ""}`}
     >
       <div className="story-closing-inner">
-        <p className="story-closing-kicker">Where this story meets you</p>
+        <div className="story-closing-kicker">Where this story meets you</div>
         <h2 className="story-closing-title">
           Every stage matters only if the result supports real effort.
         </h2>
 
         <p className="story-closing-text">
           The journey behind FitGearzzz is not mythology. It is a sequence of
-          responses to a genuine problem, refined into a stronger system over
-          time.
+          responses to a genuine problem, refined into a stronger system over time.
         </p>
 
         <p className="story-closing-text">
-          If this page works the way it should, it leaves one clear impression:
-          the tools used in training should feel as disciplined as the people
-          using them.
+          If this page works the way it should, it leaves one clear impression: the
+          tools used in training should feel as disciplined as the people using
+          them.
         </p>
 
         <div className="story-closing-actions">
-          <a href="/products" className="story-btn story-btn-primary">
+          <a className="story-btn story-btn-primary" href="/products">
             Continue into the collection
           </a>
-          <a href="/contact" className="story-btn story-btn-secondary">
+          <a className="story-btn story-btn-secondary" href="/contact">
             Connect with FitGearzzz
           </a>
         </div>

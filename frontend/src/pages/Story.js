@@ -362,33 +362,30 @@ const Story = () => {
 
 const StageDial = ({ stages, activeStage }) => {
   const [isDialMorphing, setIsDialMorphing] = useState(false);
-  const [angle, setAngle] = useState(-130);
+  const [progressAngle, setProgressAngle] = useState(-110);
 
   useEffect(() => {
     const idx = stages.findIndex((stage) => stage.id === activeStage);
     if (idx === -1) return;
 
     const total = stages.length;
-    const start = -130;
-    const end = 110;
+    const start = -110; // top-left visible arc
+    const end = 110;    // bottom-left visible arc
     const step = (end - start) / Math.max(total - 1, 1);
 
-    setAngle(start + idx * step);
+    setProgressAngle(start + idx * step);
   }, [activeStage, stages]);
 
   useEffect(() => {
     setIsDialMorphing(true);
-    const timer = setTimeout(() => setIsDialMorphing(false), 1350);
+    const timer = setTimeout(() => setIsDialMorphing(false), 900);
     return () => clearTimeout(timer);
   }, [activeStage]);
 
-  const tone = dialToneMap[activeStage] || "problem";
-
   return (
-    <div className="story-watch-dial" aria-hidden="true">
+    <div className="story-watch-dial story-watch-dial-left" aria-hidden="true">
       <div
         className={`story-watch-dial-wrap ${isDialMorphing ? "is-morphing" : ""}`}
-        data-tone={tone}
       >
         <svg
           className="story-watch-svg"
@@ -396,33 +393,59 @@ const StageDial = ({ stages, activeStage }) => {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <circle className="dial-ring dial-ring-main" cx="180" cy="180" r="118" />
-          <circle className="dial-ring dial-ring-secondary" cx="180" cy="180" r="84" />
-          <circle className="dial-core" cx="180" cy="180" r="58" />
-          <circle className="dial-orbit" cx="180" cy="180" r="102" />
+          <defs>
+            <linearGradient id="dialGlowStroke" x1="72" y1="72" x2="210" y2="288" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stopColor="#fb923c" />
+              <stop offset="55%" stopColor="#f97316" />
+              <stop offset="100%" stopColor="#ea580c" />
+            </linearGradient>
+          </defs>
+
+          <path
+            className="dial-ring dial-ring-main"
+            d="M 214 62 A 118 118 0 1 0 214 298"
+          />
+          <path
+            className="dial-ring dial-ring-secondary"
+            d="M 214 96 A 84 84 0 1 0 214 264"
+          />
+          <path
+            className="dial-ring dial-ring-core"
+            d="M 214 122 A 58 58 0 1 0 214 238"
+          />
 
           <path
             className="dial-arc-accent"
-            d="M84 112 A118 118 0 0 1 170 62"
+            d="M 214 62 A 118 118 0 1 0 214 298"
+            pathLength="100"
+            style={{
+              strokeDasharray: `${((stages.findIndex((s) => s.id === activeStage) + 1) / stages.length) * 100} 100`,
+            }}
           />
 
           {stages.map((stage, index) => {
-            const start = -130;
+            const start = -110;
             const end = 110;
             const step = (end - start) / Math.max(stages.length - 1, 1);
             const tickAngle = start + index * step;
             const rad = (tickAngle * Math.PI) / 180;
-            const x1 = 180 + Math.cos(rad) * 98;
-            const y1 = 180 + Math.sin(rad) * 98;
-            const x2 = 180 + Math.cos(rad) * 116;
-            const y2 = 180 + Math.sin(rad) * 116;
+
+            const cx = 180;
+            const cy = 180;
+            const inner = 96;
+            const outer = 116;
+
+            const x1 = cx + Math.cos(rad) * inner;
+            const y1 = cy + Math.sin(rad) * inner;
+            const x2 = cx + Math.cos(rad) * outer;
+            const y2 = cy + Math.sin(rad) * outer;
 
             const isActive = stage.id === activeStage;
 
             return (
               <line
                 key={stage.id}
-                className={`dial-tick ${isActive ? "" : "tick-soft"}`}
+                className={`dial-tick ${isActive ? "is-active" : ""}`}
                 x1={x1}
                 y1={y1}
                 x2={x2}
@@ -434,28 +457,20 @@ const StageDial = ({ stages, activeStage }) => {
           <g
             className="dial-hand"
             style={{
-              transform: `rotate(${angle}deg)`,
+              transform: `rotate(${progressAngle}deg)`,
               transformOrigin: "180px 180px",
             }}
           >
-            <path
-              className="dial-hand-shape"
-              d="M180 180 L248 124 Q254 119 259 124 Q264 130 259 136 L192 188 Z"
-            />
             <line
-              className="dial-hand-core-line"
-              x1="185"
-              y1="176"
-              x2="248"
-              y2="129"
-            />
-            <path
-              className="dial-hand-tail"
-              d="M176 184 L165 196 L180 188 Z"
+              className="dial-hand-line"
+              x1="180"
+              y1="180"
+              x2="116"
+              y2="180"
             />
             <circle className="dial-hand-joint" cx="180" cy="180" r="10" />
             <circle className="dial-hand-joint-inner" cx="180" cy="180" r="4.5" />
-            <circle className="dial-hand-tip" cx="258" cy="130" r="4.8" />
+            <circle className="dial-hand-tip" cx="116" cy="180" r="5.6" />
           </g>
         </svg>
       </div>

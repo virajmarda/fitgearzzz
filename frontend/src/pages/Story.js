@@ -349,105 +349,115 @@ const Story = () => {
 };
 
 const StageDial = ({ stages, activeStage }) => {
-  const [isMorphing, setIsMorphing] = useState(false);
-
-  const activeIndex = Math.max(
-    0,
-    stages.findIndex((stage) => stage.id === activeStage)
-  );
-
-  const toneMap = [
-    "problem",
-    "thought",
-    "plan",
-    "build",
-    "build",
-    "future",
-    "future",
-  ];
-
-  const dialTone = toneMap[activeIndex] || "problem";
+  const [rotation, setRotation] = useState(0);
+  const [activeChapter, setActiveChapter] = useState(0);
 
   useEffect(() => {
-    setIsMorphing(true);
-    const timer = window.setTimeout(() => setIsMorphing(false), 1350);
-    return () => window.clearTimeout(timer);
-  }, [activeStage]);
+    const chapterIndex = Math.max(
+      0,
+      stages.findIndex((stage) => stage.id === activeStage)
+    );
+
+    const chapterSpacing = 30;
+    const targetAngle = chapterIndex * chapterSpacing;
+
+    const frame = requestAnimationFrame(() => {
+      setRotation(targetAngle);
+      setActiveChapter(chapterIndex);
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [activeStage, stages]);
 
   return (
-    <div className="story-watch-dial" aria-hidden="true">
-      <div
-        className={`story-watch-dial-wrap ${isMorphing ? "is-morphing" : ""}`}
-        data-tone={dialTone}
-      >
-        <svg
-          className="story-watch-svg"
-          viewBox="0 0 360 360"
-          xmlns="http://www.w3.org/2000/svg"
+    <div className="story-dial-fixed" aria-hidden="true">
+      <div className="story-dial-window">
+        <div
+          className="story-dial-rotor"
+          style={{
+            transform: `rotate(${rotation}deg)`,
+          }}
         >
-          <circle
-            className="dial-ring dial-ring-main"
-            cx="180"
-            cy="180"
-            r="112"
-          />
-          <circle
-            className="dial-ring dial-ring-secondary"
-            cx="180"
-            cy="180"
-            r="84"
-          />
-          <circle
-            className="dial-core"
-            cx="180"
-            cy="180"
-            r="54"
-          />
-          <circle
-            className="dial-orbit"
-            cx="180"
-            cy="180"
-            r="132"
-          />
+          <div className="story-dial-ring ring-1" />
+          <div className="story-dial-ring ring-2" />
+          <div className="story-dial-ring ring-3" />
 
-          <circle
-            className="dial-arc-accent"
-            cx="180"
-            cy="180"
-            r="112"
-            pathLength="1000"
-            strokeDasharray="180 1000"
-            strokeDashoffset="0"
-          />
+          {Array.from({ length: 12 }).map((_, i) => {
+            const angle = i * 30 - 90;
+            const radius = 220;
 
-          <line className="dial-tick" x1="180" y1="50" x2="180" y2="72" />
-          <line className="dial-tick" x1="292" y1="116" x2="275" y2="129" />
-          <line className="dial-tick" x1="288" y1="248" x2="271" y2="236" />
-          <line className="dial-tick tick-soft" x1="180" y1="288" x2="180" y2="310" />
-          <line className="dial-tick tick-soft" x1="86" y1="247" x2="101" y2="236" />
-          <line className="dial-tick" x1="70" y1="116" x2="86" y2="128" />
+            const x = Math.cos((angle * Math.PI) / 180) * radius;
+            const y = Math.sin((angle * Math.PI) / 180) * radius;
 
-          <g className="dial-hand">
-            <path
-              className="dial-hand-shape"
-              d="M176 178 L246 112 Q252 108 255 112 Q258 116 254 123 L188 184 Z"
-            />
-            <line
-              className="dial-hand-core-line"
-              x1="183"
-              y1="180"
-              x2="245"
-              y2="118"
-            />
-            <path
-              className="dial-hand-tail"
-              d="M172 186 L156 204 L176 188 Z"
-            />
-            <circle className="dial-hand-joint" cx="180" cy="180" r="10" />
-            <circle className="dial-hand-joint-inner" cx="180" cy="180" r="4" />
-            <circle className="dial-hand-tip" cx="247" cy="116" r="4.8" />
-          </g>
-        </svg>
+            const chapterMarkerIndexes = [9, 8, 7, 6, 5, 4, 3];
+            const isLinked = chapterMarkerIndexes.includes(i);
+            const linkedIndex = chapterMarkerIndexes.indexOf(i);
+            const isActiveMarker = linkedIndex === activeChapter;
+
+            return (
+              <div
+                key={`marker-${i}`}
+                className="story-dial-marker-wrap"
+                style={{
+                  transform: `translate(${x}px, ${y}px) rotate(${angle - 90}deg)`,
+                }}
+              >
+                <div
+                  className={`story-dial-marker ${
+                    isLinked
+                      ? isActiveMarker
+                        ? "is-active"
+                        : "is-linked"
+                      : "is-muted"
+                  }`}
+                />
+              </div>
+            );
+          })}
+
+          {stages.map((stage, i) => {
+            const markerIndexes = [9, 8, 7, 6, 5, 4, 3];
+            const markerIndex = markerIndexes[i];
+            const angle = markerIndex * 30 - 90;
+
+            const radius = 220;
+            const x = Math.cos((angle * Math.PI) / 180) * radius;
+            const y = Math.sin((angle * Math.PI) / 180) * radius;
+
+            const rotatedAngle = (angle + rotation + 360) % 360;
+            const normalizedDistance = Math.abs(
+              ((rotatedAngle - 180 + 540) % 360) - 180
+            );
+
+            const isNineOClock = normalizedDistance < 1.2;
+
+            return (
+              <div
+                key={stage.id}
+                className="story-dial-label-wrap"
+                style={{
+                  transform: `translate(${x}px, ${y}px) translate(-50%, -50%) rotate(${
+                    angle >= 90 && angle <= 270 ? angle + 180 : angle
+                  }deg)`,
+                }}
+              >
+                <div className="story-dial-label-row">
+                  <span
+                    className={`story-dial-label ${
+                      isNineOClock ? "is-active" : ""
+                    }`}
+                  >
+                    {stage.label}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+
+          <div className="story-dial-hub">
+            <div className="story-dial-hub-core" />
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -523,7 +533,9 @@ const TimelineStrip = ({ stages, activeStage, onStageClick }) => {
           {stages.map((stage) => (
             <button
               key={stage.id}
-              className={`story-timeline-pill ${activeStage === stage.id ? "is-active" : ""}`}
+              className={`story-timeline-pill ${
+                activeStage === stage.id ? "is-active" : ""
+              }`}
               onClick={() => onStageClick(stage.id)}
               aria-pressed={activeStage === stage.id}
               type="button"
@@ -546,7 +558,9 @@ const StageSection = ({ stage, index }) => {
     <section
       id={stage.id}
       ref={ref}
-      className={`story-stage ${isOdd ? "is-odd" : ""} ${inView ? "is-visible" : ""}`}
+      className={`story-stage ${isOdd ? "is-odd" : ""} ${
+        inView ? "is-visible" : ""
+      }`}
     >
       <div className="story-stage-inner">
         <div className="story-stage-copy">

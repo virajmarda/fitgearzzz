@@ -350,35 +350,44 @@ const Story = () => {
 
 const StageDial = ({ stages, activeStage }) => {
   const [isDialMorphing, setIsDialMorphing] = useState(false);
-  const [progressAngle, setProgressAngle] = useState(-110);
-
-  useEffect(() => {
-    const idx = stages.findIndex((stage) => stage.id === activeStage);
-    if (idx === -1) return;
-
-    const total = stages.length;
-    const start = -110;
-    const end = 110;
-    const step = (end - start) / Math.max(total - 1, 1);
-
-    setProgressAngle(start + idx * step);
-  }, [activeStage, stages]);
-
-  useEffect(() => {
-    setIsDialMorphing(true);
-    const timer = setTimeout(() => setIsDialMorphing(false), 850);
-    return () => clearTimeout(timer);
-  }, [activeStage]);
 
   const activeIndex = Math.max(
     0,
     stages.findIndex((stage) => stage.id === activeStage)
   );
+
   const progressPercent = ((activeIndex + 1) / stages.length) * 100;
+
+  const dialToneMap = useMemo(
+    () => ({
+      "stage-problem": "problem",
+      "stage-thought": "thought",
+      "stage-plan": "plan",
+      "stage-process": "build",
+      "stage-progress": "build",
+      "stage-current": "future",
+      "stage-future": "future",
+    }),
+    []
+  );
+
+  const dialTone = dialToneMap[activeStage] || "problem";
+
+  useEffect(() => {
+    setIsDialMorphing(true);
+    const timer = setTimeout(() => setIsDialMorphing(false), 1350);
+    return () => clearTimeout(timer);
+  }, [activeStage]);
 
   return (
     <div className="story-watch-dial story-watch-dial-left" aria-hidden="true">
-      <div className={`story-watch-dial-wrap ${isDialMorphing ? "is-morphing" : ""}`}>
+      <div
+        className={`story-watch-dial-wrap ${isDialMorphing ? "is-morphing" : ""}`}
+        data-tone={dialTone}
+        style={{
+          "--dial-progress": `${progressPercent}`,
+        }}
+      >
         <svg
           className="story-watch-svg"
           viewBox="0 0 360 360"
@@ -388,10 +397,10 @@ const StageDial = ({ stages, activeStage }) => {
           <defs>
             <linearGradient
               id="dialGlowStroke"
-              x1="92"
-              y1="76"
-              x2="104"
-              y2="286"
+              x1="84"
+              y1="72"
+              x2="132"
+              y2="300"
               gradientUnits="userSpaceOnUse"
             >
               <stop offset="0%" stopColor="#fdba74" />
@@ -400,22 +409,43 @@ const StageDial = ({ stages, activeStage }) => {
             </linearGradient>
           </defs>
 
-          <path
+          <circle
             className="dial-ring dial-ring-main"
-            d="M 220 64 A 116 116 0 1 0 220 296"
+            cx="180"
+            cy="180"
+            r="116"
           />
-          <path
+          <circle
             className="dial-ring dial-ring-secondary"
-            d="M 220 96 A 84 84 0 1 0 220 264"
+            cx="180"
+            cy="180"
+            r="86"
           />
-          <path
-            className="dial-ring dial-ring-core"
-            d="M 220 122 A 58 58 0 1 0 220 238"
+          <circle
+            className="dial-core"
+            cx="180"
+            cy="180"
+            r="56"
+          />
+          <circle
+            className="dial-orbit"
+            cx="180"
+            cy="180"
+            r="101"
           />
 
-          <path
+          <circle
+            className="dial-arc-track"
+            cx="180"
+            cy="180"
+            r="116"
+            pathLength="100"
+          />
+          <circle
             className="dial-arc-accent"
-            d="M 220 64 A 116 116 0 1 0 220 296"
+            cx="180"
+            cy="180"
+            r="116"
             pathLength="100"
             style={{
               strokeDasharray: `${progressPercent} 100`,
@@ -426,25 +456,23 @@ const StageDial = ({ stages, activeStage }) => {
             const start = -110;
             const end = 110;
             const step = (end - start) / Math.max(stages.length - 1, 1);
-            const tickAngle = start + index * step;
-            const rad = (tickAngle * Math.PI) / 180;
+            const angle = start + index * step;
+            const rad = (angle * Math.PI) / 180;
 
-            const cx = 180;
-            const cy = 180;
-            const inner = 94;
-            const outer = 114;
+            const inner = index % 2 === 0 ? 93 : 98;
+            const outer = index % 2 === 0 ? 116 : 112;
 
-            const x1 = cx + Math.cos(rad) * inner;
-            const y1 = cy + Math.sin(rad) * inner;
-            const x2 = cx + Math.cos(rad) * outer;
-            const y2 = cy + Math.sin(rad) * outer;
+            const x1 = 180 + Math.cos(rad) * inner;
+            const y1 = 180 + Math.sin(rad) * inner;
+            const x2 = 180 + Math.cos(rad) * outer;
+            const y2 = 180 + Math.sin(rad) * outer;
 
             const isActive = stage.id === activeStage;
 
             return (
               <line
                 key={stage.id}
-                className={`dial-tick ${isActive ? "is-active" : ""}`}
+                className={`dial-tick ${index % 2 === 1 ? "tick-soft" : ""} ${isActive ? "is-active" : ""}`}
                 x1={x1}
                 y1={y1}
                 x2={x2}
@@ -453,23 +481,25 @@ const StageDial = ({ stages, activeStage }) => {
             );
           })}
 
-          <g
-            className="dial-hand"
-            style={{
-              transform: `rotate(${progressAngle}deg)`,
-              transformOrigin: "180px 180px",
-            }}
-          >
+          <g className="dial-hand">
+            <path
+              className="dial-hand-shape"
+              d="M176 181 L112 177 Q104 180 99 186 Q107 191 116 192 L176 185 Z"
+            />
             <line
-              className="dial-hand-line"
-              x1="180"
-              y1="180"
-              x2="104"
-              y2="180"
+              className="dial-hand-core-line"
+              x1="176"
+              y1="183"
+              x2="108"
+              y2="184"
+            />
+            <path
+              className="dial-hand-tail"
+              d="M182 180 L168 176 L171 184 Z"
             />
             <circle className="dial-hand-joint" cx="180" cy="180" r="10" />
             <circle className="dial-hand-joint-inner" cx="180" cy="180" r="4.5" />
-            <circle className="dial-hand-tip" cx="104" cy="180" r="5.5" />
+            <circle className="dial-hand-tip" cx="104" cy="184" r="5" />
           </g>
         </svg>
       </div>

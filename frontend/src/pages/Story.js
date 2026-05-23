@@ -6,60 +6,60 @@ const stages = [
     id: "stage-problem",
     index: "01",
     label: "Problem",
-    title: "It started with a problem that stayed visible.",
+    title: "The problem was visible long before the solution was ready.",
     summary:
-      "The first stage began with a persistent gap: people were serious about training, but the tools around them often lacked the same seriousness.",
+      "The story began with a simple observation: people were putting serious effort into fitness, but the products around them often felt generic, inconsistent, or built without enough care.",
     tension:
-      "Products looked acceptable in listings and ads, yet too many failed under real effort, repeated use, and the practical demands of disciplined routines.",
+      "There was no shortage of options. The real shortage was trust — products that felt dependable enough to become part of a disciplined routine.",
     keyPoint:
-      "The issue was not lack of choice. It was the lack of dependable, confidence-building tools that felt truly resolved.",
+      "The challenge was not to add more noise. It was to identify a gap worth solving properly.",
     evidence:
-      "A real problem was identified clearly enough that it could no longer be ignored.",
+      "A clear problem became visible: a mismatch between the seriousness of training and the quality of tools supporting it.",
     accent: "Visible gap",
   },
   {
     id: "stage-thought",
     index: "02",
     label: "Thought",
-    title: "The next step was not action first. It was sharper thinking.",
+    title: "The next stage was not speed. It was sharper thinking.",
     summary:
-      "Before building anything meaningful, the problem had to be understood more precisely. That meant questioning what good training gear should actually deliver.",
+      "Before anything strong could be built, the problem had to be understood more deeply. That meant questioning what training products should actually do beyond looking acceptable in a listing.",
     tension:
-      "The market rewarded appearance and novelty too easily. But consistency, usability, and trust were the standards that mattered most over time.",
+      "It was easy to choose what looked marketable. It was harder to choose what would still feel right after repeated use and real expectations.",
     keyPoint:
-      "This stage reframed the journey: the goal was not to add more products, but to build a more dependable standard around them.",
+      "This stage shifted the story from vague ambition to a clearer standard.",
     evidence:
-      "The right question replaced vague ambition and gave the journey sharper direction.",
+      "The journey improved once the right question replaced surface-level thinking.",
     accent: "Sharper standard",
   },
   {
     id: "stage-plan",
     index: "03",
     label: "Plan",
-    title: "A proper plan gave the story structure.",
+    title: "A proper plan gave the journey structure.",
     summary:
-      "Once the problem and thought process were clearer, the journey moved into a planning stage built around standards, not assumptions.",
+      "After the problem and standard became clearer, the next move was to build a plan around consistency, selection, presentation, and long-term trust.",
     tension:
-      "Every plan looks convincing in theory. The real test was whether the plan could survive pressure, constraints, and repeated scrutiny.",
+      "Planning always looks convincing from a distance. The real test was whether the structure could survive pressure, uncertainty, and revision.",
     keyPoint:
-      "The plan centered on reliable product choices, clearer presentation, and an experience designed to reduce friction at every point.",
+      "The plan centered on reducing friction and building a clearer, more reliable experience.",
     evidence:
-      "Structure entered the process through standards, priorities, and a more disciplined plan.",
+      "This stage introduced priorities, filters, and decision-making discipline into the process.",
     accent: "Structured intent",
   },
   {
     id: "stage-process",
     index: "04",
     label: "Process",
-    title: "Then came the long process of testing and refining.",
+    title: "The process was where weak ideas were removed.",
     summary:
-      "This was the most demanding stage. Ideas, suppliers, formats, and selections were compared carefully, then improved or removed when they did not hold up.",
+      "This stage demanded more patience than excitement. Product directions, presentation choices, and assumptions had to be compared, tested, and improved repeatedly.",
     tension:
-      "Some options looked promising but failed in actual use. Others worked technically, yet still lacked the confidence or clarity the brand needed to represent.",
+      "Some options looked promising at first but failed under scrutiny. Others worked technically but still lacked the clarity or confidence the brand needed.",
     keyPoint:
-      "The process created discipline. It made sure that only decisions strong enough to survive repetition could move forward.",
+      "The process created discipline by making sure only strong decisions survived repetition.",
     evidence:
-      "Testing became a filter. Weak ideas were removed before they could shape the brand.",
+      "Progress depended on removing weak paths before they shaped the final experience.",
     accent: "Pressure-tested",
   },
   {
@@ -68,79 +68,72 @@ const stages = [
     label: "Progress",
     title: "Progress became visible when the system started holding together.",
     summary:
-      "Once the process improved, the outcomes became more coherent. The experience began to feel stronger, clearer, and more trustworthy across touchpoints.",
+      "Once enough weak decisions were filtered out, the outcomes became more coherent. The experience started feeling more stable, clearer, and more credible.",
     tension:
-      "The challenge at this stage was consistency: ensuring that progress was not a short-term spike, but the beginning of a repeatable pattern.",
+      "At this point, the challenge changed: not whether progress could happen once, but whether it could repeat consistently.",
     keyPoint:
-      "Progress showed up through alignment—better selection, better presentation, and a more stable standard behind the brand.",
+      "Real progress showed up when better selection, better presentation, and better structure began aligning.",
     evidence:
-      "Progress appeared when quality, presentation, and confidence began aligning together.",
+      "The system started producing stronger outcomes because its internal standards were becoming consistent.",
     accent: "Clearer outcomes",
   },
   {
     id: "stage-current",
     index: "06",
     label: "Current",
-    title: "The current stage is stable, but intentionally unfinished.",
+    title: "The current stage is stronger, but intentionally unfinished.",
     summary:
-      "Today, the system is more mature. The brand has more clarity, more structure, and a stronger understanding of the role it plays in serious training routines.",
+      "Today, the brand has more structure, clearer direction, and a stronger understanding of what it should represent in a serious training journey.",
     tension:
-      "But stability creates its own risk. The pressure now is not just to maintain quality, but to keep evolving without losing the discipline that made progress possible.",
+      "But stability creates a new risk: becoming comfortable too early. The challenge now is to keep evolving without losing the discipline that created improvement.",
     keyPoint:
-      "The current scenario is not an endpoint. It is a controlled platform for better execution, better refinement, and smarter growth.",
+      "The current stage is best understood as a strong platform, not a final destination.",
     evidence:
-      "The system matured into something stable enough to support growth without losing its center.",
+      "The system matured enough to support growth while staying anchored to a clearer standard.",
     accent: "Stable base",
   },
   {
     id: "stage-future",
     index: "07",
     label: "Future",
-    title: "The next chapter is being designed with the same discipline.",
+    title: "The future is being designed with more precision, not more noise.",
     summary:
-      "The future is not about random expansion. It is about improving the experience with more precision, more depth, and more relevance to the people using it.",
+      "What comes next is not random expansion. It is a more focused effort to improve product experience, storytelling, and long-term relevance.",
     tension:
-      "Growth can weaken a story when it introduces noise. The responsibility now is to scale what works without diluting the original standard.",
+      "Growth can easily weaken a story when it introduces distraction. The real responsibility now is to scale without dilution.",
     keyPoint:
-      "The next moves focus on stronger product experiences, sharper storytelling, and a brand journey that feels more intelligent at every stage.",
+      "The future matters only if refinement stays stronger than impulse.",
     evidence:
-      "The future became a responsibility: to refine what works rather than expanding without judgment.",
+      "The next chapter is defined by smarter growth, stronger standards, and more intentional evolution.",
     accent: "Smarter growth",
   },
 ];
 
 const signals = [
   {
-    title: "The problem was named clearly",
-    text: "Progress only started once the issue was defined with enough precision to guide strong decisions.",
+    title: "The problem was named properly",
+    text:
+      "Progress only started once the issue became specific enough to guide better decisions.",
   },
   {
-    title: "Weak options were rejected",
-    text: "The journey improved because attractive but unreliable paths were filtered out early.",
+    title: "Weak directions were removed",
+    text:
+      "The brand got stronger because attractive but unreliable paths were filtered out early.",
   },
   {
     title: "The system became repeatable",
-    text: "The real sign of maturity was consistency: better outcomes appearing through structure rather than luck.",
+    text:
+      "The strongest signal of progress was consistency: better outcomes showing up through structure, not luck.",
   },
 ];
-
-const dialToneMap = {
-  "stage-problem": "problem",
-  "stage-thought": "thought",
-  "stage-plan": "plan",
-  "stage-process": "build",
-  "stage-progress": "build",
-  "stage-current": "future",
-  "stage-future": "future",
-};
 
 function useInView(options = {}) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
 
   useEffect(() => {
-    const element = ref.current;
-    if (!element) return undefined;
+    const node = ref.current;
+    if (!node) return undefined;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -154,7 +147,7 @@ function useInView(options = {}) {
       }
     );
 
-    observer.observe(element);
+    observer.observe(node);
     return () => observer.disconnect();
   }, [options]);
 
@@ -192,11 +185,11 @@ const Story = () => {
   }, []);
 
   useEffect(() => {
-    const sectionElements = stages
+    const elements = stages
       .map((stage) => document.getElementById(stage.id))
       .filter(Boolean);
 
-    if (!sectionElements.length) return undefined;
+    if (!elements.length) return undefined;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -210,11 +203,11 @@ const Story = () => {
       },
       {
         threshold: [0.25, 0.4, 0.6, 0.75],
-        rootMargin: "-12% 0px -20% 0px",
+        rootMargin: "-12% 0px -18% 0px",
       }
     );
 
-    sectionElements.forEach((el) => observer.observe(el));
+    elements.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, []);
 
@@ -225,6 +218,7 @@ const Story = () => {
     const onScroll = () => {
       if (ticking) return;
       ticking = true;
+
       window.requestAnimationFrame(() => {
         updateCurve();
         ticking = false;
@@ -270,59 +264,57 @@ const Story = () => {
           </div>
 
           <div className="story-hero-eyebrow">
-            Built around discipline, not decoration.
+            Built with discipline, not decoration.
           </div>
 
           <h1 className="story-hero-title">
-            A problem stayed.
+            A visible problem.
             <br />
-            A stronger system was built around it.
+            A stronger system.
           </h1>
 
           <p className="story-hero-subtitle">
-            This page follows the journey in stages: a visible problem, sharper
-            thinking, a stronger plan, a longer process, measurable progress, the
-            current scenario, and the future being designed from it.
+            This story follows a progression: problem, thought, plan, process,
+            progress, current position, and future direction — each revealed as
+            part of one continuous chapter scroll.
           </p>
 
           <p className="story-hero-trailer">
-            Read it like a moving narrative. Each scroll reveals another layer in
-            how FitGearzzz moved from friction toward structure, clarity, and
-            confidence.
+            Scroll through the page and the chapter dial will move with the story,
+            turning the narrative into a visual progression instead of a static page.
           </p>
 
           <div className="story-hero-actions">
             <button
+              type="button"
               className="story-btn story-btn-primary"
               onClick={() => scrollToStage(stages[0].id)}
             >
-              Start the journey
+              Start the story
             </button>
 
             <a className="story-btn story-btn-secondary" href="/products">
-              See the current outcome
+              Explore collection
             </a>
           </div>
 
           <div className="story-hero-meta">
             <div className="story-hero-meta-card">
-              <span className="story-hero-meta-label">Current stage</span>
+              <span className="story-hero-meta-label">Current chapter</span>
               <span className="story-hero-meta-value">
                 {activeStageData.index} · {activeStageData.label}
               </span>
             </div>
 
             <div className="story-hero-meta-card">
-              <span className="story-hero-meta-label">Narrative mode</span>
-              <span className="story-hero-meta-value">Long-form scroll story</span>
+              <span className="story-hero-meta-label">Format</span>
+              <span className="story-hero-meta-value">Narrative chapter scroll</span>
             </div>
           </div>
 
           <div className="story-hero-scroll">
             <span className="story-hero-scroll-line" />
-            <span className="story-hero-scroll-label">
-              Scroll through the stages
-            </span>
+            <span className="story-hero-scroll-label">Scroll to move chapters</span>
           </div>
         </div>
       </header>
@@ -345,11 +337,7 @@ const Story = () => {
 
         <main className="story-main">
           {stages.map((stage, index) => (
-            <StageSection
-              key={stage.id}
-              stage={stage}
-              index={index}
-            />
+            <StageSection key={stage.id} stage={stage} index={index} />
           ))}
         </main>
       </div>
@@ -369,8 +357,8 @@ const StageDial = ({ stages, activeStage }) => {
     if (idx === -1) return;
 
     const total = stages.length;
-    const start = -110; // top-left visible arc
-    const end = 110;    // bottom-left visible arc
+    const start = -110;
+    const end = 110;
     const step = (end - start) / Math.max(total - 1, 1);
 
     setProgressAngle(start + idx * step);
@@ -378,15 +366,19 @@ const StageDial = ({ stages, activeStage }) => {
 
   useEffect(() => {
     setIsDialMorphing(true);
-    const timer = setTimeout(() => setIsDialMorphing(false), 900);
+    const timer = setTimeout(() => setIsDialMorphing(false), 850);
     return () => clearTimeout(timer);
   }, [activeStage]);
 
+  const activeIndex = Math.max(
+    0,
+    stages.findIndex((stage) => stage.id === activeStage)
+  );
+  const progressPercent = ((activeIndex + 1) / stages.length) * 100;
+
   return (
     <div className="story-watch-dial story-watch-dial-left" aria-hidden="true">
-      <div
-        className={`story-watch-dial-wrap ${isDialMorphing ? "is-morphing" : ""}`}
-      >
+      <div className={`story-watch-dial-wrap ${isDialMorphing ? "is-morphing" : ""}`}>
         <svg
           className="story-watch-svg"
           viewBox="0 0 360 360"
@@ -394,32 +386,39 @@ const StageDial = ({ stages, activeStage }) => {
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
-            <linearGradient id="dialGlowStroke" x1="72" y1="72" x2="210" y2="288" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stopColor="#fb923c" />
-              <stop offset="55%" stopColor="#f97316" />
+            <linearGradient
+              id="dialGlowStroke"
+              x1="92"
+              y1="76"
+              x2="104"
+              y2="286"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop offset="0%" stopColor="#fdba74" />
+              <stop offset="45%" stopColor="#f97316" />
               <stop offset="100%" stopColor="#ea580c" />
             </linearGradient>
           </defs>
 
           <path
             className="dial-ring dial-ring-main"
-            d="M 214 62 A 118 118 0 1 0 214 298"
+            d="M 220 64 A 116 116 0 1 0 220 296"
           />
           <path
             className="dial-ring dial-ring-secondary"
-            d="M 214 96 A 84 84 0 1 0 214 264"
+            d="M 220 96 A 84 84 0 1 0 220 264"
           />
           <path
             className="dial-ring dial-ring-core"
-            d="M 214 122 A 58 58 0 1 0 214 238"
+            d="M 220 122 A 58 58 0 1 0 220 238"
           />
 
           <path
             className="dial-arc-accent"
-            d="M 214 62 A 118 118 0 1 0 214 298"
+            d="M 220 64 A 116 116 0 1 0 220 296"
             pathLength="100"
             style={{
-              strokeDasharray: `${((stages.findIndex((s) => s.id === activeStage) + 1) / stages.length) * 100} 100`,
+              strokeDasharray: `${progressPercent} 100`,
             }}
           />
 
@@ -432,8 +431,8 @@ const StageDial = ({ stages, activeStage }) => {
 
             const cx = 180;
             const cy = 180;
-            const inner = 96;
-            const outer = 116;
+            const inner = 94;
+            const outer = 114;
 
             const x1 = cx + Math.cos(rad) * inner;
             const y1 = cy + Math.sin(rad) * inner;
@@ -465,12 +464,12 @@ const StageDial = ({ stages, activeStage }) => {
               className="dial-hand-line"
               x1="180"
               y1="180"
-              x2="116"
+              x2="104"
               y2="180"
             />
             <circle className="dial-hand-joint" cx="180" cy="180" r="10" />
             <circle className="dial-hand-joint-inner" cx="180" cy="180" r="4.5" />
-            <circle className="dial-hand-tip" cx="116" cy="180" r="5.6" />
+            <circle className="dial-hand-tip" cx="104" cy="180" r="5.5" />
           </g>
         </svg>
       </div>
@@ -482,16 +481,12 @@ const ManifestoBlock = () => {
   const [ref, inView] = useInView();
 
   return (
-    <section
-      ref={ref}
-      className={`story-manifesto ${inView ? "is-visible" : ""}`}
-    >
+    <section ref={ref} className={`story-manifesto ${inView ? "is-visible" : ""}`}>
       <div className="story-manifesto-label">Perspective</div>
       <p className="story-manifesto-text">
-        Strong stories are not born from perfection. They are built through a
-        recurring sequence: a problem becomes visible, weak paths are tested and
-        rejected, a better system emerges, and progress proves itself through
-        repetition.
+        Strong stories are not built from instant perfection. They are built from a
+        problem that stays visible, a process that removes weak decisions, and a
+        standard that becomes clearer through repetition.
       </p>
     </section>
   );
@@ -544,20 +539,15 @@ const TimelineStrip = ({ stages, activeStage, onStageClick }) => {
   const [ref, inView] = useInView();
 
   return (
-    <section
-      ref={ref}
-      className={`story-timeline-strip ${inView ? "is-visible" : ""}`}
-    >
+    <section ref={ref} className={`story-timeline-strip ${inView ? "is-visible" : ""}`}>
       <div className="story-timeline-inner">
-        <div className="story-timeline-label">Stages of the journey</div>
+        <div className="story-timeline-label">Journey chapters</div>
 
         <div className="story-timeline-track">
           {stages.map((stage) => (
             <button
               key={stage.id}
-              className={`story-timeline-pill ${
-                activeStage === stage.id ? "is-active" : ""
-              }`}
+              className={`story-timeline-pill ${activeStage === stage.id ? "is-active" : ""}`}
               onClick={() => onStageClick(stage.id)}
               aria-pressed={activeStage === stage.id}
               type="button"
@@ -585,7 +575,7 @@ const StageSection = ({ stage, index }) => {
       <div className="story-stage-inner">
         <div className="story-stage-copy">
           <div className="story-stage-kicker">
-            Stage {stage.index} · {stage.label}
+            Chapter {stage.index} · {stage.label}
           </div>
 
           <h2 className="story-stage-title">{stage.title}</h2>
@@ -593,19 +583,19 @@ const StageSection = ({ stage, index }) => {
           <p className="story-stage-tension">{stage.tension}</p>
 
           <div className="story-stage-key">
-            <div className="story-stage-key-label">Turning point</div>
+            <div className="story-stage-key-label">Why it matters</div>
             <div className="story-stage-key-text">{stage.keyPoint}</div>
           </div>
         </div>
 
         <div className="story-stage-evidence">
           <div className="story-stage-card">
-            <div className="story-stage-card-label">What defined this stage</div>
+            <div className="story-stage-card-label">Stage insight</div>
             <div className="story-stage-card-text">{stage.evidence}</div>
           </div>
 
           <div className="story-stage-card story-stage-card-accent">
-            <div className="story-stage-card-label">Stage signal</div>
+            <div className="story-stage-card-label">Signal</div>
             <div className="story-stage-card-text">{stage.accent}</div>
           </div>
         </div>
@@ -618,15 +608,12 @@ const SignalsSection = () => {
   const [ref, inView] = useInView();
 
   return (
-    <section
-      ref={ref}
-      className={`story-signals ${inView ? "is-visible" : ""}`}
-    >
+    <section ref={ref} className={`story-signals ${inView ? "is-visible" : ""}`}>
       <div className="story-signals-inner">
         <div className="story-section-heading">
-          <div className="story-section-kicker">Signals of real progress</div>
+          <div className="story-section-kicker">Signals of progress</div>
           <h2 className="story-section-title">
-            Signs that the journey has depth behind it.
+            The strongest signs appeared when the system became repeatable.
           </h2>
         </div>
 
@@ -647,33 +634,30 @@ const ClosingSection = () => {
   const [ref, inView] = useInView();
 
   return (
-    <section
-      ref={ref}
-      className={`story-closing ${inView ? "is-visible" : ""}`}
-    >
+    <section ref={ref} className={`story-closing ${inView ? "is-visible" : ""}`}>
       <div className="story-closing-inner">
-        <div className="story-closing-kicker">Where this story meets you</div>
+        <div className="story-closing-kicker">Closing thought</div>
         <h2 className="story-closing-title">
-          Every stage matters only if the result supports real effort.
+          Every chapter matters only if the result supports real effort.
         </h2>
 
         <p className="story-closing-text">
-          The journey behind FitGearzzz is not mythology. It is a sequence of
-          responses to a genuine problem, refined into a stronger system over time.
+          This story is not about dramatic claims. It is about building a stronger
+          system step by step, until the experience feels more disciplined,
+          dependable, and worth trusting.
         </p>
 
         <p className="story-closing-text">
-          If this page works the way it should, it leaves one clear impression: the
-          tools used in training should feel as disciplined as the people using
-          them.
+          That is what the future of FitGearzzz should keep protecting: not noise,
+          but standards.
         </p>
 
         <div className="story-closing-actions">
           <a className="story-btn story-btn-primary" href="/products">
-            Continue into the collection
+            View products
           </a>
           <a className="story-btn story-btn-secondary" href="/contact">
-            Connect with FitGearzzz
+            Contact us
           </a>
         </div>
       </div>

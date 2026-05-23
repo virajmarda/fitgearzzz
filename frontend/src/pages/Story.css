@@ -251,12 +251,11 @@
   --dial-shift-y: 0px;
   --dial-ring-opacity: 0.92;
   --dial-accent-opacity: 1;
-  --dial-glow-opacity: 0.9;
   --hand-rotate: -132deg;
   --hand-scale: 1;
   --hand-x: 0px;
   --hand-y: 0px;
-  --accent-shift: 0px;
+  --accent-shift: 0;
   transform:
     translate3d(var(--dial-shift-x), var(--dial-shift-y), 0)
     rotate(var(--dial-rotate))
@@ -280,26 +279,26 @@
 }
 
 .dial-ring,
+.dial-arc-track,
 .dial-arc-accent,
 .dial-tick,
-.dial-ring-core,
-.dial-hand-shape,
-.dial-hand,
-.dial-hand-joint,
-.dial-hand-tip {
+.dial-core,
+.dial-orbit {
   transition:
     transform 1100ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 800ms ease,
     stroke 700ms ease,
-    fill 700ms ease,
     stroke-dasharray 1100ms cubic-bezier(0.22, 1, 0.36, 1),
-    stroke-dashoffset 1100ms cubic-bezier(0.22, 1, 0.36, 1),
-    filter 900ms cubic-bezier(0.22, 1, 0.36, 1);
+    stroke-dashoffset 1100ms cubic-bezier(0.22, 1, 0.36, 1);
   transform-origin: 50% 50%;
 }
 
-.dial-ring {
+.dial-ring,
+.dial-arc-track,
+.dial-arc-accent {
   fill: none;
+  transform: rotate(-90deg);
+  transform-origin: 180px 180px;
   stroke-linecap: round;
 }
 
@@ -315,36 +314,54 @@
   opacity: calc(var(--dial-ring-opacity) - 0.1);
 }
 
-.dial-ring-core {
-  stroke: rgba(255, 255, 255, 0.08);
+.dial-core {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.12);
   stroke-width: 1.2;
   opacity: 0.7;
+}
+
+.dial-orbit {
   fill: none;
+  stroke: rgba(249, 115, 22, 0.14);
+  stroke-width: 1;
+  opacity: 0.8;
+}
+
+.dial-arc-track {
+  stroke: rgba(255, 255, 255, 0.12);
+  stroke-width: 3.25;
+  opacity: 0.58;
 }
 
 .dial-arc-accent {
-  fill: none;
   stroke: url(#dialGlowStroke);
-  stroke-width: 3.3;
-  stroke-linecap: round;
+  stroke-width: 3.25;
   opacity: var(--dial-accent-opacity);
-  filter:
-    drop-shadow(0 0 10px rgba(249, 115, 22, 0.2))
-    drop-shadow(0 0 24px rgba(249, 115, 22, 0.12));
-  stroke-dashoffset: var(--accent-shift);
+  filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.2));
+  stroke-dashoffset: calc(100 - var(--dial-progress));
 }
 
 .dial-tick {
-  stroke: rgba(255, 255, 255, 0.82);
-  stroke-width: 2.2;
+  stroke: rgba(255, 255, 255, 0.88);
+  stroke-width: 2.35;
   stroke-linecap: round;
-  opacity: 0.84;
+  opacity: 0.82;
+  transition:
+    opacity 650ms ease,
+    stroke 650ms ease,
+    transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dial-tick.tick-soft {
+  opacity: 0.4;
+  stroke-width: 1.8;
 }
 
 .dial-tick.is-active {
-  stroke: #f97316;
+  stroke: #fff7ed;
   opacity: 1;
-  filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.24));
+  filter: drop-shadow(0 0 7px rgba(249, 115, 22, 0.24));
 }
 
 .dial-hand {
@@ -352,31 +369,46 @@
     translate3d(var(--hand-x), var(--hand-y), 0)
     rotate(var(--hand-rotate))
     scale(var(--hand-scale));
-  transform-origin: 210px 210px;
+  transform-origin: 180px 180px;
+  transition:
+    transform 1150ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 800ms ease,
+    filter 900ms ease;
   will-change: transform;
-}
-
-.dial-hand-line {
-  stroke: transparent;
-  stroke-width: 0;
 }
 
 .dial-hand-shape {
   fill: #f97316;
-  stroke: rgba(255, 247, 237, 0.26);
-  stroke-width: 1.1;
+  stroke: rgba(255, 244, 237, 0.28);
+  stroke-width: 1;
   filter:
-    drop-shadow(0 0 10px rgba(249, 115, 22, 0.24))
-    drop-shadow(0 0 24px rgba(249, 115, 22, 0.14));
+    drop-shadow(0 0 10px rgba(249, 115, 22, 0.22))
+    drop-shadow(0 0 26px rgba(249, 115, 22, 0.12));
+  transition:
+    fill 700ms ease,
+    filter 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 700ms ease;
+}
+
+.dial-hand-core-line {
+  stroke: rgba(255, 247, 237, 0.88);
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  opacity: 0.95;
+}
+
+.dial-hand-tail {
+  fill: rgba(255, 255, 255, 0.96);
+  opacity: 0.94;
 }
 
 .dial-hand-joint {
   fill: #f97316;
   stroke: rgba(255, 255, 255, 0.94);
-  stroke-width: 2.2;
+  stroke-width: 2;
   filter:
     drop-shadow(0 0 10px rgba(249, 115, 22, 0.24))
-    drop-shadow(0 0 18px rgba(249, 115, 22, 0.12));
+    drop-shadow(0 0 20px rgba(249, 115, 22, 0.16));
 }
 
 .dial-hand-joint-inner {
@@ -385,21 +417,21 @@
 
 .dial-hand-tip {
   fill: #fff7ed;
-  stroke: rgba(249, 115, 22, 0.62);
+  stroke: rgba(249, 115, 22, 0.55);
   stroke-width: 1.8;
-  filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.22));
+  filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.24));
 }
 
 .story-watch-dial-wrap.is-morphing .dial-hand,
 .story-watch-dial-wrap.is-morphing .dial-ring,
 .story-watch-dial-wrap.is-morphing .dial-arc-accent,
 .story-watch-dial-wrap.is-morphing .dial-tick,
-.story-watch-dial-wrap.is-morphing .dial-hand-shape {
+.story-watch-dial-wrap.is-morphing .dial-orbit,
+.story-watch-dial-wrap.is-morphing .dial-core {
   transition-duration: 1320ms;
   transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-/* stage-based morph states: set data-tone on .story-watch-dial-wrap in Story.js */
 .story-watch-dial-wrap[data-tone="problem"] {
   --hand-rotate: -138deg;
   --dial-rotate: -6deg;
@@ -408,40 +440,56 @@
   --dial-shift-y: 8px;
   --dial-ring-opacity: 0.74;
   --dial-accent-opacity: 0.78;
-  --accent-shift: 14px;
 }
 
 .story-watch-dial-wrap[data-tone="thought"] {
-  --hand-rotate: -34deg;
-  --dial-rotate: 1deg;
-  --dial-scale: 1;
-  --dial-shift-x: -4px;
-  --dial-shift-y: 0px;
-  --dial-ring-opacity: 0.9;
-  --dial-accent-opacity: 1;
-  --accent-shift: -42px;
+  --hand-rotate: -72deg;
+  --dial-rotate: -2deg;
+  --dial-scale: 0.985;
+  --dial-shift-x: -3px;
+  --dial-shift-y: 3px;
+  --dial-ring-opacity: 0.84;
+  --dial-accent-opacity: 0.9;
 }
 
 .story-watch-dial-wrap[data-tone="plan"] {
-  --hand-rotate: 38deg;
-  --dial-rotate: 7deg;
-  --dial-scale: 1.04;
-  --dial-shift-x: -10px;
-  --dial-shift-y: -4px;
-  --dial-ring-opacity: 1;
+  --hand-rotate: -18deg;
+  --dial-rotate: 3deg;
+  --dial-scale: 1;
+  --dial-shift-x: -6px;
+  --dial-shift-y: 0px;
+  --dial-ring-opacity: 0.92;
   --dial-accent-opacity: 1;
-  --accent-shift: -96px;
 }
 
-.story-watch-dial-wrap[data-tone="build"] {
-  --hand-rotate: 102deg;
-  --dial-rotate: 10deg;
-  --dial-scale: 1.06;
-  --dial-shift-x: -14px;
-  --dial-shift-y: -8px;
+.story-watch-dial-wrap[data-tone="process"] {
+  --hand-rotate: 28deg;
+  --dial-rotate: 7deg;
+  --dial-scale: 1.03;
+  --dial-shift-x: -10px;
+  --dial-shift-y: -2px;
   --dial-ring-opacity: 1;
   --dial-accent-opacity: 1;
-  --accent-shift: -148px;
+}
+
+.story-watch-dial-wrap[data-tone="progress"] {
+  --hand-rotate: 74deg;
+  --dial-rotate: 10deg;
+  --dial-scale: 1.055;
+  --dial-shift-x: -13px;
+  --dial-shift-y: -6px;
+  --dial-ring-opacity: 1;
+  --dial-accent-opacity: 1;
+}
+
+.story-watch-dial-wrap[data-tone="current"] {
+  --hand-rotate: 118deg;
+  --dial-rotate: 12deg;
+  --dial-scale: 1.075;
+  --dial-shift-x: -15px;
+  --dial-shift-y: -8px;
+  --dial-ring-opacity: 0.98;
+  --dial-accent-opacity: 1;
 }
 
 .story-watch-dial-wrap[data-tone="future"] {
@@ -452,7 +500,26 @@
   --dial-shift-y: -10px;
   --dial-ring-opacity: 0.96;
   --dial-accent-opacity: 1;
-  --accent-shift: -188px;
+}
+
+@media (min-width: 1024px) {
+  .story-watch-dial {
+    display: block;
+  }
+}
+
+@media (max-width: 1280px) {
+  .story-watch-dial {
+    right: -156px;
+    width: 340px;
+    height: 340px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .story-watch-dial {
+    display: none;
+  }
 }
 
 /* MANIFESTO */

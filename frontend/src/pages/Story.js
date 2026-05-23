@@ -363,9 +363,9 @@ const StageDial = ({ stages, activeStage }) => {
       "stage-problem": "problem",
       "stage-thought": "thought",
       "stage-plan": "plan",
-      "stage-process": "build",
-      "stage-progress": "build",
-      "stage-current": "future",
+      "stage-process": "process",
+      "stage-progress": "progress",
+      "stage-current": "current",
       "stage-future": "future",
     }),
     []
@@ -385,7 +385,7 @@ const StageDial = ({ stages, activeStage }) => {
         className={`story-watch-dial-wrap ${isDialMorphing ? "is-morphing" : ""}`}
         data-tone={dialTone}
         style={{
-          "--dial-progress": `${progressPercent}`,
+          "--dial-progress": progressPercent,
         }}
       >
         <svg

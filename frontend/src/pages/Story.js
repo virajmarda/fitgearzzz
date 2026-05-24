@@ -156,6 +156,8 @@ function useInView(options = {}) {
 
 const Story = () => {
   const [activeStage, setActiveStage] = useState(stages[0].id);
+  const [previousStage, setPreviousStage] = useState(stages[0].id);
+  const [isMorphing, setIsMorphing] = useState(false);
   const [curveNodes, setCurveNodes] = useState([]);
   const [curveHeight, setCurveHeight] = useState(0);
   const mainShellRef = useRef(null);
@@ -198,18 +200,31 @@ const Story = () => {
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
 
         if (visible[0]?.target?.id) {
-          setActiveStage(visible[0].target.id);
+          const nextId = visible[0].target.id;
+          setActiveStage((current) => (current === nextId ? current : nextId));
         }
       },
       {
         threshold: [0.2, 0.35, 0.5, 0.65, 0.8],
-        rootMargin: "-10% 0px -20% 0px",
+        rootMargin: "-12% 0px -18% 0px",
       }
     );
 
     elements.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (activeStage === previousStage) return undefined;
+
+    setIsMorphing(true);
+    const timer = window.setTimeout(() => {
+      setPreviousStage(activeStage);
+      setIsMorphing(false);
+    }, 720);
+
+    return () => window.clearTimeout(timer);
+  }, [activeStage, previousStage]);
 
   useEffect(() => {
     updateCurve();
@@ -243,10 +258,10 @@ const Story = () => {
 
     const rect = el.getBoundingClientRect();
     const isMobile = window.innerWidth <= 768;
-    const offset = isMobile ? 24 : 56;
+    const viewportOffset = isMobile ? 18 : window.innerHeight * 0.08;
 
     window.scrollTo({
-      top: rect.top + window.scrollY - offset,
+      top: rect.top + window.scrollY - viewportOffset,
       behavior: "smooth",
     });
   }, []);
@@ -254,8 +269,13 @@ const Story = () => {
   const activeStageData = stageMap[activeStage] || stages[0];
 
   return (
-    <div className="story-page">
-      <StageDial stages={stages} activeStage={activeStage} />
+    <div className={`story-page ${isMorphing ? "is-morphing" : ""}`}>
+      <StageDial
+        stages={stages}
+        activeStage={activeStage}
+        previousStage={previousStage}
+        isMorphing={isMorphing}
+      />
 
       <header className="story-hero">
         <div className="story-hero-bg-rings" />
@@ -280,13 +300,13 @@ const Story = () => {
           <p className="story-hero-subtitle">
             This story follows a progression: problem, thought, plan, process,
             progress, current position, and future direction — each revealed as
-            part of a more intentional slide-style chapter journey.
+            part of a smoother morph-style chapter journey.
           </p>
 
           <p className="story-hero-trailer">
-            Scroll through the page and the chapter dial will move with the
-            story, turning the narrative into a visual progression instead of a
-            static page.
+            Scroll through the page and the chapter dial, curve, and panels
+            transition together so each chapter feels like the next evolved
+            slide instead of a separate block.
           </p>
 
           <div className="story-hero-actions">
@@ -312,17 +332,15 @@ const Story = () => {
             </div>
 
             <div className="story-hero-meta-card">
-              <span className="story-hero-meta-label">Format</span>
-              <span className="story-hero-meta-value">
-                Slide-style chapter scroll
-              </span>
+              <span className="story-hero-meta-label">Transition style</span>
+              <span className="story-hero-meta-value">Smooth morph scroll</span>
             </div>
           </div>
 
           <div className="story-hero-scroll">
             <span className="story-hero-scroll-line" />
             <span className="story-hero-scroll-label">
-              Scroll to move chapters
+              Scroll to morph chapters
             </span>
           </div>
         </div>
@@ -334,6 +352,8 @@ const Story = () => {
         <JourneyCurve
           stages={stages}
           activeStage={activeStage}
+          previousStage={previousStage}
+          isMorphing={isMorphing}
           curveNodes={curveNodes}
           curveHeight={curveHeight}
         />
@@ -351,6 +371,8 @@ const Story = () => {
               stage={stage}
               index={index}
               isActive={activeStage === stage.id}
+              isPrevious={previousStage === stage.id && activeStage !== stage.id}
+              isMorphing={isMorphing}
             />
           ))}
         </main>
@@ -362,7 +384,7 @@ const Story = () => {
   );
 };
 
-const StageDial = ({ stages, activeStage }) => {
+const StageDial = ({ stages, activeStage, previousStage, isMorphing }) => {
   const [rotation, setRotation] = useState(0);
   const [activeChapter, setActiveChapter] = useState(0);
 
@@ -384,7 +406,12 @@ const StageDial = ({ stages, activeStage }) => {
   }, [activeStage, stages]);
 
   return (
-    <div className="story-dial-fixed" aria-hidden="true">
+    <div
+      className={`story-dial-fixed ${isMorphing ? "is-morphing" : ""}`}
+      aria-hidden="true"
+      data-active-stage={activeStage}
+      data-previous-stage={previousStage}
+    >
       <div className="story-dial-window">
         <div
           className="story-dial-rotor"
@@ -490,14 +517,23 @@ const ManifestoBlock = () => {
   );
 };
 
-const JourneyCurve = ({ stages, activeStage, curveNodes, curveHeight }) => {
+const JourneyCurve = ({
+  stages,
+  activeStage,
+  previousStage,
+  isMorphing,
+  curveNodes,
+  curveHeight,
+}) => {
   if (!curveNodes.length || !curveHeight) return null;
 
   return (
     <div
-      className="story-curve-wrapper"
+      className={`story-curve-wrapper ${isMorphing ? "is-morphing" : ""}`}
       style={{ height: `${curveHeight}px` }}
       aria-hidden="true"
+      data-active-stage={activeStage}
+      data-previous-stage={previousStage}
     >
       <svg
         className="story-curve"
@@ -565,7 +601,7 @@ const TimelineStrip = ({ stages, activeStage, onStageClick }) => {
   );
 };
 
-const StageSection = ({ stage, index, isActive }) => {
+const StageSection = ({ stage, index, isActive, isPrevious, isMorphing }) => {
   const [ref, inView] = useInView({
     threshold: 0.35,
   });
@@ -578,7 +614,9 @@ const StageSection = ({ stage, index, isActive }) => {
       ref={ref}
       className={`story-stage ${isOdd ? "is-odd" : ""} ${
         inView ? "is-visible" : ""
-      } ${isActive ? "is-active" : ""}`}
+      } ${isActive ? "is-active" : ""} ${isPrevious ? "is-previous" : ""} ${
+        isMorphing ? "is-morphing" : ""
+      }`}
     >
       <div className="story-stage-inner">
         <div className="story-stage-copy">

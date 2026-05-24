@@ -1,9 +1,17 @@
 .story-page {
+  --story-morph-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --story-morph-fast: 420ms;
+  --story-morph-base: 720ms;
+  --story-morph-slow: 980ms;
   background: #02040a;
   color: #f9fafb;
   min-height: 100vh;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
     "Inter", sans-serif;
+}
+
+.story-page.is-morphing .story-main {
+  pointer-events: none;
 }
 
 /* HERO */
@@ -232,6 +240,10 @@
   z-index: 50;
   pointer-events: none;
   overflow: hidden;
+  transition:
+    transform var(--story-morph-base) var(--story-morph-ease),
+    opacity var(--story-morph-fast) ease,
+    filter var(--story-morph-base) var(--story-morph-ease);
 }
 
 .story-dial-window {
@@ -239,6 +251,9 @@
   width: 260px;
   height: 520px;
   overflow: hidden;
+  transition:
+    transform var(--story-morph-base) var(--story-morph-ease),
+    opacity var(--story-morph-fast) ease;
 }
 
 .story-dial-rotor {
@@ -256,7 +271,11 @@
     #000 100%
   );
   box-shadow: 0 0 80px rgba(255, 255, 255, 0.08);
-  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    transform var(--story-morph-base) var(--story-morph-ease),
+    filter var(--story-morph-base) var(--story-morph-ease),
+    box-shadow var(--story-morph-base) var(--story-morph-ease),
+    border-color var(--story-morph-fast) ease;
   will-change: transform;
 }
 
@@ -264,6 +283,10 @@
   position: absolute;
   border-radius: 999px;
   border: 1px solid rgba(39, 39, 42, 0.95);
+  transition:
+    transform var(--story-morph-base) var(--story-morph-ease),
+    opacity var(--story-morph-fast) ease,
+    border-color var(--story-morph-fast) ease;
 }
 
 .story-dial-ring.ring-1 {
@@ -285,7 +308,9 @@
 }
 
 .story-dial-marker {
-  transition: all 500ms ease;
+  transition:
+    all var(--story-morph-base) var(--story-morph-ease),
+    opacity var(--story-morph-fast) ease;
 }
 
 .story-dial-marker.is-active {
@@ -312,7 +337,10 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  transition: all 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    transform var(--story-morph-base) var(--story-morph-ease),
+    opacity var(--story-morph-fast) ease,
+    filter var(--story-morph-base) var(--story-morph-ease);
   will-change: transform;
   transform-origin: center center;
 }
@@ -331,7 +359,9 @@
   white-space: nowrap;
   color: #71717a;
   opacity: 0.5;
-  transition: all 500ms ease;
+  transition:
+    all var(--story-morph-base) var(--story-morph-ease),
+    opacity var(--story-morph-fast) ease;
   transform-origin: center;
 }
 
@@ -356,6 +386,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition:
+    transform var(--story-morph-base) var(--story-morph-ease),
+    box-shadow var(--story-morph-base) var(--story-morph-ease),
+    border-color var(--story-morph-fast) ease;
 }
 
 .story-dial-hub-core {
@@ -363,6 +397,18 @@
   height: 16px;
   border-radius: 999px;
   background: #fff;
+}
+
+.story-dial-fixed.is-morphing .story-dial-rotor {
+  filter: drop-shadow(0 0 18px rgba(249, 115, 22, 0.14));
+}
+
+.story-dial-fixed.is-morphing .story-dial-hub {
+  transform: translate(-50%, -50%) scale(1.04);
+}
+
+.story-dial-fixed.is-morphing .story-dial-marker.is-active {
+  transform: scaleY(1.08);
 }
 
 /* MANIFESTO */
@@ -419,12 +465,25 @@
   pointer-events: none;
   opacity: 0.3;
   mix-blend-mode: screen;
+  transition:
+    transform var(--story-morph-base) var(--story-morph-ease),
+    opacity var(--story-morph-fast) ease,
+    filter var(--story-morph-base) var(--story-morph-ease);
 }
 
 .story-curve {
   width: 100%;
   height: 100%;
   filter: drop-shadow(0 18px 52px rgba(15, 23, 42, 0.82));
+  transition:
+    transform var(--story-morph-base) var(--story-morph-ease),
+    opacity var(--story-morph-fast) ease,
+    filter var(--story-morph-base) var(--story-morph-ease);
+}
+
+.story-curve-wrapper.is-morphing {
+  transform: translateX(-50%) scale(1.01);
+  opacity: 0.36;
 }
 
 .story-curve-node {
@@ -441,14 +500,15 @@
   box-shadow: 0 0 0 0 rgba(249, 115, 22, 0);
   transform: translateX(-50%);
   transition:
-    box-shadow 0.28s ease,
-    transform 0.28s ease,
-    opacity 0.28s ease;
+    top var(--story-morph-slow) var(--story-morph-ease),
+    transform var(--story-morph-base) var(--story-morph-ease),
+    opacity var(--story-morph-fast) ease,
+    box-shadow var(--story-morph-base) var(--story-morph-ease);
   opacity: 0.7;
 }
 
 .story-curve-node.is-active {
-  box-shadow: 0 0 0 8px rgba(249, 115, 22, 0.18);
+  box-shadow: 0 0 0 10px rgba(249, 115, 22, 0.16);
   transform: translateX(-50%) scale(1.08);
   opacity: 1;
 }
@@ -514,10 +574,11 @@
   cursor: pointer;
   white-space: nowrap;
   transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease,
-    transform 0.2s ease;
+    transform var(--story-morph-fast) ease,
+    background var(--story-morph-fast) ease,
+    border-color var(--story-morph-fast) ease,
+    color var(--story-morph-fast) ease,
+    box-shadow var(--story-morph-base) var(--story-morph-ease);
 }
 
 .story-timeline-pill:hover {
@@ -535,6 +596,8 @@
   background: rgba(249, 115, 22, 0.08);
   border-color: rgba(249, 115, 22, 0.66);
   color: #f97316;
+  box-shadow: 0 10px 26px rgba(249, 115, 22, 0.18);
+  transform: translateY(-1px) scale(1.02);
 }
 
 /* STAGES */
@@ -550,10 +613,11 @@
   opacity: 0;
   transform: translateY(34px);
   filter: saturate(0.92);
+  will-change: opacity, transform, filter;
   transition:
-    opacity 0.52s ease,
-    transform 0.52s ease,
-    filter 0.52s ease;
+    opacity var(--story-morph-base) var(--story-morph-ease),
+    transform var(--story-morph-base) var(--story-morph-ease),
+    filter var(--story-morph-base) var(--story-morph-ease);
 }
 
 .story-stage.is-visible {
@@ -562,7 +626,7 @@
 }
 
 .story-stage.is-active {
-  filter: saturate(1);
+  filter: saturate(1) brightness(1);
 }
 
 .story-stage + .story-stage {
@@ -594,6 +658,12 @@
   grid-template-columns: minmax(0, 3.2fr) minmax(0, 2.2fr);
   gap: 4.5rem;
   align-items: center;
+  transform-origin: center center;
+  transition:
+    transform var(--story-morph-base) var(--story-morph-ease),
+    opacity var(--story-morph-fast) ease,
+    filter var(--story-morph-base) var(--story-morph-ease);
+  will-change: transform, opacity, filter;
 }
 
 .story-stage.is-odd .story-stage-inner {
@@ -603,6 +673,15 @@
 .story-stage.is-odd .story-stage-copy,
 .story-stage.is-odd .story-stage-evidence {
   direction: ltr;
+}
+
+.story-stage-copy,
+.story-stage-evidence {
+  transition:
+    transform var(--story-morph-base) var(--story-morph-ease),
+    opacity var(--story-morph-fast) ease,
+    filter var(--story-morph-base) var(--story-morph-ease);
+  will-change: transform, opacity, filter;
 }
 
 .story-stage-kicker {
@@ -673,6 +752,25 @@
   border: 1px solid rgba(148, 163, 184, 0.28);
   box-shadow: 0 24px 60px rgba(15, 23, 42, 0.86);
   overflow: hidden;
+  transition:
+    transform var(--story-morph-base) var(--story-morph-ease),
+    opacity var(--story-morph-fast) ease,
+    border-color var(--story-morph-fast) ease,
+    box-shadow var(--story-morph-base) var(--story-morph-ease),
+    background var(--story-morph-base) var(--story-morph-ease);
+  will-change: transform, opacity, box-shadow;
+}
+
+.story-stage-title,
+.story-stage-summary,
+.story-stage-tension,
+.story-stage-key,
+.story-stage-card-label,
+.story-stage-card-text {
+  transition:
+    transform var(--story-morph-base) var(--story-morph-ease),
+    opacity var(--story-morph-fast) ease,
+    color var(--story-morph-fast) ease;
 }
 
 .story-stage-card::before {
@@ -714,9 +812,77 @@
   color: #e5e7eb;
 }
 
-.story-stage:not(.is-active) .story-stage-copy,
-.story-stage:not(.is-active) .story-stage-evidence {
-  opacity: 0.92;
+.story-stage.is-active .story-stage-inner {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  filter: blur(0);
+}
+
+.story-stage.is-active .story-stage-copy {
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+}
+
+.story-stage.is-active .story-stage-evidence {
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+}
+
+.story-stage.is-active .story-stage-card {
+  transform: translateY(0) scale(1);
+  box-shadow: 0 28px 70px rgba(15, 23, 42, 0.92);
+}
+
+.story-stage.is-previous .story-stage-inner {
+  transform: translateY(-16px) scale(0.985);
+  opacity: 0.82;
+  filter: blur(0.5px);
+}
+
+.story-stage.is-previous .story-stage-copy {
+  transform: translate3d(0, -12px, 0);
+  opacity: 0.78;
+}
+
+.story-stage.is-previous .story-stage-evidence {
+  transform: translate3d(0, 12px, 0);
+  opacity: 0.72;
+}
+
+.story-stage.is-previous .story-stage-card {
+  transform: translateY(-10px) scale(0.985);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.55);
+}
+
+.story-stage:not(.is-active):not(.is-previous) .story-stage-inner {
+  transform: scale(0.975);
+  opacity: 0.7;
+  filter: blur(1px);
+}
+
+.story-stage:not(.is-active):not(.is-previous) .story-stage-copy,
+.story-stage:not(.is-active):not(.is-previous) .story-stage-evidence {
+  opacity: 0.62;
+}
+
+.story-stage.is-morphing.is-active .story-stage-inner {
+  animation: storyMorphIn var(--story-morph-base) var(--story-morph-ease);
+}
+
+.story-stage.is-morphing.is-active .story-stage-copy {
+  animation: storyMorphCopyIn var(--story-morph-slow) var(--story-morph-ease);
+}
+
+.story-stage.is-morphing.is-active .story-stage-evidence {
+  animation: storyMorphVisualIn var(--story-morph-slow) var(--story-morph-ease);
+}
+
+.story-stage.is-morphing.is-active .story-stage-card:nth-child(1) {
+  animation: storyCardFloatIn 760ms var(--story-morph-ease);
+}
+
+.story-stage.is-morphing.is-active .story-stage-card:nth-child(2) {
+  animation: storyCardFloatIn 860ms var(--story-morph-ease);
 }
 
 /* SIGNALS */
@@ -838,6 +1004,77 @@
   gap: 0.9rem;
 }
 
+/* MORPH KEYFRAMES */
+
+@keyframes storyMorphIn {
+  0% {
+    transform: translateY(42px) scale(0.972);
+    opacity: 0.58;
+    filter: blur(5px);
+  }
+  55% {
+    transform: translateY(-8px) scale(1.012);
+    opacity: 0.96;
+    filter: blur(0);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes storyMorphCopyIn {
+  0% {
+    transform: translate3d(0, 28px, 0);
+    opacity: 0;
+    filter: blur(6px);
+  }
+  60% {
+    transform: translate3d(0, -4px, 0);
+    opacity: 0.96;
+    filter: blur(0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes storyMorphVisualIn {
+  0% {
+    transform: translate3d(0, 40px, 0) scale(0.96);
+    opacity: 0;
+    filter: blur(8px);
+  }
+  58% {
+    transform: translate3d(0, -3px, 0) scale(1.01);
+    opacity: 0.98;
+    filter: blur(0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes storyCardFloatIn {
+  0% {
+    transform: translateY(26px) scale(0.96);
+    opacity: 0;
+  }
+  65% {
+    transform: translateY(-4px) scale(1.015);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
 /* RESPONSIVE */
 
 @media (max-width: 1024px) {
@@ -901,6 +1138,21 @@
     direction: ltr;
   }
 
+  .story-stage.is-previous .story-stage-inner,
+  .story-stage:not(.is-active):not(.is-previous) .story-stage-inner {
+    transform: none;
+    filter: none;
+    opacity: 1;
+  }
+
+  .story-stage.is-previous .story-stage-copy,
+  .story-stage.is-previous .story-stage-evidence,
+  .story-stage:not(.is-active):not(.is-previous) .story-stage-copy,
+  .story-stage:not(.is-active):not(.is-previous) .story-stage-evidence {
+    transform: none;
+    opacity: 1;
+  }
+
   .story-signals {
     padding: 56px 6vw 64px;
   }
@@ -930,5 +1182,24 @@
   .story-hero-actions,
   .story-closing-actions {
     flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .story-page,
+  .story-stage,
+  .story-stage-inner,
+  .story-stage-copy,
+  .story-stage-evidence,
+  .story-stage-card,
+  .story-dial-fixed,
+  .story-dial-window,
+  .story-dial-rotor,
+  .story-curve-wrapper,
+  .story-curve,
+  .story-curve-node,
+  .story-timeline-pill {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
   }
 }

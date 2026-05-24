@@ -202,8 +202,8 @@ const Story = () => {
         }
       },
       {
-        threshold: [0.25, 0.4, 0.6, 0.75],
-        rootMargin: "-12% 0px -18% 0px",
+        threshold: [0.2, 0.35, 0.5, 0.65, 0.8],
+        rootMargin: "-10% 0px -20% 0px",
       }
     );
 
@@ -215,6 +215,7 @@ const Story = () => {
     updateCurve();
 
     let ticking = false;
+
     const onScroll = () => {
       if (ticking) return;
       ticking = true;
@@ -241,8 +242,11 @@ const Story = () => {
     if (!el) return;
 
     const rect = el.getBoundingClientRect();
+    const isMobile = window.innerWidth <= 768;
+    const offset = isMobile ? 24 : 56;
+
     window.scrollTo({
-      top: rect.top + window.scrollY - 104,
+      top: rect.top + window.scrollY - offset,
       behavior: "smooth",
     });
   }, []);
@@ -276,12 +280,13 @@ const Story = () => {
           <p className="story-hero-subtitle">
             This story follows a progression: problem, thought, plan, process,
             progress, current position, and future direction — each revealed as
-            part of one continuous chapter scroll.
+            part of a more intentional slide-style chapter journey.
           </p>
 
           <p className="story-hero-trailer">
-            Scroll through the page and the chapter dial will move with the story,
-            turning the narrative into a visual progression instead of a static page.
+            Scroll through the page and the chapter dial will move with the
+            story, turning the narrative into a visual progression instead of a
+            static page.
           </p>
 
           <div className="story-hero-actions">
@@ -308,13 +313,17 @@ const Story = () => {
 
             <div className="story-hero-meta-card">
               <span className="story-hero-meta-label">Format</span>
-              <span className="story-hero-meta-value">Narrative chapter scroll</span>
+              <span className="story-hero-meta-value">
+                Slide-style chapter scroll
+              </span>
             </div>
           </div>
 
           <div className="story-hero-scroll">
             <span className="story-hero-scroll-line" />
-            <span className="story-hero-scroll-label">Scroll to move chapters</span>
+            <span className="story-hero-scroll-label">
+              Scroll to move chapters
+            </span>
           </div>
         </div>
       </header>
@@ -337,7 +346,12 @@ const Story = () => {
 
         <main className="story-main">
           {stages.map((stage, index) => (
-            <StageSection key={stage.id} stage={stage} index={index} />
+            <StageSection
+              key={stage.id}
+              stage={stage}
+              index={index}
+              isActive={activeStage === stage.id}
+            />
           ))}
         </main>
       </div>
@@ -385,10 +399,8 @@ const StageDial = ({ stages, activeStage }) => {
           {Array.from({ length: 12 }).map((_, i) => {
             const angle = i * 30 - 90;
             const radius = 220;
-
             const x = Math.cos((angle * Math.PI) / 180) * radius;
             const y = Math.sin((angle * Math.PI) / 180) * radius;
-
             const chapterMarkerIndexes = [9, 8, 7, 6, 5, 4, 3];
             const isLinked = chapterMarkerIndexes.includes(i);
             const linkedIndex = chapterMarkerIndexes.indexOf(i);
@@ -419,16 +431,13 @@ const StageDial = ({ stages, activeStage }) => {
             const markerIndexes = [9, 8, 7, 6, 5, 4, 3];
             const markerIndex = markerIndexes[i];
             const angle = markerIndex * 30 - 90;
-
             const radius = 220;
             const x = Math.cos((angle * Math.PI) / 180) * radius;
             const y = Math.sin((angle * Math.PI) / 180) * radius;
-
             const rotatedAngle = (angle + rotation + 360) % 360;
             const normalizedDistance = Math.abs(
               ((rotatedAngle - 180 + 540) % 360) - 180
             );
-
             const isNineOClock = normalizedDistance < 1.2;
 
             return (
@@ -467,12 +476,15 @@ const ManifestoBlock = () => {
   const [ref, inView] = useInView();
 
   return (
-    <section ref={ref} className={`story-manifesto ${inView ? "is-visible" : ""}`}>
+    <section
+      ref={ref}
+      className={`story-manifesto ${inView ? "is-visible" : ""}`}
+    >
       <div className="story-manifesto-label">Perspective</div>
       <p className="story-manifesto-text">
-        Strong stories are not built from instant perfection. They are built from a
-        problem that stays visible, a process that removes weak decisions, and a
-        standard that becomes clearer through repetition.
+        Strong stories are not built from instant perfection. They are built
+        from a problem that stays visible, a process that removes weak
+        decisions, and a standard that becomes clearer through repetition.
       </p>
     </section>
   );
@@ -525,7 +537,10 @@ const TimelineStrip = ({ stages, activeStage, onStageClick }) => {
   const [ref, inView] = useInView();
 
   return (
-    <section ref={ref} className={`story-timeline-strip ${inView ? "is-visible" : ""}`}>
+    <section
+      ref={ref}
+      className={`story-timeline-strip ${inView ? "is-visible" : ""}`}
+    >
       <div className="story-timeline-inner">
         <div className="story-timeline-label">Journey chapters</div>
 
@@ -550,8 +565,11 @@ const TimelineStrip = ({ stages, activeStage, onStageClick }) => {
   );
 };
 
-const StageSection = ({ stage, index }) => {
-  const [ref, inView] = useInView();
+const StageSection = ({ stage, index, isActive }) => {
+  const [ref, inView] = useInView({
+    threshold: 0.35,
+  });
+
   const isOdd = index % 2 === 1;
 
   return (
@@ -560,7 +578,7 @@ const StageSection = ({ stage, index }) => {
       ref={ref}
       className={`story-stage ${isOdd ? "is-odd" : ""} ${
         inView ? "is-visible" : ""
-      }`}
+      } ${isActive ? "is-active" : ""}`}
     >
       <div className="story-stage-inner">
         <div className="story-stage-copy">
@@ -627,19 +645,20 @@ const ClosingSection = () => {
     <section ref={ref} className={`story-closing ${inView ? "is-visible" : ""}`}>
       <div className="story-closing-inner">
         <div className="story-closing-kicker">Closing thought</div>
+
         <h2 className="story-closing-title">
           Every chapter matters only if the result supports real effort.
         </h2>
 
         <p className="story-closing-text">
-          This story is not about dramatic claims. It is about building a stronger
-          system step by step, until the experience feels more disciplined,
-          dependable, and worth trusting.
+          This story is not about dramatic claims. It is about building a
+          stronger system step by step, until the experience feels more
+          disciplined, dependable, and worth trusting.
         </p>
 
         <p className="story-closing-text">
-          That is what the future of FitGearzzz should keep protecting: not noise,
-          but standards.
+          That is what the future of FitGearzzz should keep protecting: not
+          noise, but standards.
         </p>
 
         <div className="story-closing-actions">

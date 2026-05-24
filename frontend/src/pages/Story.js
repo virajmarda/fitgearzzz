@@ -1,715 +1,694 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import "./Story.css";
 
 const stages = [
   {
-    id: "stage-problem",
-    index: "01",
-    label: "Problem",
-    title: "The problem was visible long before the solution was ready.",
+    id: "problem",
+    chapter: "Chapter 01",
+    kicker: "The problem",
+    shortLabel: "Problem",
+    dialLabel: "Problem",
+    title: "Good intent was being lost inside a cluttered experience.",
     summary:
-      "The story began with a simple observation: people were putting serious effort into fitness, but the products around them often felt generic, inconsistent, or built without enough care.",
+      "The story started with friction. Navigation felt heavier than it should, the message hierarchy was diluted, and key decisions were harder to follow than they needed to be.",
     tension:
-      "There was no shortage of options. The real shortage was trust — products that felt dependable enough to become part of a disciplined routine.",
-    keyPoint:
-      "The challenge was not to add more noise. It was to identify a gap worth solving properly.",
-    evidence:
-      "A clear problem became visible: a mismatch between the seriousness of training and the quality of tools supporting it.",
-    accent: "Visible gap",
+      "The brand had direction, but the interface was not yet translating that clarity into a fast, premium customer journey.",
+    why:
+      "When the first impression is noisy, visitors spend effort understanding the page instead of trusting the product.",
+    evidence: [
+      {
+        label: "Observed friction",
+        text: "Dense layout rhythm, weaker content hierarchy, and too many competing visual signals on the same viewport.",
+        accent: true,
+      },
+      {
+        label: "Why it matters",
+        text: "A fitness brand should feel sharp, confident, and controlled within seconds—not visually crowded.",
+      },
+    ],
   },
   {
-    id: "stage-thought",
-    index: "02",
-    label: "Thought",
-    title: "The next stage was not speed. It was sharper thinking.",
+    id: "thought",
+    chapter: "Chapter 02",
+    kicker: "The thought",
+    shortLabel: "Thought",
+    dialLabel: "Thought",
+    title: "The redesign had to feel more like guided motion than static sections.",
     summary:
-      "Before anything strong could be built, the problem had to be understood more deeply. That meant questioning what training products should actually do beyond looking acceptable in a listing.",
+      "Instead of treating the page as stacked blocks, the experience was reframed as a narrative. Each section should arrive with intent, hold focus, and transition like one connected system.",
     tension:
-      "It was easy to choose what looked marketable. It was harder to choose what would still feel right after repeated use and real expectations.",
-    keyPoint:
-      "This stage shifted the story from vague ambition to a clearer standard.",
-    evidence:
-      "The journey improved once the right question replaced surface-level thinking.",
-    accent: "Sharper standard",
+      "The goal was not decoration. It was controlled emphasis—less noise, more direction, and stronger visual confidence.",
+    why:
+      "Smooth progression makes complex information easier to absorb and gives the brand a premium product feel.",
+    evidence: [
+      {
+        label: "Design intent",
+        text: "Create a storytelling structure with smoother visual state changes, cleaner spacing, and fewer dead areas.",
+        accent: true,
+      },
+      {
+        label: "Expected outcome",
+        text: "A page that feels engineered, not assembled—where sections guide the eye instead of competing for it.",
+      },
+    ],
   },
   {
-    id: "stage-plan",
-    index: "03",
-    label: "Plan",
-    title: "A proper plan gave the journey structure.",
+    id: "plan",
+    chapter: "Chapter 03",
+    kicker: "The plan",
+    shortLabel: "Plan",
+    dialLabel: "Plan",
+    title: "The plan centered on reducing friction and building a clearer, more reliable experience.",
     summary:
-      "After the problem and standard became clearer, the next move was to build a plan around consistency, selection, presentation, and long-term trust.",
+      "The layout was tightened, the right-side visual system was resized, and the scroll rhythm was redesigned to remove the giant empty gap between content and dial.",
     tension:
-      "Planning always looks convincing from a distance. The real test was whether the structure could survive pressure, uncertainty, and revision.",
-    keyPoint:
-      "The plan centered on reducing friction and building a clearer, more reliable experience.",
-    evidence:
-      "This stage introduced priorities, filters, and decision-making discipline into the process.",
-    accent: "Structured intent",
+      "The challenge was balancing visual drama with restraint so the page still matched the fitgearzzz storefront instead of feeling like an unrelated microsite.",
+    why:
+      "A premium page should create momentum without stealing attention away from the message itself.",
+    evidence: [
+      {
+        label: "Structured intent",
+        text: "Smaller dial, smoother state changes, sharper section pacing, and a brand-matched dark/orange component system.",
+        accent: true,
+      },
+      {
+        label: "Interaction logic",
+        text: "Section activation now follows the viewport center rather than raw scroll distance, which makes the progression feel calmer and more stable.",
+      },
+    ],
   },
   {
-    id: "stage-process",
-    index: "04",
-    label: "Process",
-    title: "The process was where weak ideas were removed.",
+    id: "build",
+    chapter: "Chapter 04",
+    kicker: "The build",
+    shortLabel: "Build",
+    dialLabel: "Build",
+    title: "The process was where weak ideas were simplified and strong ones were refined.",
     summary:
-      "This stage demanded more patience than excitement. Product directions, presentation choices, and assumptions had to be compared, tested, and improved repeatedly.",
+      "Motion, spacing, and layout all had to work together. The stage transitions were softened, the dial geometry was reduced, and the visual system was aligned with the site’s orange CTA and dark glass surfaces.",
     tension:
-      "Some options looked promising at first but failed under scrutiny. Others worked technically but still lacked the clarity or confidence the brand needed.",
-    keyPoint:
-      "The process created discipline by making sure only strong decisions survived repetition.",
-    evidence:
-      "Progress depended on removing weak paths before they shaped the final experience.",
-    accent: "Pressure-tested",
+      "The result needed to feel expressive, but still production-ready and usable across large screens and mobile breakpoints.",
+    why:
+      "When visuals and movement follow the same system, the page feels more trustworthy and much easier to navigate.",
+    evidence: [
+      {
+        label: "Implementation focus",
+        text: "Refined grid widths, lower dial radius, reduced stage gaps, and controlled morph timing across sections.",
+        accent: true,
+      },
+      {
+        label: "Brand alignment",
+        text: "The dial now behaves like a premium instrument detail from the store rather than a separate futuristic widget.",
+      },
+    ],
   },
   {
-    id: "stage-progress",
-    index: "05",
-    label: "Progress",
-    title: "Progress became visible when the system started holding together.",
+    id: "future",
+    chapter: "Chapter 05",
+    kicker: "What this unlocks",
+    shortLabel: "Future",
+    dialLabel: "Future",
+    title: "Now the story reads as one connected flow instead of isolated screens.",
     summary:
-      "Once enough weak decisions were filtered out, the outcomes became more coherent. The experience started feeling more stable, clearer, and more credible.",
+      "The page feels more cohesive, the transitions are smoother, and the right-side dial supports the narrative without overpowering the layout.",
     tension:
-      "At this point, the challenge changed: not whether progress could happen once, but whether it could repeat consistently.",
-    keyPoint:
-      "Real progress showed up when better selection, better presentation, and better structure began aligning.",
-    evidence:
-      "The system started producing stronger outcomes because its internal standards were becoming consistent.",
-    accent: "Clearer outcomes",
-  },
-  {
-    id: "stage-current",
-    index: "06",
-    label: "Current",
-    title: "The current stage is stronger, but intentionally unfinished.",
-    summary:
-      "Today, the brand has more structure, clearer direction, and a stronger understanding of what it should represent in a serious training journey.",
-    tension:
-      "But stability creates a new risk: becoming comfortable too early. The challenge now is to keep evolving without losing the discipline that created improvement.",
-    keyPoint:
-      "The current stage is best understood as a strong platform, not a final destination.",
-    evidence:
-      "The system matured enough to support growth while staying anchored to a clearer standard.",
-    accent: "Stable base",
-  },
-  {
-    id: "stage-future",
-    index: "07",
-    label: "Future",
-    title: "The future is being designed with more precision, not more noise.",
-    summary:
-      "What comes next is not random expansion. It is a more focused effort to improve product experience, storytelling, and long-term relevance.",
-    tension:
-      "Growth can easily weaken a story when it introduces distraction. The real responsibility now is to scale without dilution.",
-    keyPoint:
-      "The future matters only if refinement stays stronger than impulse.",
-    evidence:
-      "The next chapter is defined by smarter growth, stronger standards, and more intentional evolution.",
-    accent: "Smarter growth",
+      "This creates a stronger base for future polish—whether you add richer media, product proof, or animated case-study moments later.",
+    why:
+      "A strong story page should feel premium today and extensible tomorrow.",
+    evidence: [
+      {
+        label: "Immediate gain",
+        text: "Cleaner storytelling rhythm, tighter spacing, and a better visual match with the fitgearzzz brand system.",
+        accent: true,
+      },
+      {
+        label: "Next layer",
+        text: "You can now add richer product visuals, before/after comparisons, or campaign proof without breaking the flow.",
+      },
+    ],
   },
 ];
 
 const signals = [
   {
-    title: "The problem was named properly",
-    text:
-      "Progress only started once the issue became specific enough to guide better decisions.",
+    title: "Sharper hierarchy",
+    text: "Sections now resolve into a cleaner reading order, so users understand context before they reach detail.",
   },
   {
-    title: "Weak directions were removed",
-    text:
-      "The brand got stronger because attractive but unreliable paths were filtered out early.",
+    title: "Better pacing",
+    text: "Reduced spacing and smoother activation create momentum instead of long empty pauses between ideas.",
   },
   {
-    title: "The system became repeatable",
-    text:
-      "The strongest signal of progress was consistency: better outcomes showing up through structure, not luck.",
+    title: "Brand continuity",
+    text: "The dial and story surfaces now use the same dark/orange language already visible across the site experience.",
   },
 ];
 
-function useInView(options = {}) {
-  const ref = useRef(null);
-  const [inView, setInView] = useState(false);
+const dialAngles = [-122, -54, 0, 56, 112];
+const dialMarkerAngles = [-122, -90, -54, -24, 0, 28, 56, 86, 112];
+const dialToneMap = ["problem", "thought", "plan", "build", "future"];
 
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return undefined;
+const curveNodeOffsets = [12, 28, 46, 66, 84];
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-        }
-      },
-      {
-        threshold: 0.2,
-        ...options,
-      }
-    );
-
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [options]);
-
-  return [ref, inView];
+function polarPosition(angle, radius) {
+  const radians = (angle - 90) * (Math.PI / 180);
+  return {
+    x: Math.cos(radians) * radius,
+    y: Math.sin(radians) * radius,
+  };
 }
 
-const Story = () => {
-  const [activeStage, setActiveStage] = useState(stages[0].id);
-  const [previousStage, setPreviousStage] = useState(stages[0].id);
-  const [isMorphing, setIsMorphing] = useState(false);
-  const [curveNodes, setCurveNodes] = useState([]);
-  const [curveHeight, setCurveHeight] = useState(0);
-  const mainShellRef = useRef(null);
+function Story() {
+  const pageRef = useRef(null);
+  const stageRefs = useRef([]);
+  const manifestoRef = useRef(null);
+  const timelineRef = useRef(null);
+  const signalsRef = useRef(null);
+  const closingRef = useRef(null);
 
-  const stageMap = useMemo(
-    () => Object.fromEntries(stages.map((stage) => [stage.id, stage])),
+  const [activeStage, setActiveStage] = useState(0);
+  const [visibleStages, setVisibleStages] = useState(() => new Set());
+  const [visibleBlocks, setVisibleBlocks] = useState({
+    manifesto: false,
+    timeline: false,
+    signals: false,
+    closing: false,
+  });
+  const [isMorphing, setIsMorphing] = useState(false);
+
+  const activeStageData = stages[activeStage];
+
+  const dialItems = useMemo(
+    () =>
+      stages.map((stage, index) => ({
+        ...stage,
+        angle: dialAngles[index],
+      })),
     []
   );
 
-  const updateCurve = useCallback(() => {
-    const shell = mainShellRef.current;
-    if (!shell) return;
-
-    const shellRect = shell.getBoundingClientRect();
-    const nodes = stages.map((stage) => {
-      const el = document.getElementById(stage.id);
-      if (!el) return null;
-      const rect = el.getBoundingClientRect();
-      return rect.top - shellRect.top + rect.height / 2;
-    });
-
-    const valid = nodes.filter((value) => value != null);
-    const maxY = valid.length ? Math.max(...valid) : 0;
-
-    setCurveNodes(nodes);
-    setCurveHeight(maxY + 220);
-  }, []);
-
   useEffect(() => {
-    const elements = stages
-      .map((stage) => document.getElementById(stage.id))
-      .filter(Boolean);
+    if (!pageRef.current) return;
 
-    if (!elements.length) return undefined;
-
+    const stageElements = stageRefs.current.filter(Boolean);
     const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        const nextVisible = new Set(visibleStages);
 
-        if (visible[0]?.target?.id) {
-          const nextId = visible[0].target.id;
-          setActiveStage((current) => (current === nextId ? current : nextId));
-        }
+        entries.forEach((entry) => {
+          const stageIndex = Number(entry.target.dataset.stageIndex);
+
+          if (entry.isIntersecting) {
+            nextVisible.add(stageIndex);
+          } else if (entry.intersectionRatio < 0.05) {
+            nextVisible.delete(stageIndex);
+          }
+        });
+
+        setVisibleStages(new Set(nextVisible));
       },
       {
-        threshold: [0.2, 0.35, 0.5, 0.65, 0.8],
-        rootMargin: "-12% 0px -18% 0px",
+        threshold: [0.08, 0.2, 0.38, 0.55],
+        rootMargin: "-8% 0px -8% 0px",
       }
     );
 
-    elements.forEach((el) => observer.observe(el));
+    stageElements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, [visibleStages]);
+
+  useEffect(() => {
+    const tracked = [
+      { key: "manifesto", ref: manifestoRef },
+      { key: "timeline", ref: timelineRef },
+      { key: "signals", ref: signalsRef },
+      { key: "closing", ref: closingRef },
+    ];
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        setVisibleBlocks((prev) => {
+          const next = { ...prev };
+          entries.forEach((entry) => {
+            const key = entry.target.dataset.block;
+            next[key] = entry.isIntersecting;
+          });
+          return next;
+        });
+      },
+      {
+        threshold: 0.14,
+        rootMargin: "0px 0px -8% 0px",
+      }
+    );
+
+    tracked.forEach(({ ref, key }) => {
+      if (ref.current) {
+        ref.current.dataset.block = key;
+        observer.observe(ref.current);
+      }
+    });
+
     return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
-    if (activeStage === previousStage) return undefined;
-
-    setIsMorphing(true);
-    const timer = window.setTimeout(() => {
-      setPreviousStage(activeStage);
-      setIsMorphing(false);
-    }, 720);
-
-    return () => window.clearTimeout(timer);
-  }, [activeStage, previousStage]);
-
-  useEffect(() => {
-    updateCurve();
-
     let ticking = false;
 
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
+    const updateActiveStage = () => {
+      const sections = stageRefs.current.filter(Boolean);
+      const triggerY = window.innerHeight * 0.43;
 
-      window.requestAnimationFrame(() => {
-        updateCurve();
-        ticking = false;
+      let nextIndex = 0;
+      let closestDistance = Infinity;
+
+      sections.forEach((section, index) => {
+        const rect = section.getBoundingClientRect();
+        const center = rect.top + rect.height * 0.5;
+        const distance = Math.abs(center - triggerY);
+
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          nextIndex = index;
+        }
       });
+
+      setActiveStage((prev) => (prev === nextIndex ? prev : nextIndex));
+      ticking = false;
     };
 
-    window.addEventListener("resize", updateCurve);
-    window.addEventListener("load", updateCurve);
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          updateActiveStage();
+        });
+        ticking = true;
+      }
+    };
+
+    updateActiveStage();
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
 
     return () => {
-      window.removeEventListener("resize", updateCurve);
-      window.removeEventListener("load", updateCurve);
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
     };
-  }, [updateCurve]);
-
-  const scrollToStage = useCallback((id) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-
-    const rect = el.getBoundingClientRect();
-    const isMobile = window.innerWidth <= 768;
-    const viewportOffset = isMobile ? 18 : window.innerHeight * 0.08;
-
-    window.scrollTo({
-      top: rect.top + window.scrollY - viewportOffset,
-      behavior: "smooth",
-    });
   }, []);
 
-  const activeStageData = stageMap[activeStage] || stages[0];
+  useEffect(() => {
+    setIsMorphing(true);
+    const timer = window.setTimeout(() => setIsMorphing(false), 900);
+    return () => window.clearTimeout(timer);
+  }, [activeStage]);
+
+  const handleJumpToStage = (index) => {
+    const target = stageRefs.current[index];
+    if (!target) return;
+
+    target.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   return (
-    <div className={`story-page ${isMorphing ? "is-morphing" : ""}`}>
-      <StageDial
-        stages={stages}
-        activeStage={activeStage}
-        previousStage={previousStage}
-        isMorphing={isMorphing}
-      />
-
-      <header className="story-hero">
-        <div className="story-hero-bg-rings" />
-        <div className="story-hero-bg-accent" />
-
+    <div
+      ref={pageRef}
+      className={`story-page ${isMorphing ? "is-morphing" : ""}`}
+    >
+      <section className="story-hero">
         <div className="story-hero-inner">
           <div className="story-hero-pill">
             <span className="story-hero-pill-dot" />
-            <span className="story-hero-pill-text">A progress story</span>
+            <span className="story-hero-pill-text">Fitgearzzz story mode</span>
           </div>
 
-          <div className="story-hero-eyebrow">
-            Built with discipline, not decoration.
-          </div>
+          <div className="story-hero-eyebrow">Case study / Experience flow</div>
 
           <h1 className="story-hero-title">
-            A visible problem.
-            <br />
-            A stronger system.
+            We turned a cluttered narrative into a smoother premium story.
           </h1>
 
           <p className="story-hero-subtitle">
-            This story follows a progression: problem, thought, plan, process,
-            progress, current position, and future direction — each revealed as
-            part of a smoother morph-style chapter journey.
+            This page explains how the experience evolved—from friction and
+            scattered hierarchy to a cleaner, more controlled storytelling
+            system designed to feel closer to the fitgearzzz brand.
           </p>
 
           <p className="story-hero-trailer">
-            Scroll through the page and the chapter dial, curve, and panels
-            transition together so each chapter feels like the next evolved
-            slide instead of a separate block.
+            The goal was not to make it louder. The goal was to make every
+            section feel more intentional, easier to scan, and visually tighter
+            as users move through the page.
           </p>
 
           <div className="story-hero-actions">
             <button
               type="button"
               className="story-btn story-btn-primary"
-              onClick={() => scrollToStage(stages[0].id)}
+              onClick={() => handleJumpToStage(0)}
             >
               Start the story
             </button>
 
-            <a className="story-btn story-btn-secondary" href="/products">
-              Explore collection
-            </a>
+            <button
+              type="button"
+              className="story-btn story-btn-secondary"
+              onClick={() => handleJumpToStage(stages.length - 1)}
+            >
+              Jump to outcome
+            </button>
           </div>
 
           <div className="story-hero-meta">
             <div className="story-hero-meta-card">
-              <span className="story-hero-meta-label">Current chapter</span>
+              <span className="story-hero-meta-label">Focus</span>
               <span className="story-hero-meta-value">
-                {activeStageData.index} · {activeStageData.label}
+                Cleaner pacing and stronger visual hierarchy
               </span>
             </div>
 
             <div className="story-hero-meta-card">
-              <span className="story-hero-meta-label">Transition style</span>
-              <span className="story-hero-meta-value">Smooth morph scroll</span>
+              <span className="story-hero-meta-label">System</span>
+              <span className="story-hero-meta-value">
+                Dark glass surfaces with fitgearzzz orange accents
+              </span>
+            </div>
+
+            <div className="story-hero-meta-card">
+              <span className="story-hero-meta-label">Upgrade</span>
+              <span className="story-hero-meta-value">
+                Smaller dial, tighter spacing, smoother story motion
+              </span>
             </div>
           </div>
 
           <div className="story-hero-scroll">
             <span className="story-hero-scroll-line" />
-            <span className="story-hero-scroll-label">
-              Scroll to morph chapters
-            </span>
+            <span className="story-hero-scroll-label">Scroll to continue</span>
           </div>
         </div>
-      </header>
 
-      <ManifestoBlock />
+        <div className="story-hero-bg-accent" />
+        <div className="story-hero-bg-rings" />
+      </section>
 
-      <div className="story-main-shell" ref={mainShellRef}>
-        <JourneyCurve
-          stages={stages}
-          activeStage={activeStage}
-          previousStage={previousStage}
-          isMorphing={isMorphing}
-          curveNodes={curveNodes}
-          curveHeight={curveHeight}
-        />
+      <aside
+        className={`story-dial-fixed ${isMorphing ? "is-morphing" : ""}`}
+        aria-hidden="true"
+      >
+        <div className="story-dial-window">
+          <div
+            className="story-dial-rotor"
+            style={{
+              transform: `rotate(${dialAngles[activeStage]}deg)`,
+            }}
+          >
+            <div className="story-dial-ring ring-1" />
+            <div className="story-dial-ring ring-2" />
+            <div className="story-dial-ring ring-3" />
 
-        <TimelineStrip
-          stages={stages}
-          activeStage={activeStage}
-          onStageClick={scrollToStage}
-        />
+            {dialMarkerAngles.map((angle, index) => {
+              const { x, y } = polarPosition(angle, 92);
 
-        <main className="story-main">
-          {stages.map((stage, index) => (
-            <StageSection
-              key={stage.id}
-              stage={stage}
-              index={index}
-              isActive={activeStage === stage.id}
-              isPrevious={previousStage === stage.id && activeStage !== stage.id}
-              isMorphing={isMorphing}
+              let markerClass = "is-muted";
+              if (index === activeStage * 2) markerClass = "is-active";
+              else if (index < activeStage * 2) markerClass = "is-linked";
+
+              return (
+                <div
+                  key={`marker-${angle}-${index}`}
+                  className="story-dial-marker-wrap"
+                  style={{
+                    transform: `translate(${124 + x}px, ${124 + y}px) rotate(${angle + 90}deg)`,
+                  }}
+                >
+                  <div className={`story-dial-marker ${markerClass}`} />
+                </div>
+              );
+            })}
+
+            {dialItems.map((item, index) => {
+              const { x, y } = polarPosition(item.angle, 67);
+
+              return (
+                <div
+                  key={item.id}
+                  className="story-dial-label-wrap"
+                  style={{
+                    transform: `translate(${124 + x}px, ${124 + y}px)`,
+                  }}
+                >
+                  <div className="story-dial-label-row">
+                    <span
+                      className={`story-dial-label ${
+                        index === activeStage ? "is-active" : ""
+                      }`}
+                    >
+                      {item.dialLabel}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+
+            <div className="story-dial-hub">
+              <div className="story-dial-hub-core" />
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <section
+        ref={manifestoRef}
+        className={`story-manifesto ${
+          visibleBlocks.manifesto ? "is-visible" : ""
+        }`}
+      >
+        <div className="story-manifesto-label">Why this mattered</div>
+        <p className="story-manifesto-text">
+          A strong story page should feel like one guided experience. It should
+          reduce friction, preserve momentum, and make every section feel like a
+          natural continuation of the one before it.
+        </p>
+      </section>
+
+      <div className="story-main-shell">
+        <div
+          className={`story-curve-wrapper ${isMorphing ? "is-morphing" : ""}`}
+          aria-hidden="true"
+        >
+          <svg
+            className="story-curve"
+            viewBox="0 0 360 1600"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M180 60C250 160 92 248 180 360C262 464 110 546 180 658C248 764 116 856 180 980C244 1092 106 1194 180 1316C230 1402 162 1488 180 1550"
+              stroke="url(#storyCurveGradient)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              opacity="0.8"
+            />
+            <defs>
+              <linearGradient
+                id="storyCurveGradient"
+                x1="180"
+                y1="60"
+                x2="180"
+                y2="1550"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stopColor="rgba(249,115,22,0.08)" />
+                <stop offset="0.18" stopColor="#f97316" />
+                <stop offset="0.5" stopColor="rgba(148,163,184,0.28)" />
+                <stop offset="0.82" stopColor="#f97316" />
+                <stop offset="1" stopColor="rgba(249,115,22,0.04)" />
+              </linearGradient>
+            </defs>
+          </svg>
+
+          {curveNodeOffsets.map((offset, index) => (
+            <span
+              key={`curve-node-${index}`}
+              className={`story-curve-node ${
+                index === activeStage ? "is-active" : ""
+              }`}
+              style={{
+                top: `${offset}%`,
+              }}
             />
           ))}
-        </main>
-      </div>
+        </div>
 
-      <SignalsSection />
-      <ClosingSection />
-    </div>
-  );
-};
+        <div className="story-main">
+          <section
+            ref={timelineRef}
+            className={`story-timeline-strip ${
+              visibleBlocks.timeline ? "is-visible" : ""
+            }`}
+          >
+            <div className="story-timeline-inner">
+              <div className="story-timeline-label">Journey map</div>
 
-const StageDial = ({ stages, activeStage, previousStage, isMorphing }) => {
-  const [rotation, setRotation] = useState(0);
-  const [activeChapter, setActiveChapter] = useState(0);
-
-  useEffect(() => {
-    const chapterIndex = Math.max(
-      0,
-      stages.findIndex((stage) => stage.id === activeStage)
-    );
-
-    const chapterSpacing = 30;
-    const targetAngle = chapterIndex * chapterSpacing;
-
-    const frame = requestAnimationFrame(() => {
-      setRotation(targetAngle);
-      setActiveChapter(chapterIndex);
-    });
-
-    return () => cancelAnimationFrame(frame);
-  }, [activeStage, stages]);
-
-  return (
-    <div
-      className={`story-dial-fixed ${isMorphing ? "is-morphing" : ""}`}
-      aria-hidden="true"
-      data-active-stage={activeStage}
-      data-previous-stage={previousStage}
-    >
-      <div className="story-dial-window">
-        <div
-          className="story-dial-rotor"
-          style={{
-            transform: `rotate(${rotation}deg)`,
-          }}
-        >
-          <div className="story-dial-ring ring-1" />
-          <div className="story-dial-ring ring-2" />
-          <div className="story-dial-ring ring-3" />
-
-          {Array.from({ length: 12 }).map((_, i) => {
-            const angle = i * 30 - 90;
-            const radius = 220;
-            const x = Math.cos((angle * Math.PI) / 180) * radius;
-            const y = Math.sin((angle * Math.PI) / 180) * radius;
-            const chapterMarkerIndexes = [9, 8, 7, 6, 5, 4, 3];
-            const isLinked = chapterMarkerIndexes.includes(i);
-            const linkedIndex = chapterMarkerIndexes.indexOf(i);
-            const isActiveMarker = linkedIndex === activeChapter;
-
-            return (
-              <div
-                key={`marker-${i}`}
-                className="story-dial-marker-wrap"
-                style={{
-                  transform: `translate(${x}px, ${y}px) rotate(${angle - 90}deg)`,
-                }}
-              >
-                <div
-                  className={`story-dial-marker ${
-                    isLinked
-                      ? isActiveMarker
-                        ? "is-active"
-                        : "is-linked"
-                      : "is-muted"
-                  }`}
-                />
-              </div>
-            );
-          })}
-
-          {stages.map((stage, i) => {
-            const markerIndexes = [9, 8, 7, 6, 5, 4, 3];
-            const markerIndex = markerIndexes[i];
-            const angle = markerIndex * 30 - 90;
-            const radius = 220;
-            const x = Math.cos((angle * Math.PI) / 180) * radius;
-            const y = Math.sin((angle * Math.PI) / 180) * radius;
-            const rotatedAngle = (angle + rotation + 360) % 360;
-            const normalizedDistance = Math.abs(
-              ((rotatedAngle - 180 + 540) % 360) - 180
-            );
-            const isNineOClock = normalizedDistance < 1.2;
-
-            return (
-              <div
-                key={stage.id}
-                className="story-dial-label-wrap"
-                style={{
-                  transform: `translate(${x}px, ${y}px) translate(-50%, -50%) rotate(${
-                    angle >= 90 && angle <= 270 ? angle + 180 : angle
-                  }deg)`,
-                }}
-              >
-                <div className="story-dial-label-row">
-                  <span
-                    className={`story-dial-label ${
-                      isNineOClock ? "is-active" : ""
+              <div className="story-timeline-track">
+                {stages.map((stage, index) => (
+                  <button
+                    key={stage.id}
+                    type="button"
+                    className={`story-timeline-pill ${
+                      index === activeStage ? "is-active" : ""
                     }`}
+                    onClick={() => handleJumpToStage(index)}
                   >
-                    {stage.label}
-                  </span>
-                </div>
+                    <span className="story-timeline-pill-index">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span>{stage.shortLabel}</span>
+                  </button>
+                ))}
               </div>
+            </div>
+          </section>
+
+          {stages.map((stage, index) => {
+            const isVisible = visibleStages.has(index);
+            const isActive = activeStage === index;
+            const isPrevious = activeStage - 1 === index;
+
+            return (
+              <section
+                key={stage.id}
+                ref={(node) => {
+                  stageRefs.current[index] = node;
+                }}
+                data-story-stage
+                data-stage-index={index}
+                className={[
+                  "story-stage",
+                  isVisible ? "is-visible" : "",
+                  isActive ? "is-active" : "",
+                  isPrevious ? "is-previous" : "",
+                  isMorphing && isActive ? "is-morphing" : "",
+                  index % 2 === 1 ? "is-odd" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              >
+                <div className="story-stage-inner">
+                  <div className="story-stage-copy">
+                    <div className="story-stage-kicker">
+                      {stage.chapter} · {stage.kicker}
+                    </div>
+
+                    <h2 className="story-stage-title">{stage.title}</h2>
+
+                    <p className="story-stage-summary">{stage.summary}</p>
+
+                    <p className="story-stage-tension">{stage.tension}</p>
+
+                    <div className="story-stage-key">
+                      <div className="story-stage-key-label">Why it matters</div>
+                      <div className="story-stage-key-text">{stage.why}</div>
+                    </div>
+                  </div>
+
+                  <div className="story-stage-evidence">
+                    {stage.evidence.map((item, cardIndex) => (
+                      <article
+                        key={`${stage.id}-${cardIndex}`}
+                        className={`story-stage-card ${
+                          item.accent ? "story-stage-card-accent" : ""
+                        }`}
+                      >
+                        <div className="story-stage-card-label">
+                          {item.label}
+                        </div>
+                        <div className="story-stage-card-text">{item.text}</div>
+                      </article>
+                    ))}
+                  </div>
+                </div>
+              </section>
             );
           })}
 
-          <div className="story-dial-hub">
-            <div className="story-dial-hub-core" />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+          <section
+            ref={signalsRef}
+            className={`story-signals ${
+              visibleBlocks.signals ? "is-visible" : ""
+            }`}
+          >
+            <div className="story-signals-inner">
+              <div className="story-section-heading">
+                <div className="story-section-kicker">What changed</div>
+                <h2 className="story-section-title">
+                  The upgraded structure now feels faster, cleaner, and more in
+                  control.
+                </h2>
+              </div>
 
-const ManifestoBlock = () => {
-  const [ref, inView] = useInView();
-
-  return (
-    <section
-      ref={ref}
-      className={`story-manifesto ${inView ? "is-visible" : ""}`}
-    >
-      <div className="story-manifesto-label">Perspective</div>
-      <p className="story-manifesto-text">
-        Strong stories are not built from instant perfection. They are built
-        from a problem that stays visible, a process that removes weak
-        decisions, and a standard that becomes clearer through repetition.
-      </p>
-    </section>
-  );
-};
-
-const JourneyCurve = ({
-  stages,
-  activeStage,
-  previousStage,
-  isMorphing,
-  curveNodes,
-  curveHeight,
-}) => {
-  if (!curveNodes.length || !curveHeight) return null;
-
-  return (
-    <div
-      className={`story-curve-wrapper ${isMorphing ? "is-morphing" : ""}`}
-      style={{ height: `${curveHeight}px` }}
-      aria-hidden="true"
-      data-active-stage={activeStage}
-      data-previous-stage={previousStage}
-    >
-      <svg
-        className="story-curve"
-        width="420"
-        height={curveHeight}
-        viewBox={`0 0 420 ${curveHeight}`}
-        preserveAspectRatio="none"
-      >
-        <path
-          d={`M210 20 C 310 ${curveHeight * 0.16}, 110 ${curveHeight * 0.34}, 210 ${
-            curveHeight * 0.5
-          } S 320 ${curveHeight * 0.82}, 210 ${curveHeight - 40}`}
-          stroke="rgba(249, 115, 22, 0.22)"
-          strokeWidth="1.5"
-          fill="none"
-        />
-      </svg>
-
-      {curveNodes.map((y, i) => {
-        if (y == null) return null;
-        const stage = stages[i];
-        const isActive = stage?.id === activeStage;
-
-        return (
-          <span
-            key={stage.id}
-            className={`story-curve-node ${isActive ? "is-active" : ""}`}
-            style={{ top: `${y}px` }}
-          />
-        );
-      })}
-    </div>
-  );
-};
-
-const TimelineStrip = ({ stages, activeStage, onStageClick }) => {
-  const [ref, inView] = useInView();
-
-  return (
-    <section
-      ref={ref}
-      className={`story-timeline-strip ${inView ? "is-visible" : ""}`}
-    >
-      <div className="story-timeline-inner">
-        <div className="story-timeline-label">Journey chapters</div>
-
-        <div className="story-timeline-track">
-          {stages.map((stage) => (
-            <button
-              key={stage.id}
-              className={`story-timeline-pill ${
-                activeStage === stage.id ? "is-active" : ""
-              }`}
-              onClick={() => onStageClick(stage.id)}
-              aria-pressed={activeStage === stage.id}
-              type="button"
-            >
-              <span className="story-timeline-pill-index">{stage.index}</span>
-              <span>{stage.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const StageSection = ({ stage, index, isActive, isPrevious, isMorphing }) => {
-  const [ref, inView] = useInView({
-    threshold: 0.35,
-  });
-
-  const isOdd = index % 2 === 1;
-
-  return (
-    <section
-      id={stage.id}
-      ref={ref}
-      className={`story-stage ${isOdd ? "is-odd" : ""} ${
-        inView ? "is-visible" : ""
-      } ${isActive ? "is-active" : ""} ${isPrevious ? "is-previous" : ""} ${
-        isMorphing ? "is-morphing" : ""
-      }`}
-    >
-      <div className="story-stage-inner">
-        <div className="story-stage-copy">
-          <div className="story-stage-kicker">
-            Chapter {stage.index} · {stage.label}
-          </div>
-
-          <h2 className="story-stage-title">{stage.title}</h2>
-          <p className="story-stage-summary">{stage.summary}</p>
-          <p className="story-stage-tension">{stage.tension}</p>
-
-          <div className="story-stage-key">
-            <div className="story-stage-key-label">Why it matters</div>
-            <div className="story-stage-key-text">{stage.keyPoint}</div>
-          </div>
-        </div>
-
-        <div className="story-stage-evidence">
-          <div className="story-stage-card">
-            <div className="story-stage-card-label">Stage insight</div>
-            <div className="story-stage-card-text">{stage.evidence}</div>
-          </div>
-
-          <div className="story-stage-card story-stage-card-accent">
-            <div className="story-stage-card-label">Signal</div>
-            <div className="story-stage-card-text">{stage.accent}</div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const SignalsSection = () => {
-  const [ref, inView] = useInView();
-
-  return (
-    <section ref={ref} className={`story-signals ${inView ? "is-visible" : ""}`}>
-      <div className="story-signals-inner">
-        <div className="story-section-heading">
-          <div className="story-section-kicker">Signals of progress</div>
-          <h2 className="story-section-title">
-            The strongest signs appeared when the system became repeatable.
-          </h2>
-        </div>
-
-        <div className="story-signals-grid">
-          {signals.map((signal) => (
-            <div key={signal.title} className="story-signal-card">
-              <div className="story-signal-title">{signal.title}</div>
-              <div className="story-signal-text">{signal.text}</div>
+              <div className="story-signals-grid">
+                {signals.map((signal) => (
+                  <article key={signal.title} className="story-signal-card">
+                    <div className="story-signal-title">{signal.title}</div>
+                    <div className="story-signal-text">{signal.text}</div>
+                  </article>
+                ))}
+              </div>
             </div>
-          ))}
+          </section>
+
+          <section
+            ref={closingRef}
+            className={`story-closing ${
+              visibleBlocks.closing ? "is-visible" : ""
+            }`}
+          >
+            <div className="story-closing-inner">
+              <div className="story-closing-kicker">Closing note</div>
+
+              <h2 className="story-closing-title">
+                This is now a stronger base for a premium brand story.
+              </h2>
+
+              <p className="story-closing-text">
+                The page now feels more deliberate: less empty space, more visual
+                continuity, and smoother transitions that support the message
+                instead of interrupting it.
+              </p>
+
+              <p className="story-closing-text">
+                From here, richer product proof, before/after comparisons, or
+                campaign results can be added on top of a cleaner storytelling
+                framework.
+              </p>
+
+              <div className="story-closing-actions">
+                <button
+                  type="button"
+                  className="story-btn story-btn-primary"
+                  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                >
+                  Back to top
+                </button>
+
+                <button
+                  type="button"
+                  className="story-btn story-btn-secondary"
+                  onClick={() => handleJumpToStage(2)}
+                >
+                  Review the plan
+                </button>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
-    </section>
+    </div>
   );
-};
-
-const ClosingSection = () => {
-  const [ref, inView] = useInView();
-
-  return (
-    <section ref={ref} className={`story-closing ${inView ? "is-visible" : ""}`}>
-      <div className="story-closing-inner">
-        <div className="story-closing-kicker">Closing thought</div>
-
-        <h2 className="story-closing-title">
-          Every chapter matters only if the result supports real effort.
-        </h2>
-
-        <p className="story-closing-text">
-          This story is not about dramatic claims. It is about building a
-          stronger system step by step, until the experience feels more
-          disciplined, dependable, and worth trusting.
-        </p>
-
-        <p className="story-closing-text">
-          That is what the future of FitGearzzz should keep protecting: not
-          noise, but standards.
-        </p>
-
-        <div className="story-closing-actions">
-          <a className="story-btn story-btn-primary" href="/products">
-            View products
-          </a>
-          <a className="story-btn story-btn-secondary" href="/contact">
-            Contact us
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-};
+}
 
 export default Story;

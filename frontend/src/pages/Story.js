@@ -145,15 +145,14 @@ const signals = [
   },
 ];
 
-const dialAngles = [-122, -54, 0, 56, 112];
-const dialMarkerAngles = [-122, -90, -54, -24, 0, 28, 56, 86, 112];
 const curveNodeOffsets = [12, 28, 46, 66, 84];
+const dialToneMap = ["problem", "thought", "plan", "build", "future"];
 
-function polarPosition(angle, radius) {
+function polarPosition(angle, radius, cx = 180, cy = 180) {
   const radians = (angle - 90) * (Math.PI / 180);
   return {
-    x: Math.cos(radians) * radius,
-    y: Math.sin(radians) * radius,
+    x: cx + Math.cos(radians) * radius,
+    y: cy + Math.sin(radians) * radius,
   };
 }
 
@@ -179,7 +178,7 @@ function Story() {
     () =>
       stages.map((stage, index) => ({
         ...stage,
-        angle: dialAngles[index],
+        tone: dialToneMap[index] || "problem",
       })),
     []
   );
@@ -302,7 +301,7 @@ function Story() {
 
   useEffect(() => {
     setIsMorphing(true);
-    const timer = window.setTimeout(() => setIsMorphing(false), 900);
+    const timer = window.setTimeout(() => setIsMorphing(false), 1350);
     return () => window.clearTimeout(timer);
   }, [activeStage]);
 
@@ -315,6 +314,9 @@ function Story() {
       block: "start",
     });
   };
+
+  const activeTone = dialToneMap[activeStage] || "problem";
+  const activeLabel = stages[activeStage]?.dialLabel || "Problem";
 
   return (
     <div
@@ -397,73 +399,109 @@ function Story() {
         <div className="story-hero-bg-rings" />
       </section>
 
-      <aside
-        className={`story-dial-fixed ${isMorphing ? "is-morphing" : ""}`}
-        aria-hidden="true"
-      >
-        <div className="story-dial-window">
-          <div className="story-dial-rotor">
-            <div className="story-dial-ring ring-1" />
-            <div className="story-dial-ring ring-2" />
-            <div className="story-dial-ring ring-3" />
+      <aside className="story-watch-dial" aria-hidden="true">
+        <div
+          className={`story-watch-dial-wrap ${isMorphing ? "is-morphing" : ""}`}
+          data-tone={activeTone}
+        >
+          <svg
+            className="story-watch-svg"
+            viewBox="0 0 360 360"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              className="dial-ring dial-ring-main"
+              cx="180"
+              cy="180"
+              r="102"
+            />
+            <circle
+              className="dial-ring dial-ring-secondary"
+              cx="180"
+              cy="180"
+              r="72"
+            />
+            <circle className="dial-core" cx="180" cy="180" r="56" />
+            <circle className="dial-orbit" cx="180" cy="180" r="118" />
 
-            {dialMarkerAngles.map((angle, index) => {
-              const { x, y } = polarPosition(angle, 92);
+            <circle
+              className="dial-arc-accent"
+              cx="180"
+              cy="180"
+              r="102"
+              pathLength="999"
+            />
 
-              let markerClass = "is-muted";
-              if (index === activeStage * 2) markerClass = "is-active";
-              else if (index < activeStage * 2) markerClass = "is-linked";
+            {[-118, -86, -50, -18, 18, 52, 88, 120].map((angle, index) => {
+              const outer = polarPosition(angle, 118);
+              const inner = polarPosition(angle, index % 2 === 0 ? 98 : 104);
 
               return (
-                <div
-                  key={`marker-${angle}-${index}`}
-                  className="story-dial-marker-wrap"
-                  style={{
-                    transform: `translate(${124 + x}px, ${124 + y}px) rotate(${angle + 90}deg)`,
-                  }}
-                >
-                  <div className={`story-dial-marker ${markerClass}`} />
-                </div>
+                <line
+                  key={`tick-${angle}`}
+                  className={`dial-tick ${index % 2 === 1 ? "tick-soft" : ""}`}
+                  x1={inner.x}
+                  y1={inner.y}
+                  x2={outer.x}
+                  y2={outer.y}
+                />
               );
             })}
 
             {dialItems.map((item, index) => {
-              const { x, y } = polarPosition(item.angle, 67);
+              const pos = polarPosition(-138 + index * 72, 126);
+              const isActive = index === activeStage;
 
               return (
-                <div
-                  key={item.id}
-                  className="story-dial-label-wrap"
-                  style={{
-                    transform: `translate(${124 + x}px, ${124 + y}px)`,
-                  }}
-                >
-                  <div className="story-dial-label-row">
-                    <span
-                      className={`story-dial-label ${
-                        index === activeStage ? "is-active" : ""
-                      }`}
-                    >
-                      {item.dialLabel}
-                    </span>
-                  </div>
-                </div>
+                <g key={item.id}>
+                  <circle
+                    className={`dial-label-node ${isActive ? "is-active" : ""}`}
+                    cx={pos.x}
+                    cy={pos.y}
+                    r={isActive ? 5.5 : 3.5}
+                  />
+                  <circle
+                    className="dial-active-node"
+                    cx={pos.x}
+                    cy={pos.y}
+                    r="7"
+                  />
+                </g>
               );
             })}
 
-            <div
-              className="story-dial-hand-wrap"
-              style={{
-                transform: `translate(-50%, -50%) rotate(${dialAngles[activeStage]}deg)`,
-              }}
-            >
-              <div className="story-dial-hand-line" />
-              <div className="story-dial-hand-dot" />
-            </div>
+            <g className="dial-hand">
+              <path
+                className="dial-hand-shape"
+                d="M176 83L183.5 92L186.4 174.5C186.55 178.6 183.3 182 179.2 182C175.1 182 171.8 178.7 172 174.6L176 83Z"
+              />
+              <line
+                className="dial-hand-core-line"
+                x1="180"
+                y1="98"
+                x2="180"
+                y2="170"
+              />
+              <path
+                className="dial-hand-tail"
+                d="M179.6 182L171.5 205.5L180 199.4L188.5 205.5L180.4 182H179.6Z"
+              />
+              <circle className="dial-hand-tip" cx="180" cy="92" r="4.8" />
+              <circle className="dial-hand-joint" cx="180" cy="180" r="9.6" />
+              <circle
+                className="dial-hand-joint-inner"
+                cx="180"
+                cy="180"
+                r="3.8"
+              />
+            </g>
+          </svg>
 
-            <div className="story-dial-hub">
-              <div className="story-dial-hub-core" />
-            </div>
+          <div className="story-watch-caption">
+            <span className="story-watch-caption-kicker">Active chapter</span>
+            <span className="story-watch-caption-label">{activeLabel}</span>
+            <span className="story-watch-caption-line" />
           </div>
         </div>
       </aside>

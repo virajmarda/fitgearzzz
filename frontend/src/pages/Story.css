@@ -402,11 +402,12 @@
 
 .story-main-shell {
   position: relative;
-  padding: 28px 0 96px;
+  padding: 40px 0 140px;
 }
 
 .story-main {
-  padding: 24px 0 80px;
+  padding: 0;
+  scroll-snap-type: y proximity;
 }
 
 .story-curve-wrapper {
@@ -539,12 +540,20 @@
 /* STAGES */
 
 .story-stage {
-  padding: 64px 7vw;
+  position: relative;
+  min-height: 96vh;
+  padding: 120px 7vw;
+  display: flex;
+  align-items: center;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
   opacity: 0;
   transform: translateY(34px);
+  filter: saturate(0.92);
   transition:
     opacity 0.52s ease,
-    transform 0.52s ease;
+    transform 0.52s ease,
+    filter 0.52s ease;
 }
 
 .story-stage.is-visible {
@@ -552,12 +561,38 @@
   transform: translateY(0);
 }
 
+.story-stage.is-active {
+  filter: saturate(1);
+}
+
+.story-stage + .story-stage {
+  margin-top: 16vh;
+}
+
+.story-stage + .story-stage::before {
+  content: "";
+  position: absolute;
+  top: -8vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(72vw, 880px);
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(148, 163, 184, 0.16),
+    rgba(255, 255, 255, 0)
+  );
+  pointer-events: none;
+}
+
 .story-stage-inner {
   max-width: 1040px;
+  width: 100%;
   margin: 0 auto;
   display: grid;
   grid-template-columns: minmax(0, 3.2fr) minmax(0, 2.2fr);
-  gap: 3.2rem;
+  gap: 4.5rem;
   align-items: center;
 }
 
@@ -623,13 +658,13 @@
 
 .story-stage-evidence {
   display: grid;
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
 .story-stage-card {
   position: relative;
-  border-radius: 22px;
-  padding: 1.6rem 1.5rem 1.75rem;
+  border-radius: 24px;
+  padding: 1.75rem 1.6rem 1.9rem;
   background: radial-gradient(
     circle at top left,
     rgba(249, 115, 22, 0.1),
@@ -677,6 +712,11 @@
   font-size: 0.95rem;
   line-height: 1.72;
   color: #e5e7eb;
+}
+
+.story-stage:not(.is-active) .story-stage-copy,
+.story-stage:not(.is-active) .story-stage-evidence {
+  opacity: 0.92;
 }
 
 /* SIGNALS */
@@ -834,11 +874,22 @@
   }
 
   .story-main-shell {
-    padding-bottom: 72px;
+    padding: 20px 0 88px;
   }
 
   .story-stage {
-    padding: 52px 6vw;
+    min-height: auto;
+    padding: 88px 6vw;
+    align-items: flex-start;
+  }
+
+  .story-stage + .story-stage {
+    margin-top: 72px;
+  }
+
+  .story-stage + .story-stage::before {
+    top: -36px;
+    width: calc(100% - 2.5rem);
   }
 
   .story-stage-inner {

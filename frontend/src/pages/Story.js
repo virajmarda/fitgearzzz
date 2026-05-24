@@ -58,7 +58,8 @@ const stages = [
     kicker: "The plan",
     shortLabel: "Plan",
     dialLabel: "Plan",
-    title: "The plan centered on reducing friction and building a clearer, more reliable experience.",
+    title:
+      "The plan centered on reducing friction and building a clearer, more reliable experience.",
     summary:
       "The layout was tightened, the right-side visual system was resized, and the scroll rhythm was redesigned to remove the giant empty gap between content and dial.",
     tension:
@@ -83,7 +84,8 @@ const stages = [
     kicker: "The build",
     shortLabel: "Build",
     dialLabel: "Build",
-    title: "The process was where weak ideas were simplified and strong ones were refined.",
+    title:
+      "The process was where weak ideas were simplified and strong ones were refined.",
     summary:
       "Motion, spacing, and layout all had to work together. The stage transitions were softened, the dial geometry was reduced, and the visual system was aligned with the site’s orange CTA and dark glass surfaces.",
     tension:
@@ -113,8 +115,7 @@ const stages = [
       "The page feels more cohesive, the transitions are smoother, and the right-side dial supports the narrative without overpowering the layout.",
     tension:
       "This creates a stronger base for future polish—whether you add richer media, product proof, or animated case-study moments later.",
-    why:
-      "A strong story page should feel premium today and extensible tomorrow.",
+    why: "A strong story page should feel premium today and extensible tomorrow.",
     evidence: [
       {
         label: "Immediate gain",
@@ -146,8 +147,6 @@ const signals = [
 
 const dialAngles = [-122, -54, 0, 56, 112];
 const dialMarkerAngles = [-122, -90, -54, -24, 0, 28, 56, 86, 112];
-const dialToneMap = ["problem", "thought", "plan", "build", "future"];
-
 const curveNodeOffsets = [12, 28, 46, 66, 84];
 
 function polarPosition(angle, radius) {
@@ -176,8 +175,6 @@ function Story() {
   });
   const [isMorphing, setIsMorphing] = useState(false);
 
-  const activeStageData = stages[activeStage];
-
   const dialItems = useMemo(
     () =>
       stages.map((stage, index) => ({
@@ -188,24 +185,26 @@ function Story() {
   );
 
   useEffect(() => {
-    if (!pageRef.current) return;
-
     const stageElements = stageRefs.current.filter(Boolean);
+    if (!stageElements.length) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
-        const nextVisible = new Set(visibleStages);
+        setVisibleStages((prev) => {
+          const nextVisible = new Set(prev);
 
-        entries.forEach((entry) => {
-          const stageIndex = Number(entry.target.dataset.stageIndex);
+          entries.forEach((entry) => {
+            const stageIndex = Number(entry.target.dataset.stageIndex);
 
-          if (entry.isIntersecting) {
-            nextVisible.add(stageIndex);
-          } else if (entry.intersectionRatio < 0.05) {
-            nextVisible.delete(stageIndex);
-          }
+            if (entry.isIntersecting) {
+              nextVisible.add(stageIndex);
+            } else if (entry.intersectionRatio < 0.05) {
+              nextVisible.delete(stageIndex);
+            }
+          });
+
+          return nextVisible;
         });
-
-        setVisibleStages(new Set(nextVisible));
       },
       {
         threshold: [0.08, 0.2, 0.38, 0.55],
@@ -216,7 +215,7 @@ function Story() {
     stageElements.forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
-  }, [visibleStages]);
+  }, []);
 
   useEffect(() => {
     const tracked = [
@@ -230,10 +229,12 @@ function Story() {
       (entries) => {
         setVisibleBlocks((prev) => {
           const next = { ...prev };
+
           entries.forEach((entry) => {
             const key = entry.target.dataset.block;
             next[key] = entry.isIntersecting;
           });
+
           return next;
         });
       },
@@ -258,8 +259,12 @@ function Story() {
 
     const updateActiveStage = () => {
       const sections = stageRefs.current.filter(Boolean);
-      const triggerY = window.innerHeight * 0.43;
+      if (!sections.length) {
+        ticking = false;
+        return;
+      }
 
+      const triggerY = window.innerHeight * 0.43;
       let nextIndex = 0;
       let closestDistance = Infinity;
 
@@ -280,10 +285,8 @@ function Story() {
 
     const onScroll = () => {
       if (!ticking) {
-        window.requestAnimationFrame(() => {
-          updateActiveStage();
-        });
         ticking = true;
+        window.requestAnimationFrame(updateActiveStage);
       }
     };
 
@@ -333,8 +336,8 @@ function Story() {
 
           <p className="story-hero-subtitle">
             This page explains how the experience evolved—from friction and
-            scattered hierarchy to a cleaner, more controlled storytelling
-            system designed to feel closer to the fitgearzzz brand.
+            scattered hierarchy to a cleaner, more controlled storytelling system
+            designed to feel closer to the fitgearzzz brand.
           </p>
 
           <p className="story-hero-trailer">
@@ -399,12 +402,7 @@ function Story() {
         aria-hidden="true"
       >
         <div className="story-dial-window">
-          <div
-            className="story-dial-rotor"
-            style={{
-              transform: `rotate(${dialAngles[activeStage]}deg)`,
-            }}
-          >
+          <div className="story-dial-rotor">
             <div className="story-dial-ring ring-1" />
             <div className="story-dial-ring ring-2" />
             <div className="story-dial-ring ring-3" />
@@ -452,6 +450,16 @@ function Story() {
                 </div>
               );
             })}
+
+            <div
+              className="story-dial-hand-wrap"
+              style={{
+                transform: `translate(-50%, -50%) rotate(${dialAngles[activeStage]}deg)`,
+              }}
+            >
+              <div className="story-dial-hand-line" />
+              <div className="story-dial-hand-dot" />
+            </div>
 
             <div className="story-dial-hub">
               <div className="story-dial-hub-core" />
@@ -516,9 +524,7 @@ function Story() {
               className={`story-curve-node ${
                 index === activeStage ? "is-active" : ""
               }`}
-              style={{
-                top: `${offset}%`,
-              }}
+              style={{ top: `${offset}%` }}
             />
           ))}
         </div>
@@ -670,7 +676,9 @@ function Story() {
                 <button
                   type="button"
                   className="story-btn story-btn-primary"
-                  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
                 >
                   Back to top
                 </button>

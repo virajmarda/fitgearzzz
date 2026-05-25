@@ -63,7 +63,7 @@ export const blogPosts = [
       {
         type: 'list',
         items: [
-          'Claims of 'spot reduction' or targeting specific fat areas',
+                    "Claims of 'spot reduction' or targeting specific fat areas",
           'Infomercial products with before-and-after photos',
           'Machines that only do one specific movement',
           'Equipment requiring expensive subscription services',

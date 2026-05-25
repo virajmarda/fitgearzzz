@@ -12,6 +12,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { blogPosts } from '../data/blogData';
 
 const categories = [
   'All',
@@ -21,83 +22,6 @@ const categories = [
   'Gear Guides',
   'Weight Loss',
   'Lifestyle',
-];
-
-const blogPosts = [
-  {
-    id: 1,
-    title: 'How to Choose the Right Home Workout Equipment Without Wasting Money',
-    excerpt: 'A practical guide to buying smarter, avoiding gimmicks, and building a home setup that actually fits your goals.',
-    category: 'Gear Guides',
-    readTime: '6 min read',
-    date: 'May 2026',
-    featured: true,
-    image: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1200&q=80',
-  },
-  {
-    id: 2,
-    title: 'Protein, Performance, and Recovery: What Beginners Actually Need to Know',
-    excerpt: 'Simple guidance on supplements, meal timing, and how to support training results without overcomplicating nutrition.',
-    category: 'Nutrition',
-    readTime: '5 min read',
-    date: 'May 2026',
-    featured: true,
-    image: 'https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?w=1200&q=80',
-  },
-  {
-    id: 3,
-    title: 'Resistance Bands vs Dumbbells: Which One Is Better for Home Training?',
-    excerpt: 'A real-world comparison based on versatility, cost, storage, progression, and beginner-friendliness.',
-    category: 'Training',
-    readTime: '4 min read',
-    date: 'May 2026',
-    image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=900&q=80',
-  },
-  {
-    id: 4,
-    title: '7 Recovery Essentials That Help You Stay Consistent With Your Fitness Routine',
-    excerpt: 'From sleep and hydration to support gear and mobility tools, recovery is where long-term consistency is built.',
-    category: 'Recovery',
-    readTime: '5 min read',
-    date: 'May 2026',
-    image: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=900&q=80',
-  },
-  {
-    id: 5,
-    title: 'The Beginner’s Checklist for Starting a Weight Loss Journey at Home',
-    excerpt: 'An honest checklist covering expectations, equipment, routine design, and how to stay motivated in the early phase.',
-    category: 'Weight Loss',
-    readTime: '7 min read',
-    date: 'April 2026',
-    image: 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=900&q=80',
-  },
-  {
-    id: 6,
-    title: 'Daily Fitness Habits That Matter More Than Fancy Workout Plans',
-    excerpt: 'The highest-leverage habits are often the least glamorous. Here is what actually improves adherence and results.',
-    category: 'Lifestyle',
-    readTime: '4 min read',
-    date: 'April 2026',
-    image: 'https://images.unsplash.com/photo-1517963879433-6ad2b056d712?w=900&q=80',
-  },
-  {
-    id: 7,
-    title: 'What to Look for Before Buying Wrist Straps, Belts, and Support Gear',
-    excerpt: 'A straightforward buying guide for support accessories, materials, fit, comfort, and everyday usefulness.',
-    category: 'Gear Guides',
-    readTime: '5 min read',
-    date: 'April 2026',
-    image: 'https://images.unsplash.com/photo-1594737625785-a6cbdabd333c?w=900&q=80',
-  },
-  {
-    id: 8,
-    title: 'High-Protein Snacking Without Overthinking Your Diet',
-    excerpt: 'A practical approach to protein-rich snacking for busy people who want better results and fewer bad food decisions.',
-    category: 'Nutrition',
-    readTime: '4 min read',
-    date: 'April 2026',
-    image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=900&q=80',
-  },
 ];
 
 const Blog = () => {
@@ -127,8 +51,8 @@ const Blog = () => {
     <div className="min-h-screen bg-zinc-950 text-white">
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-zinc-900">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.12),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.04),transparent_22%)]" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-20">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.12),transparent_30%),radial-gradient(circle_at_top_right,rgba(102,126,234,0.12),transparent_50%)]" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-24">
           <div className="grid lg:grid-cols-12 gap-10 items-end">
             <div className="lg:col-span-7">
               <motion.p
@@ -136,280 +60,171 @@ const Blog = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-sm uppercase tracking-[0.28em] text-orange-400 font-semibold mb-5"
               >
-                Blog
+                FitGear Blog
               </motion.p>
-
               <motion.h1
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.08 }}
-                className="font-oswald text-5xl sm:text-6xl lg:text-7xl leading-none uppercase tracking-tight mb-6"
+                transition={{ delay: 0.1 }}
+                className="text-6xl md:text-7xl font-bold leading-[1.1] mb-6"
               >
-                Fitness knowledge,
-                <span className="block text-orange-500">gear guides, and better habits</span>
+                Fitness Insights &<br />
+                <span className="bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
+                  Expert Guidance
+                </span>
               </motion.h1>
-
               <motion.p
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.14 }}
-                className="text-lg sm:text-xl text-zinc-300 max-w-2xl leading-relaxed"
+                transition={{ delay: 0.2 }}
+                className="text-xl text-zinc-400 max-w-2xl"
               >
-                Explore practical articles on training, nutrition, recovery, product buying guides, and everyday fitness decisions that actually matter.
+                Evidence-based articles on training, nutrition, and recovery to help you achieve your fitness goals.
               </motion.p>
             </div>
+          </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.18 }}
-              className="lg:col-span-5"
-            >
-              <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-6">
-                <p className="text-xs uppercase tracking-[0.22em] text-zinc-500 font-semibold mb-4">
-                  Explore Topics
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {categories.slice(1).map((cat) => (
-                    <button
-                      key={cat}
-                      onClick={() => setActiveCategory(cat)}
-                      className="rounded-full border border-zinc-700 px-4 py-2 text-sm text-zinc-300 hover:border-orange-500 hover:text-white transition-colors"
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
-                <div className="relative mt-5">
-                  <Search className="w-4 h-4 text-zinc-500 absolute left-4 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search articles..."
-                    className="w-full rounded-full border border-zinc-700 bg-zinc-950 text-white placeholder-zinc-500 pl-11 pr-4 py-3 focus:outline-none focus:border-orange-500"
-                  />
-                </div>
-              </div>
-            </motion.div>
+          {/* Search & Filters */}
+          <div className="mt-16">
+            <div className="relative">
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-500" size={20} />
+              <input
+                type="text"
+                placeholder="Search articles..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-16 pr-6 py-5 bg-zinc-900/50 border border-zinc-800 rounded-2xl text-lg text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500/50 transition-colors"
+              />
+            </div>
+
+            <div className="flex flex-wrap gap-3 mt-6">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setActiveCategory(category)}
+                  className={`px-6 py-3 rounded-full text-sm font-medium transition-all ${
+                    activeCategory === category
+                      ? 'bg-orange-500 text-white'
+                      : 'bg-zinc-900 text-zinc-400 hover:bg-zinc-800'
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Featured */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between gap-4 mb-8">
-            <div>
-              <p className="text-sm uppercase tracking-[0.24em] text-orange-400 font-semibold mb-3">
-                Featured Reads
-              </p>
-              <h2 className="font-oswald text-4xl uppercase">Start with the essentials</h2>
-            </div>
-            <div className="hidden md:flex items-center gap-2 text-zinc-400 text-sm">
-              <TrendingUp className="w-4 h-4 text-orange-500" />
-              Editorial picks for high-intent readers
-            </div>
+      {/* Featured Posts */}
+      {featuredPosts.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="flex items-center gap-3 mb-10">
+            <Flame className="text-orange-500" size={28} />
+            <h2 className="text-3xl font-bold">Featured Articles</h2>
           </div>
-
-          <div className="grid lg:grid-cols-2 gap-6">
-            {featuredPosts.map((post, index) => (
-              <motion.article
+          <div className="grid md:grid-cols-2 gap-8">
+            {featuredPosts.map((post) => (
+              <Link
                 key={post.id}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.08 }}
-                className="group overflow-hidden rounded-[2rem] border border-zinc-800 bg-zinc-900"
+                to={`/blog/${post.slug}`}
+                className="group relative overflow-hidden rounded-3xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition-all duration-300"
               >
-                <div className="aspect-[16/10] overflow-hidden">
+                <div className="aspect-[16/9] overflow-hidden">
                   <img
                     src={post.image}
                     alt={post.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
-                <div className="p-6 sm:p-7">
-                  <div className="flex flex-wrap items-center gap-3 text-sm text-zinc-400 mb-4">
-                    <span className="inline-flex items-center gap-2 text-orange-400">
-                      <Flame className="w-4 h-4" />
-                      Featured
-                    </span>
-                    <span>{post.category}</span>
-                    <span>{post.date}</span>
-                    <span>{post.readTime}</span>
-                  </div>
-                  <h3 className="text-2xl sm:text-3xl font-semibold text-white mb-4 leading-snug">
+                <div className="p-8">
+                  <span className="inline-block px-4 py-2 bg-orange-500/10 text-orange-400 rounded-full text-sm font-semibold mb-4">
+                    {post.category}
+                  </span>
+                  <h3 className="text-2xl font-bold mb-3 group-hover:text-orange-400 transition-colors">
                     {post.title}
                   </h3>
-                  <p className="text-zinc-400 text-lg leading-relaxed mb-6">
-                    {post.excerpt}
-                  </p>
-                  <button className="inline-flex items-center gap-2 text-orange-400 hover:text-orange-300 font-semibold transition-colors">
-                    Read Article
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
+                  <p className="text-zinc-400 mb-6 line-clamp-2">{post.excerpt}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-2 text-sm text-zinc-500">
+                      <Clock3 size={16} /> {post.readTime}
+                    </span>
+                    <span className="text-sm text-zinc-500">{post.date}</span>
+                  </div>
                 </div>
-              </motion.article>
+              </Link>
             ))}
           </div>
+        </section>
+      )}
+
+      {/* Regular Posts Grid */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+        <div className="flex items-center gap-3 mb-10">
+          <BookOpen className="text-zinc-400" size={28} />
+          <h2 className="text-3xl font-bold">All Articles</h2>
         </div>
-      </section>
-
-      {/* Category chips */}
-      <section className="pb-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap gap-3">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`rounded-full px-4 py-2 text-sm font-medium border transition-colors ${
-                  activeCategory === cat
-                    ? 'bg-orange-500 border-orange-500 text-white'
-                    : 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:border-zinc-600 hover:text-white'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Main grid */}
-      <section className="pb-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-12 gap-10">
-          <div className="lg:col-span-8">
-            <div className="flex items-center justify-between mb-6">
-              <div className="text-zinc-400 text-sm">
-                Showing <span className="text-white font-semibold">{filteredPosts.length}</span> articles
-              </div>
-              <div className="hidden sm:flex items-center gap-2 text-zinc-500 text-sm">
-                <BookOpen className="w-4 h-4" />
-                Editorial archive
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              {regularPosts.length > 0 ? (
-                regularPosts.map((post, index) => (
-                  <motion.article
-                    key={post.id}
-                    initial={{ opacity: 0, y: 18 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.06 }}
-                    className="group rounded-3xl overflow-hidden border border-zinc-800 bg-zinc-900"
-                  >
-                    <div className="aspect-[16/11] overflow-hidden">
-                      <img
-                        src={post.image}
-                        alt={post.title}
-                        loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                      />
-                    </div>
-                    <div className="p-5">
-                      <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.18em] text-zinc-500 font-semibold mb-4">
-                        <span className="text-orange-400">{post.category}</span>
-                        <span>{post.date}</span>
-                      </div>
-
-                      <h3 className="text-white text-xl font-semibold leading-snug mb-3">
-                        {post.title}
-                      </h3>
-                      <p className="text-zinc-400 leading-relaxed mb-5">
-                        {post.excerpt}
-                      </p>
-
-                      <div className="flex items-center justify-between">
-                        <span className="inline-flex items-center gap-2 text-sm text-zinc-500">
-                          <Clock3 className="w-4 h-4" />
-                          {post.readTime}
-                        </span>
-                        <button className="inline-flex items-center gap-2 text-orange-400 hover:text-orange-300 font-semibold transition-colors">
-                          Read More
-                          <ChevronRight className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  </motion.article>
-                ))
-              ) : (
-                <div className="md:col-span-2 rounded-3xl border border-zinc-800 bg-zinc-900 p-10 text-center">
-                  <Sparkles className="w-8 h-8 text-orange-500 mx-auto mb-4" />
-                  <h3 className="text-2xl font-semibold text-white mb-3">
-                    No matching articles found
-                  </h3>
-                  <p className="text-zinc-400 max-w-xl mx-auto mb-6">
-                    Try another keyword or switch to a different category to explore more content from the FitGearzzz editorial archive.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setSearchQuery('');
-                      setActiveCategory('All');
-                    }}
-                    className="inline-flex items-center justify-center rounded-full bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 font-semibold transition-colors"
-                  >
-                    Reset Filters
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Sidebar */}
-          <aside className="lg:col-span-4 space-y-6">
-            <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
-              <p className="text-xs uppercase tracking-[0.22em] text-zinc-500 font-semibold mb-4">
-                Popular Topics
-              </p>
-              <div className="space-y-3">
-                {['Home Workouts', 'Fat Loss', 'Protein Basics', 'Recovery Gear', 'Strength Training'].map((topic) => (
-                  <button
-                    key={topic}
-                    className="w-full flex items-center justify-between rounded-2xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-left hover:border-orange-500/40 hover:bg-zinc-800 transition-colors"
-                  >
-                    <span className="text-zinc-300">{topic}</span>
-                    <Tag className="w-4 h-4 text-zinc-500" />
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-3xl border border-zinc-800 bg-gradient-to-br from-orange-500/10 to-zinc-900 p-6">
-              <p className="text-xs uppercase tracking-[0.22em] text-orange-400 font-semibold mb-4">
-                Newsletter
-              </p>
-              <h3 className="text-2xl font-semibold text-white mb-3">
-                Get fitness insights in your inbox
-              </h3>
-              <p className="text-zinc-400 leading-relaxed mb-5">
-                Subscribe for product guides, new article drops, smarter buying advice, and practical fitness content.
-              </p>
-              <div className="space-y-3">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="w-full rounded-full border border-zinc-700 bg-zinc-950 text-white placeholder-zinc-500 px-4 py-3 focus:outline-none focus:border-orange-500"
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {regularPosts.map((post) => (
+            <Link
+              key={post.id}
+              to={`/blog/${post.slug}`}
+              className="group bg-zinc-900 rounded-2xl border border-zinc-800 hover:border-zinc-700 overflow-hidden transition-all duration-300 hover:-translate-y-1"
+            >
+              <div className="aspect-video overflow-hidden">
+                <img
+                  src={post.image}
+                  alt={post.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <button className="w-full rounded-full bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 font-semibold transition-colors">
-                  Subscribe
-                </button>
               </div>
-            </div>
+              <div className="p-6">
+                <span className="inline-block px-3 py-1 bg-orange-500/10 text-orange-400 rounded-full text-xs font-semibold mb-3">
+                  {post.category}
+                </span>
+                <h3 className="text-xl font-bold mb-2 group-hover:text-orange-400 transition-colors line-clamp-2">
+                  {post.title}
+                </h3>
+                <p className="text-zinc-400 text-sm mb-4 line-clamp-2">{post.excerpt}</p>
+                <div className="flex items-center justify-between text-sm text-zinc-500">
+                  <span className="flex items-center gap-1">
+                    <Clock3 size={14} /> {post.readTime}
+                  </span>
+                  <span>{post.date}</span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
 
-            <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
-              <p className="text-xs uppercase tracking-[0.22em] text-zinc-500 font-semibold mb-4">
-                Why This Blog Exists
-              </p>
-              <p className="text-zinc-400 leading-relaxed">
-                The FitGearzzz blog is built to help customers make smarter fitness decisions — from choosing gear and supplements to building routines that last.
-              </p>
-            </div>
-          </aside>
+        {filteredPosts.length === 0 && (
+          <div className="text-center py-20">
+            <p className="text-xl text-zinc-500">No articles found matching your criteria.</p>
+          </div>
+        )}
+      </section>
+
+      {/* Newsletter CTA */}
+      <section className="bg-gradient-to-br from-orange-500/10 via-purple-500/10 to-pink-500/10 border-y border-zinc-800">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
+          <Sparkles className="mx-auto text-orange-500 mb-6" size={48} />
+          <h2 className="text-4xl font-bold mb-4">Stay Updated</h2>
+          <p className="text-xl text-zinc-400 mb-8">
+            Get the latest fitness tips and articles delivered to your inbox weekly.
+          </p>
+          <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="flex-1 px-6 py-4 bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500"
+            />
+            <button
+              type="submit"
+              className="px-8 py-4 bg-orange-500 hover:bg-orange-600 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
+            >
+              Subscribe <ChevronRight size={20} />
+            </button>
+          </form>
         </div>
       </section>
     </div>

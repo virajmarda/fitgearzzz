@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const WhatsAppButton = () => {
   const [isHovered, setIsHovered] = useState(false);
-  const phoneNumber = '+919876543210'; // Replace with actual WhatsApp number
+  const phoneNumber = '+918668623252'; // Replace with actual WhatsApp number
   const message = 'Hi! I need help with a product on FitGearzzz';
 
   const handleClick = () => {

@@ -52,13 +52,13 @@ const Blog = () => {
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-zinc-900">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.12),transparent_30%),radial-gradient(circle_at_top_right,rgba(102,126,234,0.12),transparent_50%)]" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-24">
-          <div className="grid lg:grid-cols-12 gap-10 items-end">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-32">
+          <div className="grid lg:grid-cols-12 gap-12 items-end">
             <div className="lg:col-span-7">
               <motion.p
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-sm uppercase tracking-[0.28em] text-orange-400 font-semibold mb-5"
+                className="text-sm uppercase tracking-[0.28em] text-orange-400 font-semibold mb-6"
               >
                 FitGear Blog
               </motion.p>
@@ -66,7 +66,7 @@ const Blog = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="text-6xl md:text-7xl font-bold leading-[1.1] mb-6"
+                className="text-6xl md:text-7xl font-bold leading-[1.1] mb-8"
               >
                 Fitness Insights &<br />
                 <span className="bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
@@ -77,7 +77,7 @@ const Blog = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-xl text-zinc-400 max-w-2xl"
+                className="text-xl text-zinc-400 max-w-2xl leading-relaxed"
               >
                 Evidence-based articles on training, nutrition, and recovery to help you achieve your fitness goals.
               </motion.p>
@@ -85,7 +85,7 @@ const Blog = () => {
           </div>
 
           {/* Search & Filters */}
-          <div className="mt-16">
+          <div className="mt-20">
             <div className="relative">
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-500" size={20} />
               <input
@@ -97,7 +97,7 @@ const Blog = () => {
               />
             </div>
 
-            <div className="flex flex-wrap gap-3 mt-6">
+            <div className="flex flex-wrap gap-4 mt-8">
               {categories.map((category) => (
                 <button
                   key={category}
@@ -118,12 +118,12 @@ const Blog = () => {
 
       {/* Featured Posts */}
       {featuredPosts.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="flex items-center gap-3 mb-10">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28">
+          <div className="flex items-center gap-3 mb-12">
             <Flame className="text-orange-500" size={28} />
             <h2 className="text-3xl font-bold">Featured Articles</h2>
           </div>
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 gap-10">
             {featuredPosts.map((post) => (
               <Link
                 key={post.id}
@@ -137,15 +137,15 @@ const Blog = () => {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
-                <div className="p-8">
-                  <span className="inline-block px-4 py-2 bg-orange-500/10 text-orange-400 rounded-full text-sm font-semibold mb-4">
+                <div className="p-10">
+                  <span className="inline-block px-4 py-2 bg-orange-500/10 text-orange-400 rounded-full text-sm font-semibold mb-5">
                     {post.category}
                   </span>
-                  <h3 className="text-2xl font-bold mb-3 group-hover:text-orange-400 transition-colors">
+                  <h3 className="text-2xl font-bold mb-4 group-hover:text-orange-400 transition-colors leading-tight">
                     {post.title}
                   </h3>
-                  <p className="text-zinc-400 mb-6 line-clamp-2">{post.excerpt}</p>
-                  <div className="flex items-center justify-between">
+                  <p className="text-zinc-400 mb-6 line-clamp-2 leading-relaxed">{post.excerpt}</p>
+                  <div className="flex items-center justify-between pt-4 border-t border-zinc-800">
                     <span className="flex items-center gap-2 text-sm text-zinc-500">
                       <Clock3 size={16} /> {post.readTime}
                     </span>
@@ -159,12 +159,12 @@ const Blog = () => {
       )}
 
       {/* Regular Posts Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-        <div className="flex items-center gap-3 mb-10">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-28">
+        <div className="flex items-center gap-3 mb-12">
           <BookOpen className="text-zinc-400" size={28} />
           <h2 className="text-3xl font-bold">All Articles</h2>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
           {regularPosts.map((post) => (
             <Link
               key={post.id}
@@ -178,15 +178,15 @@ const Blog = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
-              <div className="p-6">
-                <span className="inline-block px-3 py-1 bg-orange-500/10 text-orange-400 rounded-full text-xs font-semibold mb-3">
+              <div className="p-8">
+                <span className="inline-block px-3 py-1 bg-orange-500/10 text-orange-400 rounded-full text-xs font-semibold mb-4">
                   {post.category}
                 </span>
-                <h3 className="text-xl font-bold mb-2 group-hover:text-orange-400 transition-colors line-clamp-2">
+                <h3 className="text-xl font-bold mb-3 group-hover:text-orange-400 transition-colors line-clamp-2 leading-snug">
                   {post.title}
                 </h3>
-                <p className="text-zinc-400 text-sm mb-4 line-clamp-2">{post.excerpt}</p>
-                <div className="flex items-center justify-between text-sm text-zinc-500">
+                <p className="text-zinc-400 text-sm mb-5 line-clamp-2 leading-relaxed">{post.excerpt}</p>
+                <div className="flex items-center justify-between text-sm text-zinc-500 pt-4 border-t border-zinc-800">
                   <span className="flex items-center gap-1">
                     <Clock3 size={14} /> {post.readTime}
                   </span>
@@ -198,7 +198,7 @@ const Blog = () => {
         </div>
 
         {filteredPosts.length === 0 && (
-          <div className="text-center py-20">
+          <div className="text-center py-24">
             <p className="text-xl text-zinc-500">No articles found matching your criteria.</p>
           </div>
         )}
@@ -206,10 +206,10 @@ const Blog = () => {
 
       {/* Newsletter CTA */}
       <section className="bg-gradient-to-br from-orange-500/10 via-purple-500/10 to-pink-500/10 border-y border-zinc-800">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
-          <Sparkles className="mx-auto text-orange-500 mb-6" size={48} />
-          <h2 className="text-4xl font-bold mb-4">Stay Updated</h2>
-          <p className="text-xl text-zinc-400 mb-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-32 text-center">
+          <Sparkles className="mx-auto text-orange-500 mb-8" size={48} />
+          <h2 className="text-4xl font-bold mb-6">Stay Updated</h2>
+          <p className="text-xl text-zinc-400 mb-10 leading-relaxed">
             Get the latest fitness tips and articles delivered to your inbox weekly.
           </p>
           <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">

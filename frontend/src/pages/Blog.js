@@ -146,7 +146,7 @@ const Blog = () => {
                 transition={{ delay: index * 0.08 }}
                 className="group overflow-hidden rounded-[2rem] border border-zinc-800 bg-zinc-900"
               >
-                <Link to={`/blog/${post.id}`}>
+                <Link to={`/blog/${post.slug}`}>
                   <div className="aspect-[16/10] overflow-hidden">
                     <img
                       src={post.image}
@@ -229,7 +229,7 @@ const Blog = () => {
                     transition={{ delay: index * 0.06 }}
                     className="group rounded-3xl overflow-hidden border border-zinc-800 bg-zinc-900"
                   >
-                    <Link to={`/blog/${post.id}`}>
+                    <Link to={`/blog/${post.slug}`}>
                       <div className="aspect-[16/11] overflow-hidden">
                         <img
                           src={post.image}

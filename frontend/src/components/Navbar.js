@@ -13,7 +13,6 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-import CartDrawer from './CartDrawer';
 import AuthModal from './AuthModal';
 
 const categories = [
@@ -66,7 +65,6 @@ const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showShopMegaMenu, setShowShopMegaMenu] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
 
   const megaMenuRef = useRef(null);
   const navigate = useNavigate();
@@ -276,11 +274,11 @@ const Navbar = () => {
               </Link>
 
               <button
-                onClick={() => setShowCart(true)}
+                              onClick={() => navigate('/cart')}
                 className="relative p-2 text-zinc-300 hover:text-orange-500 transition-colors"
                 data-testid="cart-button"
               >
-                <ShoppingCart className="w-6 h-6" />
+                                                          onClick={() => navigate('/cart')}
                 {cartCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                     {cartCount}
@@ -446,7 +444,6 @@ const Navbar = () => {
         )}
       </nav>
 
-      <CartDrawer open={showCart} onClose={() => setShowCart(false)} />
       <AuthModal open={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </>
   );

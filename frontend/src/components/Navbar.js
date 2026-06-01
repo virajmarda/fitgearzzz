@@ -313,9 +313,9 @@ const Navbar = () => {
 
               <button
                 className="relative p-2 text-zinc-300"
+                                onClick={() => navigate('/cart')}
               >
                 <ShoppingCart className="w-6 h-6" />
-                              onClick={() => navigate('/cart')}
                   <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                     {cartCount}
                   </span>

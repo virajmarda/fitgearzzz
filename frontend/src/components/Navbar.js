@@ -61,6 +61,7 @@ const Navbar = () => {
   const { getCartCount } = useCart();
 
   const [showAuthModal, setShowAuthModal] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');

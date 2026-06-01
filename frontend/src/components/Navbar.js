@@ -65,7 +65,6 @@ const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showShopMegaMenu, setShowShopMegaMenu] = useState(false);
-  const megaMenuRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -314,11 +313,10 @@ const Navbar = () => {
               </Link>
 
               <button
-                onClick={() => setShowCart(true)}
                 className="relative p-2 text-zinc-300"
               >
                 <ShoppingCart className="w-6 h-6" />
-                {cartCount > 0 && (
+                              onClick={() => navigate('/cart')}
                   <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                     {cartCount}
                   </span>

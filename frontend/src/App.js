@@ -16,7 +16,6 @@ import ProductDetail from "./pages/ProductDetail";
 import Orders from "./pages/Orders";
 import OrderSuccess from "./pages/OrderSuccess";
 import Checkout from "./pages/Checkout";
-import CartPage from "./pages/CartPage";
 import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
 import AuthCallback from "./pages/AuthCallback";
@@ -81,7 +80,6 @@ const AppContent = () => {
                 <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/customer_identity/logout" element={<CustomerLogout />} />
-                <Route path="/cart" element={<CartPage />} />
           <Route path="/customer_authentication/sso_hint" element={<CustomerSSOCallback />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/order-success" element={<OrderSuccess />} />

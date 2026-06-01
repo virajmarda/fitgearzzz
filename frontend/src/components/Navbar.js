@@ -276,7 +276,6 @@ const Navbar = () => {
                 className="relative p-2 text-zinc-300 hover:text-orange-500 transition-colors"
                 data-testid="cart-button"
               >
-                                                          onClick={() => navigate('/cart')}
                 {cartCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                     {cartCount}

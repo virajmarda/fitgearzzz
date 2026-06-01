@@ -65,7 +65,6 @@ const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showShopMegaMenu, setShowShopMegaMenu] = useState(false);
-
   const megaMenuRef = useRef(null);
   const navigate = useNavigate();
 

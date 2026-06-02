@@ -16,6 +16,7 @@ import ProductDetail from "./pages/ProductDetail";
 import Orders from "./pages/Orders";
 import OrderSuccess from "./pages/OrderSuccess";
 import Checkout from "./pages/Checkout";
+import CartPage from "./pages/CartPage";
 import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
 import AuthCallback from "./pages/AuthCallback";
@@ -76,6 +77,7 @@ const AppContent = () => {
     <Route path="/products" element={<Products />} />
           <Route path="/catalog" element={<CatalogPage />} />
           <Route path="/checkout" element={<Checkout />} />
+                <Route path="/cart" element={<CartPage />} />
           <Route path="/profile" element={<Profile />} />
                 <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/auth/callback" element={<AuthCallback />} />

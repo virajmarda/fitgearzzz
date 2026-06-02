@@ -1,3 +1,4 @@
+// src/components/Navbar.js
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -9,7 +10,7 @@ import {
   ChevronDown,
   Dumbbell,
   BookOpen,
-  Mail
+  Mail,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -61,8 +62,7 @@ const Navbar = () => {
   const { getCartCount } = useCart();
 
   const [showAuthModal, setShowAuthModal] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
-  const [showCart, setShowCart] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showShopMegaMenu, setShowShopMegaMenu] = useState(false);
@@ -82,7 +82,6 @@ const Navbar = () => {
         setShowShopMegaMenu(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
@@ -112,7 +111,8 @@ const Navbar = () => {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Logo */}
+
+            {/* ── Logo ── */}
             <Link to="/" className="flex items-center space-x-2 shrink-0">
               <Dumbbell className="w-8 h-8 text-orange-500" />
               <span className="font-oswald text-2xl font-bold tracking-tight text-white">
@@ -120,7 +120,7 @@ const Navbar = () => {
               </span>
             </Link>
 
-            {/* Desktop nav */}
+            {/* ── Desktop nav links ── */}
             <div className="hidden md:flex items-center space-x-6">
               <Link
                 to="/"
@@ -132,6 +132,7 @@ const Navbar = () => {
               {/* Shop mega menu */}
               <div className="relative" ref={megaMenuRef}>
                 <button
+                  type="button"
                   onClick={() => setShowShopMegaMenu((prev) => !prev)}
                   className="flex items-center gap-1 text-zinc-300 hover:text-orange-500 transition-colors font-manrope"
                 >
@@ -155,7 +156,8 @@ const Navbar = () => {
                           Premium fitness gear for everyday champions
                         </h3>
                         <p className="text-zinc-400 text-sm leading-relaxed mb-5">
-                          Explore categories, trending products, and high-converting collections from one place.
+                          Explore categories, trending products, and high-converting
+                          collections from one place.
                         </p>
                         <Link
                           to="/products"
@@ -247,8 +249,9 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Desktop actions */}
+            {/* ── Desktop actions ── */}
             <div className="hidden md:flex items-center space-x-3">
+              {/* Search */}
               <form onSubmit={handleSearch} className="relative">
                 <input
                   type="text"
@@ -261,25 +264,31 @@ const Navbar = () => {
                 <button
                   type="submit"
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-orange-500"
+                  aria-label="Search"
                 >
                   <Search className="w-4 h-4" />
                 </button>
               </form>
 
+              {/* Wishlist */}
               <Link
                 to="/wishlist"
                 className="relative p-2 text-zinc-300 hover:text-orange-500 transition-colors"
                 title="Wishlist"
+                aria-label="Wishlist"
               >
                 <Heart className="w-5 h-5" />
               </Link>
 
+              {/* ✅ Cart — navigates to /cart page, no drawer */}
               <button
-                              onClick={() => navigate('/cart')}
+                type="button"
+                onClick={() => navigate('/cart')}
                 className="relative p-2 text-zinc-300 hover:text-orange-500 transition-colors"
                 data-testid="cart-button"
+                aria-label="Open cart"
               >
-                                                          onClick={() => navigate('/cart')}
+                <ShoppingCart className="w-5 h-5" />
                 {cartCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                     {cartCount}
@@ -287,8 +296,10 @@ const Navbar = () => {
                 )}
               </button>
 
+              {/* Auth */}
               {user ? (
                 <button
+                  type="button"
                   onClick={handleLogout}
                   className="text-sm text-zinc-300 hover:text-red-400 transition-colors border border-zinc-700 rounded-full px-4 py-2"
                 >
@@ -296,6 +307,7 @@ const Navbar = () => {
                 </button>
               ) : (
                 <button
+                  type="button"
                   onClick={() => setShowAuthModal(true)}
                   className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full px-5 py-2 text-sm transition-colors"
                   data-testid="login-button"
@@ -305,8 +317,9 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Mobile actions */}
+            {/* ── Mobile actions ── */}
             <div className="md:hidden flex items-center gap-2">
+              {/* Wishlist */}
               <Link
                 to="/wishlist"
                 className="relative p-2 text-zinc-300"
@@ -315,9 +328,12 @@ const Navbar = () => {
                 <Heart className="w-5 h-5" />
               </Link>
 
+              {/* ✅ Cart — navigates to /cart page, no drawer */}
               <button
-                onClick={() => setShowCart(true)}
-                className="relative p-2 text-zinc-300"
+                type="button"
+                onClick={() => navigate('/cart')}
+                className="relative p-2 text-zinc-300 hover:text-orange-500 transition-colors"
+                aria-label="Open cart"
               >
                 <ShoppingCart className="w-6 h-6" />
                 {cartCount > 0 && (
@@ -327,10 +343,13 @@ const Navbar = () => {
                 )}
               </button>
 
+              {/* Hamburger */}
               <button
+                type="button"
                 onClick={() => setShowMenu(!showMenu)}
                 className="p-2 text-zinc-300"
                 data-testid="mobile-menu-button"
+                aria-label={showMenu ? 'Close menu' : 'Open menu'}
               >
                 {showMenu ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
@@ -338,7 +357,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile menu */}
+        {/* ── Mobile menu ── */}
         {showMenu && (
           <div className="md:hidden bg-zinc-900 border-t border-zinc-800 px-4 py-4 space-y-3">
             <form onSubmit={handleSearch} className="pb-2">
@@ -424,6 +443,7 @@ const Navbar = () => {
             <div className="pt-2 border-t border-zinc-800">
               {user ? (
                 <button
+                  type="button"
                   onClick={handleLogout}
                   className="block w-full text-left py-2 text-zinc-300 hover:text-red-400"
                 >
@@ -431,6 +451,7 @@ const Navbar = () => {
                 </button>
               ) : (
                 <button
+                  type="button"
                   onClick={() => {
                     setShowAuthModal(true);
                     setShowMenu(false);

@@ -1,6 +1,6 @@
 // src/pages/CartPage.js
 import React, { useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
 const styles = {
@@ -254,7 +254,8 @@ const styles = {
     borderTop: '1px solid rgba(255,255,255,0.06)',
     margin: '1rem 0',
   },
-  // Empty state
+
+  // ── Empty state (matched to Wishlist size) ──
   emptyWrap: {
     display: 'flex',
     flexDirection: 'column',
@@ -265,8 +266,8 @@ const styles = {
     gap: '1rem',
   },
   emptyIcon: {
-    width: '72px',
-    height: '72px',
+    width: '56px',
+    height: '56px',
     borderRadius: '50%',
     background: '#1a1018',
     display: 'flex',
@@ -275,13 +276,13 @@ const styles = {
     marginBottom: '0.5rem',
   },
   emptyTitle: {
-    fontSize: '1.5rem',
+    fontSize: '1.25rem',
     fontWeight: 700,
     marginBottom: '0.25rem',
   },
   emptyText: {
     color: '#9090a0',
-    fontSize: '1rem',
+    fontSize: '0.9rem',
     maxWidth: '34ch',
     lineHeight: 1.6,
   },
@@ -300,7 +301,17 @@ const formatPrice = (amount, currency = 'INR') => {
 };
 
 const CartPage = () => {
-  const { cart, cartItems, isLoading, updateCartItem, removeFromCart, clearCart, getCartTotal, getCheckoutUrl } = useCart();
+  const {
+    cart,
+    cartItems,
+    isLoading,
+    updateCartItem,
+    removeFromCart,
+    clearCart,
+    getCartTotal,
+    getCheckoutUrl,
+  } = useCart();
+
   const navigate = useNavigate();
   const [discountCode, setDiscountCode] = useState('');
   const [applying, setApplying] = useState(false);
@@ -335,9 +346,10 @@ const CartPage = () => {
     }));
   }, [cartItems]);
 
-  const subtotal = typeof getCartTotal === 'function'
-    ? getCartTotal()
-    : items.reduce((s, i) => s + i.price * i.quantity, 0);
+  const subtotal =
+    typeof getCartTotal === 'function'
+      ? getCartTotal()
+      : items.reduce((s, i) => s + i.price * i.quantity, 0);
 
   const itemCount = items.reduce((s, i) => s + i.quantity, 0);
 
@@ -349,7 +361,8 @@ const CartPage = () => {
   const handleRemove = (item) => removeFromCart?.(item.id);
 
   const handleClear = () => {
-    if (items.length && window.confirm('Remove all items from your cart?')) clearCart?.();
+    if (items.length && window.confirm('Remove all items from your cart?'))
+      clearCart?.();
   };
 
   const handleDiscount = async (e) => {
@@ -371,6 +384,7 @@ const CartPage = () => {
     }
   };
 
+  // ── Loading ──
   if (isLoading && items.length === 0) {
     return (
       <div style={styles.page}>
@@ -381,15 +395,23 @@ const CartPage = () => {
     );
   }
 
+  // ── Empty state ──
   if (items.length === 0) {
     return (
       <div style={styles.page}>
         <div style={{ ...styles.container, ...styles.emptyWrap }}>
           <div style={styles.emptyIcon}>
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="1.8">
-              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-              <line x1="3" y1="6" x2="21" y2="6"/>
-              <path d="M16 10a4 4 0 01-8 0"/>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#f97316"
+              strokeWidth="1.8"
+            >
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 01-8 0" />
             </svg>
           </div>
           <h1 style={styles.emptyTitle}>Your Cart is Empty</h1>
@@ -398,7 +420,13 @@ const CartPage = () => {
           </p>
           <button
             type="button"
-            style={{ ...styles.btnPrimary, width: 'auto', padding: '0.75rem 2rem', marginTop: '0.5rem' }}
+            style={{
+              ...styles.btnPrimary,
+              width: 'auto',
+              padding: '0.65rem 1.75rem',
+              marginTop: '0.5rem',
+              fontSize: '0.9rem',
+            }}
             onClick={() => navigate('/products')}
           >
             Shop Now
@@ -408,13 +436,14 @@ const CartPage = () => {
     );
   }
 
+  // ── Filled cart ──
   return (
     <div style={styles.page}>
       <div style={styles.container}>
-        {/* Header */}
         <h1 style={styles.heading}>Your Cart</h1>
         <p style={styles.subtitle}>
-          {itemCount} {itemCount === 1 ? 'item' : 'items'} in your cart — review and proceed to checkout.
+          {itemCount} {itemCount === 1 ? 'item' : 'items'} in your cart — review
+          and proceed to checkout.
         </p>
 
         <div style={styles.layout}>
@@ -422,10 +451,16 @@ const CartPage = () => {
           <div style={styles.itemsList}>
             {items.map((item) => (
               <div key={item.id} style={styles.item}>
-                {item.imageUrl
-                  ? <img src={item.imageUrl} alt={item.title} style={styles.itemImage} loading="lazy" />
-                  : <div style={styles.imagePlaceholder}>FG</div>
-                }
+                {item.imageUrl ? (
+                  <img
+                    src={item.imageUrl}
+                    alt={item.title}
+                    style={styles.itemImage}
+                    loading="lazy"
+                  />
+                ) : (
+                  <div style={styles.imagePlaceholder}>FG</div>
+                )}
 
                 <div style={styles.itemContent}>
                   <div style={styles.itemHeader}>
@@ -435,21 +470,39 @@ const CartPage = () => {
                         <p style={styles.itemVariant}>{item.variantTitle}</p>
                       )}
                     </div>
-                    <span style={styles.itemPrice}>{formatPrice(item.price, item.currency)}</span>
+                    <span style={styles.itemPrice}>
+                      {formatPrice(item.price, item.currency)}
+                    </span>
                   </div>
 
                   <div style={styles.itemFooter}>
-                    {/* Quantity */}
                     <div style={styles.qtyControl}>
-                      <button type="button" style={styles.qtyBtn} onClick={() => handleQty(item, item.quantity - 1)}>−</button>
+                      <button
+                        type="button"
+                        style={styles.qtyBtn}
+                        onClick={() => handleQty(item, item.quantity - 1)}
+                      >
+                        −
+                      </button>
                       <span style={styles.qtyValue}>{item.quantity}</span>
-                      <button type="button" style={styles.qtyBtn} onClick={() => handleQty(item, item.quantity + 1)}>+</button>
+                      <button
+                        type="button"
+                        style={styles.qtyBtn}
+                        onClick={() => handleQty(item, item.quantity + 1)}
+                      >
+                        +
+                      </button>
                     </div>
 
-                    {/* Subtotal + Remove */}
                     <div style={styles.itemActions}>
-                      <span style={styles.itemSubtotal}>{formatPrice(item.price * item.quantity, item.currency)}</span>
-                      <button type="button" style={styles.removeBtn} onClick={() => handleRemove(item)}>
+                      <span style={styles.itemSubtotal}>
+                        {formatPrice(item.price * item.quantity, item.currency)}
+                      </span>
+                      <button
+                        type="button"
+                        style={styles.removeBtn}
+                        onClick={() => handleRemove(item)}
+                      >
                         Remove
                       </button>
                     </div>
@@ -458,53 +511,75 @@ const CartPage = () => {
               </div>
             ))}
 
-            {/* Bottom row */}
             <div style={styles.bottomActions}>
-              <button type="button" style={styles.btnOutline} onClick={() => navigate('/products')}>
+              <button
+                type="button"
+                style={styles.btnOutline}
+                onClick={() => navigate('/products')}
+              >
                 ← Continue Shopping
               </button>
-              <button type="button" style={styles.btnDanger} onClick={handleClear}>
+              <button
+                type="button"
+                style={styles.btnDanger}
+                onClick={handleClear}
+              >
                 Clear Cart
               </button>
             </div>
           </div>
 
-          {/* ── Summary ── */}
+          {/* ── Order Summary ── */}
           <aside>
             <div style={styles.summaryCard}>
               <h2 style={styles.summaryTitle}>Order Summary</h2>
 
               <div style={styles.summaryRow}>
-                <span style={{ color: '#9090a0' }}>Subtotal ({itemCount} items)</span>
+                <span style={{ color: '#9090a0' }}>
+                  Subtotal ({itemCount} {itemCount === 1 ? 'item' : 'items'})
+                </span>
                 <span>{formatPrice(subtotal)}</span>
               </div>
+
               <div style={styles.summaryRow}>
                 <span style={{ color: '#9090a0' }}>Shipping</span>
-                <span style={{ color: '#4ade80', fontSize: '0.85rem', fontWeight: 600 }}>
+                <span
+                  style={{
+                    color: subtotal >= 499 ? '#4ade80' : '#9090a0',
+                    fontSize: '0.85rem',
+                    fontWeight: subtotal >= 499 ? 600 : 400,
+                  }}
+                >
                   {subtotal >= 499 ? 'FREE' : 'Calculated at checkout'}
                 </span>
               </div>
+
               {subtotal > 0 && subtotal < 499 && (
-                <div style={{
-                  background: 'rgba(249,115,22,0.08)',
-                  border: '1px solid rgba(249,115,22,0.2)',
-                  borderRadius: '10px',
-                  padding: '0.6rem 0.9rem',
-                  fontSize: '0.8rem',
-                  color: '#fdba74',
-                  marginBottom: '0.75rem',
-                }}>
-                  🎯 Add <strong>{formatPrice(499 - subtotal)}</strong> more to unlock free shipping
+                <div
+                  style={{
+                    background: 'rgba(249,115,22,0.08)',
+                    border: '1px solid rgba(249,115,22,0.2)',
+                    borderRadius: '10px',
+                    padding: '0.6rem 0.9rem',
+                    fontSize: '0.8rem',
+                    color: '#fdba74',
+                    marginBottom: '0.75rem',
+                  }}
+                >
+                  🎯 Add{' '}
+                  <strong>{formatPrice(499 - subtotal)}</strong> more to unlock
+                  free shipping
                 </div>
               )}
 
               <hr style={styles.divider} />
+
               <div style={styles.summaryRowTotal}>
                 <span>Total</span>
                 <span style={{ color: '#f97316' }}>{formatPrice(subtotal)}</span>
               </div>
 
-              {/* Discount code */}
+              {/* Promo code */}
               <div style={{ marginTop: '1.25rem' }}>
                 <label style={styles.discountLabel}>Promo / Coupon Code</label>
                 <form onSubmit={handleDiscount} style={styles.discountRow}>
@@ -517,20 +592,31 @@ const CartPage = () => {
                   />
                   <button
                     type="submit"
-                    style={{ ...styles.btnOutline, padding: '0.5rem 1rem', fontSize: '0.82rem' }}
+                    style={{
+                      ...styles.btnOutline,
+                      padding: '0.5rem 1rem',
+                      fontSize: '0.82rem',
+                    }}
                     disabled={applying || !discountCode.trim()}
                   >
                     {applying ? '…' : discountApplied ? '✓' : 'Apply'}
                   </button>
                 </form>
                 {discountApplied && (
-                  <p style={{ fontSize: '0.8rem', color: '#4ade80', marginTop: '-0.5rem', marginBottom: '0.5rem' }}>
+                  <p
+                    style={{
+                      fontSize: '0.8rem',
+                      color: '#4ade80',
+                      marginTop: '-0.5rem',
+                      marginBottom: '0.5rem',
+                    }}
+                  >
                     ✓ Code applied! Discount will reflect at checkout.
                   </p>
                 )}
               </div>
 
-              {/* Checkout */}
+              {/* Checkout button */}
               <button
                 type="button"
                 style={{
@@ -541,11 +627,12 @@ const CartPage = () => {
                 onClick={handleCheckout}
                 disabled={isLoading}
               >
-                {isLoading ? 'Processing…' : `Proceed to Checkout →`}
+                {isLoading ? 'Processing…' : 'Proceed to Checkout →'}
               </button>
 
-              {/* Trust signals */}
-              <p style={styles.trustText}>🔒 Secure checkout powered by Shopify</p>
+              <p style={styles.trustText}>
+                🔒 Secure checkout powered by Shopify
+              </p>
               <div style={styles.trustIcons}>
                 <span>✅ Easy Returns</span>
                 <span>•</span>

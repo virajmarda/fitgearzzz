@@ -254,38 +254,6 @@ const styles = {
     borderTop: '1px solid rgba(255,255,255,0.06)',
     margin: '1rem 0',
   },
-
-  // ── Empty state (matched to Wishlist size) ──
-  emptyWrap: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '60vh',
-    textAlign: 'center',
-    gap: '1rem',
-  },
-  emptyIcon: {
-    width: '56px',
-    height: '56px',
-    borderRadius: '50%',
-    background: '#1a1018',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: '0.5rem',
-  },
-  emptyTitle: {
-    fontSize: '1.25rem',
-    fontWeight: 700,
-    marginBottom: '0.25rem',
-  },
-  emptyText: {
-    color: '#9090a0',
-    fontSize: '0.9rem',
-    maxWidth: '34ch',
-    lineHeight: 1.6,
-  },
 };
 
 const formatPrice = (amount, currency = 'INR') => {
@@ -302,7 +270,6 @@ const formatPrice = (amount, currency = 'INR') => {
 
 const CartPage = () => {
   const {
-    cart,
     cartItems,
     isLoading,
     updateCartItem,
@@ -387,23 +354,57 @@ const CartPage = () => {
   // ── Loading ──
   if (isLoading && items.length === 0) {
     return (
-      <div style={styles.page}>
-        <div style={{ ...styles.container, ...styles.emptyWrap }}>
-          <p style={styles.emptyText}>Loading your cart…</p>
-        </div>
+      <div style={{
+        background: '#0a0a0f',
+        color: '#f0f0f5',
+        minHeight: '80vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: 'inherit',
+      }}>
+        <p style={{ color: '#9090a0', fontSize: '0.95rem' }}>
+          Loading your cart…
+        </p>
       </div>
     );
   }
 
-  // ── Empty state ──
+  // ── Empty state (matches Wishlist exactly) ──
   if (items.length === 0) {
     return (
-      <div style={styles.page}>
-        <div style={{ ...styles.container, ...styles.emptyWrap }}>
-          <div style={styles.emptyIcon}>
+      <div style={{
+        background: '#0a0a0f',
+        color: '#f0f0f5',
+        minHeight: '80vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: 'inherit',
+      }}>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center',
+          gap: '0.75rem',
+          padding: '2rem',
+        }}>
+          {/* Icon circle */}
+          <div style={{
+            width: '80px',
+            height: '80px',
+            borderRadius: '50%',
+            background: '#1a1a1a',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: '0.5rem',
+          }}>
             <svg
-              width="24"
-              height="24"
+              width="32"
+              height="32"
               viewBox="0 0 24 24"
               fill="none"
               stroke="#f97316"
@@ -414,22 +415,42 @@ const CartPage = () => {
               <path d="M16 10a4 4 0 01-8 0" />
             </svg>
           </div>
-          <h1 style={styles.emptyTitle}>Your Cart is Empty</h1>
-          <p style={styles.emptyText}>
+
+          {/* Text */}
+          <h1 style={{
+            fontSize: '1.6rem',
+            fontWeight: 700,
+            margin: 0,
+          }}>
+            Your Cart is Empty
+          </h1>
+          <p style={{
+            color: '#9090a0',
+            fontSize: '0.95rem',
+            maxWidth: '34ch',
+            lineHeight: 1.6,
+            margin: 0,
+          }}>
             Add some premium gear to your cart and come back here to checkout.
           </p>
+
+          {/* Button — matches wishlist exactly */}
           <button
             type="button"
             style={{
-              ...styles.btnPrimary,
-              width: 'auto',
-              padding: '0.65rem 1.75rem',
               marginTop: '0.5rem',
-              fontSize: '0.9rem',
+              borderRadius: '999px',
+              padding: '0.7rem 2rem',
+              fontSize: '0.95rem',
+              fontWeight: 700,
+              border: 'none',
+              cursor: 'pointer',
+              background: '#f97316',
+              color: '#ffffff',
             }}
             onClick={() => navigate('/products')}
           >
-            Shop Now
+            Continue Shopping
           </button>
         </div>
       </div>
@@ -543,32 +564,27 @@ const CartPage = () => {
 
               <div style={styles.summaryRow}>
                 <span style={{ color: '#9090a0' }}>Shipping</span>
-                <span
-                  style={{
-                    color: subtotal >= 499 ? '#4ade80' : '#9090a0',
-                    fontSize: '0.85rem',
-                    fontWeight: subtotal >= 499 ? 600 : 400,
-                  }}
-                >
+                <span style={{
+                  color: subtotal >= 499 ? '#4ade80' : '#9090a0',
+                  fontSize: '0.85rem',
+                  fontWeight: subtotal >= 499 ? 600 : 400,
+                }}>
                   {subtotal >= 499 ? 'FREE' : 'Calculated at checkout'}
                 </span>
               </div>
 
               {subtotal > 0 && subtotal < 499 && (
-                <div
-                  style={{
-                    background: 'rgba(249,115,22,0.08)',
-                    border: '1px solid rgba(249,115,22,0.2)',
-                    borderRadius: '10px',
-                    padding: '0.6rem 0.9rem',
-                    fontSize: '0.8rem',
-                    color: '#fdba74',
-                    marginBottom: '0.75rem',
-                  }}
-                >
-                  🎯 Add{' '}
-                  <strong>{formatPrice(499 - subtotal)}</strong> more to unlock
-                  free shipping
+                <div style={{
+                  background: 'rgba(249,115,22,0.08)',
+                  border: '1px solid rgba(249,115,22,0.2)',
+                  borderRadius: '10px',
+                  padding: '0.6rem 0.9rem',
+                  fontSize: '0.8rem',
+                  color: '#fdba74',
+                  marginBottom: '0.75rem',
+                }}>
+                  🎯 Add <strong>{formatPrice(499 - subtotal)}</strong> more to
+                  unlock free shipping
                 </div>
               )}
 
@@ -603,14 +619,12 @@ const CartPage = () => {
                   </button>
                 </form>
                 {discountApplied && (
-                  <p
-                    style={{
-                      fontSize: '0.8rem',
-                      color: '#4ade80',
-                      marginTop: '-0.5rem',
-                      marginBottom: '0.5rem',
-                    }}
-                  >
+                  <p style={{
+                    fontSize: '0.8rem',
+                    color: '#4ade80',
+                    marginTop: '-0.5rem',
+                    marginBottom: '0.5rem',
+                  }}>
                     ✓ Code applied! Discount will reflect at checkout.
                   </p>
                 )}
@@ -631,7 +645,7 @@ const CartPage = () => {
               </button>
 
               <p style={styles.trustText}>
-                🔒 Secure checkout powered by Shopify
+                🔒 Secure checkout powered by Fitgearzzz.
               </p>
               <div style={styles.trustIcons}>
                 <span>✅ Easy Returns</span>

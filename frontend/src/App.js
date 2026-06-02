@@ -74,12 +74,12 @@ const AppContent = () => {
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
-    <Route path="/products" element={<Products />} />
+          <Route path="/products" element={<Products />} />
           <Route path="/catalog" element={<CatalogPage />} />
           <Route path="/checkout" element={<Checkout />} />
-                <Route path="/cart" element={<CartPage />} />
+          <Route path="/cart" element={<CartPage />} />
           <Route path="/profile" element={<Profile />} />
-                <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/customer_identity/logout" element={<CustomerLogout />} />
           <Route path="/customer_authentication/sso_hint" element={<CustomerSSOCallback />} />
@@ -89,8 +89,8 @@ const AppContent = () => {
           <Route path="/products/:handle" element={<ProductDetail />} />
           <Route path="/about" element={<About />} />
           <Route path="/blog" element={<Blog />} />
-                <Route path="/blog/:slug" element={<BlogPost />} />
-                <Route path="/story" element={<Story />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/story" element={<Story />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />

@@ -11,6 +11,7 @@ import { fetchProductByHandle } from '../services/shopifyService';
 import SeoProductSchema from '../components/SeoProductSchema';
 import ReviewsList from '../components/ReviewsList';
 import ReviewForm from '../components/ReviewForm';
+import ProductRating from '../components/ProductRating';
 
 const ProductDetail = () => {
   const { handle } = useParams();
@@ -133,8 +134,8 @@ const ProductDetail = () => {
     );
   }
 
-  const averageRating = 4.5; // In production, calculate from reviews
-  const totalReviews = product?.reviewCount || Math.floor(Math.random() * 500) + 50; // In production, fetch from API
+    // NOTE: Rating is now handled by <ProductRating product={product} /> component (Issue #5)
+    const totalReviews = product?.reviewCount ?? null; // Real data only - no random fallback
   const inStock = selectedVariant?.inventory_quantity > 0;
   const discount = selectedVariant?.compare_at_price ? 
     Math.round(((selectedVariant.compare_at_price - selectedVariant.price) / selectedVariant.compare_at_price) * 100) : 0;
@@ -263,19 +264,7 @@ const ProductDetail = () => {
             {/* Title & Rating */}
             <div>
               <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">{product.title}</h1>
-              <div className="flex items-center space-x-4 mb-2">
-                <div className="flex items-center space-x-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      size={18}
-                      className={i < Math.floor(averageRating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
-                    />
-                  ))}
-                  <span className="ml-2 text-sm font-semibold">{averageRating}</span>
-                </div>
-                <span className="text-sm text-gray-600">({totalReviews} reviews)</span>
-              </div>
+<ProductRating product={product} size="md" showCount={true} />
               <div className="flex items-center space-x-2">
                 <span className={`text-sm font-medium ${inStock ? 'text-green-600' : 'text-red-600'}`}>
                   {inStock ? '✓ In Stock' : '✗ Out of Stock'}

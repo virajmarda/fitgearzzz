@@ -1,3 +1,6 @@
+/* Design System Tokens - Issue #6 */
+@import './styles/tokens.css';
+
 .glass-card {
   background: rgba(24, 24, 27, 0.6);
   backdrop-filter: blur(20px);

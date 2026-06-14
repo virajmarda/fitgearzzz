@@ -4,156 +4,136 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
+
+    <!--
+      ============================================================
+      SEO: Primary meta tags
+      ============================================================
+    -->
+    <title>FitGearzzz - Premium Fitness Equipment | Shop Online India</title>
     <meta
       name="description"
-      content="FitGearzzz - Premium Fitness Equipment"
+      content="FitGearzzz offers premium fitness equipment, gym gear, and workout accessories. Shop resistance bands, dumbbells, yoga mats and more. Free delivery on orders above ₹499."
     />
-    <link rel="icon" href="frontend/public/616917081_122095415727236306_5600152773007905888_n.ico">
-    <title>FitGearzzz - Premium Fitness Equipment</title>
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="FitGearzzz" />
 
     <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop.
+      ============================================================
+      SEO: Open Graph (Facebook, WhatsApp, LinkedIn)
+      ============================================================
+    -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="FitGearzzz" />
+    <meta property="og:url" content="https://fitgearzzz.com" />
+    <meta property="og:title" content="FitGearzzz - Premium Fitness Equipment" />
+    <meta
+      property="og:description"
+      content="Shop premium fitness equipment & gym gear online in India. Resistance bands, dumbbells, yoga mats and more. Free delivery on orders above ₹499."
+    />
+    <!-- TODO: Replace with real OG image (1200x630px) hosted on your CDN -->
+    <meta property="og:image" content="https://fitgearzzz.com/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="FitGearzzz - Premium Fitness Equipment" />
+    <meta property="og:locale" content="en_IN" />
+
+    <!--
+      ============================================================
+      SEO: Twitter / X Card
+      ============================================================
+    -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@fitgearzzz" />
+    <meta name="twitter:title" content="FitGearzzz - Premium Fitness Equipment" />
+    <meta
+      name="twitter:description"
+      content="Shop premium fitness equipment & gym gear online in India. Resistance bands, dumbbells, yoga mats and more."
+    />
+    <!-- TODO: Replace with real Twitter card image -->
+    <meta name="twitter:image" content="https://fitgearzzz.com/og-image.jpg" />
+
+    <!--
+      ============================================================
+      Favicon + PWA
+      ============================================================
+    -->
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <!--
+      ============================================================
+      ANALYTICS — Issue #7
+
+      IMPORTANT: Hardcoded pixel IDs have been REMOVED from this file.
+      All analytics are now managed via environment variables and
+      the src/lib/analytics.js module.
+
+      ACTIVATION STEPS (after Shopify plan purchase):
+
+      1. GA4:
+         - Create property at analytics.google.com
+         - Get Measurement ID (format: G-XXXXXXXXXX)
+         - Add to Vercel env: REACT_APP_GA4_MEASUREMENT_ID=G-XXXXXXXXXX
+         - Paste the gtag.js script below (replacing PLACEHOLDER):
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+      </script>
+
+      2. Meta Pixel:
+         - Get Pixel ID from Meta Events Manager
+         - Add to Vercel env: REACT_APP_META_PIXEL_ID=your_pixel_id
+         - Paste the fbevents.js snippet below (replacing PLACEHOLDER):
+
+      <script>
+        !function(f,b,e,v,n,t,s){...}
+        fbq('init', 'YOUR_PIXEL_ID');
+        fbq('track', 'PageView');
+      </script>
+
+      3. PostHog (optional):
+         - Set REACT_APP_POSTHOG_KEY in Vercel env vars
+         - The tracking will be handled in React components
+
+      NOTE: Previously committed pixel IDs (867237629399727 and 1635842960929487)
+      and PostHog key have been removed. Rotate them per SECURITY_ROTATION.md.
+      ============================================================
     -->
 
     <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
+      ============================================================
+      Visual Edits (Emergent - dev preview only)
+      ============================================================
     -->
-
-    <!-- Visual Edits (Emergent) -->
     <script>
-      // Only load visual edit scripts when inside an iframe
+      // Only load visual edit scripts when inside an iframe (dev preview)
       if (window.self !== window.top) {
-        // Load debug monitor script
         var debugMonitorScript = document.createElement('script');
-        debugMonitorScript.src =
-          'https://assets.emergent.sh/scripts/debug-monitor.js';
+        debugMonitorScript.src = 'https://assets.emergent.sh/scripts/debug-monitor.js';
         document.head.appendChild(debugMonitorScript);
-
-        // Configure Tailwind
         window.tailwind = window.tailwind || {};
-        tailwind.config = {
-          corePlugins: { preflight: false },
-        };
-
-        // Load Tailwind CDN
+        tailwind.config = { corePlugins: { preflight: false } };
         var tailwindScript = document.createElement('script');
         tailwindScript.src = 'https://cdn.tailwindcss.com';
         document.head.appendChild(tailwindScript);
       }
     </script>
 
-    <!-- Meta Pixel Code -->
-    <script>
-      !(function (f, b, e, v, n, t, s) {
-        if (f.fbq) return;
-        n = f.fbq = function () {
-          n.callMethod
-            ? n.callMethod.apply(n, arguments)
-            : n.queue.push(arguments);
-        };
-        if (!f._fbq) f._fbq = n;
-        n.push = n;
-        n.loaded = !0;
-        n.version = '2.0';
-        n.queue = [];
-        t = b.createElement(e);
-        t.async = !0;
-        t.src = v;
-        s = b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t, s);
-      })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
-
-      fbq('init', '867237629399727');
-      fbq('track', 'PageView');
-    </script>
-    <noscript>
-      <img
-        height="1"
-        width="1"
-        style="display:none"
-        src="https://www.facebook.com/tr?id=867237629399727&ev=PageView&noscript=1"
-      />
-    </noscript>
-    <!-- End Meta Pixel Code -->
-    <!-- Meta Pixel Code -->
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '1635842960929487');
-fbq('track', 'PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=1635842960929487&ev=PageView&noscript=1"
-/></noscript>
-<!-- End Meta Pixel Code -->
   </head>
-
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
 
-    <!-- Posthog Analytics -->
-    <script>
-      !(function (t, e) {
-        var o, n, p, r;
-        e.__SV ||
-          ((window.posthog = e),
-          (e._i = []),
-          (e.init = function (i, s, a) {
-            function g(t, e) {
-              var o = e.split('.');
-              if (o.length === 2) {
-                t = t[o[0]];
-                e = o[1];
-              }
-              t[e] = function () {
-                t.push([e].concat(Array.prototype.slice.call(arguments, 0)));
-              };
-            }
-            p = t.createElement('script');
-            p.type = 'text/javascript';
-            p.async = !0;
-            p.crossOrigin = 'anonymous';
-            p.src =
-              s.api_host.replace('.i.posthog.com', '-assets.i.posthog.com') +
-              '/static/array.js';
-            r = t.getElementsByTagName('script')[0];
-            r.parentNode.insertBefore(p, r);
-            var u = e;
-            if (a !== undefined) {
-              u = e[a] = [];
-            } else {
-              a = 'posthog';
-            }
-            u.people = u.people || [];
-            u.toString = function (t) {
-              var e = 'posthog';
-              if ('posthog' !== a) e += '.' + a;
-              return t ? e : e + ' (stub)';
-            };
-            u.people.toString = function () {
-              return u.toString(1) + '.people (stub)';
-            };
-            o = 'init capture identify alias people.set people.set_once reset'.split(
-              ' ',
-            );
-            for (n = 0; n < o.length; n++) g(u, o[n]);
-            e._i.push([i, s, a]);
-          }),
-          (e.__SV = 1));
-      })(document, window.posthog || []);
-      posthog.init('phc_yJW1VjHGGwmCbbrtczfqqNxgBDbhlhOWcdzcIJEOTFE', {
-        api_host: 'https://us.i.posthog.com',
-        person_profiles: 'identified_only',
-      });
-    </script>
+    <!--
+      Analytics scripts (GA4, Meta Pixel) go here after activation.
+      See comment block in <head> above for exact instructions.
+      All tracking events are wired in src/lib/analytics.js.
+    -->
   </body>
 </html>

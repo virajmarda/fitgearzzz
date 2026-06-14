@@ -129,7 +129,7 @@ const HeroPremium = () => {
 
               <div>
                 <div className="text-white font-bold text-lg">Free Shipping</div>
-                <div className="text-zinc-400 text-sm">Orders above ₹999</div>
+                              <div className="text-zinc-400 text-sm">Orders above ₹499</div>
               </div>
             </motion.div>
           </div>

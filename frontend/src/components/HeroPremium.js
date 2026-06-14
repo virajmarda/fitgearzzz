@@ -12,7 +12,7 @@ const HeroPremium = () => {
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070')`,
+                          backgroundImage: `url('${process.env.REACT_APP_HERO_IMAGE_URL || '/images/hero-gym.jpg'}')`,
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent"></div>
@@ -110,8 +110,8 @@ const HeroPremium = () => {
               <div className="flex items-center gap-2">
                 <Star className="w-5 h-5 text-orange-400 fill-orange-400" />
                 <div>
-                  <div className="text-white font-bold text-lg">4.9/5</div>
-                  <div className="text-zinc-400 text-sm">15K+ Reviews</div>
+                                <div className="text-white font-bold text-lg">Verified Brand</div>
+                                <div className="text-zinc-400 text-sm">Premium Fitness</div>
                 </div>
               </div>
 

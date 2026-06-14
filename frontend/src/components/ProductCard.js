@@ -7,6 +7,7 @@ import { useWishlist } from '../context/WishlistContext';
 import { motion } from 'framer-motion';
 import AuthModal from '../components/AuthModal';
 import { toast } from 'sonner';
+import ProductRating from './ProductRating';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
@@ -26,8 +27,8 @@ const ProductCard = ({ product }) => {
     ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100)
     : 0;
 
-  const rating = product.rating || 4 + Math.random();
-  const reviewCount = product.reviewCount || Math.floor(Math.random() * 500) + 50;
+    // Rating is now handled by <ProductRating product={product} /> — no fake fallbacks
+    const reviewCount = product.reviewCount ?? null; // Real data only
 
   // Truncate title to max 5 words for card display
   const shortTitle = product.title
@@ -126,19 +127,8 @@ const ProductCard = ({ product }) => {
             </h3>
           </Link>
 
-          {/* Rating */}
-          <div className="flex items-center gap-1 mb-3">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={`w-3 h-3 ${
-                  i < Math.floor(rating) ? 'text-yellow-400 fill-yellow-400' : 'text-zinc-600'
-                }`}
-              />
-            ))}
-            <span className="text-xs text-zinc-400 ml-1">({reviewCount})</span>
-          </div>
-
+{/* Rating */}
+            <ProductRating product={product} size="sm" showCount={true} />
           {/* Price */}
           <div className="flex items-baseline gap-2 mb-3">
             <span className="text-orange-500 font-bold text-lg">₹{currentPrice.toFixed(2)}</span>

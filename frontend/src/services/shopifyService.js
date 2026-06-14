@@ -2,7 +2,7 @@
 import { SHOPIFY_STORE_DOMAIN, STOREFRONT_ACCESS_TOKEN, STOREFRONT_API_URL, getCheckoutUrl } from '../config/shopify';
 
 const shopifyFetch = async (query, variables = {}) => {
-  console.log('Shopify GraphQL Request:', { query, variables });
+    if (process.env.NODE_ENV === 'development') console.log('Shopify GraphQL Request:', { query, variables });
 
     const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
@@ -24,7 +24,7 @@ const shopifyFetch = async (query, variables = {}) => {
     }
 
     const data = await response.json();
-    console.log('Shopify GraphQL Response:', data);
+      if (process.env.NODE_ENV === 'development') console.log('Shopify GraphQL Response:', data);
     
     if (data.errors) {
       console.error('GraphQL errors:', data.errors);
@@ -75,6 +75,11 @@ export const fetchProducts = async () => {
                     currencyCode
                   }
                   availableForSale
+                                    quantityAvailable
+                  selectedOptions {
+                    name
+                    value
+                  }
                 }
               }
             }
@@ -102,10 +107,10 @@ export const fetchProducts = async () => {
       category: node.productType || '',
       brand: node.vendor || '',
       variants: node.variants?.edges?.map(({ node: variant }) => variant) || [],
-      rating: 4.5, // Default rating
+            rating: null, // Fetch real ratings from reviews API - do not use hardcoded value
     }));
 
-    console.log('Mapped products:', products);
+      if (process.env.NODE_ENV === 'development') console.log('Mapped products:', products);
     return products;
   } catch (error) {
     console.error('Error fetching products:', error);
@@ -139,6 +144,11 @@ export const fetchProductById = async (id) => {
                 currencyCode
               }
               availableForSale
+                                quantityAvailable
+                  selectedOptions {
+                    name
+                    value
+                  }
             }
           }
         }
@@ -190,6 +200,11 @@ export const fetchProductByHandle = async (handle) => {
                 currencyCode
               }
               availableForSale
+                                quantityAvailable
+                  selectedOptions {
+                    name
+                    value
+                  }
             }
           }
         }
@@ -218,7 +233,7 @@ export const fetchProductByHandle = async (handle) => {
       category: product.productType || '',
       brand: product.vendor || '',
       variants: product.variants?.edges?.map(({ node }) => node) || [],
-      rating: 4.5
+            rating: null, // Do not hardcode - fetch real ratings from Shopify metafields or reviews app
     };
   } catch (error) {
     console.error('Error fetching product by handle:', error);

@@ -15,7 +15,7 @@ import ReviewForm from '../components/ReviewForm';
 const ProductDetail = () => {
   const { handle } = useParams();
   const { user } = useAuth();
-  const { addToCart } = useCart();
+    const { addToCart, getCheckoutUrl } = useCart();
   const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
@@ -72,20 +72,13 @@ const ProductDetail = () => {
       toast.error('Please select a variant');
       return;
     }
-    addToCart({
-      id: selectedVariant.id,
-      title: product.title,
-      price: selectedVariant.price,
-      image: product.images?.[0]?.src || '',
-      quantity: quantity,
-      variant: selectedVariant.title
-    });
+    addToCart(selectedVariant.id, quantity);
     toast.success('Added to cart!');
   };
 
   const handleBuyNow = () => {
     handleAddToCart();
-    navigate('/checkout');
+    const checkoutUrl = getCheckoutUrl(); if (checkoutUrl) window.location.href = checkoutUrl;
   };
 
   const handleWishlist = () => {
@@ -177,8 +170,7 @@ const ProductDetail = () => {
                 <img src={product.images?.[0]?.src} alt={product.title} className="w-12 h-12 object-cover rounded" />
                 <div>
                   <p className="font-semibold text-sm truncate max-w-[150px]">{product.title}</p>
-                  <p className="text-orange-500 font-bold">${selectedVariant?.price}</p>
-                </div>
+                              <p className="text-orange-500 font-bold">₹{selectedVariant?.price}</p>
               </div>
               <Button onClick={handleAddToCart} className="bg-orange-500 hover:bg-orange-600">
                 <ShoppingCart size={18} className="mr-1" />
@@ -297,9 +289,9 @@ const ProductDetail = () => {
             {/* Price */}
             <div className="border-t border-b border-gray-200 py-4">
               <div className="flex items-baseline space-x-3">
-                <span className="text-4xl font-bold text-gray-900">${selectedVariant?.price}</span>
+                              <span className="text-4xl font-bold text-gray-900">₹{selectedVariant?.price}</span>
                 {selectedVariant?.compare_at_price && (
-                  <span className="text-2xl text-gray-500 line-through">${selectedVariant.compare_at_price}</span>
+                                <span className="text-2xl text-gray-500 line-through">₹{selectedVariant.compare_at_price}</span>
                 )}
                 {discount > 0 && (
                 <span className="inline-block bg-orange-500 text-white px-3 py-1 rounded-md text-sm font-bold">{Math.round(((selectedVariant.compare_at_price - selectedVariant.price) / selectedVariant.compare_at_price) * 100)}% OFF</span>                )}

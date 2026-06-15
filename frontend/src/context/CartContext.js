@@ -187,8 +187,15 @@ export const CartProvider = ({ children }) => {
     );
   };
 
-  const getCheckoutUrl = () => {
-    return cart?.checkoutUrl || null;
+    const getCheckoutUrl = (discountCode = null) => {
+        if (!cart?.checkoutUrl) return null;
+          // Append discount code as query param for Shopify checkout
+    if (discountCode && discountCode.trim()) {
+      const url = new URL(cart.checkoutUrl);
+      url.searchParams.set('discount', discountCode.trim().toUpperCase());
+      return url.toString();
+    }
+    return cart.checkoutUrl;
   };
 
   const value = {

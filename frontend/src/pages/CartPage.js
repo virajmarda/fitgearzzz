@@ -2,6 +2,7 @@
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { trackInitiateCheckout } from '../utils/analytics';
 
 const styles = {
   page: {
@@ -345,7 +346,10 @@ const CartPage = () => {
     if (!getCheckoutUrl) return;
     try {
       const url = await getCheckoutUrl(discountCode?.trim() || undefined);
-      if (url) window.location.href = url;
+            if (url) {
+            trackInitiateCheckout({ value: getCartTotal?.() || 0, numItems: getCartCount?.() || 0 });
+                      window.location.href = url;
+                    }
     } catch (err) {
       console.error('Checkout error:', err);
     }

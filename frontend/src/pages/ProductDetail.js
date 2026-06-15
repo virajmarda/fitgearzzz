@@ -11,6 +11,8 @@ import { fetchProductByHandle } from '../services/shopifyService';
 import SeoProductSchema from '../components/SeoProductSchema';
 import ReviewsList from '../components/ReviewsList';
 import ReviewForm from '../components/ReviewForm';
+import { formatPrice } from '../utils/formatPrice';
+import { trackAddToCart, trackViewContent } from '../utils/analytics';
 
 const ProductDetail = () => {
   const { handle } = useParams();
@@ -77,6 +79,7 @@ const ProductDetail = () => {
   };
 
   const handleBuyNow = () => {
+          trackAddToCart({ productId: product?.id, productName: product?.title, variantId: selectedVariant.id, price: parseFloat(selectedVariant.price) || 0, quantity });
     handleAddToCart();
     const checkoutUrl = getCheckoutUrl(); if (checkoutUrl) window.location.href = checkoutUrl;
   };
@@ -133,8 +136,8 @@ const ProductDetail = () => {
     );
   }
 
-  const averageRating = 4.5; // In production, calculate from reviews
-  const totalReviews = product?.reviewCount || Math.floor(Math.random() * 500) + 50; // In production, fetch from API
+    const averageRating = product?.averageRating || null; // Populated from reviews API
+  const totalReviews = product?.reviewCount || null; // In production, fetch from API
   const inStock = selectedVariant?.inventory_quantity > 0;
   const discount = selectedVariant?.compare_at_price ? 
     Math.round(((selectedVariant.compare_at_price - selectedVariant.price) / selectedVariant.compare_at_price) * 100) : 0;

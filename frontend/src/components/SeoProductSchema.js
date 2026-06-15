@@ -11,14 +11,15 @@ const SeoProductSchema = ({
   availability = 'https://schema.org/InStock',
   ratingValue = null,
   reviewCount = null,
-  brand = 'FitGearzzz'
+  brand = 'FitGearzzz',
+    categoryName = '',
+  handle = '',
 }) => {
   const schemaData = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: name,
-    image: images && images.length > 0 ? images : ['https://fitgearzzz.com/og/fitgearzzz-home-og.jpg'],
-    description: description,
+          description: description,
     sku: sku,
     brand: {
       '@type': 'Brand',
@@ -42,11 +43,22 @@ const SeoProductSchema = ({
     };
   }
 
+    // BreadcrumbList schema for rich results
+  const siteUrl = process.env.REACT_APP_SITE_URL || 'https://fitgearzzz.com';
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: siteUrl },
+      ...(categoryName ? [{ '@type': 'ListItem', position: 2, name: categoryName, item: `${siteUrl}/products` }] : []),
+      { '@type': 'ListItem', position: categoryName ? 3 : 2, name: name, item: url || `${siteUrl}/products/${handle}` },
+    ],
+  };
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
-    />
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+    </>
   );
 };
 

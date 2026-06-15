@@ -177,6 +177,7 @@ const ProductDetail = () => {
                 Add
               </Button>
             </div>
+                                  </div>
           </motion.div>
         )}
       </AnimatePresence>

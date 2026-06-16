@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { trackLead } from '../utils/analytics';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -221,8 +222,8 @@ const Home = () => {
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950">
           <div className="absolute inset-0 opacity-20">
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-orange-500 rounded-full blur-[120px]" />
-            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500 rounded-full blur-[120px]" />
+            <div className="absolute top-0 left-1/4 w-64 h-64 bg-orange-500/8 rounded-full blur-[100px]" />
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-[120px]" />
           </div>
         </div>
 

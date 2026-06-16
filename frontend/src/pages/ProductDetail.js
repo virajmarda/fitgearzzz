@@ -6,12 +6,13 @@ import { Button } from '../components/ui/button';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
-import api from '../utils/api';
 import { fetchProductByHandle } from '../services/shopifyService';
 import SeoProductSchema from '../components/SeoProductSchema';
 import ReviewsList from '../components/ReviewsList';
 import ReviewForm from '../components/ReviewForm';
 import ProductRating from '../components/ProductRating';
+import { formatPrice } from '../utils/formatPrice';
+import { trackAddToCart, trackViewContent } from '../utils/analytics';
 
 const ProductDetail = () => {
   const { handle } = useParams();
@@ -78,6 +79,7 @@ const ProductDetail = () => {
   };
 
   const handleBuyNow = () => {
+          trackAddToCart({ productId: product?.id, productName: product?.title, variantId: selectedVariant.id, price: parseFloat(selectedVariant.price) || 0, quantity });
     handleAddToCart();
     const checkoutUrl = getCheckoutUrl(); if (checkoutUrl) window.location.href = checkoutUrl;
   };
@@ -178,6 +180,7 @@ const ProductDetail = () => {
                 Add
               </Button>
             </div>
+                                  </div>
           </motion.div>
         )}
       </AnimatePresence>

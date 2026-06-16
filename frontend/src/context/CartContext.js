@@ -1,212 +1,258 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import api from '../utils/api';
+// src/context/CartContext.js
+// Full Shopify Storefront API cart — NO backend proxy.
+// All cart mutations call https://<store>.myshopify.com/api/2024-01/graphql.json
+// directly from the browser using the public Storefront Access Token.
+
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
-import { useAuth } from './AuthContext';
+import { STOREFRONT_API_URL, STOREFRONT_ACCESS_TOKEN } from '../config/shopify';
 
 const CartContext = createContext();
-
 export const useCart = () => useContext(CartContext);
 
+// ─── Storefront GraphQL helper ──────────────────────────────────────────────────────────────
+async function storefrontFetch(query, variables = {}) {
+  const res = await fetch(STOREFRONT_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': STOREFRONT_ACCESS_TOKEN,
+    },
+    body: JSON.stringify({ query, variables }),
+  });
+  if (!res.ok) throw new Error(`Shopify Storefront API error: ${res.status}`);
+  const json = await res.json();
+  if (json.errors?.length) throw new Error(json.errors[0].message);
+  return json.data;
+}
+
+// ─── GraphQL fragments & mutations ──────────────────────────────────────────────────────────
+const CART_FIELDS = `
+  id
+  checkoutUrl
+  totalQuantity
+  lines(first: 100) {
+    edges {
+      node {
+        id
+        quantity
+        merchandise {
+          ... on ProductVariant {
+            id
+            title
+            priceV2 { amount currencyCode }
+            product { title handle featuredImage { url altText } }
+          }
+        }
+      }
+    }
+  }
+  cost {
+    subtotalAmount { amount currencyCode }
+    totalAmount { amount currencyCode }
+  }
+`;
+
+const GQL_CART_CREATE = `
+  mutation cartCreate($lines: [CartLineInput!]) {
+    cartCreate(input: { lines: $lines }) {
+      cart { ${CART_FIELDS} }
+      userErrors { field message }
+    }
+  }
+`;
+
+const GQL_CART_FETCH = `
+  query getCart($cartId: ID!) {
+    cart(id: $cartId) { ${CART_FIELDS} }
+  }
+`;
+
+const GQL_LINES_ADD = `
+  mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+    cartLinesAdd(cartId: $cartId, lines: $lines) {
+      cart { ${CART_FIELDS} }
+      userErrors { field message }
+    }
+  }
+`;
+
+const GQL_LINES_UPDATE = `
+  mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+    cartLinesUpdate(cartId: $cartId, lines: $lines) {
+      cart { ${CART_FIELDS} }
+      userErrors { field message }
+    }
+  }
+`;
+
+const GQL_LINES_REMOVE = `
+  mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+    cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+      cart { ${CART_FIELDS} }
+      userErrors { field message }
+    }
+  }
+`;
+
+// ─── Provider ──────────────────────────────────────────────────────────────────────────
 export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState(null); // Shopify cart object
+  const [cart, setCart] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { user } = useAuth();
 
-  // Load / store cart ID in localStorage for ALL users (guest + logged-in)
-  const getCartId = () => {
-    return localStorage.getItem('shopify_cart_id');
+  // — Persist cart ID in localStorage (works for guests & logged-in users)
+  const getStoredCartId = () => localStorage.getItem('shopify_cart_id');
+  const storeCartId = (id) => {
+    if (id) localStorage.setItem('shopify_cart_id', id);
+    else localStorage.removeItem('shopify_cart_id');
   };
 
-  const setCartId = (cartId) => {
-    if (cartId) {
-      localStorage.setItem('shopify_cart_id', cartId);
-    } else {
-      localStorage.removeItem('shopify_cart_id');
-    }
-  };
-
-  const fetchCart = async (cartId) => {
-    const idToUse = cartId || getCartId();
-    if (!idToUse) return;
-
+  // — Fetch an existing cart by ID; returns null if not found / expired
+  const fetchCart = useCallback(async (cartId) => {
     try {
-      setIsLoading(true);
-      const encodedCartId = encodeURIComponent(idToUse);
-      const response = await api.get(`/cart/${encodedCartId}`);
-      setCart(response.data);
-    } catch (error) {
-      console.error('Error fetching cart:', error);
-      setCartId(null);
-      setCart(null);
-    } finally {
-      setIsLoading(false);
+      const data = await storefrontFetch(GQL_CART_FETCH, { cartId });
+      return data.cart || null;
+    } catch {
+      return null;
     }
-  };
-
-  // Fetch existing cart on mount
-  useEffect(() => {
-    const cartId = getCartId();
-    if (cartId) {
-      fetchCart(cartId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Ensure there is a valid cart and keep local state in sync
-  const ensureCart = async () => {
-    let cartId = getCartId();
-
-    if (cartId && cartId.startsWith('gid://shopify/Cart/')) {
-      try {
-        const response = await api.get(`/cart/${encodeURIComponent(cartId)}`);
-        setCart(response.data);
-        return cartId;
-      } catch (error) {
-        console.log('Existing cart not found, creating new one');
-        setCartId(null);
-        cartId = null;
-      }
+  // — Ensure a valid cart exists; create one if not
+  const ensureCart = useCallback(async () => {
+    const stored = getStoredCartId();
+    if (stored) {
+      const existing = await fetchCart(stored);
+      if (existing) return existing.id;
+      // Expired or deleted by Shopify — create a fresh one
+      storeCartId(null);
     }
+    const data = await storefrontFetch(GQL_CART_CREATE, {});
+    const newCart = data.cartCreate.cart;
+    storeCartId(newCart.id);
+    setCart(newCart);
+    return newCart.id;
+  }, [fetchCart]);
 
-    if (!cartId) {
-      try {
-        const response = await api.post('/cart/create', { lines: [] });
-        const newCart = response.data;
-        cartId = newCart?.id;
+  // — Hydrate cart on mount
+  useEffect(() => {
+    const stored = getStoredCartId();
+    if (!stored) return;
+    fetchCart(stored).then((c) => {
+      if (c) setCart(c);
+      else storeCartId(null);
+    });
+  }, [fetchCart]);
 
-        if (!cartId) {
-          throw new Error('No cart ID returned from API');
-        }
-
-        setCartId(cartId);
-        setCart(newCart);
-        return cartId;
-      } catch (error) {
-        console.error('Error creating cart:', error);
-        toast.error('Failed to initialize cart');
-        return null;
-      }
-    }
-
-    return cartId;
-  };
-
+  // — Add a variant to the cart
   const addToCart = async (variantId, quantity = 1) => {
     try {
       setIsLoading(true);
       const cartId = await ensureCart();
-
-      if (!cartId) {
-        toast.error('Failed to add item to cart');
-        return;
-      }
-
-      const response = await api.post('/cart/add', {
+      const data = await storefrontFetch(GQL_LINES_ADD, {
         cartId,
         lines: [{ merchandiseId: variantId, quantity }],
       });
-
-      const updatedCart = response.data;
-
-      if (!updatedCart || !updatedCart.id) {
-        throw new Error('Cart update failed');
-      }
-
-      setCart(updatedCart);
-      setCartId(updatedCart.id);
+      const { cart: updated, userErrors } = data.cartLinesAdd;
+      if (userErrors?.length) throw new Error(userErrors[0].message);
+      setCart(updated);
       toast.success('Added to cart!');
-    } catch (error) {
-      console.error('❌ Error adding to cart:', error);
-
-      const message =
-        error.response?.data?.detail ||
-        error.response?.data?.error ||
-        error.message ||
-        'Failed to add to cart';
-
-      toast.error(message);
+    } catch (err) {
+      console.error('addToCart error:', err);
+      toast.error('Could not add to cart. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
+  // — Update quantity of an existing line item
   const updateCartItem = async (lineId, quantity) => {
-    const cartId = getCartId();
-    if (!cartId) return;
-
     try {
       setIsLoading(true);
-      const response = await api.post('/cart/update', {
+      const cartId = getStoredCartId();
+      if (!cartId) return;
+      const data = await storefrontFetch(GQL_LINES_UPDATE, {
         cartId,
         lines: [{ id: lineId, quantity }],
       });
-      setCart(response.data);
-    } catch (error) {
-      console.error('Error updating cart:', error);
-      toast.error('Failed to update cart');
+      const { cart: updated, userErrors } = data.cartLinesUpdate;
+      if (userErrors?.length) throw new Error(userErrors[0].message);
+      setCart(updated);
+    } catch (err) {
+      console.error('updateCartItem error:', err);
+      toast.error('Could not update item.');
     } finally {
       setIsLoading(false);
     }
   };
 
+  // — Remove a line item from the cart
   const removeFromCart = async (lineId) => {
-    const cartId = getCartId();
-    if (!cartId) return;
-
     try {
       setIsLoading(true);
-      const response = await api.post('/cart/remove', {
+      const cartId = getStoredCartId();
+      if (!cartId) return;
+      const data = await storefrontFetch(GQL_LINES_REMOVE, {
         cartId,
         lineIds: [lineId],
       });
-      setCart(response.data);
-      toast.success('Item removed from cart');
-    } catch (error) {
-      console.error('Error removing item:', error);
-      toast.error('Failed to remove item');
+      const { cart: updated, userErrors } = data.cartLinesRemove;
+      if (userErrors?.length) throw new Error(userErrors[0].message);
+      setCart(updated);
+      toast.success('Item removed.');
+    } catch (err) {
+      console.error('removeFromCart error:', err);
+      toast.error('Could not remove item.');
     } finally {
       setIsLoading(false);
     }
   };
 
+  // — Clear cart (reset local state + localStorage)
   const clearCart = () => {
-    setCartId(null);
     setCart(null);
+    storeCartId(null);
   };
+
+  // — Derived helpers
+  const cartItems = cart?.lines?.edges || [];
+
+  const getCartCount = () =>
+    cartItems.reduce((sum, { node }) => sum + (node.quantity || 0), 0);
 
   const getCartTotal = () => {
-    if (!cart || !cart.cost) return 0;
-    return parseFloat(cart.cost.totalAmount.amount);
+    const raw = cart?.cost?.subtotalAmount?.amount;
+    return raw ? parseFloat(raw) : 0;
   };
 
-  const getCartCount = () => {
-    if (!cart || !cart.lines) return 0;
-    return cart.lines.edges.reduce(
-      (count, edge) => count + (edge.node?.quantity ?? 0),
-      0
-    );
+  // — Build the Shopify checkout URL, optionally appending a discount code
+  const getCheckoutUrl = (discountCode = null) => {
+    if (!cart?.checkoutUrl) return null;
+    if (discountCode?.trim()) {
+      const url = new URL(cart.checkoutUrl);
+      url.searchParams.set('discount', discountCode.trim().toUpperCase());
+      return url.toString();
+    }
+    return cart.checkoutUrl;
   };
 
-  const getCheckoutUrl = () => {
-    return cart?.checkoutUrl || null;
-  };
-
-  const value = {
-    cart,
-    cartItems: cart?.lines?.edges || [],
-    isLoading,
-    addToCart,
-    updateCartItem,
-    removeFromCart,
-    clearCart,
-    getCartTotal,
-    getCartCount,
-    getCheckoutUrl,
-    fetchCart: () => fetchCart(getCartId()),
-    // mergeGuestCart no longer needed if everyone uses Shopify cart
-  };
-
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  return (
+    <CartContext.Provider
+      value={{
+        cart,
+        cartItems,
+        isLoading,
+        addToCart,
+        updateCartItem,
+        removeFromCart,
+        clearCart,
+        getCartCount,
+        getCartTotal,
+        getCheckoutUrl,
+      }}
+    >
+      {children}
+    </CartContext.Provider>
+  );
 };
 
-export default CartProvider;
+export default CartContext;

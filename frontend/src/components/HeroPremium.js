@@ -1,164 +1,132 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ArrowRight, Play, Star, TrendingUp, Shield } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { ArrowRight, ChevronDown } from 'lucide-react';
+
+// Hero background image — swap for your own CDN asset when ready
+const HERO_IMAGE_URL =
+  'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop';
 
 const HeroPremium = () => {
+  const sectionRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end start'],
+  });
+  const imgY = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
+
   return (
-    <section className="relative h-[90vh] min-h-[600px] max-h-[800px] overflow-hidden bg-black">
-      {/* Dynamic Background with Image */}
-      <div className="absolute inset-0">
-        {/* Background Image with Overlay */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070')`,
-          }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/50"></div>
-        </div>
-
-        {/* Animated accent gradients */}
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-500 rounded-full filter blur-[150px] opacity-30"
-        />
-      </div>
-
-      {/* Content Container */}
-      <div className="relative z-10 h-full max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="h-full flex items-center">
-          <div className="max-w-4xl space-y-8 mt-12">
-            {/* Trust Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 backdrop-blur-sm border border-orange-500/20"
-            >
-              <Shield className="w-4 h-4 text-orange-400" />
-              <span className="text-orange-400 text-sm font-medium">
-                India&apos;s #1 Fitness Destination
-              </span>
-            </motion.div>
-
-            {/* Main Headline */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              <h1 className="font-sans text-[clamp(2.9rem,6vw,5.8rem)] font-[350] leading-[0.95] tracking-[-0.045em] max-w-4xl">
-                <span className="block whitespace-nowrap text-white">
-                  Transform your <span className="text-orange-500">potential</span>
-                </span>
-                <span className="block whitespace-nowrap text-white">
-                  Transform your <span className="text-orange-500">life.</span>
-                </span>
-              </h1>
-            </motion.div>
-
-            {/* Subheadline */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-xl lg:text-2xl text-zinc-300 font-light max-w-2xl leading-relaxed"
-            >
-              Premium fitness equipment engineered for champions.
-              <span className="block mt-2 text-white font-medium">
-                Transform your body, elevate your performance.
-              </span>
-            </motion.p>
-
-            {/* CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-              className="flex flex-col sm:flex-row gap-4 pt-4"
-            >
-              <Link
-                to="/products"
-                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-lg rounded-xl shadow-2xl shadow-orange-500/50 hover:shadow-orange-500/70 transform hover:scale-105 transition-all duration-300 overflow-hidden"
-              >
-                <span className="relative z-10">Shop Now</span>
-                <ArrowRight className="relative z-10 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              </Link>
-
-            <Link to="/story" className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-md text-white rounded-full border border-white/20 hover:bg-white/20 transition-all">                <Play className="w-5 h-5" fill="currentColor" />
-                <span>Watch Story</span>
-            </Link>            </motion.div>
-
-            {/* Stats Bar */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-              className="flex items-center gap-8 pt-8"
-            >
-              <div className="flex items-center gap-2">
-                <Star className="w-5 h-5 text-orange-400 fill-orange-400" />
-                <div>
-                  <div className="text-white font-bold text-lg">4.9/5</div>
-                  <div className="text-zinc-400 text-sm">15K+ Reviews</div>
-                </div>
-              </div>
-
-              <div className="h-12 w-px bg-white/10"></div>
-
-              <div className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-green-400" />
-                <div>
-                  <div className="text-white font-bold text-lg">50K+</div>
-                  <div className="text-zinc-400 text-sm">Active Users</div>
-                </div>
-              </div>
-
-              <div className="h-12 w-px bg-white/10"></div>
-
-              <div>
-                <div className="text-white font-bold text-lg">Free Shipping</div>
-                              <div className="text-zinc-400 text-sm">Orders above ₹499</div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </div>
-
-      {/* Scroll Indicator */}
+    <section
+      ref={sectionRef}
+      className="relative h-[92vh] min-h-[640px] max-h-[900px] overflow-hidden bg-zinc-950"
+    >
+      {/* Parallax background */}
       <motion.div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat will-change-transform"
+        style={{
+          backgroundImage: `url('${HERO_IMAGE_URL}')`,
+          y: imgY,
+        }}
+      />
+
+      {/* Directional overlay — light from right, dark on left for legibility */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-black/10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent" />
+
+      {/* Content */}
+      <div className="relative z-10 h-full max-w-7xl mx-auto px-6 lg:px-8 flex items-center">
+        <div className="max-w-2xl">
+
+          {/* Eyebrow label */}
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: 'easeOut' }}
+            className="text-orange-500 text-xs font-semibold uppercase tracking-[0.22em] mb-6"
+          >
+            New Collection — Summer 2025
+          </motion.p>
+
+          {/* Headline */}
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, delay: 0.1, ease: 'easeOut' }}
+            className="font-oswald text-[clamp(2.75rem,6vw,5rem)] font-bold leading-[1.0] tracking-tight text-white uppercase mb-6"
+          >
+            Gear That
+            <br />
+            <span className="text-orange-500">Moves</span> With You.
+          </motion.h1>
+
+          {/* Subline */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, delay: 0.2, ease: 'easeOut' }}
+            className="text-zinc-300 text-lg leading-relaxed mb-10 max-w-lg"
+          >
+            Performance fitness equipment and apparel — built for serious
+            training, delivered pan-India within 3&ndash;5 days.
+          </motion.p>
+
+          {/* CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, delay: 0.3, ease: 'easeOut' }}
+            className="flex flex-wrap gap-4"
+          >
+            <Link
+              to="/products"
+              className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm uppercase tracking-wider px-7 py-3.5 rounded-full transition-colors duration-200"
+            >
+              Shop Now
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              to="/about"
+              className="inline-flex items-center gap-2 border border-white/30 hover:border-white/70 text-white font-semibold text-sm uppercase tracking-wider px-7 py-3.5 rounded-full transition-colors duration-200 backdrop-blur-sm"
+            >
+              Our Story
+            </Link>
+          </motion.div>
+
+          {/* Trust strip */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.55 }}
+            className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-12 text-xs text-zinc-400 uppercase tracking-widest"
+          >
+            <span>Free Shipping above &#8377;499</span>
+            <span className="hidden sm:inline text-zinc-700">|</span>
+            <span>7-Day Returns</span>
+            <span className="hidden sm:inline text-zinc-700">|</span>
+            <span>COD Available</span>
+            <span className="hidden sm:inline text-zinc-700">|</span>
+            <span>Secure Checkout</span>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Scroll cue */}
+      <motion.button
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden lg:block"
+        transition={{ delay: 1.2 }}
+        onClick={() => window.scrollBy({ top: window.innerHeight * 0.8, behavior: 'smooth' })}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/40 hover:text-white/70 transition-colors cursor-pointer"
+        aria-label="Scroll down"
       >
+        <span className="text-[10px] uppercase tracking-[0.2em]">Scroll</span>
         <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 1.5 }}
-          className="flex flex-col items-center gap-2 text-white/50"
+          animate={{ y: [0, 6, 0] }}
+          transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
         >
-          <span className="text-xs uppercase tracking-wider">Scroll</span>
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
+          <ChevronDown className="w-5 h-5" />
         </motion.div>
-      </motion.div>
+      </motion.button>
     </section>
   );
 };

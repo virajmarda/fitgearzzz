@@ -410,14 +410,14 @@ const ProductDetail = () => {
                 <Truck className="text-blue-600 flex-shrink-0 mt-1" size={20} />
                 <div>
                   <p className="font-semibold text-gray-900">Free Delivery</p>
-                  <p className="text-sm text-gray-600">On orders above $50. Delivery in 3-5 business days.</p>
+                  <p className="text-sm text-gray-600">On orders above ₹499. Delivery in 3–5 business days.</p>
                 </div>
               </div>
               <div className="flex items-start space-x-3">
                 <RefreshCw className="text-green-600 flex-shrink-0 mt-1" size={20} />
                 <div>
                   <p className="font-semibold text-gray-900">Easy Returns</p>
-                  <p className="text-sm text-gray-600">30-day return policy. No questions asked.</p>
+                  <p className="text-sm text-gray-600">7-day return policy. No questions asked.</p>
                 </div>
               </div>
               <div className="flex items-start space-x-3">
@@ -431,11 +431,11 @@ const ProductDetail = () => {
 
             {/* Offers */}
             <div className="bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-200 rounded-lg p-4">
-              <h3 className="font-bold text-orange-900 mb-2">🎉 Special Offers</h3>
+              <h3 className="font-bold text-orange-900 mb-2">Offers & Savings</h3>
               <ul className="space-y-1 text-sm text-gray-700">
-                <li>• Use code <span className="font-mono bg-white px-2 py-1 rounded font-bold">FIRST10</span> for 10% off your first order</li>
+                <li>• Sign up for newsletter to get <span className="font-mono bg-white px-2 py-1 rounded font-bold">FIRST10</span> for 10% off your first order</li>
                 <li>• Buy 2, Get 15% off on entire order</li>
-                <li>• Free gift on orders above $100</li>
+                <li>• Free gift on orders above ₹999</li>
               </ul>
             </div>
           </div>
@@ -502,19 +502,19 @@ const ProductDetail = () => {
                   <ul className="space-y-2">
                     <li className="flex items-start">
                       <Check className="text-green-500 mr-2 flex-shrink-0 mt-0.5" size={18} />
-                      <span className="text-gray-700">Premium quality materials</span>
+                      <span className="text-gray-700">Built to last — verified before dispatch</span>
                     </li>
                     <li className="flex items-start">
                       <Check className="text-green-500 mr-2 flex-shrink-0 mt-0.5" size={18} />
-                      <span className="text-gray-700">Ergonomic design for comfort</span>
+                      <span className="text-gray-700">Designed for daily training use</span>
                     </li>
                     <li className="flex items-start">
                       <Check className="text-green-500 mr-2 flex-shrink-0 mt-0.5" size={18} />
-                      <span className="text-gray-700">Durable and long-lasting</span>
+                      <span className="text-gray-700">Pan-India delivery in 3–5 business days</span>
                     </li>
                     <li className="flex items-start">
                       <Check className="text-green-500 mr-2 flex-shrink-0 mt-0.5" size={18} />
-                      <span className="text-gray-700">Easy to clean and maintain</span>
+                      <span className="text-gray-700">7-day returns, no questions asked</span>
                     </li>
                   </ul>
                 </div>

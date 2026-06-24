@@ -1,217 +1,122 @@
 // src/context/AuthContext.js
-// Shopify Storefront Customer API — NO backend proxy.
-// Uses customerAccessToken stored in localStorage.
-// For full PKCE OAuth (Customer Account API), set REACT_APP_SHOPIFY_CUSTOMER_ACCOUNT_ID
-// and REACT_APP_SHOPIFY_AUTH_REDIRECT_URI — the login() function will redirect there.
+// Backend JWT authentication — zero Shopify Customer API dependency.
+// Connects to FitGearzzz own backend (BACKEND_URL) for login/register/logout.
+// User session is persisted in localStorage via JWT token.
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
-import { STOREFRONT_API_URL, STOREFRONT_ACCESS_TOKEN } from '../config/shopify';
+import { BACKEND_URL } from '../config/shopify';
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
-// ─── Storefront helper (same pattern as CartContext) ───────────────────────────────────────
-async function storefrontFetch(query, variables = {}) {
-  const res = await fetch(STOREFRONT_API_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Shopify-Storefront-Access-Token': STOREFRONT_ACCESS_TOKEN,
-    },
-    body: JSON.stringify({ query, variables }),
-  });
-  if (!res.ok) throw new Error(`Storefront API error: ${res.status}`);
-  const json = await res.json();
-  if (json.errors?.length) throw new Error(json.errors[0].message);
-  return json.data;
-}
+const TOKEN_KEY = 'fitgearzzz_auth_token';
+const USER_KEY = 'fitgearzzz_user';
 
-// ─── GraphQL mutations ────────────────────────────────────────────────────────────────────
-const GQL_CUSTOMER_LOGIN = `
-  mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
-    customerAccessTokenCreate(input: $input) {
-      customerAccessToken { accessToken expiresAt }
-      customerUserErrors { code field message }
-    }
-  }
-`;
-
-const GQL_CUSTOMER_REGISTER = `
-  mutation customerCreate($input: CustomerCreateInput!) {
-    customerCreate(input: $input) {
-      customer { id email firstName lastName }
-      customerUserErrors { code field message }
-    }
-  }
-`;
-
-const GQL_CUSTOMER_GET = `
-  query getCustomer($customerAccessToken: String!) {
-    customer(customerAccessToken: $customerAccessToken) {
-      id
-      email
-      firstName
-      lastName
-      phone
-      orders(first: 5) {
-        edges {
-          node {
-            id
-            orderNumber
-            processedAt
-            financialStatus
-            fulfillmentStatus
-            totalPrice { amount currencyCode }
-          }
-        }
-      }
-    }
-  }
-`;
-
-const GQL_TOKEN_RENEW = `
-  mutation customerAccessTokenRenew($customerAccessToken: String!) {
-    customerAccessTokenRenew(customerAccessToken: $customerAccessToken) {
-      customerAccessToken { accessToken expiresAt }
-      userErrors { field message }
-    }
-  }
-`;
-
-const GQL_TOKEN_DELETE = `
-  mutation customerAccessTokenDelete($customerAccessToken: String!) {
-    customerAccessTokenDelete(deletedAccessToken: $customerAccessToken) {
-      deletedAccessToken
-      userErrors { field message }
-    }
-  }
-`;
-
-// ─── Token helpers ────────────────────────────────────────────────────────────────────────────const TOKEN_KEY = 'shopify_customer_token';
-const TOKEN_EXPIRY_KEY = 'shopify_customer_token_expiry';
-
-const saveToken = (token, expiresAt) => {
+const saveSession = (token, user) => {
   localStorage.setItem(TOKEN_KEY, token);
-  if (expiresAt) localStorage.setItem(TOKEN_EXPIRY_KEY, expiresAt);
+  localStorage.setItem(USER_KEY, JSON.stringify(user));
 };
 
-const clearToken = () => {
+const clearSession = () => {
   localStorage.removeItem(TOKEN_KEY);
-  localStorage.removeItem(TOKEN_EXPIRY_KEY);
+  localStorage.removeItem(USER_KEY);
 };
 
-const getToken = () => {
-  const token = localStorage.getItem(TOKEN_KEY);
-  const expiry = localStorage.getItem(TOKEN_EXPIRY_KEY);
-  if (!token) return null;
-  if (expiry && new Date(expiry) <= new Date()) {
-    clearToken();
+const getStoredToken = () => localStorage.getItem(TOKEN_KEY) || null;
+
+const getStoredUser = () => {
+  try {
+    const raw = localStorage.getItem(USER_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
     return null;
   }
-  return token;
 };
 
-// ─── Provider ────────────────────────────────────────────────────────────────────────────
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(() => getStoredUser());
+  const [token, setToken] = useState(() => getStoredToken());
+  const [loading, setLoading] = useState(false);
 
-  // — Fetch customer profile using the stored access token
-  const fetchCustomer = useCallback(async (token) => {
+  // Validate persisted token with backend on mount
+  useEffect(() => {
+    if (!token) return;
+    const verify = async () => {
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error('Session expired');
+        const data = await res.json();
+        setUser(data.user);
+      } catch {
+        clearSession();
+        setUser(null);
+        setToken(null);
+      }
+    };
+    verify();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const login = useCallback(async (email, password) => {
+    setLoading(true);
     try {
-      const data = await storefrontFetch(GQL_CUSTOMER_GET, { customerAccessToken: token });
-      if (data.customer) setUser(data.customer);
-      else clearToken();
+      const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Login failed');
+      saveSession(data.token, data.user);
+      setToken(data.token);
+      setUser(data.user);
+      toast.success(`Welcome back, ${data.user.firstName || data.user.email}!`);
+      return { success: true };
     } catch (err) {
-      console.error('fetchCustomer error:', err);
-      clearToken();
+      toast.error(err.message);
+      return { success: false, error: err.message };
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // — Hydrate session on mount
-  useEffect(() => {
-    const token = getToken();
-    if (token) fetchCustomer(token);
-    else setLoading(false);
-  }, [fetchCustomer]);
-
-  // — Login with email + password
-  const login = async (email, password) => {
+  const register = useCallback(async ({ firstName, lastName, email, password }) => {
+    setLoading(true);
     try {
-      const data = await storefrontFetch(GQL_CUSTOMER_LOGIN, {
-        input: { email, password },
+      const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firstName, lastName, email, password }),
       });
-      const { customerAccessToken, customerUserErrors } = data.customerAccessTokenCreate;
-      if (customerUserErrors?.length) throw new Error(customerUserErrors[0].message);
-      const { accessToken, expiresAt } = customerAccessToken;
-      saveToken(accessToken, expiresAt);
-      await fetchCustomer(accessToken);
-      toast.success('Welcome back!');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Registration failed');
+      saveSession(data.token, data.user);
+      setToken(data.token);
+      setUser(data.user);
+      toast.success(`Account created! Welcome, ${data.user.firstName || data.user.email}!`);
       return { success: true };
     } catch (err) {
-      toast.error(err.message || 'Login failed. Please try again.');
+      toast.error(err.message);
       return { success: false, error: err.message };
+    } finally {
+      setLoading(false);
     }
-  };
+  }, []);
 
-  // — Register a new customer account
-  const register = async ({ firstName, lastName, email, password }) => {
-    try {
-      const data = await storefrontFetch(GQL_CUSTOMER_REGISTER, {
-        input: { firstName, lastName, email, password },
-      });
-      const { customer, customerUserErrors } = data.customerCreate;
-      if (customerUserErrors?.length) {
-        const alreadyExists = customerUserErrors.some((e) => e.code === 'TAKEN');
-        if (alreadyExists) {
-          // Fall through to login if account already exists
-          return login(email, password);
-        }
-        throw new Error(customerUserErrors[0].message);
-      }
-      // Auto-login after successful registration
-      return login(email, password);
-    } catch (err) {
-      toast.error(err.message || 'Registration failed. Please try again.');
-      return { success: false, error: err.message };
-    }
-  };
-
-  // — Logout: revoke token on Shopify + clear local state
-  const logout = async () => {
-    const token = getToken();
-    if (token) {
-      try {
-        await storefrontFetch(GQL_TOKEN_DELETE, { customerAccessToken: token });
-      } catch {
-        // Non-critical — clear locally regardless
-      }
-    }
-    clearToken();
+  const logout = useCallback(() => {
+    clearSession();
     setUser(null);
-    toast.success('Logged out successfully.');
-  };
+    setToken(null);
+    toast.success('Signed out successfully');
+  }, []);
 
-  // — Derived helpers
-  const isAuthenticated = () => !!getToken() && !!user;
+  const isAuthenticated = useCallback(() => Boolean(token && user), [token, user]);
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        loading,
-        isAuthenticated,
-        login,
-        register,
-        logout,
-      }}
-    >
+    <AuthContext.Provider value={{ user, token, loading, isAuthenticated, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
-
-export default AuthContext;

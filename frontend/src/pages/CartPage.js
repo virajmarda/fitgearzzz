@@ -435,7 +435,7 @@ const CartPage = () => {
             lineHeight: 1.6,
             margin: 0,
           }}>
-            Add some premium gear to your cart and come back here to checkout.
+            Browse our products and add items to get started.
           </p>
 
           {/* Button — matches wishlist exactly */}

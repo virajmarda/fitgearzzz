@@ -1,103 +1,96 @@
 import React from 'react';
 import { Star } from 'lucide-react';
 
-const reviews = [
-  { id: 1, name: "Rajesh Kumar", rating: 5, text: "Absolutely fantastic quality! The dumbbells feel premium and solid. Highly recommend FitGearzzz!", location: "Mumbai" },
-  { id: 2, name: "Priya Sharma", rating: 5, text: "Best fitness equipment I've purchased online. Fast shipping and amazing customer service.", location: "Delhi" },
-  { id: 3, name: "Amit Patel", rating: 4, text: "Great products at competitive prices. Took a day longer to deliver but worth the wait.", location: "Ahmedabad" },
-  { id: 4, name: "Sneha Reddy", rating: 5, text: "The resistance bands are exactly what I needed. Perfect for home workouts!", location: "Hyderabad" },
-  { id: 5, name: "Vikram Singh", rating: 4, text: "Very happy with my purchase. Quality is good and the price was reasonable.", location: "Pune" },
-  { id: 6, name: "Anjali Mehta", rating: 5, text: "Excellent yoga mat! Non-slip surface and perfect thickness. Totally worth it!", location: "Bangalore" },
-  { id: 7, name: "Rohit Verma", rating: 5, text: "Premium quality kettlebells. The grip is excellent and they look great too!", location: "Chennai" },
-  { id: 8, name: "Kavya Iyer", rating: 4, text: "Good value for money. The jump rope is durable and the handles are comfortable.", location: "Kochi" },
-  { id: 9, name: "Arjun Nair", rating: 5, text: "Best gym equipment store in India! Fast delivery and authentic products.", location: "Jaipur" },
-  { id: 10, name: "Meera Kapoor", rating: 5, text: "Love the resistance bands set! Perfect for beginners and advanced users.", location: "Kolkata" },
-  { id: 11, name: "Karan Malhotra", rating: 4, text: "Quality products and reasonable pricing. Will definitely buy again from FitGearzzz.", location: "Chandigarh" },
-  { id: 12, name: "Divya Rao", rating: 5, text: "Amazing experience! The foam roller is perfect for recovery. Highly recommended.", location: "Surat" },
-  { id: 13, name: "Aditya Joshi", rating: 4, text: "Great quality dumbbells. A bit pricey but absolutely worth the investment.", location: "Nagpur" },
-  { id: 14, name: "Pooja Gupta", rating: 5, text: "Fantastic customer service and premium quality equipment. Best online fitness store!", location: "Indore" },
-  { id: 15, name: "Sanjay Desai", rating: 5, text: "The pull-up bar is sturdy and well-made. Exactly what I was looking for!", location: "Nashik" }
+// NOTE: Replace these with real reviews from Judge.me or Shopify metafields
+// once your reviews app is configured. These are placeholder data only.
+const REVIEWS = [
+  { id: 1,  name: 'Rahul M.',    city: 'Mumbai',    rating: 5, text: 'Ordered a resistance band set. Arrived in 3 days, well-packaged. Quality is solid for the price.' },
+  { id: 2,  name: 'Sneha P.',    city: 'Pune',      rating: 5, text: 'The dumbbells are exactly as described. No wobble, good knurling. Will order again.' },
+  { id: 3,  name: 'Karan T.',    city: 'Delhi',     rating: 4, text: 'Delivery was fast. The foam roller is firm, which I prefer. Happy with the purchase.' },
+  { id: 4,  name: 'Divya R.',    city: 'Bangalore', rating: 5, text: 'COD worked perfectly. Product quality is much better than I expected at this price point.' },
+  { id: 5,  name: 'Amit S.',     city: 'Hyderabad', rating: 4, text: 'Jump rope is durable. Handles are comfortable. Only issue was minor packaging damage, product was fine.' },
+  { id: 6,  name: 'Pooja K.',    city: 'Chennai',   rating: 5, text: 'Yoga mat has great grip. Non-slip even after sweating. Exactly what I was looking for.' },
+  { id: 7,  name: 'Vikram N.',   city: 'Kolkata',   rating: 5, text: 'Kettlebell is well-balanced. Finish is smooth. Shipped same day as ordered.' },
+  { id: 8,  name: 'Ananya B.',   city: 'Jaipur',    rating: 5, text: 'Return process was zero-hassle. Great customer support on WhatsApp. Definitely recommending this.' },
+  { id: 9,  name: 'Rohit V.',    city: 'Nagpur',    rating: 4, text: 'Pull-up bar fits the doorframe well. Installation took 2 minutes. Good value.' },
+  { id: 10, name: 'Meera J.',    city: 'Surat',     rating: 5, text: 'Protein shaker is leak-proof. Used it daily for a month and no issues.' },
+  { id: 11, name: 'Aditya C.',   city: 'Lucknow',   rating: 5, text: 'The ab wheel is sturdy and wide. Much better quality than the one from a local store.' },
+  { id: 12, name: 'Anjali G.',   city: 'Indore',    rating: 5, text: 'Ordered for my home gym. Everything arrived intact, all products are quality.' },
 ];
 
+const Stars = ({ count }) => (
+  <div className="flex gap-0.5">
+    {[1, 2, 3, 4, 5].map((n) => (
+      <Star
+        key={n}
+        className={`w-3 h-3 ${
+          n <= count ? 'text-amber-400 fill-amber-400' : 'text-zinc-600'
+        }`}
+      />
+    ))}
+  </div>
+);
+
+const ReviewCard = ({ name, city, rating, text }) => (
+  <div className="w-72 shrink-0 bg-zinc-900 border border-zinc-800 rounded-xl p-5 flex flex-col gap-3">
+    <Stars count={rating} />
+    <p className="text-zinc-300 text-sm leading-relaxed flex-1">&ldquo;{text}&rdquo;</p>
+    <div>
+      <p className="text-white text-sm font-semibold">{name}</p>
+      <p className="text-zinc-500 text-xs">{city}</p>
+    </div>
+  </div>
+);
+
 const InfiniteReviews = () => {
-  const allReviews = [...reviews, ...reviews];
+  const row1 = REVIEWS.slice(0, 6);
+  const row2 = REVIEWS.slice(6, 12);
 
   return (
-    <section className="py-20 bg-gradient-to-b from-zinc-900 to-black overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 mb-12">
-        <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-4">
-          What Our <span className="text-orange-500">Champions</span> Say
+    <section className="bg-zinc-950 py-16 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-10">
+        <p className="text-orange-500 text-xs font-semibold uppercase tracking-[0.2em] mb-2">Reviews</p>
+        <h2 className="font-oswald text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide">
+          What customers say
         </h2>
-        <p className="text-gray-400 text-center text-lg">
-          Real reviews from real fitness enthusiasts
-        </p>
       </div>
 
-      <div className="relative">
-        <div className="absolute left-0 top-0 bottom-0 w-24 md:w-48 bg-gradient-to-r from-black via-black to-transparent z-10 pointer-events-none"></div>
-        <div className="absolute right-0 top-0 bottom-0 w-24 md:w-48 bg-gradient-to-l from-black via-black to-transparent z-10 pointer-events-none"></div>
-
-        <div className="scroll-container">
-          <div className="scroll-content">
-            {allReviews.map((review, index) => (
-              <div
-                key={`${review.id}-${index}`}
-                className="review-card flex-shrink-0 w-80 md:w-96 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-orange-500/50 hover:scale-105 transition-all duration-300"
-              >
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`w-5 h-5 ${
-                        i < review.rating
-                          ? 'fill-orange-500 text-orange-500'
-                          : 'text-gray-600'
-                      }`}
-                    />
-                  ))}
-                </div>
-                <p className="text-gray-300 text-base leading-relaxed mb-6">
-                  "{review.text}"
-                </p>
-                <div className="flex items-center gap-3 pt-4 border-t border-white/10">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-bold text-lg">
-                    {review.name.charAt(0)}
-                  </div>
-                  <div>
-                    <div className="text-white font-semibold">{review.name}</div>
-                    <div className="text-gray-500 text-sm">{review.location}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+      {/* Row 1 — scrolls left */}
+      <div className="relative mb-4">
+        <div
+          className="flex gap-4 w-max"
+          style={{
+            animation: 'marquee-left 32s linear infinite',
+          }}
+        >
+          {[...row1, ...row1].map((r, i) => (
+            <ReviewCard key={`r1-${i}`} {...r} />
+          ))}
         </div>
       </div>
 
-      <style jsx>{`
-        .scroll-container {
-          display: flex;
-          overflow: hidden;
-        }
+      {/* Row 2 — scrolls right */}
+      <div className="relative">
+        <div
+          className="flex gap-4 w-max"
+          style={{
+            animation: 'marquee-right 36s linear infinite',
+          }}
+        >
+          {[...row2, ...row2].map((r, i) => (
+            <ReviewCard key={`r2-${i}`} {...r} />
+          ))}
+        </div>
+      </div>
 
-        .scroll-content {
-          display: flex;
-          gap: 1.5rem;
-          animation: scroll 120s linear infinite;
-          will-change: transform;
+      <style>{`
+        @keyframes marquee-left {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
         }
-
-        .scroll-content:hover {
-          animation-play-state: paused;
-        }
-
-        @keyframes scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
+        @keyframes marquee-right {
+          0%   { transform: translateX(-50%); }
+          100% { transform: translateX(0); }
         }
       `}</style>
     </section>

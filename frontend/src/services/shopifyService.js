@@ -1,16 +1,32 @@
-// GraphQL-based Shopify Storefront API service
-import { SHOPIFY_STORE_DOMAIN, STOREFRONT_ACCESS_TOKEN, STOREFRONT_API_URL, getCheckoutUrl } from '../config/shopify';
+// src/services/shopifyService.js
+// Shopify Storefront API — READ-ONLY product & collection fetching.
+// This is the ONLY file that talks to Shopify. No cart, no auth, no checkout.
+//
+// When SHOPIFY is not yet configured (env vars not set), all functions return
+// safe empty results so the app boots and renders without crashing.
 
+import {
+  STOREFRONT_API_URL,
+  STOREFRONT_ACCESS_TOKEN,
+  SHOPIFY_CONFIGURED,
+} from '../config/shopify';
+
+// ---------------------------------------------------------------------------
+// Internal fetch helper
+// ---------------------------------------------------------------------------
 const shopifyFetch = async (query, variables = {}) => {
-    if (process.env.NODE_ENV === 'development') console.log('Shopify GraphQL Request:', { query, variables });
+  if (!SHOPIFY_CONFIGURED) {
+    console.warn('[shopifyService] Shopify not configured. Set REACT_APP_SHOPIFY_STORE_DOMAIN and REACT_APP_SHOPIFY_STOREFRONT_ACCESS_TOKEN.');
+    return null;
+  }
 
-    const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
-  
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
+
   try {
     const response = await fetch(STOREFRONT_API_URL, {
       method: 'POST',
-            signal: controller.signal,
+      signal: controller.signal,
       headers: {
         'Content-Type': 'application/json',
         'X-Shopify-Storefront-Access-Token': STOREFRONT_ACCESS_TOKEN,
@@ -19,392 +35,151 @@ const shopifyFetch = async (query, variables = {}) => {
     });
     clearTimeout(timeoutId);
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
 
     const data = await response.json();
-      if (process.env.NODE_ENV === 'development') console.log('Shopify GraphQL Response:', data);
-    
-    if (data.errors) {
-      console.error('GraphQL errors:', data.errors);
-      throw new Error(data.errors[0].message);
-    }
-    
+    if (data.errors?.length) throw new Error(data.errors[0].message);
     return data.data;
-  } catch (error) {
-        clearTimeout(timeoutId);
-    console.error('Shopify fetch error:', error);
-    throw error;
+  } catch (err) {
+    clearTimeout(timeoutId);
+    console.error('[shopifyService]', err.message);
+    return null;
   }
 };
 
-export const fetchProducts = async () => {
-  const query = `
-    query getProducts($first: Int!) {
-      products(first: $first) {
+// ---------------------------------------------------------------------------
+// Product Fragments
+// ---------------------------------------------------------------------------
+const PRODUCT_FRAGMENT = `
+  fragment ProductFields on Product {
+    id
+    title
+    handle
+    description
+    descriptionHtml
+    productType
+    tags
+    vendor
+    availableForSale
+    featuredImage { url altText }
+    images(first: 8) { edges { node { url altText } } }
+    priceRange {
+      minVariantPrice { amount currencyCode }
+      maxVariantPrice { amount currencyCode }
+    }
+    compareAtPriceRange {
+      minVariantPrice { amount currencyCode }
+    }
+    variants(first: 20) {
+      edges {
+        node {
+          id
+          title
+          availableForSale
+          quantityAvailable
+          price { amount currencyCode }
+          compareAtPrice { amount currencyCode }
+          selectedOptions { name value }
+          image { url altText }
+        }
+      }
+    }
+    options { name values }
+    metafields(identifiers: [
+      { namespace: "custom", key: "highlight_1" }
+      { namespace: "custom", key: "highlight_2" }
+      { namespace: "custom", key: "highlight_3" }
+    ]) { key value }
+  }
+`;
+
+// ---------------------------------------------------------------------------
+// Normalise a raw Shopify product node into a flat, consistent shape
+// ---------------------------------------------------------------------------
+export const normaliseProduct = (node) => ({
+  ...node,
+  images: node.images?.edges?.map((e) => e.node) ?? [],
+  variants: node.variants?.edges?.map((e) => e.node) ?? [],
+});
+
+// ---------------------------------------------------------------------------
+// fetchProducts — homepage / listing
+// ---------------------------------------------------------------------------
+export const fetchProducts = async (first = 20, query = '') => {
+  const GQL = `
+    ${PRODUCT_FRAGMENT}
+    query GetProducts($first: Int!, $query: String) {
+      products(first: $first, query: $query, sortKey: BEST_SELLING) {
+        edges { node { ...ProductFields } }
+      }
+    }
+  `;
+  const data = await shopifyFetch(GQL, { first, query });
+  if (!data) return [];
+  return data.products.edges.map((e) => normaliseProduct(e.node));
+};
+
+// ---------------------------------------------------------------------------
+// fetchProductByHandle — product detail page
+// ---------------------------------------------------------------------------
+export const fetchProductByHandle = async (handle) => {
+  const GQL = `
+    ${PRODUCT_FRAGMENT}
+    query GetProductByHandle($handle: String!) {
+      productByHandle(handle: $handle) { ...ProductFields }
+    }
+  `;
+  const data = await shopifyFetch(GQL, { handle });
+  if (!data?.productByHandle) return null;
+  return normaliseProduct(data.productByHandle);
+};
+
+// ---------------------------------------------------------------------------
+// fetchProductsByCollection — collection / category page
+// ---------------------------------------------------------------------------
+export const fetchProductsByCollection = async (handle, first = 24) => {
+  const GQL = `
+    ${PRODUCT_FRAGMENT}
+    query GetCollection($handle: String!, $first: Int!) {
+      collectionByHandle(handle: $handle) {
+        title
+        description
+        products(first: $first) {
+          edges { node { ...ProductFields } }
+        }
+      }
+    }
+  `;
+  const data = await shopifyFetch(GQL, { handle, first });
+  if (!data?.collectionByHandle) return [];
+  return data.collectionByHandle.products.edges.map((e) => normaliseProduct(e.node));
+};
+
+// ---------------------------------------------------------------------------
+// searchProducts — search bar
+// ---------------------------------------------------------------------------
+export const searchProducts = async (searchTerm, first = 12) => {
+  return fetchProducts(first, `title:*${searchTerm}* OR tag:*${searchTerm}*`);
+};
+
+// ---------------------------------------------------------------------------
+// fetchCollections — categories / nav
+// ---------------------------------------------------------------------------
+export const fetchCollections = async (first = 8) => {
+  const GQL = `
+    query GetCollections($first: Int!) {
+      collections(first: $first) {
         edges {
           node {
-            id
-            title
+            id title handle
+            image { url altText }
             description
-            handle
-            productType
-            vendor
-            images(first: 1) {
-              edges {
-                node {
-                  url
-                  altText
-                }
-              }
-            }
-            priceRange {
-              minVariantPrice {
-                amount
-                currencyCode
-              }
-            }
-            variants(first: 10) {
-              edges {
-                node {
-                  id
-                  title
-                  priceV2 {
-                    amount
-                    currencyCode
-                  }
-                  availableForSale
-                                    quantityAvailable
-                  selectedOptions {
-                    name
-                    value
-                  }
-                }
-              }
-            }
           }
         }
       }
     }
   `;
-
-  try {
-    const data = await shopifyFetch(query, { first: 50 });
-    
-    if (!data || !data.products || !data.products.edges) {
-      console.warn('No products found in response');
-      return [];
-    }
-
-    const products = data.products.edges.map(({ node }) => ({
-      id: node.id,
-      title: node.title || 'Untitled Product',
-      description: node.description || '',
-      price: parseFloat(node.priceRange?.minVariantPrice?.amount || 0),
-      image: node.images?.edges[0]?.node?.url || '',
-      handle: node.handle || '',
-      category: node.productType || '',
-      brand: node.vendor || '',
-      variants: node.variants?.edges?.map(({ node: variant }) => variant) || [],
-            rating: null, // Fetch real ratings from reviews API - do not use hardcoded value
-    }));
-
-      if (process.env.NODE_ENV === 'development') console.log('Mapped products:', products);
-    return products;
-  } catch (error) {
-    console.error('Error fetching products:', error);
-    return [];
-  }
-};
-
-export const fetchProductById = async (id) => {
-  const query = `
-    query getProduct($id: ID!) {
-      product(id: $id) {
-        id
-        title
-        description
-        handle
-        images(first: 5) {
-          edges {
-            node {
-              url
-              altText
-            }
-          }
-        }
-        variants(first: 10) {
-          edges {
-            node {
-              id
-              title
-              priceV2 {
-                amount
-                currencyCode
-              }
-              availableForSale
-                                quantityAvailable
-                  selectedOptions {
-                    name
-                    value
-                  }
-            }
-          }
-        }
-      }
-    }
-  `;
-
-  try {
-    const data = await shopifyFetch(query, { id });
-    return data.product;
-  } catch (error) {
-    console.error('Error fetching product:', error);
-    return null;
-  }
-};
-
-export const fetchProductByHandle = async (handle) => {
-  const query = `
-    query getProductByHandle($handle: String!) {
-      productByHandle(handle: $handle) {
-        id
-        title
-        description
-              descriptionHtml
-        handle
-        productType
-        vendor
-        images(first: 5) {
-          edges {
-            node {
-              url
-              altText
-            }
-          }
-        }
-        priceRange {
-          minVariantPrice {
-            amount
-            currencyCode
-          }
-        }
-        variants(first: 10) {
-          edges {
-            node {
-              id
-              title
-              priceV2 {
-                amount
-                currencyCode
-              }
-              availableForSale
-                                quantityAvailable
-                  selectedOptions {
-                    name
-                    value
-                  }
-            }
-          }
-        }
-      }
-    }
-  `;
-
-  try {
-    const data = await shopifyFetch(query, { handle });
-    
-    if (!data || !data.productByHandle) {
-      throw new Error('Product not found');
-    }
-
-    const product = data.productByHandle;
-    
-    return {
-      id: product.id,
-      title: product.title,
-      description: product.description,
-          descriptionHtml: product.descriptionHtml,
-      price: parseFloat(product.priceRange?.minVariantPrice?.amount || 0),
-      image: product.images?.edges[0]?.node?.url || '',
-      images: product.images?.edges?.map(({ node }) => node.url) || [],
-      handle: product.handle,
-      category: product.productType || '',
-      brand: product.vendor || '',
-      variants: product.variants?.edges?.map(({ node }) => node) || [],
-            rating: null, // Do not hardcode - fetch real ratings from Shopify metafields or reviews app
-    };
-  } catch (error) {
-    console.error('Error fetching product by handle:', error);
-    throw error;
-  }
-};
-
-// Create a Shopify checkout and return the checkout URL
-export const createCheckout = async (lineItems) => {
-  const query = `
-    mutation checkoutCreate($input: CheckoutCreateInput!) {
-      checkoutCreate(input: $input) {
-        checkout {
-          id
-          webUrl
-        }
-        checkoutUserErrors {
-          message
-          field
-        }
-      }
-    }
-  `;
-
-  try {
-    const data = await shopifyFetch(query, {
-      input: {
-        lineItems: lineItems
-      }
-    });
-    
-    if (data.checkoutCreate.checkoutUserErrors.length > 0) {
-      throw new Error(data.checkoutCreate.checkoutUserErrors[0].message);
-    }
-    
-    // Return the custom checkout URL instead of Shopify's default
-    const checkoutId = data.checkoutCreate.checkout.id;
-    return getCheckoutUrl(checkoutId);
-  } catch (error) {
-    console.error('Error creating checkout:', error);
-    return null;
-  }
-};
-
-// Shopify Customer Account API functions
-export const customerLogin = async (email, password) => {
-  const query = `
-    mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
-      customerAccessTokenCreate(input: $input) {
-        customerAccessToken {
-          accessToken
-          expiresAt
-        }
-        customerUserErrors {
-          message
-          field
-        }
-      }
-    }
-  `;
-
-  try {
-    const data = await shopifyFetch(query, {
-      input: { email, password }
-    });
-
-    if (data.customerAccessTokenCreate.customerUserErrors.length > 0) {
-      throw new Error(data.customerAccessTokenCreate.customerUserErrors[0].message);
-    }
-
-    return data.customerAccessTokenCreate.customerAccessToken;
-  } catch (error) {
-    console.error('Error logging in customer:', error);
-    throw error;
-  }
-};
-
-export const customerRegister = async (email, password, firstName, lastName) => {
-  // First, try to login - if successful, customer already exists
-  try {
-    const accessToken = await customerLogin(email, password);
-    console.log('Customer already exists, logged in successfully');
-    return accessToken;
-  } catch (loginError) {
-    // If login fails, customer doesn't exist - proceed with registration
-    console.log('Customer does not exist, creating new account...');
-  }
-
-  const query = `
-    mutation customerCreate($input: CustomerCreateInput!) {
-      customerCreate(input: $input) {
-        customer {
-          id
-          email
-          firstName
-          lastName
-        }
-        customerUserErrors {
-          message
-          field
-        }
-      }
-    }
-  `;
-
-  try {
-    const data = await shopifyFetch(query, {
-      input: {
-        email,
-        password,
-        firstName,
-        lastName,
-        acceptsMarketing: false
-      }
-    });
-
-    if (data.customerCreate.customerUserErrors.length > 0) {
-      const error = data.customerCreate.customerUserErrors[0];
-      
-      // If customer already exists, try to login
-      if (error.message.includes('already exists') || error.message.includes('taken')) {
-        console.log('Customer exists (from error), attempting login...');
-        return await customerLogin(email, password);
-      }
-      
-      throw new Error(error.message);
-    }
-
-    // After creating account, log them in
-    return await customerLogin(email, password);
-  } catch (error) {
-    console.error('Error registering customer:', error);
-    
-    // If limit exceeded, inform user to try login or wait
-    if (error.message && error.message.includes('Limit exceeded')) {
-      throw new Error('Account creation is temporarily limited. If you already have an account, please try logging in instead.');
-    }
-    
-    throw error;
-  }
-};
-
-export const getCustomer = async (accessToken) => {
-  const query = `
-    query getCustomer($customerAccessToken: String!) {
-      customer(customerAccessToken: $customerAccessToken) {
-        id
-        email
-        firstName
-        lastName
-        phone
-        defaultAddress {
-          address1
-          address2
-          city
-          province
-          country
-          zip
-        }
-      }
-    }
-  `;
-
-  try {
-    const data = await shopifyFetch(query, {
-      customerAccessToken: accessToken
-    });
-
-    return data.customer;
-  } catch (error) {
-    console.error('Error fetching customer:', error);
-    throw error;
-  }
+  const data = await shopifyFetch(GQL, { first });
+  if (!data) return [];
+  return data.collections.edges.map((e) => e.node);
 };

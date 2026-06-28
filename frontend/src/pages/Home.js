@@ -20,10 +20,10 @@ import CategoryShowcase from '../components/CategoryShowcase';
 import InfiniteReviews from '../components/InfiniteReviews';
 
 const TRUST_BADGES = [
-  { icon: Truck,       title: 'Free Shipping',    sub: 'On orders above \u20b9499' },
-  { icon: RotateCcw,   title: '7-Day Returns',    sub: 'No questions asked' },
-  { icon: ShieldCheck, title: '100% Authentic',   sub: 'Quality guaranteed' },
-  { icon: Headphones,  title: 'Customer Support', sub: 'Mon\u2013Sat, 10am\u20136pm' },
+  { icon: Truck, title: 'Free Shipping', sub: 'On orders above \u20b9499' },
+  { icon: RotateCcw, title: '7-Day Returns', sub: 'No questions asked' },
+  { icon: ShieldCheck, title: '100% Authentic', sub: 'Quality guaranteed' },
+  { icon: Headphones, title: 'Customer Support', sub: 'Mon\u2013Sat, 10am\u20136pm' },
 ];
 
 const WHY_US = [
@@ -31,37 +31,43 @@ const WHY_US = [
     icon: Package,
     title: 'Pan-India Delivery',
     body: 'Ships within 24 hours. Arrives in 3\u20135 business days at any pin code.',
-    stat: '24h', label: 'Dispatch',
+    stat: '24h',
+    label: 'Dispatch',
   },
   {
     icon: CheckCircle2,
     title: 'Money-Back Guarantee',
     body: 'Return any product within 7 days for a full refund, hassle-free.',
-    stat: '7', label: 'Day Window',
+    stat: '7',
+    label: 'Day Window',
   },
   {
     icon: CreditCard,
     title: 'Cash on Delivery',
     body: 'Pay when your package arrives. Zero advance payment required.',
-    stat: '\u20b90', label: 'Advance',
+    stat: '\u20b90',
+    label: 'Advance',
   },
   {
     icon: Lock,
     title: 'Secure Checkout',
     body: 'All transactions run through PCI-compliant, SSL-encrypted gateways.',
-    stat: 'SSL', label: 'Encrypted',
+    stat: 'SSL',
+    label: 'Encrypted',
   },
   {
     icon: MessageCircle,
     title: 'WhatsApp Support',
     body: 'Real humans respond to your messages in under 2 hours on WhatsApp.',
-    stat: '<2h', label: 'Response',
+    stat: '<2h',
+    label: 'Response',
   },
   {
     icon: ShieldCheck,
     title: 'Quality Inspected',
     body: 'Every item is checked before dispatch. We ship only what we stand behind.',
-    stat: '100%', label: 'Inspected',
+    stat: '100%',
+    label: 'Inspected',
   },
 ];
 
@@ -85,9 +91,9 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-zinc-950">
-
       <HeroPremium />
       <CategoryShowcase />
+      {/* Curated marquee of real-feel reviews rather than long duplicated blocks */}
       <InfiniteReviews />
 
       {/* Trust badges */}
@@ -111,10 +117,16 @@ const Home = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <p className="text-orange-500 text-xs font-semibold uppercase tracking-[0.2em] mb-1">Hand-picked</p>
+            <p className="text-orange-500 text-xs font-semibold uppercase tracking-[0.2em] mb-1">
+              Hand-picked
+            </p>
             <h2 className="font-oswald text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide">
               Featured Products
             </h2>
+            <p className="text-zinc-400 text-xs sm:text-sm mt-1 max-w-md">
+              Curated from our most-loved and high-performing SKUs. Updated as you
+              grow the catalog in Shopify.
+            </p>
           </div>
           <Link
             to="/products"
@@ -138,7 +150,7 @@ const Home = () => {
           </div>
         ) : (
           <p className="text-zinc-500 text-sm text-center py-12">
-            Products are loading\u2014 check back shortly.
+            Products are loading check back shortly.
           </p>
         )}
       </section>
@@ -147,12 +159,14 @@ const Home = () => {
       <section className="bg-zinc-900 border-y border-zinc-800 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-14">
-            <p className="text-orange-500 text-xs font-semibold uppercase tracking-[0.2em] mb-3">Why us</p>
+            <p className="text-orange-500 text-xs font-semibold uppercase tracking-[0.2em] mb-3">
+              Why us
+            </p>
             <h2 className="font-oswald text-3xl sm:text-4xl font-bold text-white uppercase tracking-wide">
               Everything you need to train confidently
             </h2>
             <p className="text-zinc-400 mt-3 max-w-xl mx-auto text-sm leading-relaxed">
-              We handle delivery, quality, and support\u2014 so your only job is showing up.
+              We handle delivery, quality, and support so your only job is showing up.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -212,7 +226,6 @@ const Home = () => {
           )}
         </div>
       </section>
-
     </div>
   );
 };

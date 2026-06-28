@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 
-// Hero background image — swap for your own CDN asset when ready
+// TODO: Replace with your own CDN image when ready
 const HERO_IMAGE_URL =
   'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop';
 
@@ -29,14 +29,13 @@ const HeroPremium = () => {
         }}
       />
 
-      {/* Directional overlay — light from right, dark on left for legibility */}
+      {/* Directional overlay for legibility */}
       <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-black/10" />
       <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent" />
 
       {/* Content */}
       <div className="relative z-10 h-full max-w-7xl mx-auto px-6 lg:px-8 flex items-center">
         <div className="max-w-2xl">
-
           {/* Eyebrow label */}
           <motion.p
             initial={{ opacity: 0, y: 16 }}
@@ -44,7 +43,7 @@ const HeroPremium = () => {
             transition={{ duration: 0.55, ease: 'easeOut' }}
             className="text-orange-500 text-xs font-semibold uppercase tracking-[0.22em] mb-6"
           >
-            New Collection — Summer 2025
+            Indias #1 Fitness Destination
           </motion.p>
 
           {/* Headline */}
@@ -66,11 +65,11 @@ const HeroPremium = () => {
             transition={{ duration: 0.65, delay: 0.2, ease: 'easeOut' }}
             className="text-zinc-300 text-lg leading-relaxed mb-10 max-w-lg"
           >
-            Performance fitness equipment and apparel — built for serious
-            training, delivered pan-India within 3&ndash;5 days.
+            Performance fitness equipment and apparel  built for serious
+            training, delivered pan-India within 35 days with COD and easy returns.
           </motion.p>
 
-          {/* CTAs */}
+          {/* Primary actions */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -81,14 +80,14 @@ const HeroPremium = () => {
               to="/products"
               className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm uppercase tracking-wider px-7 py-3.5 rounded-full transition-colors duration-200"
             >
-              Shop Now
+              Shop Premium Gear
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
-              to="/about"
+              to="/products?tag=bestseller"
               className="inline-flex items-center gap-2 border border-white/30 hover:border-white/70 text-white font-semibold text-sm uppercase tracking-wider px-7 py-3.5 rounded-full transition-colors duration-200 backdrop-blur-sm"
             >
-              Our Story
+              View Bestsellers
             </Link>
           </motion.div>
 
@@ -99,7 +98,7 @@ const HeroPremium = () => {
             transition={{ duration: 0.8, delay: 0.55 }}
             className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-12 text-xs text-zinc-400 uppercase tracking-widest"
           >
-            <span>Free Shipping above &#8377;499</span>
+            <span>Free Shipping above 2499</span>
             <span className="hidden sm:inline text-zinc-700">|</span>
             <span>7-Day Returns</span>
             <span className="hidden sm:inline text-zinc-700">|</span>

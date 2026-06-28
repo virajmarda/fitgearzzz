@@ -1,15 +1,22 @@
 import React, { useEffect } from "react";
-import { BrowserRouter, Routes, Route, useNavigate, useSearchParams, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useNavigate,
+  useSearchParams,
+  useLocation,
+} from "react-router-dom";
 import { Analytics } from "@vercel/analytics/react";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
-import { WishlistProvider } from './context/WishlistContext';
+import { WishlistProvider } from "./context/WishlistContext";
 import { Toaster } from "./components/ui/sonner";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import WhatsAppButton from './components/WhatsAppButton';
-import BackToTop from './components/BackToTop';
-import AnnouncementBar from './components/AnnouncementBar';
+import WhatsAppButton from "./components/WhatsAppButton";
+import BackToTop from "./components/BackToTop";
+import AnnouncementBar from "./components/AnnouncementBar";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
@@ -25,7 +32,7 @@ import About from "./pages/About";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Story from "./pages/Story";
-import Wishlist from './pages/Wishlist';
+import Wishlist from "./pages/Wishlist";
 import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
@@ -33,8 +40,8 @@ import ShippingReturns from "./pages/ShippingReturns";
 import FAQ from "./pages/FAQ";
 import CatalogPage from "./pages/CatalogPage";
 import "./App.css";
-import './styles/shopify-buy-button.css';
-import * as fbPixel from './utils/fbPixel';
+import "./styles/shopify-buy-button.css";
+import * as fbPixel from "./utils/fbPixel";
 
 const CustomerSSOCallback = () => {
   const navigate = useNavigate();
@@ -42,6 +49,7 @@ const CustomerSSOCallback = () => {
 
   useEffect(() => {
     const returnTo = searchParams.get("return_to");
+
     if (returnTo) {
       window.location.href = decodeURIComponent(returnTo);
     } else {
@@ -52,24 +60,23 @@ const CustomerSSOCallback = () => {
   return null;
 };
 
-// New component that uses useLocation - must be inside BrowserRouter
 const AppContent = () => {
   const location = useLocation();
 
-    // Initialize Facebook Pixel on mount
+  // Initialize Facebook Pixel once
   useEffect(() => {
     fbPixel.init();
     fbPixel.pageview();
   }, []);
 
+  // Track page views on route change
   useEffect(() => {
-    // Track PageView on route change
-        fbPixel.pageview();
+    fbPixel.pageview();
   }, [location]);
 
   return (
     <div className="App min-h-screen bg-[#09090b] flex flex-col">
-            <AnnouncementBar />
+      <AnnouncementBar />
       <Navbar />
       <main className="flex-grow">
         <Routes>
@@ -82,7 +89,10 @@ const AppContent = () => {
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/customer_identity/logout" element={<CustomerLogout />} />
-          <Route path="/customer_authentication/sso_hint" element={<CustomerSSOCallback />} />
+          <Route
+            path="/customer_authentication/sso_hint"
+            element={<CustomerSSOCallback />}
+          />
           <Route path="/orders" element={<Orders />} />
           <Route path="/order-success" element={<OrderSuccess />} />
           <Route path="/admin" element={<Admin />} />
@@ -118,15 +128,15 @@ function App() {
   return (
     <AuthProvider>
       <CartProvider>
-            <WishlistProvider>
-        <BrowserRouter>
-          <AppContent />
-        </BrowserRouter>
-        <Analytics />
-            <WhatsAppButton />
-        <BackToTop />
-            </WishlistProvider>  
-    </CartProvider>
+        <WishlistProvider>
+          <BrowserRouter>
+            <AppContent />
+          </BrowserRouter>
+          <Analytics />
+          <WhatsAppButton />
+          <BackToTop />
+        </WishlistProvider>
+      </CartProvider>
     </AuthProvider>
   );
 }

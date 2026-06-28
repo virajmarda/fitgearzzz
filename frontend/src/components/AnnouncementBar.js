@@ -48,7 +48,7 @@ const AnnouncementBar = () => {
                 to="/products?tag=new"
                 className="inline-flex items-center gap-0.5 text-orange-500 font-semibold hover:text-orange-400 ml-1"
               >
-                Shop now <ChevronRight className="w-3 h-3" />
+                Shop new arrivals <ChevronRight className="w-3 h-3" />
               </Link>
             )}
           </p>

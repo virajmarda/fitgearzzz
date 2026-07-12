@@ -38,6 +38,8 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import ShippingReturns from "./pages/ShippingReturns";
 import FAQ from "./pages/FAQ";
+import FeaturesIndex from "./pages/FeaturesIndex";
+import FeatureDetail from "./pages/FeatureDetail";
 import CatalogPage from "./pages/CatalogPage";
 import "./App.css";
 import "./styles/shopify-buy-button.css";
@@ -106,6 +108,8 @@ const AppContent = () => {
           <Route path="/terms" element={<TermsOfService />} />
           <Route path="/shipping" element={<ShippingReturns />} />
           <Route path="/faq" element={<FAQ />} />
+              <Route path="/features" element={<FeaturesIndex />} />
+            <Route path="/features/:slug" element={<FeatureDetail />} />
         </Routes>
       </main>
       <Footer />

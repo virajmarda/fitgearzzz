@@ -2,34 +2,34 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 
-// TODO: Replace these with your own CDN assets when ready
+// Replace placeholder Unsplash images with brand photography before launch.
 const CATEGORIES = [
   {
     name: 'Gym Equipment',
-    sub: 'Barbells, dumbbells, racks & more',
-    image:
-      'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2070&fit=crop',
+    sub: 'Barbells, dumbbells, racks, benches',
+    note: 'Free delivery on orders ₹999+',
+    image: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2070&fit=crop',
     to: '/products?category=Gym%20Equipment',
   },
   {
     name: 'Supplements',
-    sub: 'Protein, pre-workout & recovery',
-    image:
-      'https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?q=80&w=2071&fit=crop',
+    sub: 'Protein, creatine, pre-workout',
+    note: 'Lab-tested, authentic brands',
+    image: 'https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?q=80&w=2071&fit=crop',
     to: '/products?category=Supplements',
   },
   {
     name: 'Apparel',
-    sub: 'Training wear built for movement',
-    image:
-      'https://images.unsplash.com/photo-1556906781-9cba4a6bc3c3?q=80&w=2787&fit=crop',
+    sub: 'Dry-fit, compression, everyday training',
+    note: 'Ships same day',
+    image: 'https://images.unsplash.com/photo-1556906781-9cba4a6bc3c3?q=80&w=2787&fit=crop',
     to: '/products?category=Apparel',
   },
   {
     name: 'Accessories',
-    sub: 'Straps, belts, grips & essentials',
-    image:
-      'https://images.unsplash.com/photo-1526367790999-0150786686a2?q=80&w=2071&fit=crop',
+    sub: 'Straps, belts, gloves, grips',
+    note: 'COD available',
+    image: 'https://images.unsplash.com/photo-1526367790999-0150786686a2?q=80&w=2071&fit=crop',
     to: '/products?category=Accessories',
   },
 ];
@@ -37,59 +37,63 @@ const CATEGORIES = [
 const CategoryShowcase = () => (
   <section className="bg-zinc-950 py-16">
     <div className="max-w-7xl mx-auto px-4 sm:px-6">
-      {/* Section header */}
+
+      {/* Header */}
       <div className="flex items-end justify-between mb-10">
         <div>
-          <p className="text-orange-500 text-xs font-semibold uppercase tracking-[0.2em] mb-2">
-            Shop by category
-          </p>
+          <div className="flex items-center gap-2.5 mb-2">
+            <span className="block w-5 h-px bg-orange-500" />
+            <p className="text-orange-500 text-xs font-semibold uppercase tracking-[0.22em]">
+              Browse by category
+            </p>
+          </div>
           <h2 className="font-oswald text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide">
-            Find gear for every goal
+            What are you training for?
           </h2>
-          <p className="text-zinc-400 text-xs sm:text-sm mt-2 max-w-md">
-            Start with the category that matches your trainingwhether its building a home
-            gym, recovering better, or upgrading your daily apparel.
+          <p className="text-zinc-500 text-xs sm:text-sm mt-1.5 max-w-sm">
+            Four categories. Every one of them sourced, inspected, and delivered pan-India.
           </p>
         </div>
         <Link
-          to="/catalog"
-          className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-300 hover:text-orange-500 transition-colors"
+          to="/products"
+          className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-400 hover:text-orange-500 transition-colors"
         >
-          View full catalog
-          <ArrowRight className="w-4 h-4" />
+          See all
+          <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>
 
-      {/* Grid */}
+      {/* Category grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        {CATEGORIES.map(({ name, sub, image, to }) => (
+        {CATEGORIES.map(({ name, sub, note, image, to }) => (
           <Link
             key={name}
             to={to}
-            className="group relative block rounded-xl overflow-hidden bg-zinc-800 aspect-[3/4] border border-zinc-800 hover:border-zinc-600 transition-colors"
+            className="group relative block overflow-hidden bg-zinc-900 aspect-[3/4] rounded-sm border border-zinc-800 hover:border-zinc-600 transition-colors"
           >
-            {/* Image */}
             <img
               src={image}
               alt={name}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
               loading="lazy"
               decoding="async"
             />
+            {/* Bottom-up vignette */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
 
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-
-            {/* Text */}
+            {/* Category info */}
             <div className="absolute bottom-0 left-0 right-0 p-4">
               <p className="text-white font-oswald font-bold text-lg uppercase leading-tight mb-0.5">
                 {name}
               </p>
-              <p className="text-zinc-300 text-xs leading-snug mb-3">{sub}</p>
-              <span className="inline-flex items-center gap-1 text-orange-400 text-xs font-semibold uppercase tracking-wide">
-                Shop {name}
-                <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />
-              </span>
+              <p className="text-zinc-400 text-xs leading-snug mb-2.5">{sub}</p>
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] text-zinc-600 uppercase tracking-wide">{note}</span>
+                <span className="inline-flex items-center gap-1 text-orange-400 text-xs font-semibold uppercase tracking-wide">
+                  Browse
+                  <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />
+                </span>
+              </div>
             </div>
           </Link>
         ))}

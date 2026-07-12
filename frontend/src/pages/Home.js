@@ -18,54 +18,56 @@ import { fetchProducts } from '../services/shopifyService';
 import HeroPremium from '../components/HeroPremium';
 import CategoryShowcase from '../components/CategoryShowcase';
 import InfiniteReviews from '../components/InfiniteReviews';
+import BrandStorySpotlight from '../components/BrandStorySpotlight';
 
+// Operational trust signals. Keep copy factual, not promotional.
 const TRUST_BADGES = [
-  { icon: Truck, title: 'Free Shipping', sub: 'On orders above \u20b9499' },
-  { icon: RotateCcw, title: '7-Day Returns', sub: 'No questions asked' },
-  { icon: ShieldCheck, title: '100% Authentic', sub: 'Quality guaranteed' },
-  { icon: Headphones, title: 'Customer Support', sub: 'Mon\u2013Sat, 10am\u20136pm' },
+  { icon: Truck,       title: 'Free Shipping',     sub: 'Orders above ₹499' },
+  { icon: RotateCcw,   title: '7-Day Returns',     sub: 'No questions asked' },
+  { icon: ShieldCheck, title: '100% Authentic',    sub: 'Inspected before dispatch' },
+  { icon: Headphones,  title: 'Support Available', sub: 'Mon–Sat, 10am–6pm' },
 ];
 
 const WHY_US = [
   {
     icon: Package,
-    title: 'Pan-India Delivery',
-    body: 'Ships within 24 hours. Arrives in 3\u20135 business days at any pin code.',
+    title: 'Ships within 24 hours',
+    body: 'Orders placed before 3 pm are dispatched the same day. Delivery across India in 3–5 business days.',
     stat: '24h',
     label: 'Dispatch',
   },
   {
     icon: CheckCircle2,
-    title: 'Money-Back Guarantee',
-    body: 'Return any product within 7 days for a full refund, hassle-free.',
+    title: 'Full refund, 7 days',
+    body: 'Return any product within 7 days of delivery for a complete refund. No forms, no friction.',
     stat: '7',
-    label: 'Day Window',
+    label: 'Day window',
   },
   {
     icon: CreditCard,
-    title: 'Cash on Delivery',
-    body: 'Pay when your package arrives. Zero advance payment required.',
-    stat: '\u20b90',
+    title: 'Pay on delivery',
+    body: 'No advance required. Pay cash or UPI when your order arrives at the door.',
+    stat: '₹0',
     label: 'Advance',
   },
   {
     icon: Lock,
-    title: 'Secure Checkout',
-    body: 'All transactions run through PCI-compliant, SSL-encrypted gateways.',
+    title: 'Encrypted checkout',
+    body: 'All payment data runs through SSL-encrypted, PCI-compliant processors. Nothing is stored on our side.',
     stat: 'SSL',
     label: 'Encrypted',
   },
   {
     icon: MessageCircle,
-    title: 'WhatsApp Support',
-    body: 'Real humans respond to your messages in under 2 hours on WhatsApp.',
+    title: 'WhatsApp support',
+    body: 'Message us on WhatsApp. A real person responds in under 2 hours during business hours.',
     stat: '<2h',
     label: 'Response',
   },
   {
     icon: ShieldCheck,
-    title: 'Quality Inspected',
-    body: 'Every item is checked before dispatch. We ship only what we stand behind.',
+    title: 'Checked before it ships',
+    body: 'Each item is physically inspected at our end before dispatch. If it does not pass, it does not leave.',
     stat: '100%',
     label: 'Inspected',
   },
@@ -93,19 +95,18 @@ const Home = () => {
     <div className="min-h-screen bg-zinc-950">
       <HeroPremium />
       <CategoryShowcase />
-      {/* Curated marquee of real-feel reviews rather than long duplicated blocks */}
       <InfiniteReviews />
 
-      {/* Trust badges */}
+      {/* Operational trust strip */}
       <section className="bg-zinc-900 border-y border-zinc-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {TRUST_BADGES.map(({ icon: Icon, title, sub }) => (
               <div key={title} className="flex items-center gap-3">
-                <Icon className="w-6 h-6 text-orange-500 shrink-0" strokeWidth={1.5} />
+                <Icon className="w-5 h-5 text-orange-500 shrink-0" strokeWidth={1.5} />
                 <div>
                   <p className="text-white font-semibold text-sm leading-tight">{title}</p>
-                  <p className="text-zinc-400 text-xs mt-0.5">{sub}</p>
+                  <p className="text-zinc-500 text-xs mt-0.5">{sub}</p>
                 </div>
               </div>
             ))}
@@ -113,26 +114,28 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Featured Products */}
+      {/* Catalog — 8 hand-picked SKUs, synced from Shopify */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <p className="text-orange-500 text-xs font-semibold uppercase tracking-[0.2em] mb-1">
-              Hand-picked
-            </p>
+            <div className="flex items-center gap-2.5 mb-2">
+              <span className="block w-5 h-px bg-orange-500" />
+              <p className="text-orange-500 text-xs font-semibold uppercase tracking-[0.22em]">
+                From the catalog
+              </p>
+            </div>
             <h2 className="font-oswald text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide">
-              Featured Products
+              What people are buying
             </h2>
-            <p className="text-zinc-400 text-xs sm:text-sm mt-1 max-w-md">
-              Curated from our most-loved and high-performing SKUs. Updated as you
-              grow the catalog in Shopify.
+            <p className="text-zinc-500 text-xs sm:text-sm mt-1 max-w-sm">
+              Eight products pulled from the live Shopify catalog. Updated in real time.
             </p>
           </div>
           <Link
             to="/products"
-            className="flex items-center gap-1.5 text-sm font-semibold text-orange-500 hover:text-orange-400 transition-colors"
+            className="flex items-center gap-1.5 text-sm font-semibold text-orange-500 hover:text-orange-400 transition-colors shrink-0"
           >
-            View All <ArrowRight className="w-4 h-4" />
+            Full catalog <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
@@ -149,42 +152,45 @@ const Home = () => {
             ))}
           </div>
         ) : (
-          <p className="text-zinc-500 text-sm text-center py-12">
-            Products are loading check back shortly.
+          <p className="text-zinc-600 text-sm text-center py-12">
+            Catalog is loading. Check back shortly.
           </p>
         )}
       </section>
 
-      {/* Why FitGearzzz */}
+      {/* Why FitGearzzz — factual, not motivational */}
       <section className="bg-zinc-900 border-y border-zinc-800 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-14">
-            <p className="text-orange-500 text-xs font-semibold uppercase tracking-[0.2em] mb-3">
-              Why us
-            </p>
-            <h2 className="font-oswald text-3xl sm:text-4xl font-bold text-white uppercase tracking-wide">
-              Everything you need to train confidently
+          <div className="mb-12">
+            <div className="flex items-center gap-2.5 mb-3">
+              <span className="block w-5 h-px bg-orange-500" />
+              <p className="text-orange-500 text-xs font-semibold uppercase tracking-[0.22em]">
+                How we operate
+              </p>
+            </div>
+            <h2 className="font-oswald text-3xl sm:text-4xl font-bold text-white uppercase tracking-wide max-w-lg">
+              The standards we hold ourselves to
             </h2>
-            <p className="text-zinc-400 mt-3 max-w-xl mx-auto text-sm leading-relaxed">
-              We handle delivery, quality, and support so your only job is showing up.
+            <p className="text-zinc-500 mt-3 max-w-md text-sm leading-relaxed">
+              These are not promises. They are the operating conditions we set before we shipped a single order.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {WHY_US.map(({ icon: Icon, title, body, stat, label }) => (
               <div
                 key={title}
-                className="bg-zinc-950 rounded-xl border border-zinc-800 p-6 flex flex-col gap-4 hover:border-zinc-700 transition-colors"
+                className="bg-zinc-950 rounded-sm border border-zinc-800/80 p-6 flex flex-col gap-4 hover:border-zinc-700 transition-colors"
               >
-                <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center">
-                  <Icon className="w-5 h-5 text-orange-500" strokeWidth={1.5} />
+                <div className="w-9 h-9 rounded-sm bg-orange-500/10 flex items-center justify-center">
+                  <Icon className="w-4.5 h-4.5 text-orange-500" strokeWidth={1.5} />
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold text-base mb-1">{title}</h3>
-                  <p className="text-zinc-400 text-sm leading-relaxed">{body}</p>
+                  <h3 className="text-white font-semibold text-sm mb-1.5">{title}</h3>
+                  <p className="text-zinc-500 text-sm leading-relaxed">{body}</p>
                 </div>
-                <div className="flex items-baseline gap-1.5 mt-auto">
-                  <span className="text-orange-500 font-bold text-lg">{stat}</span>
-                  <span className="text-zinc-600 text-xs uppercase tracking-wide">{label}</span>
+                <div className="flex items-baseline gap-1.5 mt-auto pt-2 border-t border-zinc-800">
+                  <span className="text-orange-500 font-bold text-base">{stat}</span>
+                  <span className="text-zinc-700 text-xs uppercase tracking-wide">{label}</span>
                 </div>
               </div>
             ))}
@@ -192,19 +198,22 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Newsletter */}
+      {/* Brand editorial spotlight */}
+      <BrandStorySpotlight />
+
+      {/* Newsletter — direct offer, no filler */}
       <section className="bg-orange-500 py-14">
-        <div className="max-w-xl mx-auto px-4 text-center">
-          <Mail className="w-8 h-8 text-white mx-auto mb-4" strokeWidth={1.5} />
+        <div className="max-w-lg mx-auto px-4 text-center">
+          <Mail className="w-7 h-7 text-white/80 mx-auto mb-4" strokeWidth={1.5} />
           <h2 className="font-oswald text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide mb-2">
-            Get 10% off your first order
+            10% off your first order
           </h2>
-          <p className="text-orange-100 text-sm mb-7">
-            Subscribe for early access to deals, restocks, and training guides.
+          <p className="text-orange-100/80 text-sm mb-7">
+            Early access to restocks, new arrivals, and training reads. No spam.
           </p>
           {subscribed ? (
-            <p className="text-white font-semibold text-base">
-              You're in. Check your inbox for your discount code.
+            <p className="text-white font-semibold">
+              You're in. Check your inbox.
             </p>
           ) : (
             <form onSubmit={handleNewsletter} className="flex flex-col sm:flex-row gap-3">
@@ -212,13 +221,13 @@ const Home = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Your email address"
+                placeholder="Your email"
                 required
-                className="flex-1 px-5 py-3 rounded-full text-zinc-900 text-sm font-medium placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/50"
+                className="flex-1 px-5 py-3 rounded-sm text-zinc-900 text-sm font-medium placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-white/40"
               />
               <button
                 type="submit"
-                className="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 text-white text-sm font-semibold rounded-full transition-colors whitespace-nowrap"
+                className="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 text-white text-sm font-semibold rounded-sm transition-colors whitespace-nowrap"
               >
                 Subscribe
               </button>

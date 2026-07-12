@@ -17,7 +17,7 @@ const INFO_LINKS = [
   { label: 'Contact',           to: '/contact' },
   { label: 'FAQ',               to: '/faq' },
   { label: 'Shipping & returns', to: '/shipping' },
-  { label: 'Brand journal',     to: '/stories' },
+  { label: 'Brand journal',     to: '/features' },
   { label: 'Track your order',  to: '/orders' },
 ];
 

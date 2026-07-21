@@ -22,54 +22,56 @@ import BrandStorySpotlight from '../components/BrandStorySpotlight';
 
 // Operational trust signals. Keep copy factual, not promotional.
 const TRUST_BADGES = [
-  { icon: Truck,       title: 'Free Shipping',     sub: 'Orders above ₹499' },
-  { icon: RotateCcw,   title: '7-Day Returns',     sub: 'No questions asked' },
-  { icon: ShieldCheck, title: '100% Authentic',    sub: 'Inspected before dispatch' },
-  { icon: Headphones,  title: 'Support Available', sub: 'Mon–Sat, 10am–6pm' },
+  { icon: Truck, title: 'Free Shipping', sub: 'Orders above ₹499' },
+  { icon: RotateCcw, title: '7-Day Returns', sub: 'No questions asked' },
+  { icon: ShieldCheck, title: '100% Authentic', sub: 'Inspected before dispatch' },
+  { icon: Headphones, title: 'Support Available', sub: 'Mon–Sat, 10am–6pm' },
 ];
 
-const WHY_US = [
+// "How we operate" — told as a sequence, not a feature grid.
+// Each step is a stage in the order lifecycle, in the order it actually happens.
+const OPERATING_STEPS = [
   {
-    icon: Package,
-    title: 'Ships within 24 hours',
-    body: 'Orders placed before 3 pm are dispatched the same day. Delivery across India in 3–5 business days.',
-    stat: '24h',
-    label: 'Dispatch',
-  },
-  {
+    step: '01',
     icon: CheckCircle2,
-    title: 'Full refund, 7 days',
-    body: 'Return any product within 7 days of delivery for a complete refund. No forms, no friction.',
-    stat: '7',
-    label: 'Day window',
+    title: 'Every item is checked before it ships',
+    body:
+      'We physically inspect each product at our end before it leaves the warehouse. If something does not pass, it does not go out — no exceptions, no shortcuts.',
   },
   {
+    step: '02',
+    icon: Package,
+    title: 'Dispatched the same day, most days',
+    body:
+      'Orders placed before 3pm go out same-day. After that, they ship the next morning. Delivery across India typically takes 3–5 business days.',
+  },
+  {
+    step: '03',
     icon: CreditCard,
-    title: 'Pay on delivery',
-    body: 'No advance required. Pay cash or UPI when your order arrives at the door.',
-    stat: '₹0',
-    label: 'Advance',
+    title: 'You pay when it arrives, not before',
+    body:
+      'No advance payment required. Pay by cash or UPI at your door once the order is in your hands — you see it before you pay for it.',
   },
   {
+    step: '04',
     icon: Lock,
-    title: 'Encrypted checkout',
-    body: 'All payment data runs through SSL-encrypted, PCI-compliant processors. Nothing is stored on our side.',
-    stat: 'SSL',
-    label: 'Encrypted',
+    title: 'If you do pay online, it is encrypted end to end',
+    body:
+      'Card and UPI payments run through SSL-encrypted, PCI-compliant processors. We never see or store your payment details on our servers.',
   },
   {
+    step: '05',
+    icon: RotateCcw,
+    title: 'Seven days to change your mind',
+    body:
+      'Not satisfied? Return within 7 days of delivery for a full refund. No forms to fill, no reasons required — we process it and move on.',
+  },
+  {
+    step: '06',
     icon: MessageCircle,
-    title: 'WhatsApp support',
-    body: 'Message us on WhatsApp. A real person responds in under 2 hours during business hours.',
-    stat: '<2h',
-    label: 'Response',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Checked before it ships',
-    body: 'Each item is physically inspected at our end before dispatch. If it does not pass, it does not leave.',
-    stat: '100%',
-    label: 'Inspected',
+    title: 'A real person answers on WhatsApp',
+    body:
+      'Message us directly and expect a reply from an actual human in under 2 hours during business hours — not a bot loop.',
   },
 ];
 
@@ -138,7 +140,6 @@ const Home = () => {
             Full catalog <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
-
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {Array.from({ length: 8 }).map((_, i) => (
@@ -158,42 +159,52 @@ const Home = () => {
         )}
       </section>
 
-      {/* Why FitGearzzz — factual, not motivational */}
+      {/* How we operate — told as a numbered operational sequence, not a feature grid */}
       <section className="bg-zinc-900 border-y border-zinc-800 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="mb-12">
+          <div className="mb-14 max-w-2xl">
             <div className="flex items-center gap-2.5 mb-3">
               <span className="block w-5 h-px bg-orange-500" />
               <p className="text-orange-500 text-xs font-semibold uppercase tracking-[0.22em]">
                 How we operate
               </p>
             </div>
-            <h2 className="font-oswald text-3xl sm:text-4xl font-bold text-white uppercase tracking-wide max-w-lg">
-              The standards we hold ourselves to
+            <h2 className="font-oswald text-3xl sm:text-4xl font-bold text-white uppercase tracking-wide">
+              From warehouse to your door
             </h2>
-            <p className="text-zinc-500 mt-3 max-w-md text-sm leading-relaxed">
-              These are not promises. They are the operating conditions we set before we shipped a single order.
+            <p className="text-zinc-500 mt-3 text-sm leading-relaxed">
+              These are not promises made for a landing page. They are the operating conditions
+              we set for ourselves before the first order ever shipped — in the order they
+              actually happen.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {WHY_US.map(({ icon: Icon, title, body, stat, label }) => (
-              <div
-                key={title}
-                className="bg-zinc-950 rounded-sm border border-zinc-800/80 p-6 flex flex-col gap-4 hover:border-zinc-700 transition-colors"
-              >
-                <div className="w-9 h-9 rounded-sm bg-orange-500/10 flex items-center justify-center">
-                  <Icon className="w-4.5 h-4.5 text-orange-500" strokeWidth={1.5} />
+
+          <div className="relative">
+            {/* Vertical connecting line, desktop only */}
+            <div className="hidden sm:block absolute left-[27px] top-2 bottom-2 w-px bg-zinc-800" />
+
+            <div className="flex flex-col gap-10 sm:gap-12">
+              {OPERATING_STEPS.map(({ step, icon: Icon, title, body }, i) => (
+                <div key={step} className="relative flex gap-6 sm:gap-8">
+                  <div className="relative shrink-0">
+                    <div className="w-14 h-14 rounded-full bg-zinc-950 border border-zinc-800 flex items-center justify-center relative z-10">
+                      <Icon className="w-5 h-5 text-orange-500" strokeWidth={1.5} />
+                    </div>
+                  </div>
+                  <div className="flex-1 pt-1 pb-2">
+                    <div className="flex items-baseline gap-3 mb-1.5">
+                      <span className="text-zinc-700 text-xs font-mono tracking-wider">
+                        {step}
+                      </span>
+                      <h3 className="text-white font-semibold text-base sm:text-lg">
+                        {title}
+                      </h3>
+                    </div>
+                    <p className="text-zinc-500 text-sm leading-relaxed max-w-xl">{body}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-white font-semibold text-sm mb-1.5">{title}</h3>
-                  <p className="text-zinc-500 text-sm leading-relaxed">{body}</p>
-                </div>
-                <div className="flex items-baseline gap-1.5 mt-auto pt-2 border-t border-zinc-800">
-                  <span className="text-orange-500 font-bold text-base">{stat}</span>
-                  <span className="text-zinc-700 text-xs uppercase tracking-wide">{label}</span>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>

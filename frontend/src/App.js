@@ -31,29 +31,28 @@ import CustomerLogout from "./pages/CustomerLogout";
 import About from "./pages/About";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
-import Story from "./pages/Story";
-import Wishlist from "./pages/Wishlist";
 import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
-import TermsOfService from "./pages/TermsOfService";
-import ShippingReturns from "./pages/ShippingReturns";
 import FAQ from "./pages/FAQ";
 import FeaturesIndex from "./pages/FeaturesIndex";
 import FeatureDetail from "./pages/FeatureDetail";
 import CatalogPage from "./pages/CatalogPage";
+import Wishlist from "./pages/Wishlist";
 import "./App.css";
 import "./styles/shopify-buy-button.css";
 import * as fbPixel from "./utils/fbPixel";
 
+// Shopify Customer Account PKCE — OAuth SSO hint handler
+// Reads 'code' and 'state' params then redirects to /auth/callback
 const CustomerSSOCallback = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    const returnTo = searchParams.get("return_to");
-
-    if (returnTo) {
-      window.location.href = decodeURIComponent(returnTo);
+    const code = searchParams.get("code");
+    const state = searchParams.get("state");
+    if (code && state) {
+      navigate(`/auth/callback?code=${code}&state=${state}`, { replace: true });
     } else {
       navigate("/", { replace: true });
     }
@@ -62,87 +61,82 @@ const CustomerSSOCallback = () => {
   return null;
 };
 
+// Scroll to top on every route transition
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [pathname]);
+  return null;
+};
+
 const AppContent = () => {
   const location = useLocation();
 
-  // Initialize Facebook Pixel once
   useEffect(() => {
     fbPixel.init();
     fbPixel.pageview();
   }, []);
 
-  // Track page views on route change
   useEffect(() => {
     fbPixel.pageview();
   }, [location]);
 
+  // Pages that should render without Navbar/Footer chrome
+  const bare = ["/admin", "/auth/callback", "/customer_identity/logout"];
+  const isBare = bare.some((p) => location.pathname.startsWith(p));
+
   return (
-    <div className="App min-h-screen bg-[#09090b] flex flex-col">
-      <AnnouncementBar />
-      <Navbar />
-      <main className="flex-grow">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/catalog" element={<CatalogPage />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/wishlist" element={<Wishlist />} />
-          <Route path="/auth/callback" element={<AuthCallback />} />
-          <Route path="/customer_identity/logout" element={<CustomerLogout />} />
-          <Route
-            path="/customer_authentication/sso_hint"
-            element={<CustomerSSOCallback />}
-          />
-          <Route path="/orders" element={<Orders />} />
-          <Route path="/order-success" element={<OrderSuccess />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/products/:handle" element={<ProductDetail />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
-          <Route path="/story" element={<Story />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/terms" element={<TermsOfService />} />
-          <Route path="/shipping" element={<ShippingReturns />} />
-          <Route path="/faq" element={<FAQ />} />
-              <Route path="/features" element={<FeaturesIndex />} />
-            <Route path="/features/:slug" element={<FeatureDetail />} />
-        </Routes>
-      </main>
-      <Footer />
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          className: "bg-zinc-900 border-zinc-800 text-white",
-          style: {
-            background: "#18181b",
-            color: "#fafafa",
-            border: "1px solid #27272a",
-          },
-        }}
-      />
-    </div>
+    <>
+      <ScrollToTop />
+      {!isBare && <AnnouncementBar />}
+      {!isBare && <Navbar />}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/products/:handle" element={<ProductDetail />} />
+        <Route path="/catalog" element={<CatalogPage />} />
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/order-success" element={<OrderSuccess />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
+        <Route path="/customer_identity/logout" element={<CustomerLogout />} />
+        <Route
+          path="/customer_authentication/sso_hint"
+          element={<CustomerSSOCallback />}
+        />
+        <Route path="/about" element={<About />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/faq" element={<FAQ />} />
+        <Route path="/features" element={<FeaturesIndex />} />
+        <Route path="/features/:slug" element={<FeatureDetail />} />
+      </Routes>
+      {!isBare && <Footer />}
+      {!isBare && <WhatsAppButton />}
+      {!isBare && <BackToTop />}
+      <Toaster richColors position="bottom-right" />
+      <Analytics />
+    </>
   );
 };
 
-function App() {
-  return (
+const App = () => (
+  <BrowserRouter>
     <AuthProvider>
       <CartProvider>
         <WishlistProvider>
-          <BrowserRouter>
-            <AppContent />
-          </BrowserRouter>
-          <Analytics />
-          <WhatsAppButton />
-          <BackToTop />
+          <AppContent />
         </WishlistProvider>
       </CartProvider>
     </AuthProvider>
-  );
-}
+  </BrowserRouter>
+);
 
 export default App;

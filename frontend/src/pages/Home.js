@@ -19,6 +19,7 @@ import HeroPremium from '../components/HeroPremium';
 import CategoryShowcase from '../components/CategoryShowcase';
 import InfiniteReviews from '../components/InfiniteReviews';
 import BrandStorySpotlight from '../components/BrandStorySpotlight';
+import { DoodleCircle, DoodleUnderline, DoodleStar } from '../components/Doodle';
 
 // Operational trust signals. Keep copy factual, not promotional.
 const TRUST_BADGES = [
@@ -95,8 +96,13 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-zinc-950">
+      {/* Hero — full-height entry */}
       <HeroPremium />
+
+      {/* Category grid — tighter than hero, still spacious */}
       <CategoryShowcase />
+
+      {/* Reviews — credibility first */}
       <InfiniteReviews />
 
       {/* Operational trust strip */}
@@ -107,7 +113,14 @@ const Home = () => {
               <div key={title} className="flex items-center gap-3">
                 <Icon className="w-5 h-5 text-orange-500 shrink-0" strokeWidth={1.5} />
                 <div>
-                  <p className="text-white font-semibold text-sm leading-tight">{title}</p>
+                  <p className="text-white font-semibold text-sm leading-tight flex items-baseline gap-1">
+                    {title}
+                    {title === '100% Authentic' && (
+                      <span className="font-hand text-[11px] text-orange-400">
+                        no fine print.
+                      </span>
+                    )}
+                  </p>
                   <p className="text-zinc-500 text-xs mt-0.5">{sub}</p>
                 </div>
               </div>
@@ -117,9 +130,9 @@ const Home = () => {
       </section>
 
       {/* Catalog — 8 hand-picked SKUs, synced from Shopify */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-18 sm:py-20">
         <div className="flex items-end justify-between mb-8">
-          <div>
+          <div className="relative">
             <div className="flex items-center gap-2.5 mb-2">
               <span className="block w-5 h-px bg-orange-500" />
               <p className="text-orange-500 text-xs font-semibold uppercase tracking-[0.22em]">
@@ -132,6 +145,12 @@ const Home = () => {
             <p className="text-zinc-500 text-xs sm:text-sm mt-1 max-w-sm">
               Eight products pulled from the live Shopify catalog. Updated in real time.
             </p>
+            <div className="absolute -right-6 -bottom-7 text-orange-500/70">
+              <DoodleCircle className="w-24 h-10" />
+              <span className="font-hand text-[11px] mt-[-10px] block text-right">
+                live data only.
+              </span>
+            </div>
           </div>
           <Link
             to="/products"
@@ -160,50 +179,64 @@ const Home = () => {
       </section>
 
       {/* How we operate — told as a numbered operational sequence, not a feature grid */}
-      <section className="bg-zinc-900 border-y border-zinc-800 py-20">
+      <section className="bg-zinc-900 border-y border-zinc-800 py-18 sm:py-22">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="mb-14 max-w-2xl">
+          <div className="mb-14 max-w-2xl relative">
             <div className="flex items-center gap-2.5 mb-3">
               <span className="block w-5 h-px bg-orange-500" />
               <p className="text-orange-500 text-xs font-semibold uppercase tracking-[0.22em]">
                 How we operate
               </p>
             </div>
-            <h2 className="font-oswald text-3xl sm:text-4xl font-bold text-white uppercase tracking-wide">
+            <h2 className="font-oswald text-3xl sm:text-4xl font-bold text-white uppercase tracking-wide inline-block">
               From warehouse to your door
             </h2>
+            <DoodleUnderline className="w-32 h-5 text-orange-500/70 mt-1" />
             <p className="text-zinc-500 mt-3 text-sm leading-relaxed">
-              These are not promises made for a landing page. They are the operating conditions
-              we set for ourselves before the first order ever shipped — in the order they
-              actually happen.
+              These are not promises written for a homepage. They are the operational conditions we
+              work to on every order — laid out in the sequence they actually happen.
             </p>
+            <div className="mt-3 flex items-center gap-2 text-[11px] text-zinc-500 uppercase tracking-[0.22em]">
+              <span>01–06 · one order, end to end</span>
+            </div>
           </div>
 
           <div className="relative">
             {/* Vertical connecting line, desktop only */}
-            <div className="hidden sm:block absolute left-[27px] top-2 bottom-2 w-px bg-zinc-800" />
+            <div className="hidden sm:block absolute left-[27px] top-4 bottom-4 w-px bg-zinc-800" />
 
-            <div className="flex flex-col gap-10 sm:gap-12">
-              {OPERATING_STEPS.map(({ step, icon: Icon, title, body }, i) => (
+            <div className="flex flex-col gap-9 sm:gap-11">
+              {OPERATING_STEPS.map(({ step, icon: Icon, title, body }) => (
                 <div key={step} className="relative flex gap-6 sm:gap-8">
-                  <div className="relative shrink-0">
+                  <div className="relative shrink-0 flex flex-col items-center">
                     <div className="w-14 h-14 rounded-full bg-zinc-950 border border-zinc-800 flex items-center justify-center relative z-10">
                       <Icon className="w-5 h-5 text-orange-500" strokeWidth={1.5} />
                     </div>
+                    <span className="mt-2 text-zinc-700 text-[11px] font-mono tracking-widest">
+                      {step}
+                    </span>
                   </div>
                   <div className="flex-1 pt-1 pb-2">
-                    <div className="flex items-baseline gap-3 mb-1.5">
-                      <span className="text-zinc-700 text-xs font-mono tracking-wider">
-                        {step}
-                      </span>
-                      <h3 className="text-white font-semibold text-base sm:text-lg">
-                        {title}
-                      </h3>
-                    </div>
+                    <h3 className="text-white font-semibold text-base sm:text-lg mb-1.5">
+                      {title}
+                    </h3>
                     <p className="text-zinc-500 text-sm leading-relaxed max-w-xl">{body}</p>
+                    {step === '05' && (
+                      <span className="font-hand text-[11px] text-orange-400 mt-2 block">
+                        seriously.
+                      </span>
+                    )}
                   </div>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-10 flex items-center gap-3 text-xs text-zinc-500">
+              <DoodleStar className="w-6 h-6 text-orange-400" />
+              <p>
+                COD, returns, and encrypted checkout are all treated as default behaviour — not
+                limited-time offers.
+              </p>
             </div>
           </div>
         </div>

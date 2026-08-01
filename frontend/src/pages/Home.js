@@ -21,6 +21,18 @@ import InfiniteReviews from '../components/InfiniteReviews';
 import BrandStorySpotlight from '../components/BrandStorySpotlight';
 import { DoodleCircle, DoodleUnderline, DoodleStar, DoodleArrow } from '../components/Doodle';
 
+// A dedicated interstitial band for a single handwritten line. Full width,
+// generous padding — the note gets its own breathing space instead of being
+// squeezed into a paragraph. Used sparingly between major sections only.
+const MarginNote = ({ text, doodle: Doodle = DoodleUnderline, doodleClass = 'w-28 h-6' }) => (
+  <div className="bg-zinc-950 py-10 sm:py-12 border-b border-zinc-900">
+    <div className="max-w-3xl mx-auto px-4 text-center">
+      <p className="font-hand text-2xl sm:text-3xl text-orange-400 leading-snug">{text}</p>
+      <Doodle className={`${doodleClass} text-orange-500/60 mx-auto mt-2`} />
+    </div>
+  </div>
+);
+
 // Operational trust signals. Keep copy factual, not promotional.
 const TRUST_BADGES = [
   { icon: Truck, title: 'Free Shipping', sub: 'Orders above ₹499' },
@@ -104,10 +116,13 @@ const Home = () => {
       {/* Reviews — credibility band */}
       <InfiniteReviews />
 
+      {/* Marginalia: quiet breathing space between reviews and catalog */}
+      <MarginNote text="real reviews. real orders." doodle={DoodleUnderline} doodleClass="w-32 h-6" />
+
       {/* Catalog — 8 hand-picked SKUs, synced from Shopify */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
         <div className="flex items-end justify-between mb-8">
-          <div className="relative">
+          <div>
             <div className="flex items-center gap-2.5 mb-2">
               <span className="block w-5 h-px bg-orange-500" />
               <p className="text-orange-500 text-xs font-semibold uppercase tracking-[0.22em]">
@@ -120,10 +135,6 @@ const Home = () => {
             <p className="text-zinc-500 text-xs sm:text-sm mt-1 max-w-sm">
               Eight products pulled from the live Shopify catalog. Updated in real time.
             </p>
-            <div className="hidden sm:block absolute -right-16 top-0 text-orange-500/80">
-              <span className="font-hand text-lg -rotate-3 block">live, not staged</span>
-              <DoodleArrow className="w-10 h-8 -mt-1 ml-6" />
-            </div>
           </div>
           <Link
             to="/products"
@@ -151,6 +162,9 @@ const Home = () => {
         )}
       </section>
 
+      {/* Marginalia: catalog is live, not staged */}
+      <MarginNote text="live catalog, not staged photos." doodle={DoodleArrow} doodleClass="w-16 h-10" />
+
       {/* Operating guarantees & order journey — single authored band */}
       <section className="bg-zinc-900 border-y border-zinc-800 py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -171,7 +185,6 @@ const Home = () => {
                 Inspection, dispatch, payment, returns, and support all run on fixed rules — not
                 one-off promises. Below is the sequence every order moves through from warehouse to
                 your door.
-                <span className="font-hand text-orange-400 text-base ml-2">no fine print, promise.</span>
               </p>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 lg:max-w-md relative">
@@ -204,46 +217,42 @@ const Home = () => {
                       {step}
                     </span>
                   </div>
-                  <div className="flex-1 pt-1 pb-2 relative">
+                  <div className="flex-1 pt-1 pb-2">
                     <h3 className="text-white font-semibold text-base sm:text-lg mb-1.5">
                       {title}
                     </h3>
                     <p className="text-zinc-500 text-sm leading-relaxed max-w-xl">{body}</p>
-                    {step === '05' && (
-                      <span className="font-hand text-orange-400 text-lg mt-2 block rotate-[-1deg]">
-                        seriously, no forms.
-                      </span>
-                    )}
                   </div>
                 </div>
               ))}
-            </div>
-            <div className="mt-10 flex items-center gap-3 text-sm text-zinc-400">
-              <DoodleStar className="w-7 h-7 text-orange-400 shrink-0" />
-              <p>
-                COD, 7-day returns, and encrypted checkout are available on every eligible order —
-                they are part of how the site works, not limited-time conditions.
-                <span className="font-hand text-orange-400 text-base ml-2">always on.</span>
-              </p>
             </div>
           </div>
         </div>
       </section>
 
+      {/* Marginalia: standalone band, full breathing room, no crowding */}
+      <MarginNote
+        text="COD, returns, encrypted checkout — always on, never a limited-time thing."
+        doodle={DoodleStar}
+        doodleClass="w-8 h-8"
+      />
+
       {/* Brand editorial spotlight */}
       <BrandStorySpotlight />
 
+      {/* Marginalia before the newsletter offer */}
+      <MarginNote text="we mean it — no spam, ever." doodle={DoodleUnderline} doodleClass="w-32 h-6" />
+
       {/* Newsletter — direct offer, no filler */}
       <section className="bg-orange-500 py-16">
-        <div className="max-w-lg mx-auto px-4 text-center relative">
+        <div className="max-w-lg mx-auto px-4 text-center">
           <Mail className="w-7 h-7 text-white/80 mx-auto mb-4" strokeWidth={1.5} />
           <h2 className="font-oswald text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide mb-2">
             10% off your first order
           </h2>
-          <p className="text-orange-100/80 text-sm mb-2">
+          <p className="text-orange-100/80 text-sm mb-7">
             Early access to restocks, new arrivals, and training reads. No spam.
           </p>
-          <p className="font-hand text-white/90 text-lg mb-7">we mean it, no spam.</p>
           {subscribed ? (
             <p className="text-white font-semibold">
               You're in. Check your inbox.

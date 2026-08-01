@@ -19,7 +19,7 @@ import HeroPremium from '../components/HeroPremium';
 import CategoryShowcase from '../components/CategoryShowcase';
 import InfiniteReviews from '../components/InfiniteReviews';
 import BrandStorySpotlight from '../components/BrandStorySpotlight';
-import { DoodleUnderline, DoodleStar } from '../components/Doodle';
+import { DoodleCircle, DoodleUnderline, DoodleStar, DoodleArrow } from '../components/Doodle';
 
 // Operational trust signals. Keep copy factual, not promotional.
 const TRUST_BADGES = [
@@ -30,7 +30,6 @@ const TRUST_BADGES = [
 ];
 
 // "How we operate" — told as a sequence, not a feature grid.
-// Each step is a stage in the order lifecycle, in the order it actually happens.
 const OPERATING_STEPS = [
   {
     step: '01',
@@ -108,7 +107,7 @@ const Home = () => {
       {/* Catalog — 8 hand-picked SKUs, synced from Shopify */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
         <div className="flex items-end justify-between mb-8">
-          <div>
+          <div className="relative">
             <div className="flex items-center gap-2.5 mb-2">
               <span className="block w-5 h-px bg-orange-500" />
               <p className="text-orange-500 text-xs font-semibold uppercase tracking-[0.22em]">
@@ -121,6 +120,10 @@ const Home = () => {
             <p className="text-zinc-500 text-xs sm:text-sm mt-1 max-w-sm">
               Eight products pulled from the live Shopify catalog. Updated in real time.
             </p>
+            <div className="hidden sm:block absolute -right-16 top-0 text-orange-500/80">
+              <span className="font-hand text-lg -rotate-3 block">live, not staged</span>
+              <DoodleArrow className="w-10 h-8 -mt-1 ml-6" />
+            </div>
           </div>
           <Link
             to="/products"
@@ -160,24 +163,27 @@ const Home = () => {
                   How we operate
                 </p>
               </div>
-              <h2 className="font-oswald text-3xl sm:text-4xl font-bold text-white uppercase tracking-wide inline-block">
+              <h2 className="font-oswald text-3xl sm:text-4xl font-bold text-white uppercase tracking-wide inline-block relative">
                 What happens after you place an order
               </h2>
-              <DoodleUnderline className="w-32 h-5 text-orange-500/70 mt-2" />
+              <DoodleUnderline className="w-40 h-6 text-orange-500/80 mt-1" />
               <p className="text-zinc-500 mt-3 text-sm leading-relaxed">
                 Inspection, dispatch, payment, returns, and support all run on fixed rules — not
                 one-off promises. Below is the sequence every order moves through from warehouse to
                 your door.
+                <span className="font-hand text-orange-400 text-base ml-2">no fine print, promise.</span>
               </p>
             </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 lg:max-w-md">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 lg:max-w-md relative">
               {TRUST_BADGES.map(({ icon: Icon, title, sub }) => (
-                <div key={title} className="flex items-center gap-3">
+                <div key={title} className="flex items-center gap-3 relative">
                   <Icon className="w-5 h-5 text-orange-500 shrink-0" strokeWidth={1.5} />
-                  <div>
+                  <div className="relative">
                     <p className="text-white font-semibold text-sm leading-tight">{title}</p>
                     <p className="text-zinc-500 text-xs mt-0.5">{sub}</p>
+                    {title === '100% Authentic' && (
+                      <DoodleCircle className="w-24 h-10 text-orange-500/70 absolute -left-4 -top-3 pointer-events-none" />
+                    )}
                   </div>
                 </div>
               ))}
@@ -186,9 +192,7 @@ const Home = () => {
 
           {/* Timeline */}
           <div className="relative">
-            {/* Vertical connecting line, desktop only */}
             <div className="hidden sm:block absolute left-[27px] top-4 bottom-4 w-px bg-zinc-800" />
-
             <div className="flex flex-col gap-9 sm:gap-11">
               {OPERATING_STEPS.map(({ step, icon: Icon, title, body }) => (
                 <div key={step} className="relative flex gap-6 sm:gap-8">
@@ -200,21 +204,26 @@ const Home = () => {
                       {step}
                     </span>
                   </div>
-                  <div className="flex-1 pt-1 pb-2">
+                  <div className="flex-1 pt-1 pb-2 relative">
                     <h3 className="text-white font-semibold text-base sm:text-lg mb-1.5">
                       {title}
                     </h3>
                     <p className="text-zinc-500 text-sm leading-relaxed max-w-xl">{body}</p>
+                    {step === '05' && (
+                      <span className="font-hand text-orange-400 text-lg mt-2 block rotate-[-1deg]">
+                        seriously, no forms.
+                      </span>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
-
-            <div className="mt-10 flex items-center gap-3 text-xs text-zinc-400">
-              <DoodleStar className="w-6 h-6 text-orange-400" />
+            <div className="mt-10 flex items-center gap-3 text-sm text-zinc-400">
+              <DoodleStar className="w-7 h-7 text-orange-400 shrink-0" />
               <p>
                 COD, 7-day returns, and encrypted checkout are available on every eligible order —
                 they are part of how the site works, not limited-time conditions.
+                <span className="font-hand text-orange-400 text-base ml-2">always on.</span>
               </p>
             </div>
           </div>
@@ -225,15 +234,16 @@ const Home = () => {
       <BrandStorySpotlight />
 
       {/* Newsletter — direct offer, no filler */}
-      <section className="bg-orange-500 py-14">
-        <div className="max-w-lg mx-auto px-4 text-center">
+      <section className="bg-orange-500 py-16">
+        <div className="max-w-lg mx-auto px-4 text-center relative">
           <Mail className="w-7 h-7 text-white/80 mx-auto mb-4" strokeWidth={1.5} />
           <h2 className="font-oswald text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide mb-2">
             10% off your first order
           </h2>
-          <p className="text-orange-100/80 text-sm mb-7">
+          <p className="text-orange-100/80 text-sm mb-2">
             Early access to restocks, new arrivals, and training reads. No spam.
           </p>
+          <p className="font-hand text-white/90 text-lg mb-7">we mean it, no spam.</p>
           {subscribed ? (
             <p className="text-white font-semibold">
               You're in. Check your inbox.

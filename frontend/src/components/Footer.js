@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Dumbbell, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
+import { DoodleUnderline } from './Doodle';
 
 // Keep social URLs and contact details updated as the brand grows.
 const SHOP_LINKS = [
@@ -9,7 +10,7 @@ const SHOP_LINKS = [
   { label: 'Apparel',       to: '/products?category=Apparel' },
   { label: 'Accessories',   to: '/products?category=Accessories' },
   { label: 'New Arrivals',  to: '/products?tag=new' },
-  { label: 'What\'s selling', to: '/products?tag=bestseller' },
+  { label: "What's selling", to: '/products?tag=bestseller' },
 ];
 
 const INFO_LINKS = [
@@ -30,17 +31,20 @@ const SOCIALS = [
 
 const Footer = () => (
   <footer className="bg-zinc-900 border-t border-zinc-800">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-9">
 
       {/* Four-column grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-14">
 
         {/* Brand column */}
         <div className="lg:col-span-1">
-          <Link to="/" className="inline-flex items-center gap-2 mb-5" aria-label="FitGearzzz home">
-            <Dumbbell className="w-6 h-6 text-orange-500" />
-            <span className="font-oswald text-lg font-bold tracking-tight text-white">FITGEARZZZ</span>
-          </Link>
+          <div className="relative mb-5 inline-block">
+            <Link to="/" className="inline-flex items-center gap-2" aria-label="FitGearzzz home">
+              <Dumbbell className="w-6 h-6 text-orange-500" />
+              <span className="font-oswald text-lg font-bold tracking-tight text-white">FITGEARZZZ</span>
+            </Link>
+            <DoodleUnderline className="w-24 h-4 text-orange-500/70 mt-2" />
+          </div>
           <p className="text-zinc-500 text-sm leading-relaxed mb-5 max-w-xs">
             Fitness equipment and apparel, sourced and inspected before dispatch.
             Pan-India delivery in 3–5 days. 7-day returns, no questions.
@@ -129,6 +133,9 @@ const Footer = () => (
             >
               Open chat →
             </a>
+            <p className="mt-2 font-hand text-[11px] text-zinc-300">
+              real humans, promise.
+            </p>
           </div>
         </div>
       </div>

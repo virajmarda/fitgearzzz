@@ -133,9 +133,9 @@ const Footer = () => (
             >
               Open chat →
             </a>
-            <p className="mt-2 font-hand text-[11px] text-zinc-300">
-              real humans, promise.
-            </p>
+              <p className="mt-2 font-hand text-lg text-orange-400 rotate-[-1deg]">
+                real humans, promise.
+              </p>
           </div>
         </div>
       </div>

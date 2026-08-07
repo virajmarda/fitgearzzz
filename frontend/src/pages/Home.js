@@ -25,13 +25,12 @@ import { DoodleUnderline, DoodleCircle } from '../components/Doodle';
 // across the whole page instead of framer-motion's default fade+drift.
 const PUNCH_EASE = [0.34, 1.56, 0.64, 1];
 
-// ManifestStamp — replaces the old cursive MarginNote. Instead of a
-// handwritten line + doodle, this is a rotated ink-stamp tag (mono,
-// bordered, uppercase) next to a short manifest-style line. Same job
-// (a quiet breathing beat between sections) but reads as "checked and
-// logged" rather than "founder scribbled a note" — ties directly into
-// the inspection/dispatch language used everywhere else on the page.
-// Kept to exactly four placements, same as the original plan.
+// ManifestStamp — a small mono "stamp" tag (checked-and-logged, ties
+// into the inspection/dispatch language elsewhere) sitting above a
+// handwritten cursive line. The handwriting is the founder's actual
+// voice breaking through the manifest paperwork for a second — same
+// spirit as the original MarginNote, now paired with a stamp instead
+// of a doodle. Kept to exactly four placements.
 const ManifestStamp = ({ code, text }) => (
   <div className="bg-zinc-950 py-12 sm:py-14 border-b border-zinc-900">
     <motion.div
@@ -39,12 +38,12 @@ const ManifestStamp = ({ code, text }) => (
       whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
       viewport={{ once: true, amount: 0.6 }}
       transition={{ duration: 0.3, ease: PUNCH_EASE }}
-      className="max-w-3xl mx-auto px-4 flex flex-wrap items-center justify-center gap-3 sm:gap-4"
+      className="max-w-3xl mx-auto px-4 flex flex-col items-center gap-2.5 text-center"
     >
-      <span className="shrink-0 border border-orange-500/60 text-orange-500 font-mono text-[10px] tracking-[0.2em] uppercase px-2.5 py-1 rounded-sm -rotate-2 select-none">
+      <span className="shrink-0 border border-orange-500/50 text-orange-500/90 font-mono text-[9px] tracking-[0.2em] uppercase px-2.5 py-1 rounded-sm -rotate-2 select-none">
         {code}
       </span>
-      <p className="font-mono text-sm sm:text-base text-zinc-300 tracking-wide uppercase text-center">
+      <p className="font-hand text-2xl sm:text-3xl text-orange-400 leading-snug">
         {text}
       </p>
     </motion.div>
@@ -59,10 +58,11 @@ const TRUST_BADGES = [
   { icon: Headphones, title: 'Support Available', sub: 'Mon–Sat, 10am–6pm' },
 ];
 
-// "How we operate" — rendered as a checkpoint ledger, not an icon
-// timeline. Each step now carries a short stamped status code (the
-// word that would actually appear on a real dispatch log) alongside
-// the existing title/body copy.
+// "How we operate" — six checklist cards instead of a timeline. Each
+// carries a typed rule (title/body) plus a short handwritten sign-off
+// (`note`) in the bottom corner — the same cursive voice as the
+// ManifestStamp bands, here doing the job of "someone actually signed
+// off on this rule" rather than a generic checkmark icon.
 const OPERATING_STEPS = [
   {
     step: '01',
@@ -71,6 +71,7 @@ const OPERATING_STEPS = [
     title: 'Every item is checked before it ships',
     body:
       'We physically inspect each product at our end before it leaves the warehouse. If something does not pass, it does not go out — no exceptions, no shortcuts.',
+    note: 'checked twice, promise.',
   },
   {
     step: '02',
@@ -79,6 +80,7 @@ const OPERATING_STEPS = [
     title: 'Dispatched the same day, most days',
     body:
       'Orders placed before 3pm go out same-day. After that, they ship the next morning. Delivery across India typically takes 3–5 business days.',
+    note: 'out the door, on time.',
   },
   {
     step: '03',
@@ -87,6 +89,7 @@ const OPERATING_STEPS = [
     title: 'You pay when it arrives, not before',
     body:
       'No advance payment required. Pay by cash or UPI at your door once the order is in your hands — you see it before you pay for it.',
+    note: 'see it, then pay.',
   },
   {
     step: '04',
@@ -95,6 +98,7 @@ const OPERATING_STEPS = [
     title: 'If you do pay online, it is encrypted end to end',
     body:
       'Card and UPI payments run through SSL-encrypted, PCI-compliant processors. We never see or store your payment details on our servers.',
+    note: "we never see your card.",
   },
   {
     step: '05',
@@ -103,6 +107,7 @@ const OPERATING_STEPS = [
     title: 'Seven days to change your mind',
     body:
       'Not satisfied? Return within 7 days of delivery for a full refund. No forms to fill, no reasons required — we process it and move on.',
+    note: 'no questions, no fuss.',
   },
   {
     step: '06',
@@ -111,6 +116,7 @@ const OPERATING_STEPS = [
     title: 'A real person answers on WhatsApp',
     body:
       'Message us directly and expect a reply from an actual human in under 2 hours during business hours — not a bot loop.',
+    note: 'real humans, promise.',
   },
 ];
 
@@ -261,36 +267,38 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Checkpoint ledger — replaces the circle-and-line timeline.
-              Each row: mono checkpoint code, a rotated stamp badge with
-              the status word, then title + body. Reads like an actual
-              dispatch log rather than a generic "how it works" strip. */}
-          <div className="border-t border-zinc-800">
-            {OPERATING_STEPS.map(({ step, code, icon: Icon, title, body }) => (
+          {/* Checklist card grid — replaces the checkpoint ledger. Each
+              card is a typed rule with a handwritten sign-off in the
+              corner, like someone actually initialled the checklist
+              by hand rather than a system auto-generating a timeline. */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+            {OPERATING_STEPS.map(({ step, code, icon: Icon, title, body, note }) => (
               <motion.div
                 key={step}
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, scale: 0.96 }}
+                whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, amount: 0.4 }}
-                transition={{ duration: 0.28, ease: PUNCH_EASE }}
-                className="grid grid-cols-[56px_1fr] sm:grid-cols-[64px_128px_1fr] gap-4 sm:gap-8 items-start py-6 border-b border-zinc-800"
+                transition={{ duration: 0.28, delay: (Number(step) % 3) * 0.05, ease: PUNCH_EASE }}
+                className="relative flex flex-col gap-3 bg-zinc-950 border border-zinc-800 hover:border-zinc-700 rounded-sm p-5 transition-colors"
               >
-                <span className="font-mono text-zinc-700 text-xs pt-1.5">CHK.{step}</span>
-
-                <span className="hidden sm:inline-flex items-center justify-center h-fit w-fit border border-orange-500/50 text-orange-500 font-mono text-[10px] uppercase tracking-[0.15em] px-2.5 py-1 rounded-sm -rotate-1">
-                  {code}
-                </span>
-
-                <div>
-                  <span className="sm:hidden inline-flex items-center border border-orange-500/50 text-orange-500 font-mono text-[9px] uppercase tracking-[0.15em] px-1.5 py-0.5 rounded-sm -rotate-1 mb-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-zinc-700 text-[10px] tracking-widest">CHK.{step}</span>
+                  <span className="inline-flex items-center border border-orange-500/50 text-orange-500 font-mono text-[9px] uppercase tracking-[0.15em] px-2 py-0.5 rounded-sm -rotate-1">
                     {code}
                   </span>
-                  <h3 className="text-white font-semibold text-base sm:text-lg mb-1.5 flex items-center gap-2">
-                    <Icon className="w-4 h-4 text-orange-500 shrink-0" strokeWidth={1.5} />
-                    {title}
-                  </h3>
-                  <p className="text-zinc-500 text-sm leading-relaxed max-w-xl">{body}</p>
                 </div>
+
+                <div className="flex items-start gap-2.5">
+                  <Icon className="w-4 h-4 text-orange-500 mt-0.5 shrink-0" strokeWidth={1.5} />
+                  <h3 className="text-white font-semibold text-sm sm:text-base leading-snug">{title}</h3>
+                </div>
+
+                <p className="text-zinc-500 text-xs sm:text-sm leading-relaxed">{body}</p>
+
+                {/* Handwritten sign-off — same cursive voice as the ManifestStamp bands */}
+                <p className="font-hand text-orange-400 text-xl sm:text-2xl leading-none mt-auto pt-2 -rotate-1">
+                  {note}
+                </p>
               </motion.div>
             ))}
           </div>

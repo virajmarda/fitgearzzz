@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   ArrowRight,
   Truck,
   RotateCcw,
   ShieldCheck,
   Headphones,
-  Mail,
   Package,
   CheckCircle2,
   CreditCard,
@@ -19,17 +19,35 @@ import HeroPremium from '../components/HeroPremium';
 import CategoryShowcase from '../components/CategoryShowcase';
 import InfiniteReviews from '../components/InfiniteReviews';
 import BrandStorySpotlight from '../components/BrandStorySpotlight';
-import { DoodleCircle, DoodleUnderline, DoodleStar, DoodleArrow } from '../components/Doodle';
+import { DoodleUnderline, DoodleCircle } from '../components/Doodle';
 
-// A dedicated interstitial band for a single handwritten line. Full width,
-// generous padding — the note gets its own breathing space instead of being
-// squeezed into a paragraph. Used sparingly between major sections only.
-const MarginNote = ({ text, doodle: Doodle = DoodleUnderline, doodleClass = 'w-28 h-6' }) => (
-  <div className="bg-zinc-950 py-10 sm:py-12 border-b border-zinc-900">
-    <div className="max-w-3xl mx-auto px-4 text-center">
-      <p className="font-hand text-2xl sm:text-3xl text-orange-400 leading-snug">{text}</p>
-      <Doodle className={`${doodleClass} text-orange-500/60 mx-auto mt-2`} />
-    </div>
+// Same punch motion signature as HeroPremium — one animation identity
+// across the whole page instead of framer-motion's default fade+drift.
+const PUNCH_EASE = [0.34, 1.56, 0.64, 1];
+
+// ManifestStamp — replaces the old cursive MarginNote. Instead of a
+// handwritten line + doodle, this is a rotated ink-stamp tag (mono,
+// bordered, uppercase) next to a short manifest-style line. Same job
+// (a quiet breathing beat between sections) but reads as "checked and
+// logged" rather than "founder scribbled a note" — ties directly into
+// the inspection/dispatch language used everywhere else on the page.
+// Kept to exactly four placements, same as the original plan.
+const ManifestStamp = ({ code, text }) => (
+  <div className="bg-zinc-950 py-12 sm:py-14 border-b border-zinc-900">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.92, rotate: -1 }}
+      whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+      viewport={{ once: true, amount: 0.6 }}
+      transition={{ duration: 0.3, ease: PUNCH_EASE }}
+      className="max-w-3xl mx-auto px-4 flex flex-wrap items-center justify-center gap-3 sm:gap-4"
+    >
+      <span className="shrink-0 border border-orange-500/60 text-orange-500 font-mono text-[10px] tracking-[0.2em] uppercase px-2.5 py-1 rounded-sm -rotate-2 select-none">
+        {code}
+      </span>
+      <p className="font-mono text-sm sm:text-base text-zinc-300 tracking-wide uppercase text-center">
+        {text}
+      </p>
+    </motion.div>
   </div>
 );
 
@@ -41,10 +59,14 @@ const TRUST_BADGES = [
   { icon: Headphones, title: 'Support Available', sub: 'Mon–Sat, 10am–6pm' },
 ];
 
-// "How we operate" — told as a sequence, not a feature grid.
+// "How we operate" — rendered as a checkpoint ledger, not an icon
+// timeline. Each step now carries a short stamped status code (the
+// word that would actually appear on a real dispatch log) alongside
+// the existing title/body copy.
 const OPERATING_STEPS = [
   {
     step: '01',
+    code: 'Inspected',
     icon: CheckCircle2,
     title: 'Every item is checked before it ships',
     body:
@@ -52,6 +74,7 @@ const OPERATING_STEPS = [
   },
   {
     step: '02',
+    code: 'Dispatched',
     icon: Package,
     title: 'Dispatched the same day, most days',
     body:
@@ -59,6 +82,7 @@ const OPERATING_STEPS = [
   },
   {
     step: '03',
+    code: 'COD',
     icon: CreditCard,
     title: 'You pay when it arrives, not before',
     body:
@@ -66,6 +90,7 @@ const OPERATING_STEPS = [
   },
   {
     step: '04',
+    code: 'Encrypted',
     icon: Lock,
     title: 'If you do pay online, it is encrypted end to end',
     body:
@@ -73,6 +98,7 @@ const OPERATING_STEPS = [
   },
   {
     step: '05',
+    code: 'Returns',
     icon: RotateCcw,
     title: 'Seven days to change your mind',
     body:
@@ -80,6 +106,7 @@ const OPERATING_STEPS = [
   },
   {
     step: '06',
+    code: 'Support',
     icon: MessageCircle,
     title: 'A real person answers on WhatsApp',
     body:
@@ -92,6 +119,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [tally, setTally] = useState(0);
 
   useEffect(() => {
     fetchProducts()
@@ -100,6 +128,21 @@ const Home = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  // Counts the manifest tally up to the loaded item count once products
+  // arrive — a small, honest bit of motion (it counts real loaded items,
+  // it doesn't fabricate a "live orders" number).
+  useEffect(() => {
+    if (loading || featuredProducts.length === 0) return;
+    let n = 0;
+    const total = featuredProducts.length;
+    const id = setInterval(() => {
+      n += 1;
+      setTally(n);
+      if (n >= total) clearInterval(id);
+    }, 90);
+    return () => clearInterval(id);
+  }, [loading, featuredProducts.length]);
+
   const handleNewsletter = (e) => {
     e.preventDefault();
     if (email.trim()) setSubscribed(true);
@@ -107,7 +150,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-zinc-950">
-      {/* Hero — full-height entry */}
+      {/* Hero — manifest header, no stock photography */}
       <HeroPremium />
 
       {/* Category grid — modular band */}
@@ -116,24 +159,26 @@ const Home = () => {
       {/* Reviews — credibility band */}
       <InfiniteReviews />
 
-      {/* Marginalia: quiet breathing space between reviews and catalog */}
-      <MarginNote text="real reviews. real orders." doodle={DoodleUnderline} doodleClass="w-32 h-6" />
+      {/* Stamp 1/4: quiet breathing space between reviews and catalog */}
+      <ManifestStamp code="Verified" text="real reviews. real orders." />
 
-      {/* Catalog — 8 hand-picked SKUs, synced from Shopify */}
+      {/* Catalog — 8 hand-picked SKUs, synced from Shopify, numbered as manifest lines */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
-        <div className="flex items-end justify-between mb-8">
+        <div className="flex items-end justify-between mb-8 flex-wrap gap-4">
           <div>
             <div className="flex items-center gap-2.5 mb-2">
               <span className="block w-5 h-px bg-orange-500" />
-              <p className="text-orange-500 text-xs font-semibold uppercase tracking-[0.22em]">
-                From the catalog
+              <p className="font-mono text-orange-500 text-[10px] font-semibold uppercase tracking-[0.22em]">
+                Manifest · Catalog Line
               </p>
             </div>
             <h2 className="font-oswald text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide">
               What people are buying
             </h2>
-            <p className="text-zinc-500 text-xs sm:text-sm mt-1 max-w-sm">
-              Eight products pulled from the live Shopify catalog. Updated in real time.
+            <p className="text-zinc-500 text-xs sm:text-sm mt-1.5 max-w-sm font-mono uppercase tracking-wide">
+              {loading
+                ? 'Loading manifest…'
+                : `${String(tally).padStart(3, '0')} / ${String(featuredProducts.length).padStart(3, '0')} items logged from Shopify`}
             </p>
           </div>
           <Link
@@ -151,8 +196,22 @@ const Home = () => {
           </div>
         ) : featuredProducts.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {featuredProducts.map((p) => (
-              <ProductCard key={p.id} product={p} />
+            {featuredProducts.map((p, i) => (
+              <motion.div
+                key={p.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.25, delay: (i % 4) * 0.05, ease: PUNCH_EASE }}
+                className="relative"
+              >
+                {/* Manifest line number — overlay tag, ProductCard itself is untouched
+                    so this stays in sync with every other place ProductCard is used. */}
+                <span className="absolute -top-2 -left-2 z-20 bg-zinc-950 border border-zinc-800 text-orange-500 font-mono text-[10px] px-1.5 py-0.5 rounded-sm">
+                  {String(i + 1).padStart(3, '0')}
+                </span>
+                <ProductCard product={p} />
+              </motion.div>
             ))}
           </div>
         ) : (
@@ -162,10 +221,10 @@ const Home = () => {
         )}
       </section>
 
-      {/* Marginalia: catalog is live, not staged */}
-      <MarginNote text="live catalog, not staged photos." doodle={DoodleArrow} doodleClass="w-16 h-10" />
+      {/* Stamp 2/4: catalog is live, not staged */}
+      <ManifestStamp code="Live" text="live catalog, not staged photos." />
 
-      {/* Operating guarantees & order journey — single authored band */}
+      {/* Operating guarantees & order journey — rendered as a checkpoint ledger */}
       <section className="bg-zinc-900 border-y border-zinc-800 py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           {/* Header + trust badges */}
@@ -173,18 +232,17 @@ const Home = () => {
             <div className="max-w-xl relative">
               <div className="flex items-center gap-2.5 mb-3">
                 <span className="block w-5 h-px bg-orange-500" />
-                <p className="text-orange-500 text-xs font-semibold uppercase tracking-[0.22em]">
-                  How we operate
+                <p className="font-mono text-orange-500 text-[10px] font-semibold uppercase tracking-[0.22em]">
+                  Operating Log
                 </p>
               </div>
               <h2 className="font-oswald text-3xl sm:text-4xl font-bold text-white uppercase tracking-wide inline-block relative">
                 What happens after you place an order
               </h2>
-              <DoodleUnderline className="w-40 h-6 text-orange-500/80 mt-1" />
+              <DoodleUnderline className="w-40 h-6 text-orange-500/70 mt-1" />
               <p className="text-zinc-500 mt-3 text-sm leading-relaxed">
                 Inspection, dispatch, payment, returns, and support all run on fixed rules — not
-                one-off promises. Below is the sequence every order moves through from warehouse to
-                your door.
+                one-off promises. Every order moves through the same six checkpoints, in order.
               </p>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 lg:max-w-md relative">
@@ -203,50 +261,57 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Timeline */}
-          <div className="relative">
-            <div className="hidden sm:block absolute left-[27px] top-4 bottom-4 w-px bg-zinc-800" />
-            <div className="flex flex-col gap-9 sm:gap-11">
-              {OPERATING_STEPS.map(({ step, icon: Icon, title, body }) => (
-                <div key={step} className="relative flex gap-6 sm:gap-8">
-                  <div className="relative shrink-0 flex flex-col items-center">
-                    <div className="w-14 h-14 rounded-full bg-zinc-950 border border-zinc-800 flex items-center justify-center relative z-10">
-                      <Icon className="w-5 h-5 text-orange-500" strokeWidth={1.5} />
-                    </div>
-                    <span className="mt-2 text-zinc-700 text-[11px] font-mono tracking-widest">
-                      {step}
-                    </span>
-                  </div>
-                  <div className="flex-1 pt-1 pb-2">
-                    <h3 className="text-white font-semibold text-base sm:text-lg mb-1.5">
-                      {title}
-                    </h3>
-                    <p className="text-zinc-500 text-sm leading-relaxed max-w-xl">{body}</p>
-                  </div>
+          {/* Checkpoint ledger — replaces the circle-and-line timeline.
+              Each row: mono checkpoint code, a rotated stamp badge with
+              the status word, then title + body. Reads like an actual
+              dispatch log rather than a generic "how it works" strip. */}
+          <div className="border-t border-zinc-800">
+            {OPERATING_STEPS.map(({ step, code, icon: Icon, title, body }) => (
+              <motion.div
+                key={step}
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.4 }}
+                transition={{ duration: 0.28, ease: PUNCH_EASE }}
+                className="grid grid-cols-[56px_1fr] sm:grid-cols-[64px_128px_1fr] gap-4 sm:gap-8 items-start py-6 border-b border-zinc-800"
+              >
+                <span className="font-mono text-zinc-700 text-xs pt-1.5">CHK.{step}</span>
+
+                <span className="hidden sm:inline-flex items-center justify-center h-fit w-fit border border-orange-500/50 text-orange-500 font-mono text-[10px] uppercase tracking-[0.15em] px-2.5 py-1 rounded-sm -rotate-1">
+                  {code}
+                </span>
+
+                <div>
+                  <span className="sm:hidden inline-flex items-center border border-orange-500/50 text-orange-500 font-mono text-[9px] uppercase tracking-[0.15em] px-1.5 py-0.5 rounded-sm -rotate-1 mb-2">
+                    {code}
+                  </span>
+                  <h3 className="text-white font-semibold text-base sm:text-lg mb-1.5 flex items-center gap-2">
+                    <Icon className="w-4 h-4 text-orange-500 shrink-0" strokeWidth={1.5} />
+                    {title}
+                  </h3>
+                  <p className="text-zinc-500 text-sm leading-relaxed max-w-xl">{body}</p>
                 </div>
-              ))}
-            </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Marginalia: standalone band, full breathing room, no crowding */}
-      <MarginNote
-        text="COD, returns, encrypted checkout — always on, never a limited-time thing."
-        doodle={DoodleStar}
-        doodleClass="w-8 h-8"
-      />
+      {/* Stamp 3/4: standalone band, full breathing room, no crowding */}
+      <ManifestStamp code="Sealed" text="COD, returns, encrypted checkout — always on, never a limited-time thing." />
 
       {/* Brand editorial spotlight */}
       <BrandStorySpotlight />
 
-      {/* Marginalia before the newsletter offer */}
-      <MarginNote text="we mean it — no spam, ever." doodle={DoodleUnderline} doodleClass="w-32 h-6" />
+      {/* Stamp 4/4: before the newsletter offer */}
+      <ManifestStamp code="No Spam" text="we mean it — no spam, ever." />
 
-      {/* Newsletter — direct offer, no filler */}
+      {/* Newsletter — framed as joining the manifest, not a bolted-on marketing band */}
       <section className="bg-orange-500 py-16">
         <div className="max-w-lg mx-auto px-4 text-center">
-          <Mail className="w-7 h-7 text-white/80 mx-auto mb-4" strokeWidth={1.5} />
+          <span className="inline-block font-mono text-[10px] uppercase tracking-[0.22em] text-white/70 border border-white/30 rounded-sm px-2.5 py-1 -rotate-2 mb-5">
+            Manifest Entry
+          </span>
           <h2 className="font-oswald text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide mb-2">
             10% off your first order
           </h2>
@@ -254,8 +319,8 @@ const Home = () => {
             Early access to restocks, new arrivals, and training reads. No spam.
           </p>
           {subscribed ? (
-            <p className="text-white font-semibold">
-              You're in. Check your inbox.
+            <p className="text-white font-mono font-semibold uppercase tracking-wide text-sm">
+              ✓ Logged. Check your inbox.
             </p>
           ) : (
             <form onSubmit={handleNewsletter} className="flex flex-col sm:flex-row gap-3">
@@ -271,7 +336,7 @@ const Home = () => {
                 type="submit"
                 className="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 text-white text-sm font-semibold rounded-sm transition-colors whitespace-nowrap"
               >
-                Subscribe
+                Join the list
               </button>
             </form>
           )}

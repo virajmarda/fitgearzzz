@@ -13,8 +13,8 @@ const BrandStorySpotlight = () => {
         <div className="mb-12 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="block h-px w-6 bg-orange-500" />
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-orange-500">
-              From the brand
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.28em] text-orange-500">
+              Field Report
             </p>
           </div>
 
@@ -87,8 +87,8 @@ const BrandStorySpotlight = () => {
                   to={`/features/${item.slug}`}
                   className="group flex items-start gap-4 rounded-2xl border border-zinc-900 bg-zinc-950/70 p-4 transition-colors hover:border-zinc-700 hover:bg-zinc-900/70"
                 >
-                  <div className="pt-0.5 text-[11px] uppercase tracking-[0.24em] text-zinc-500">
-                    {String(index + 2).padStart(2, '0')}
+                  <div className="pt-0.5 font-mono text-[11px] uppercase tracking-[0.24em] text-zinc-500">
+                    RPT.{String(index + 2).padStart(2, '0')}
                   </div>
 
                   <div className="min-w-0 flex-1">

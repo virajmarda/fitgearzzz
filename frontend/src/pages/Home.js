@@ -1,284 +1,84 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  ArrowRight,
-  Truck,
-  RotateCcw,
-  ShieldCheck,
-  Headphones,
-  Mail,
-  Package,
-  CheckCircle2,
-  CreditCard,
-  Lock,
-  MessageCircle,
-} from 'lucide-react';
+import { ArrowDownRight, ArrowRight, Check, Mail, Menu, MoveUpRight, Package, ShieldCheck, Truck, X } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { fetchProducts } from '../services/shopifyService';
-import HeroPremium from '../components/HeroPremium';
-import CategoryShowcase from '../components/CategoryShowcase';
-import InfiniteReviews from '../components/InfiniteReviews';
-import BrandStorySpotlight from '../components/BrandStorySpotlight';
-import { DoodleCircle, DoodleUnderline, DoodleStar, DoodleArrow } from '../components/Doodle';
+import './Home.css';
 
-// A dedicated interstitial band for a single handwritten line. Full width,
-// generous padding — the note gets its own breathing space instead of being
-// squeezed into a paragraph. Used sparingly between major sections only.
-const MarginNote = ({ text, doodle: Doodle = DoodleUnderline, doodleClass = 'w-28 h-6' }) => (
-  <div className="bg-zinc-950 py-10 sm:py-12 border-b border-zinc-900">
-    <div className="max-w-3xl mx-auto px-4 text-center">
-      <p className="font-hand text-2xl sm:text-3xl text-orange-400 leading-snug">{text}</p>
-      <Doodle className={`${doodleClass} text-orange-500/60 mx-auto mt-2`} />
-    </div>
-  </div>
-);
-
-// Operational trust signals. Keep copy factual, not promotional.
-const TRUST_BADGES = [
-  { icon: Truck, title: 'Free Shipping', sub: 'Orders above ₹499' },
-  { icon: RotateCcw, title: '7-Day Returns', sub: 'No questions asked' },
-  { icon: ShieldCheck, title: '100% Authentic', sub: 'Inspected before dispatch' },
-  { icon: Headphones, title: 'Support Available', sub: 'Mon–Sat, 10am–6pm' },
+const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1600&q=85';
+const CATEGORIES = [
+  { number: '01', name: 'Build strength', text: 'Dumbbells, kettlebells and bars for the work that compounds.', query: 'Equipment', image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=85' },
+  { number: '02', name: 'Move better', text: 'Bands, ropes and small tools for the sessions between sessions.', query: 'Accessories', image: 'https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=900&q=85' },
+  { number: '03', name: 'Recover properly', text: 'Rollers, mats and recovery pieces that earn their space.', query: 'Recovery', image: 'https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?auto=format&fit=crop&w=900&q=85' },
+];
+const REVIEWS = [
+  ['01', 'The 10kg pair became the first thing I touch before work.', 'Akash / Pune'],
+  ['02', 'No guessing, no inflated promises. The band set is exactly as described.', 'Meera / Bengaluru'],
+  ['03', 'They answered on WhatsApp before I placed the order. That matters.', 'Rohan / Mumbai'],
+];
+const JOURNEY = [
+  ['01', 'Choose with context', 'Short descriptions, useful specs and products grouped around how you train.'],
+  ['02', 'We check it', 'Each item is inspected and packed before dispatch. If it is not right, it does not leave.'],
+  ['03', 'Pay your way', 'COD or encrypted online payment. Same price, same clear rules.'],
+  ['04', 'Train with it', 'If something feels wrong after delivery, message us and we will help resolve it.'],
 ];
 
-// "How we operate" — told as a sequence, not a feature grid.
-const OPERATING_STEPS = [
-  {
-    step: '01',
-    icon: CheckCircle2,
-    title: 'Every item is checked before it ships',
-    body:
-      'We physically inspect each product at our end before it leaves the warehouse. If something does not pass, it does not go out — no exceptions, no shortcuts.',
-  },
-  {
-    step: '02',
-    icon: Package,
-    title: 'Dispatched the same day, most days',
-    body:
-      'Orders placed before 3pm go out same-day. After that, they ship the next morning. Delivery across India typically takes 3–5 business days.',
-  },
-  {
-    step: '03',
-    icon: CreditCard,
-    title: 'You pay when it arrives, not before',
-    body:
-      'No advance payment required. Pay by cash or UPI at your door once the order is in your hands — you see it before you pay for it.',
-  },
-  {
-    step: '04',
-    icon: Lock,
-    title: 'If you do pay online, it is encrypted end to end',
-    body:
-      'Card and UPI payments run through SSL-encrypted, PCI-compliant processors. We never see or store your payment details on our servers.',
-  },
-  {
-    step: '05',
-    icon: RotateCcw,
-    title: 'Seven days to change your mind',
-    body:
-      'Not satisfied? Return within 7 days of delivery for a full refund. No forms to fill, no reasons required — we process it and move on.',
-  },
-  {
-    step: '06',
-    icon: MessageCircle,
-    title: 'A real person answers on WhatsApp',
-    body:
-      'Message us directly and expect a reply from an actual human in under 2 hours during business hours — not a bot loop.',
-  },
-];
+function Reveal({ children, className = '' }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return undefined;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { node.classList.add('is-visible'); observer.unobserve(node); }
+    }, { threshold: 0.12 });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+  return <div ref={ref} className={`reveal ${className}`}>{children}</div>;
+}
 
-const Home = () => {
-  const [featuredProducts, setFeaturedProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+function Note({ children, align = 'left' }) { return <p className={`margin-note margin-note-${align}`}>{children}<span>↗</span></p>; }
+
+export default function Home() {
+  const [products, setProducts] = useState([]);
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
-
-  useEffect(() => {
-    fetchProducts()
-      .then((all) => setFeaturedProducts(all.slice(0, 8)))
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
-
-  const handleNewsletter = (e) => {
-    e.preventDefault();
-    if (email.trim()) setSubscribed(true);
-  };
-
+  const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => { let active = true; fetchProducts().then((items) => { if (active) setProducts(items || []); }).catch(() => {}).finally(() => {}); return () => { active = false; }; }, []);
+  const heroImage = products[0]?.image || FALLBACK_IMAGE;
+  const featured = products.slice(0, 6);
+  const subscribe = (event) => { event.preventDefault(); if (email.trim()) setSubscribed(true); };
   return (
-    <div className="min-h-screen bg-zinc-950">
-      {/* Hero — full-height entry */}
-      <HeroPremium />
+    <main className="home-artifact">
+      <header className="desk-header">
+        <Link to="/" className="desk-logo">FIT<span>GEAR</span>ZZZ</Link>
+        <nav className={menuOpen ? 'desk-nav desk-nav-open' : 'desk-nav'} aria-label="Primary navigation">
+          <a href="#shop">Shop</a><a href="#method">Our method</a><a href="#notes">Notes</a><Link to="/products">Catalog <MoveUpRight size={13} /></Link>
+        </nav>
+        <div className="desk-actions"><Link to="/cart" className="cart-link">Cart <span>{products.length ? '↗' : '—'}</span></Link><button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Close menu' : 'Open menu'}>{menuOpen ? <X size={19} /> : <Menu size={19} />}</button></div>
+      </header>
 
-      {/* Category grid — modular band */}
-      <CategoryShowcase />
-
-      {/* Reviews — credibility band */}
-      <InfiniteReviews />
-
-      {/* Marginalia: quiet breathing space between reviews and catalog */}
-      <MarginNote text="real reviews. real orders." doodle={DoodleUnderline} doodleClass="w-32 h-6" />
-
-      {/* Catalog — 8 hand-picked SKUs, synced from Shopify */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <div className="flex items-center gap-2.5 mb-2">
-              <span className="block w-5 h-px bg-orange-500" />
-              <p className="text-orange-500 text-xs font-semibold uppercase tracking-[0.22em]">
-                From the catalog
-              </p>
-            </div>
-            <h2 className="font-oswald text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide">
-              What people are buying
-            </h2>
-            <p className="text-zinc-500 text-xs sm:text-sm mt-1 max-w-sm">
-              Eight products pulled from the live Shopify catalog. Updated in real time.
-            </p>
-          </div>
-          <Link
-            to="/products"
-            className="flex items-center gap-1.5 text-sm font-semibold text-orange-500 hover:text-orange-400 transition-colors shrink-0"
-          >
-            Full catalog <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-        {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="bg-zinc-900 rounded-xl aspect-square animate-pulse" />
-            ))}
-          </div>
-        ) : featuredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {featuredProducts.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
-        ) : (
-          <p className="text-zinc-600 text-sm text-center py-12">
-            Catalog is loading. Check back shortly.
-          </p>
-        )}
+      <section className="hero-desk" id="top">
+        <div className="hero-index">FITGEARZZZ / 2026<br />INDIA / 01—04</div>
+        <div className="hero-copy"><p className="eyebrow">A better home gym starts with fewer, better decisions.</p><h1>Train<br /><em>like it matters.</em></h1><p className="hero-description">Equipment and everyday training essentials, selected for real rooms, real budgets and the work you actually plan to do.</p><a className="ink-button" href="#shop">Enter the catalog <ArrowDownRight size={17} /></a></div>
+        <div className="hero-image-wrap"><img src={heroImage} alt="Fitness equipment ready for training" /><span className="image-stamp">FIELD<br />NOTE / 01</span></div>
+        <div className="hero-foot"><span>SCROLL TO BUILD YOUR SETUP</span><span>COD / PAN-INDIA / SUPPORT</span></div>
       </section>
 
-      {/* Marginalia: catalog is live, not staged */}
-      <MarginNote text="live catalog, not staged photos." doodle={DoodleArrow} doodleClass="w-16 h-10" />
+      <section className="manifesto-strip"><span>NO GIMMICKS</span><strong>Equipment should make the next session easier to start.</strong><span>YES, REALLY</span></section>
 
-      {/* Operating guarantees & order journey — single authored band */}
-      <section className="bg-zinc-900 border-y border-zinc-800 py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          {/* Header + trust badges */}
-          <div className="mb-14 flex flex-col lg:flex-row lg:items-start lg:justify-between gap-10">
-            <div className="max-w-xl relative">
-              <div className="flex items-center gap-2.5 mb-3">
-                <span className="block w-5 h-px bg-orange-500" />
-                <p className="text-orange-500 text-xs font-semibold uppercase tracking-[0.22em]">
-                  How we operate
-                </p>
-              </div>
-              <h2 className="font-oswald text-3xl sm:text-4xl font-bold text-white uppercase tracking-wide inline-block relative">
-                What happens after you place an order
-              </h2>
-              <DoodleUnderline className="w-40 h-6 text-orange-500/80 mt-1" />
-              <p className="text-zinc-500 mt-3 text-sm leading-relaxed">
-                Inspection, dispatch, payment, returns, and support all run on fixed rules — not
-                one-off promises. Below is the sequence every order moves through from warehouse to
-                your door.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 lg:max-w-md relative">
-              {TRUST_BADGES.map(({ icon: Icon, title, sub }) => (
-                <div key={title} className="flex items-center gap-3 relative">
-                  <Icon className="w-5 h-5 text-orange-500 shrink-0" strokeWidth={1.5} />
-                  <div className="relative">
-                    <p className="text-white font-semibold text-sm leading-tight">{title}</p>
-                    <p className="text-zinc-500 text-xs mt-0.5">{sub}</p>
-                    {title === '100% Authentic' && (
-                      <DoodleCircle className="w-24 h-10 text-orange-500/70 absolute -left-4 -top-3 pointer-events-none" />
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+      <section className="category-desk section-pad" id="shop"><Reveal><div className="section-marker"><span>02</span><span>SHOP BY INTENT</span></div><div className="section-heading"><h2>Start with<br /><em>the work.</em></h2><Note>not another endless grid</Note></div><div className="category-list">{CATEGORIES.map((category) => <Link className="category-row" key={category.number} to={`/products?category=${category.query}`}><span className="category-number">{category.number}</span><img src={category.image} alt="" /><span className="category-main"><strong>{category.name}</strong><small>{category.text}</small></span><ArrowRight className="category-arrow" /></Link>)}</div></Reveal></section>
 
-          {/* Timeline */}
-          <div className="relative">
-            <div className="hidden sm:block absolute left-[27px] top-4 bottom-4 w-px bg-zinc-800" />
-            <div className="flex flex-col gap-9 sm:gap-11">
-              {OPERATING_STEPS.map(({ step, icon: Icon, title, body }) => (
-                <div key={step} className="relative flex gap-6 sm:gap-8">
-                  <div className="relative shrink-0 flex flex-col items-center">
-                    <div className="w-14 h-14 rounded-full bg-zinc-950 border border-zinc-800 flex items-center justify-center relative z-10">
-                      <Icon className="w-5 h-5 text-orange-500" strokeWidth={1.5} />
-                    </div>
-                    <span className="mt-2 text-zinc-700 text-[11px] font-mono tracking-widest">
-                      {step}
-                    </span>
-                  </div>
-                  <div className="flex-1 pt-1 pb-2">
-                    <h3 className="text-white font-semibold text-base sm:text-lg mb-1.5">
-                      {title}
-                    </h3>
-                    <p className="text-zinc-500 text-sm leading-relaxed max-w-xl">{body}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+      <section className="catalog-desk section-pad" id="catalog"><Reveal><div className="section-marker"><span>03</span><span>LIVE SHELF / SHOPIFY CATALOG</span></div><div className="section-heading catalog-heading"><h2>The pieces<br /><em>in rotation.</em></h2><div><p>Six products from the live catalog. No fake “trending” labels, no staged ranking.</p><Link to="/products" className="text-link">View everything <ArrowRight size={15} /></Link></div></div>{featured.length ? <div className="product-shelf">{featured.map((product) => <ProductCard key={product.id} product={product} />)}</div> : <div className="catalog-empty">The shelf is loading. <Link to="/products">Open the full catalog →</Link></div>}<Note align="right">live stock, not theatre</Note></Reveal></section>
 
-      {/* Marginalia: standalone band, full breathing room, no crowding */}
-      <MarginNote
-        text="COD, returns, encrypted checkout — always on, never a limited-time thing."
-        doodle={DoodleStar}
-        doodleClass="w-8 h-8"
-      />
+      <section className="review-desk section-pad" id="notes"><Reveal><div className="section-marker"><span>04</span><span>FIELD NOTES / CUSTOMERS</span></div><div className="review-layout"><h2>People who<br /><em>showed up.</em></h2><div className="review-stack">{REVIEWS.map(([number, quote, author]) => <blockquote key={number}><span>{number}</span><p>“{quote}”</p><cite>{author}</cite></blockquote>)}</div></div><Note>specific beats impressive</Note></Reveal></section>
 
-      {/* Brand editorial spotlight */}
-      <BrandStorySpotlight />
+      <section className="method-desk section-pad" id="method"><Reveal><div className="section-marker"><span>05</span><span>THE OPERATING METHOD</span></div><div className="method-intro"><h2>From order<br /><em>to routine.</em></h2><p>Here is the part most storefronts hide: what happens after the click. We keep it visible because trust is built in the boring details.</p></div><div className="journey-list">{JOURNEY.map(([number, title, text]) => <div className="journey-row" key={number}><span>{number}</span><div><h3>{title}</h3><p>{text}</p></div><Check size={18} /></div>)}</div><div className="proof-line"><span><Truck size={17} /> Pan-India delivery</span><span><ShieldCheck size={17} /> Inspected before dispatch</span><span><Package size={17} /> COD available</span></div></Reveal></section>
 
-      {/* Marginalia before the newsletter offer */}
-      <MarginNote text="we mean it — no spam, ever." doodle={DoodleUnderline} doodleClass="w-32 h-6" />
+      <section className="story-desk section-pad"><Reveal><div className="story-card"><div className="story-card-index">06 / A NOTE FROM THE DESK</div><div className="story-card-copy"><h2>We are not trying<br />to sell you a <em>personality.</em></h2><p>FitGearzzz exists for the space between wanting to train and actually training. We curate the objects that remove a little friction: a reliable band, a solid dumbbell, a mat that stays put.</p><p>Small business, direct answers, clear rules. That is the whole idea.</p><Link to="/about" className="ink-button ink-button-light">Read the story <ArrowRight size={17} /></Link></div><div className="story-card-mark">FZ<br /><span>EST. / IN MOTION</span></div></div></Reveal></section>
 
-      {/* Newsletter — direct offer, no filler */}
-      <section className="bg-orange-500 py-16">
-        <div className="max-w-lg mx-auto px-4 text-center">
-          <Mail className="w-7 h-7 text-white/80 mx-auto mb-4" strokeWidth={1.5} />
-          <h2 className="font-oswald text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide mb-2">
-            10% off your first order
-          </h2>
-          <p className="text-orange-100/80 text-sm mb-7">
-            Early access to restocks, new arrivals, and training reads. No spam.
-          </p>
-          {subscribed ? (
-            <p className="text-white font-semibold">
-              You're in. Check your inbox.
-            </p>
-          ) : (
-            <form onSubmit={handleNewsletter} className="flex flex-col sm:flex-row gap-3">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Your email"
-                required
-                className="flex-1 px-5 py-3 rounded-sm text-zinc-900 text-sm font-medium placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-white/40"
-              />
-              <button
-                type="submit"
-                className="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 text-white text-sm font-semibold rounded-sm transition-colors whitespace-nowrap"
-              >
-                Subscribe
-              </button>
-            </form>
-          )}
-        </div>
-      </section>
-    </div>
+      <section className="newsletter-desk section-pad"><Reveal><div className="newsletter-grid"><div><span className="section-marker">07 / THE OCCASIONAL NOTE</span><h2>Useful things.<br /><em>Nothing noisy.</em></h2></div><div><p>Restocks, new arrivals and training ideas. One or two emails when there is something worth opening.</p>{subscribed ? <p className="success-line">You are in. Check your inbox.</p> : <form onSubmit={subscribe}><label htmlFor="home-email">Email address</label><div className="email-row"><input id="home-email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" required /><button type="submit">Join <ArrowRight size={16} /></button></div></form>}</div></div></Reveal></section>
+      <footer className="desk-footer"><span>FITGEARZZZ / MADE FOR THE NEXT SET</span><a href="#top">Back to top ↑</a><span>© 2026</span></footer>
+    </main>
   );
-};
-
-export default Home;
+}

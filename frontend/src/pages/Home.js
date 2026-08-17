@@ -120,10 +120,6 @@ function Note({ children, align = 'left' }) {
   );
 }
 
-/*
-  Full-width editorial intermission.
-  Use this in place of plain separators between major homepage sections.
-*/
 function SectionBreak({ left, children, right }) {
   return (
     <section className="section-break">
@@ -176,11 +172,6 @@ export default function Home() {
 
   return (
     <main className="home-artifact">
-      {/*
-        Do not render a home-only navbar here.
-        Your shared black Navbar should render once in App.js / Layout.
-      */}
-
       <section className="hero-desk" id="top">
         <div className="hero-index">
           FITGEARZZZ / 2026
@@ -194,7 +185,7 @@ export default function Home() {
           </p>
 
           <h1>
-            Train
+            <span className="hero-train-word">Train</span>
             <br />
             <em>like it matters.</em>
           </h1>
@@ -227,7 +218,7 @@ export default function Home() {
       </section>
 
       <SectionBreak left="No gimmicks" right="Yes, really">
-        Equipment should make the next session easier to start.
+        Better gear makes the next session easier to start.
       </SectionBreak>
 
       <section className="category-desk section-pad" id="shop">
@@ -271,7 +262,7 @@ export default function Home() {
       </section>
 
       <SectionBreak left="Less, but better" right="Live catalog">
-        A good setup starts with pieces you will keep reaching for.
+        Keep the pieces you reach for.
       </SectionBreak>
 
       <section className="catalog-desk section-pad" id="catalog">
@@ -319,7 +310,7 @@ export default function Home() {
       </section>
 
       <SectionBreak left="Field notes" right="Real orders">
-        Specific beats impressive every time.
+        Real training tells a better story.
       </SectionBreak>
 
       <section className="review-desk section-pad" id="notes">
@@ -352,7 +343,7 @@ export default function Home() {
       </section>
 
       <SectionBreak left="How it works" right="Clear rules">
-        Trust is built in the boring details after checkout.
+        Trust lives in what happens after checkout.
       </SectionBreak>
 
       <section className="method-desk section-pad" id="method">
@@ -411,7 +402,7 @@ export default function Home() {
       </section>
 
       <SectionBreak left="From the desk" right="FitGearzzz">
-        Small business, direct answers, and gear chosen with intent.
+        Direct answers. Clear rules. Better training.
       </SectionBreak>
 
       <section className="story-desk section-pad">
@@ -456,7 +447,7 @@ export default function Home() {
       </section>
 
       <SectionBreak left="Occasional note" right="No spam">
-        Only useful things worth opening.
+        Useful updates, only when they matter.
       </SectionBreak>
 
       <section className="newsletter-desk section-pad">

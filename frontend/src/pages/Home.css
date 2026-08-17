@@ -16,19 +16,18 @@
 }
 
 /* -------------------------------------------------------------------------- */
-/* Shared Navbar                                                               */
+/* Shared navbar                                                               */
 /* -------------------------------------------------------------------------- */
 
 /*
-  No .desk-header, .desk-nav, .desk-actions, .cart-link, or .menu-button
-  styles belong here anymore.
+  The common black Navbar belongs in App.js or a shared layout.
 
-  The black Navbar used throughout the app is rendered by App.js / layout.
-  This homepage begins immediately below that shared navbar.
+  Do not add .desk-header, .desk-nav, .desk-actions, .cart-link,
+  or .menu-button styles here. This page starts below the shared navbar.
 */
 
 /* -------------------------------------------------------------------------- */
-/* Hero                                                                         */
+/* Hero                                                                        */
 /* -------------------------------------------------------------------------- */
 
 .hero-desk {
@@ -80,6 +79,10 @@
   margin-bottom: 28px;
 }
 
+/*
+  General headings stay strong but do not use excessive negative tracking.
+  The hero gets its own explicit positive spacing override below.
+*/
 .hero-copy h1,
 .section-heading h2,
 .review-layout h2,
@@ -88,22 +91,37 @@
 .newsletter-grid h2 {
   font-family: var(--font-heading, Impact, sans-serif);
   font-weight: 800;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.01em;
   text-transform: uppercase;
   line-height: 0.96;
   margin: 0;
 }
 
+/*
+  This is the specific TRAIN fix.
+
+  Before: -0.035em compressed the letters.
+  Now: 0.035em creates visible but premium breathing space:
+  T R A I N
+*/
 .hero-copy h1 {
   font-size: clamp(60px, 10vw, 150px);
+  letter-spacing: 0.035em;
+  line-height: 1;
+  word-spacing: 0.05em;
+}
+
+.hero-copy h1 em {
+  display: inline-block;
   letter-spacing: -0.035em;
+  line-height: 0.92;
 }
 
 em {
   font-family: Georgia, serif;
   font-weight: 400;
   text-transform: none;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.04em;
 }
 
 .hero-description {
@@ -178,34 +196,59 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* General page structure                                                       */
+/* Full-width editorial statement bands                                       */
+/* -------------------------------------------------------------------------- */
+
+/*
+  Used by <SectionBreak /> in Home.js.
+
+  It replaces generic thin separators with full-width black section breaks:
+  left label / strong central editorial sentence / right label.
+*/
+.section-break {
+  min-height: 92px;
+  display: grid;
+  grid-template-columns: minmax(130px, 1fr) minmax(320px, 2.6fr) minmax(130px, 1fr);
+  align-items: center;
+  gap: 28px;
+  padding: 20px clamp(18px, 7vw, 120px);
+  background: var(--ink);
+  color: #fff;
+  border-top: 1px solid #2d2d2d;
+  border-bottom: 1px solid #2d2d2d;
+}
+
+.section-break-label {
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f4f1eb;
+}
+
+.section-break-label-right {
+  text-align: right;
+}
+
+.section-break-message {
+  margin: 0;
+  font-family: Georgia, serif;
+  font-size: clamp(21px, 2.25vw, 31px);
+  font-weight: 400;
+  line-height: 1.22;
+  letter-spacing: -0.015em;
+  text-align: center;
+  color: #fff;
+}
+
+/* -------------------------------------------------------------------------- */
+/* General structure                                                          */
 /* -------------------------------------------------------------------------- */
 
 .section-separator {
   border-top: 1px solid var(--line);
   margin: 0 clamp(18px, 4vw, 64px);
-}
-
-.manifesto-strip {
-  min-height: 92px;
-  background: var(--ink);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px clamp(18px, 7vw, 120px);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.manifesto-strip strong {
-  font-family: Georgia, serif;
-  font-size: clamp(18px, 2.3vw, 30px);
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  text-align: center;
-  text-transform: none;
 }
 
 .section-pad {
@@ -238,12 +281,12 @@ em {
 .review-layout h2,
 .method-intro h2 {
   font-size: clamp(54px, 8vw, 112px);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.015em;
   line-height: 0.98;
 }
 
 /* -------------------------------------------------------------------------- */
-/* Margin notes                                                                 */
+/* Margin notes                                                               */
 /* -------------------------------------------------------------------------- */
 
 .margin-note {
@@ -255,7 +298,7 @@ em {
   margin: 30px 0;
   transform: rotate(-3deg);
   max-width: 230px;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.01em;
 }
 
 .margin-note span {
@@ -270,7 +313,7 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Categories                                                                   */
+/* Categories                                                                  */
 /* -------------------------------------------------------------------------- */
 
 .category-list {
@@ -321,7 +364,7 @@ em {
 .category-main strong {
   font-size: clamp(20px, 3vw, 38px);
   font-weight: 500;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.015em;
 }
 
 .category-main small,
@@ -341,7 +384,7 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Live catalog                                                                 */
+/* Live catalog                                                                */
 /* -------------------------------------------------------------------------- */
 
 .catalog-desk {
@@ -393,7 +436,7 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Reviews                                                                      */
+/* Reviews                                                                     */
 /* -------------------------------------------------------------------------- */
 
 .review-desk {
@@ -432,7 +475,7 @@ em {
   font-size: clamp(20px, 2.4vw, 34px);
   line-height: 1.12;
   margin: 0;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
 }
 
 .review-stack cite {
@@ -450,7 +493,7 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Operating method                                                             */
+/* Operating method                                                            */
 /* -------------------------------------------------------------------------- */
 
 .method-desk {
@@ -491,7 +534,7 @@ em {
 .journey-row h3 {
   font-size: clamp(20px, 2.3vw, 31px);
   font-weight: 500;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   margin: 0 0 8px;
 }
 
@@ -530,7 +573,7 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Brand story                                                                  */
+/* Brand story                                                                 */
 /* -------------------------------------------------------------------------- */
 
 .story-desk {
@@ -601,7 +644,7 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Newsletter                                                                   */
+/* Newsletter                                                                  */
 /* -------------------------------------------------------------------------- */
 
 .newsletter-desk {
@@ -670,7 +713,7 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Footer                                                                       */
+/* Footer                                                                      */
 /* -------------------------------------------------------------------------- */
 
 .desk-footer {
@@ -694,7 +737,7 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Reveal animation                                                             */
+/* Reveal animation                                                            */
 /* -------------------------------------------------------------------------- */
 
 .reveal {
@@ -711,7 +754,7 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Mobile                                                                       */
+/* Mobile                                                                      */
 /* -------------------------------------------------------------------------- */
 
 @media (max-width: 760px) {
@@ -734,7 +777,7 @@ em {
 
   .hero-copy h1 {
     font-size: clamp(58px, 18vw, 100px);
-    letter-spacing: -0.03em;
+    letter-spacing: 0.018em;
   }
 
   .hero-image-wrap {
@@ -750,15 +793,20 @@ em {
     letter-spacing: 0.055em;
   }
 
-  .manifesto-strip {
-    padding: 23px 18px;
-    display: block;
+  .section-break {
+    min-height: auto;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 28px 18px;
   }
 
-  .manifesto-strip strong {
-    display: block;
+  .section-break-message {
     text-align: left;
-    margin: 13px 0;
+    font-size: 24px;
+  }
+
+  .section-break-label-right {
+    text-align: left;
   }
 
   .section-pad {

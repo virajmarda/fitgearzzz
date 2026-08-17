@@ -120,8 +120,22 @@ function Note({ children, align = 'left' }) {
   );
 }
 
-function SectionSeparator() {
-  return <div className="section-separator" aria-hidden="true" />;
+/*
+  Full-width editorial intermission.
+  Use this in place of plain separators between major homepage sections.
+*/
+function SectionBreak({ left, children, right }) {
+  return (
+    <section className="section-break">
+      <span className="section-break-label">{left}</span>
+
+      <p className="section-break-message">{children}</p>
+
+      <span className="section-break-label section-break-label-right">
+        {right}
+      </span>
+    </section>
+  );
 }
 
 export default function Home() {
@@ -163,10 +177,8 @@ export default function Home() {
   return (
     <main className="home-artifact">
       {/*
-        Do not add a homepage navbar here.
-
-        The common black Navbar must be rendered once in App.js
-        or the shared application layout so every page uses it.
+        Do not render a home-only navbar here.
+        Your shared black Navbar should render once in App.js / Layout.
       */}
 
       <section className="hero-desk" id="top">
@@ -214,15 +226,9 @@ export default function Home() {
         </div>
       </section>
 
-      <SectionSeparator />
-
-      <section className="manifesto-strip">
-        <span>No gimmicks</span>
-        <strong>Equipment should make the next session easier to start.</strong>
-        <span>Yes, really</span>
-      </section>
-
-      <SectionSeparator />
+      <SectionBreak left="No gimmicks" right="Yes, really">
+        Equipment should make the next session easier to start.
+      </SectionBreak>
 
       <section className="category-desk section-pad" id="shop">
         <Reveal>
@@ -264,7 +270,9 @@ export default function Home() {
         </Reveal>
       </section>
 
-      <SectionSeparator />
+      <SectionBreak left="Less, but better" right="Live catalog">
+        A good setup starts with pieces you will keep reaching for.
+      </SectionBreak>
 
       <section className="catalog-desk section-pad" id="catalog">
         <Reveal>
@@ -310,7 +318,9 @@ export default function Home() {
         </Reveal>
       </section>
 
-      <SectionSeparator />
+      <SectionBreak left="Field notes" right="Real orders">
+        Specific beats impressive every time.
+      </SectionBreak>
 
       <section className="review-desk section-pad" id="notes">
         <Reveal>
@@ -341,7 +351,9 @@ export default function Home() {
         </Reveal>
       </section>
 
-      <SectionSeparator />
+      <SectionBreak left="How it works" right="Clear rules">
+        Trust is built in the boring details after checkout.
+      </SectionBreak>
 
       <section className="method-desk section-pad" id="method">
         <Reveal>
@@ -398,7 +410,9 @@ export default function Home() {
         </Reveal>
       </section>
 
-      <SectionSeparator />
+      <SectionBreak left="From the desk" right="FitGearzzz">
+        Small business, direct answers, and gear chosen with intent.
+      </SectionBreak>
 
       <section className="story-desk section-pad">
         <Reveal>
@@ -441,7 +455,9 @@ export default function Home() {
         </Reveal>
       </section>
 
-      <SectionSeparator />
+      <SectionBreak left="Occasional note" right="No spam">
+        Only useful things worth opening.
+      </SectionBreak>
 
       <section className="newsletter-desk section-pad">
         <Reveal>
@@ -493,8 +509,6 @@ export default function Home() {
           </div>
         </Reveal>
       </section>
-
-      <SectionSeparator />
 
       <footer className="desk-footer">
         <span>FITGEARZZZ / Made for the next set</span>

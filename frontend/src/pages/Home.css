@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&display=swap');
+
 .home-artifact {
   --paper: #f1eee8;
   --ink: #171717;
@@ -7,12 +9,14 @@
 
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--font-body, Inter, Arial, sans-serif);
+  font-family: 'Comfortaa', Arial, sans-serif;
   overflow: hidden;
 }
 
+.home-artifact,
 .home-artifact * {
   box-sizing: border-box;
+  font-family: 'Comfortaa', Arial, sans-serif;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -35,17 +39,6 @@
   );
 }
 
-.hero-index {
-  position: absolute;
-  top: 26px;
-  left: clamp(18px, 4vw, 64px);
-  font-size: 9px;
-  line-height: 1.75;
-  color: var(--muted);
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
-}
-
 .hero-copy {
   align-self: center;
   max-width: 620px;
@@ -57,7 +50,7 @@
 .hero-foot,
 .image-stamp {
   font-size: 10px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -74,60 +67,47 @@
 .method-intro h2,
 .story-card h2,
 .newsletter-grid h2 {
-  font-family: var(--font-heading, Impact, sans-serif);
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
-  line-height: 0.96;
+  font-family: 'Comfortaa', Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  text-transform: none;
+  line-height: 1.06;
   margin: 0;
 }
 
-/* Hero container: no compressed letter spacing here. */
 .hero-copy h1 {
-  font-size: clamp(60px, 10vw, 150px);
-  line-height: 1;
-  letter-spacing: 0;
+  font-size: clamp(52px, 8.5vw, 125px);
+  line-height: 1.02;
+  letter-spacing: -0.055em;
 }
 
-/*
-  Add .hero-train-word around Train in Home.js:
-
-  <h1>
-    <span className="hero-train-word">Train</span>
-    <br />
-    <em>like it matters.</em>
-  </h1>
-
-  This gives TRAIN a clean non-condensed font.
-*/
 .hero-train-word {
   display: inline-block;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 0.9em;
-  font-weight: 900;
-  line-height: 0.9;
+  font-family: 'Comfortaa', Arial, sans-serif;
+  font-size: 0.86em;
+  font-weight: 700;
+  line-height: 1;
   letter-spacing: -0.06em;
   text-transform: uppercase;
 }
 
+.home-artifact em,
 .hero-copy h1 em {
   display: inline-block;
-  line-height: 0.92;
-  letter-spacing: -0.035em;
-}
-
-em {
-  font-family: Georgia, serif;
-  font-weight: 400;
+  font-family: 'Comfortaa', Arial, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.045em;
   text-transform: none;
-  letter-spacing: -0.04em;
 }
 
 .hero-description {
   color: #625f59;
-  line-height: 1.7;
+  line-height: 1.75;
   max-width: 360px;
   margin: 30px 0;
+  font-size: 14px;
 }
 
 .ink-button {
@@ -139,8 +119,8 @@ em {
   text-decoration: none;
   padding: 14px 17px;
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.055em;
+  font-weight: 700;
+  letter-spacing: 0.035em;
   text-transform: uppercase;
   transition: transform 0.2s, background 0.2s;
 }
@@ -181,7 +161,7 @@ em {
   z-index: 1;
   line-height: 1.55;
   text-align: right;
-  letter-spacing: 0.11em;
+  letter-spacing: 0.08em;
 }
 
 .hero-foot {
@@ -191,7 +171,7 @@ em {
   justify-content: space-between;
   border-top: 1px solid var(--ink);
   color: var(--muted);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -216,7 +196,7 @@ em {
   font-size: 10px;
   font-weight: 700;
   line-height: 1.4;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #f4f1eb;
   white-space: nowrap;
@@ -228,11 +208,11 @@ em {
 
 .section-break-message {
   margin: 0;
-  font-family: Georgia, serif;
-  font-size: clamp(20px, 2vw, 29px);
-  font-weight: 400;
-  line-height: 1.15;
-  letter-spacing: -0.015em;
+  font-family: 'Comfortaa', Arial, sans-serif;
+  font-size: clamp(18px, 1.7vw, 25px);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.035em;
   text-align: center;
   color: #fff;
   white-space: nowrap;
@@ -254,7 +234,7 @@ em {
   border-top: 1px solid var(--line);
   padding-top: 11px;
   margin-bottom: 44px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
 }
 
 .section-marker span:first-child {
@@ -271,9 +251,9 @@ em {
 .section-heading h2,
 .review-layout h2,
 .method-intro h2 {
-  font-size: clamp(54px, 8vw, 112px);
-  letter-spacing: -0.015em;
-  line-height: 0.98;
+  font-size: clamp(46px, 6.7vw, 92px);
+  letter-spacing: -0.045em;
+  line-height: 1.06;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -281,26 +261,26 @@ em {
 /* -------------------------------------------------------------------------- */
 
 .margin-note {
-  font-family: Georgia, serif;
-  font-style: italic;
-  font-size: 17px;
-  line-height: 1.45;
+  font-family: 'Comfortaa', Arial, sans-serif;
+  font-style: normal;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.55;
   color: var(--orange);
   margin: 30px 0;
-  transform: rotate(-3deg);
-  max-width: 230px;
-  letter-spacing: -0.01em;
+  transform: rotate(-2deg);
+  max-width: 260px;
+  letter-spacing: -0.025em;
 }
 
 .margin-note span {
-  font-family: Arial, sans-serif;
   font-size: 12px;
   margin-left: 7px;
 }
 
 .margin-note-right {
   margin-left: auto;
-  transform: rotate(3deg);
+  transform: rotate(2deg);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -343,7 +323,7 @@ em {
 .category-number {
   font-size: 11px;
   color: var(--orange);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
 }
 
 .category-main {
@@ -353,9 +333,9 @@ em {
 }
 
 .category-main strong {
-  font-size: clamp(20px, 3vw, 38px);
-  font-weight: 500;
-  letter-spacing: -0.015em;
+  font-size: clamp(19px, 2.6vw, 33px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
 }
 
 .category-main small,
@@ -364,9 +344,9 @@ em {
 .newsletter-grid p {
   font-size: 13px;
   color: var(--muted);
-  line-height: 1.65;
+  line-height: 1.7;
   max-width: 390px;
-  letter-spacing: 0.005em;
+  letter-spacing: -0.01em;
 }
 
 .category-arrow {
@@ -394,8 +374,8 @@ em {
   align-items: center;
   color: var(--ink);
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.055em;
+  font-weight: 700;
+  letter-spacing: 0.035em;
   text-transform: uppercase;
   text-decoration: none;
 }
@@ -462,11 +442,12 @@ em {
 }
 
 .review-stack blockquote p {
-  font-family: Georgia, serif;
-  font-size: clamp(20px, 2.4vw, 34px);
-  line-height: 1.12;
+  font-family: 'Comfortaa', Arial, sans-serif;
+  font-size: clamp(18px, 2vw, 29px);
+  font-weight: 500;
+  line-height: 1.35;
   margin: 0;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.04em;
 }
 
 .review-stack cite {
@@ -475,7 +456,7 @@ em {
   color: #aaa49b;
   font-size: 10px;
   font-style: normal;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
@@ -519,22 +500,23 @@ em {
 .journey-row > span {
   color: var(--orange);
   font-size: 11px;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
 }
 
 .journey-row h3 {
-  font-size: clamp(20px, 2.3vw, 31px);
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-size: clamp(19px, 2vw, 28px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
   margin: 0 0 8px;
 }
 
 .journey-row p {
   color: #68645e;
   font-size: 13px;
-  line-height: 1.65;
+  line-height: 1.7;
   max-width: 500px;
   margin: 0;
+  letter-spacing: -0.01em;
 }
 
 .journey-row svg {
@@ -549,7 +531,8 @@ em {
   margin-top: 35px;
   color: #65615a;
   font-size: 10px;
-  letter-spacing: 0.075em;
+  font-weight: 600;
+  letter-spacing: 0.055em;
   text-transform: uppercase;
 }
 
@@ -584,7 +567,7 @@ em {
 
 .story-card-index {
   font-size: 10px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: #aaa49b;
   text-transform: uppercase;
 }
@@ -595,15 +578,16 @@ em {
 }
 
 .story-card h2 {
-  font-size: clamp(50px, 7vw, 100px);
+  font-size: clamp(44px, 5.8vw, 82px);
   margin-bottom: 30px;
 }
 
 .story-card-copy p {
   color: #aaa49b;
-  line-height: 1.7;
+  line-height: 1.75;
   max-width: 530px;
   font-size: 14px;
+  letter-spacing: -0.01em;
 }
 
 .ink-button-light {
@@ -615,18 +599,19 @@ em {
 .story-card-mark {
   position: absolute;
   right: 6%;
-  bottom: -0.12em;
-  font-family: Impact, sans-serif;
-  font-size: clamp(150px, 27vw, 430px);
-  line-height: 0.7;
+  bottom: -0.05em;
+  font-family: 'Comfortaa', Arial, sans-serif;
+  font-size: clamp(105px, 17vw, 270px);
+  font-weight: 700;
+  line-height: 0.75;
   color: #252525;
-  letter-spacing: -0.08em;
+  letter-spacing: -0.1em;
 }
 
 .story-card-mark span {
-  font-family: Arial, sans-serif;
   font-size: 10px;
-  letter-spacing: 0.1em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   color: var(--orange);
   position: absolute;
   right: 4%;
@@ -649,7 +634,7 @@ em {
 }
 
 .newsletter-grid h2 {
-  font-size: clamp(55px, 7vw, 105px);
+  font-size: clamp(46px, 5.8vw, 82px);
   margin-top: 40px;
 }
 
@@ -661,7 +646,8 @@ em {
   display: block;
   color: var(--muted);
   font-size: 10px;
-  letter-spacing: 0.1em;
+  font-weight: 600;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   margin-bottom: 10px;
 }
@@ -690,8 +676,8 @@ em {
   background: transparent;
   color: var(--orange);
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.055em;
+  font-weight: 700;
+  letter-spacing: 0.035em;
   text-transform: uppercase;
   display: flex;
   align-items: center;
@@ -714,7 +700,8 @@ em {
   justify-content: space-between;
   color: var(--muted);
   font-size: 9px;
-  letter-spacing: 0.09em;
+  font-weight: 600;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
 }
 
@@ -753,13 +740,8 @@ em {
     min-height: auto;
     display: flex;
     flex-direction: column;
-    padding: 78px 18px 0;
+    padding: 42px 18px 0;
     background: none;
-  }
-
-  .hero-index {
-    top: 17px;
-    left: 18px;
   }
 
   .hero-copy {
@@ -767,13 +749,13 @@ em {
   }
 
   .hero-copy h1 {
-    font-size: clamp(58px, 18vw, 100px);
-    letter-spacing: 0;
+    font-size: clamp(52px, 16vw, 86px);
+    letter-spacing: -0.055em;
   }
 
   .hero-train-word {
     font-size: 0.88em;
-    letter-spacing: -0.055em;
+    letter-spacing: -0.065em;
   }
 
   .hero-image-wrap {
@@ -786,7 +768,7 @@ em {
     min-height: 58px;
     font-size: 8px;
     gap: 15px;
-    letter-spacing: 0.055em;
+    letter-spacing: 0.045em;
   }
 
   .section-break {
@@ -799,8 +781,8 @@ em {
   }
 
   .section-break-message {
-    font-size: 24px;
-    line-height: 1.2;
+    font-size: 21px;
+    line-height: 1.35;
     text-align: left;
     white-space: normal;
   }
@@ -823,7 +805,7 @@ em {
   .section-heading h2,
   .review-layout h2,
   .method-intro h2 {
-    font-size: clamp(57px, 17vw, 100px);
+    font-size: clamp(40px, 13vw, 70px);
   }
 
   .section-heading .margin-note {
@@ -845,7 +827,7 @@ em {
   }
 
   .category-main strong {
-    font-size: 21px;
+    font-size: 19px;
   }
 
   .product-shelf {
@@ -875,7 +857,7 @@ em {
   }
 
   .journey-row h3 {
-    font-size: 23px;
+    font-size: 20px;
   }
 
   .story-card {
@@ -888,17 +870,17 @@ em {
   }
 
   .story-card h2 {
-    font-size: clamp(52px, 16vw, 100px);
+    font-size: clamp(38px, 12vw, 65px);
   }
 
   .story-card-mark {
-    right: -15px;
-    bottom: 5px;
-    font-size: 230px;
+    right: -10px;
+    bottom: 12px;
+    font-size: 145px;
   }
 
   .newsletter-grid h2 {
-    font-size: clamp(58px, 17vw, 100px);
+    font-size: clamp(40px, 12vw, 68px);
     margin: 38px 0 65px;
   }
 

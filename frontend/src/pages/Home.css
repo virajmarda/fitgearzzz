@@ -16,18 +16,7 @@
 }
 
 /* -------------------------------------------------------------------------- */
-/* Shared navbar                                                               */
-/* -------------------------------------------------------------------------- */
-
-/*
-  The common black Navbar belongs in App.js or a shared layout.
-
-  Do not add .desk-header, .desk-nav, .desk-actions, .cart-link,
-  or .menu-button styles here. This page starts below the shared navbar.
-*/
-
-/* -------------------------------------------------------------------------- */
-/* Hero                                                                        */
+/* Hero                                                                         */
 /* -------------------------------------------------------------------------- */
 
 .hero-desk {
@@ -79,10 +68,6 @@
   margin-bottom: 28px;
 }
 
-/*
-  General headings stay strong but do not use excessive negative tracking.
-  The hero gets its own explicit positive spacing override below.
-*/
 .hero-copy h1,
 .section-heading h2,
 .review-layout h2,
@@ -97,24 +82,38 @@
   margin: 0;
 }
 
-/*
-  This is the specific TRAIN fix.
-
-  Before: -0.035em compressed the letters.
-  Now: 0.035em creates visible but premium breathing space:
-  T R A I N
-*/
+/* Hero container: no compressed letter spacing here. */
 .hero-copy h1 {
   font-size: clamp(60px, 10vw, 150px);
-  letter-spacing: 0.035em;
   line-height: 1;
-  word-spacing: 0.05em;
+  letter-spacing: 0;
+}
+
+/*
+  Add .hero-train-word around Train in Home.js:
+
+  <h1>
+    <span className="hero-train-word">Train</span>
+    <br />
+    <em>like it matters.</em>
+  </h1>
+
+  This gives TRAIN a clean non-condensed font.
+*/
+.hero-train-word {
+  display: inline-block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.9em;
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
 }
 
 .hero-copy h1 em {
   display: inline-block;
-  letter-spacing: -0.035em;
   line-height: 0.92;
+  letter-spacing: -0.035em;
 }
 
 em {
@@ -196,19 +195,13 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Full-width editorial statement bands                                       */
+/* Full-width editorial section breaks                                         */
 /* -------------------------------------------------------------------------- */
 
-/*
-  Used by <SectionBreak /> in Home.js.
-
-  It replaces generic thin separators with full-width black section breaks:
-  left label / strong central editorial sentence / right label.
-*/
 .section-break {
   min-height: 92px;
   display: grid;
-  grid-template-columns: minmax(130px, 1fr) minmax(320px, 2.6fr) minmax(130px, 1fr);
+  grid-template-columns: minmax(140px, 1fr) auto minmax(140px, 1fr);
   align-items: center;
   gap: 28px;
   padding: 20px clamp(18px, 7vw, 120px);
@@ -216,6 +209,7 @@ em {
   color: #fff;
   border-top: 1px solid #2d2d2d;
   border-bottom: 1px solid #2d2d2d;
+  overflow: hidden;
 }
 
 .section-break-label {
@@ -225,6 +219,7 @@ em {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #f4f1eb;
+  white-space: nowrap;
 }
 
 .section-break-label-right {
@@ -234,22 +229,18 @@ em {
 .section-break-message {
   margin: 0;
   font-family: Georgia, serif;
-  font-size: clamp(21px, 2.25vw, 31px);
+  font-size: clamp(20px, 2vw, 29px);
   font-weight: 400;
-  line-height: 1.22;
+  line-height: 1.15;
   letter-spacing: -0.015em;
   text-align: center;
   color: #fff;
+  white-space: nowrap;
 }
 
 /* -------------------------------------------------------------------------- */
-/* General structure                                                          */
+/* General layout                                                               */
 /* -------------------------------------------------------------------------- */
-
-.section-separator {
-  border-top: 1px solid var(--line);
-  margin: 0 clamp(18px, 4vw, 64px);
-}
 
 .section-pad {
   padding: clamp(70px, 11vw, 150px) clamp(18px, 7vw, 120px);
@@ -286,7 +277,7 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Margin notes                                                               */
+/* Margin notes                                                                 */
 /* -------------------------------------------------------------------------- */
 
 .margin-note {
@@ -313,7 +304,7 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Categories                                                                  */
+/* Categories                                                                   */
 /* -------------------------------------------------------------------------- */
 
 .category-list {
@@ -384,7 +375,7 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Live catalog                                                                */
+/* Live catalog                                                                 */
 /* -------------------------------------------------------------------------- */
 
 .catalog-desk {
@@ -436,7 +427,7 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Reviews                                                                     */
+/* Reviews                                                                      */
 /* -------------------------------------------------------------------------- */
 
 .review-desk {
@@ -493,7 +484,7 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Operating method                                                            */
+/* Operating method                                                             */
 /* -------------------------------------------------------------------------- */
 
 .method-desk {
@@ -573,7 +564,7 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Brand story                                                                 */
+/* Brand story                                                                  */
 /* -------------------------------------------------------------------------- */
 
 .story-desk {
@@ -644,7 +635,7 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Newsletter                                                                  */
+/* Newsletter                                                                   */
 /* -------------------------------------------------------------------------- */
 
 .newsletter-desk {
@@ -713,7 +704,7 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Footer                                                                      */
+/* Footer                                                                       */
 /* -------------------------------------------------------------------------- */
 
 .desk-footer {
@@ -737,7 +728,7 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Reveal animation                                                            */
+/* Reveal animation                                                             */
 /* -------------------------------------------------------------------------- */
 
 .reveal {
@@ -754,7 +745,7 @@ em {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Mobile                                                                      */
+/* Mobile                                                                       */
 /* -------------------------------------------------------------------------- */
 
 @media (max-width: 760px) {
@@ -777,7 +768,12 @@ em {
 
   .hero-copy h1 {
     font-size: clamp(58px, 18vw, 100px);
-    letter-spacing: 0.018em;
+    letter-spacing: 0;
+  }
+
+  .hero-train-word {
+    font-size: 0.88em;
+    letter-spacing: -0.055em;
   }
 
   .hero-image-wrap {
@@ -795,14 +791,18 @@ em {
 
   .section-break {
     min-height: auto;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 12px;
     padding: 28px 18px;
   }
 
   .section-break-message {
-    text-align: left;
     font-size: 24px;
+    line-height: 1.2;
+    text-align: left;
+    white-space: normal;
   }
 
   .section-break-label-right {

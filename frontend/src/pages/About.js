@@ -121,11 +121,10 @@ const About = () => {
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.08 }}
-                className="font-oswald text-5xl sm:text-6xl lg:text-7xl leading-none uppercase tracking-tight mb-6"
+                className="font-oswald text-5xl sm:text-6xl lg:text-7xl leading-[0.98] tracking-tight mb-6"
               >
-                We are building a
-                <span className="block text-orange-500">fitness commerce brand</span>
-                made for modern India
+                Equipment for the everyday
+                <span className="block text-orange-500">athlete.</span>
               </motion.h1>
 
               <motion.p
@@ -134,7 +133,7 @@ const About = () => {
                 transition={{ delay: 0.14 }}
                 className="text-lg sm:text-xl text-zinc-300 max-w-2xl leading-relaxed"
               >
-                FitGearzzz exists to make premium fitness shopping feel sharper, easier, and more trustworthy — with a stronger focus on product value, better design, and a customer experience that actually feels cared for.
+                Fitgearzzz is a modern fitness lifestyle brand for people who train with purpose and live actively outside the gym. We equip the everyday athlete for training, recovery, and life beyond the gym &mdash; with fewer, better pieces and a buying experience that feels cared for.
               </motion.p>
 
               <motion.div

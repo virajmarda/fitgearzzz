@@ -38,7 +38,7 @@ const AnnouncementBar = () => {
           <Link to={msg.to} className="hover:text-[#f15a24] transition-colors">
             {msg.text}{' '}
             {msg.highlight && (
-              <strong className="font-bold text-white">{msg.highlight}</strong>
+              <strong className="font-bold text-[#ffffff]">{msg.highlight}</strong>
             )}
           </Link>
         </p>

@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { fetchProducts } from '../services/shopifyService';
+import { JOURNAL, COLLECTION_SPLIT } from '../data/editorialContent';
 import './Home.css';
 
 const HERO_IMAGE =
@@ -48,20 +49,6 @@ const CATEGORIES = [
     image:
       'https://images.unsplash.com/photo-1554139844-af2fc8ad3a3a?auto=format&fit=crop&w=900&q=85',
   },
-];
-
-const REVIEWS = [
-  ['01', 'The 10kg pair became the first thing I touch before work.', 'Akash / Pune'],
-  [
-    '02',
-    'No guessing, no inflated promises. The band set is exactly as described.',
-    'Meera / Bengaluru',
-  ],
-  [
-    '03',
-    'They answered on WhatsApp before I placed the order. That matters.',
-    'Rohan / Mumbai',
-  ],
 ];
 
 const JOURNEY = [
@@ -168,7 +155,12 @@ export default function Home() {
   }, []);
 
   const heroImage = HERO_IMAGE;
-  const featured = products.slice(0, 6);
+  const drop = products
+    .filter((p) => p.tags?.includes('bestseller') || p.tags?.includes('new'))
+    .slice(0, 4);
+  const dropIds = new Set(drop.map((p) => p.id));
+  const splitShelf = products.filter((p) => !dropIds.has(p.id)).slice(0, 4);
+  const byHandle = Object.fromEntries(products.map((p) => [p.handle, p]));
 
   const subscribe = (event) => {
     event.preventDefault();
@@ -229,6 +221,49 @@ export default function Home() {
         Better gear makes the next session easier to start.
       </SectionBreak>
 
+      <section className="drop-desk section-pad" id="drop">
+        <Reveal>
+          <div className="section-marker">
+            <span>01</span>
+            <span>The drop / new &amp; in rotation</span>
+          </div>
+
+          <div className="section-heading catalog-heading">
+            <h2>
+              Fresh
+              <br />
+              <em>in rotation.</em>
+            </h2>
+
+            <div>
+              <p>
+                Bestsellers and new arrivals. No staged ranking — just the
+                pieces people keep reaching for.
+              </p>
+
+              <Link to="/products?tag=new" className="text-link">
+                See new arrivals
+                <ArrowRight size={15} />
+              </Link>
+            </div>
+          </div>
+
+          {drop.length ? (
+            <div className="product-shelf product-shelf-4">
+              {drop.map((product, i) => (
+                <ProductCard key={product.id} product={product} index={i} />
+              ))}
+            </div>
+          ) : (
+            <div className="product-shelf product-shelf-4" aria-busy="true">
+              {[0, 1, 2, 3].map((i) => (
+                <div key={i} className="shelf-skeleton" />
+              ))}
+            </div>
+          )}
+        </Reveal>
+      </section>
+
       <section className="category-desk section-pad" id="shop">
         <Reveal>
           <div className="section-marker">
@@ -269,84 +304,123 @@ export default function Home() {
         </Reveal>
       </section>
 
-      <SectionBreak left="Less, but better" right="Live catalog">
+      <SectionBreak left="Less, but better" right="Curated">
         Keep the pieces you reach for.
       </SectionBreak>
 
-      <section className="catalog-desk section-pad" id="catalog">
+      <section className="split-desk section-pad" id="collections">
         <Reveal>
           <div className="section-marker">
             <span>03</span>
-            <span>Live shelf / Shopify catalog</span>
+            <span>Curated / the collection split</span>
           </div>
 
-          <div className="section-heading catalog-heading">
-            <h2>
-              The pieces
-              <br />
-              <em>in rotation.</em>
-            </h2>
+          <div className="split-grid">
+            <Link
+              to={`/products?pillar=${COLLECTION_SPLIT.primary.pillar}`}
+              className="split-primary"
+            >
+              <img
+                src={COLLECTION_SPLIT.primary.image}
+                alt="Free weights in a training room"
+                loading="lazy"
+                width="1400"
+                height="1000"
+              />
+              <div className="split-copy">
+                <span className="split-label">01 / {COLLECTION_SPLIT.primary.title}</span>
+                <h3>{COLLECTION_SPLIT.primary.line}</h3>
+                <p>{COLLECTION_SPLIT.primary.text}</p>
+                <span className="text-link text-link-light">
+                  Shop {COLLECTION_SPLIT.primary.title}
+                  <ArrowRight size={15} />
+                </span>
+              </div>
+            </Link>
 
-            <div>
-              <p>
-                Six products from the live catalog. No fake “trending” labels,
-                no staged ranking.
-              </p>
-
-              <Link to="/products" className="text-link">
-                View everything
-                <ArrowRight size={15} />
-              </Link>
+            <div className="split-secondary">
+              {COLLECTION_SPLIT.secondary.map((s, i) => (
+                <Link key={s.pillar} to={`/products?pillar=${s.pillar}`} className="split-card">
+                  <img src={s.image} alt="" loading="lazy" width="900" height="600" />
+                  <div className="split-copy">
+                    <span className="split-label">0{i + 2} / {s.title}</span>
+                    <h3>{s.line}</h3>
+                    <span className="text-link text-link-light">
+                      Shop {s.title}
+                      <ArrowRight size={15} />
+                    </span>
+                  </div>
+                </Link>
+              ))}
             </div>
           </div>
 
-          {featured.length ? (
-            <div className="product-shelf">
-              {featured.map((product) => (
+          {splitShelf.length > 0 && (
+            <div className="product-shelf product-shelf-4 split-shelf">
+              {splitShelf.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
-          ) : (
-            <div className="catalog-empty">
-              The shelf is loading.{' '}
-              <Link to="/products">Open the full catalog →</Link>
-            </div>
           )}
 
-          <Note align="right">live stock, not theatre</Note>
+          <Note align="right">real stock, not theatre</Note>
         </Reveal>
       </section>
 
-      <SectionBreak left="Field notes" right="Real orders">
-        Real training tells a better story.
+      <SectionBreak left="Progress" right="The journal">
+        Fitness is not a place you visit. It is a standard you carry.
       </SectionBreak>
 
-      <section className="review-desk section-pad" id="notes">
+      <section className="journal-desk section-pad" id="progress">
         <Reveal>
           <div className="section-marker">
             <span>04</span>
-            <span>Field notes / customers</span>
+            <span>Progress / routines, education, practice</span>
           </div>
 
           <div className="review-layout">
-            <h2>
-              People who
-              <br />
-              <em>showed up.</em>
-            </h2>
+            <div>
+              <h2>
+                Train for
+                <br />
+                <em>the life you live.</em>
+              </h2>
+              <p className="journal-intro">
+                Practical notes on training, recovery and choosing gear. Each
+                one links to the pieces it talks about.
+              </p>
+              <Link to="/blog" className="ink-button ink-button-light">
+                Read the journal
+                <ArrowRight size={17} />
+              </Link>
+            </div>
 
-            <div className="review-stack">
-              {REVIEWS.map(([number, quote, author]) => (
-                <blockquote key={number}>
-                  <span>{number}</span>
-                  <p>“{quote}”</p>
-                  <cite>{author}</cite>
-                </blockquote>
+            <div className="journal-stack">
+              {JOURNAL.map((entry) => (
+                <article key={entry.number} className="journal-entry">
+                  <span className="journal-num">{entry.number}</span>
+                  <div>
+                    <p className="journal-cat">{entry.category}</p>
+                    <h3>
+                      <Link to={`/blog/${entry.slug}`}>{entry.title}</Link>
+                    </h3>
+                    <p className="journal-excerpt">{entry.excerpt}</p>
+                    <div className="journal-products">
+                      {entry.products
+                        .map((h) => byHandle[h])
+                        .filter(Boolean)
+                        .map((p) => (
+                          <Link key={p.id} to={`/products/${p.handle}`}>
+                            <img src={p.image} alt="" loading="lazy" width="48" height="60" />
+                            <span>{p.title}</span>
+                          </Link>
+                        ))}
+                    </div>
+                  </div>
+                </article>
               ))}
             </div>
           </div>
-
-          <Note>specific beats impressive</Note>
         </Reveal>
       </section>
 
@@ -509,11 +583,6 @@ export default function Home() {
         </Reveal>
       </section>
 
-      <footer className="desk-footer">
-        <span>FITGEARZZZ / Made for the next set</span>
-        <a href="#top">Back to top ↑</a>
-        <span>© 2026</span>
-      </footer>
     </main>
   );
 }

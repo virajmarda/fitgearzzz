@@ -14,6 +14,7 @@ const AuthModal = ({ open, onClose }) => {
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent
+        aria-describedby={undefined}
         className="
           bg-zinc-900 border-zinc-800 text-white rounded-3xl shadow-2xl
           w-full max-w-md mx-4

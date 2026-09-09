@@ -71,13 +71,28 @@ export const PILLARS = [
 ];
 
 export const PRIMARY_NAV = [
-  { name: 'Shop', to: '/products' },
-  { name: 'Train', to: '/products?pillar=train' },
-  { name: 'Carry', to: '/products?pillar=carry' },
-  { name: 'Recover', to: '/products?pillar=recover' },
-  { name: 'Wear', to: '/products?pillar=wear' },
-  { name: 'About', to: '/about' },
+  { name: 'Home', to: '/' },
+  { name: 'Shop', to: '/products', menu: true },
+  { name: 'About Us', to: '/about' },
+  { name: 'Blog', to: '/blog' },
+  { name: 'Contact Us', to: '/contact' },
 ];
+
+// Shop dropdown: pillars + featured entry points
+export const SHOP_MENU = {
+  pillars: PILLARS.filter((p) => p.key !== 'progress').map((p) => ({
+    name: p.name,
+    number: p.number,
+    to: `/products?pillar=${p.key}`,
+    description: p.tagline,
+  })),
+  featured: [
+    { name: 'All products', to: '/products', description: 'The full catalogue' },
+    { name: 'New arrivals', to: '/products?tag=new', description: 'Latest pieces in rotation' },
+    { name: 'Bestsellers', to: '/products?tag=bestseller', description: 'What people keep reaching for' },
+    { name: 'Journal', to: '/blog', description: 'Progress: routines and product education' },
+  ],
+};
 
 export const ANNOUNCEMENTS = [
   { text: 'Built for the daily grind —', highlight: 'free shipping over \u20B9499', to: '/products' },

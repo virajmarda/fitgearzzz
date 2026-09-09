@@ -906,3 +906,282 @@
     transition: none;
   }
 }
+
+/* -------------------------------------------------------------------------- */
+/* Featured drop                                                                */
+/* -------------------------------------------------------------------------- */
+
+.drop-desk {
+  background: var(--paper);
+}
+
+.product-shelf-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.shelf-skeleton {
+  aspect-ratio: 4 / 6;
+  background: #e4e0d8;
+  border: 1px solid var(--line);
+  animation: shelf-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes shelf-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Collection split                                                             */
+/* -------------------------------------------------------------------------- */
+
+.split-desk {
+  background: #e4e0d8;
+}
+
+.split-grid {
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.split-primary,
+.split-card {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: #171717;
+  color: #fff;
+  text-decoration: none;
+  border: 1px solid var(--ink);
+}
+
+.split-primary {
+  min-height: 560px;
+}
+
+.split-secondary {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 14px;
+}
+
+.split-card {
+  min-height: 273px;
+}
+
+.split-primary img,
+.split-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(35%) contrast(1.05);
+  opacity: 0.82;
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.5s;
+}
+
+.split-primary:hover img,
+.split-card:hover img {
+  transform: scale(1.04);
+  filter: grayscale(0) contrast(1.05);
+}
+
+.split-copy {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: clamp(20px, 3vw, 38px);
+  background: linear-gradient(to top, rgba(23, 23, 23, 0.92), rgba(23, 23, 23, 0.35) 70%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.split-label {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--orange);
+  font-weight: 700;
+}
+
+.split-copy h3 {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+
+.split-card .split-copy h3 {
+  font-size: clamp(20px, 2vw, 28px);
+}
+
+.split-copy p {
+  margin: 0;
+  color: #d8d3ca;
+  font-size: 13px;
+  line-height: 1.65;
+  max-width: 420px;
+}
+
+.text-link-light {
+  color: #fff;
+}
+
+.text-link-light:hover {
+  color: var(--orange);
+}
+
+.split-shelf {
+  margin-top: 14px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Progress journal                                                             */
+/* -------------------------------------------------------------------------- */
+
+.journal-desk {
+  background: var(--ink);
+  color: #fff;
+}
+
+.journal-desk .section-marker {
+  border-color: #4a4845;
+}
+
+.journal-intro {
+  color: #aaa49b;
+  font-size: 14px;
+  line-height: 1.75;
+  max-width: 420px;
+  margin: 28px 0 0;
+}
+
+.journal-desk .ink-button-light {
+  margin-top: 28px;
+}
+
+.journal-stack {
+  border-top: 1px solid #4a4845;
+}
+
+.journal-entry {
+  display: grid;
+  grid-template-columns: 35px 1fr;
+  column-gap: 15px;
+  padding: 26px 0 28px;
+  border-bottom: 1px solid #4a4845;
+}
+
+.journal-num {
+  color: var(--orange);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding-top: 4px;
+}
+
+.journal-cat {
+  margin: 0 0 8px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #aaa49b;
+  font-weight: 700;
+}
+
+.journal-entry h3 {
+  margin: 0 0 10px;
+  font-size: clamp(19px, 2vw, 27px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1.2;
+}
+
+.journal-entry h3 a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.journal-entry h3 a:hover {
+  color: var(--orange);
+}
+
+.journal-excerpt {
+  margin: 0 0 16px;
+  color: #aaa49b;
+  font-size: 13.5px;
+  line-height: 1.7;
+  max-width: 520px;
+}
+
+.journal-products {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.journal-products a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px 6px 6px;
+  border: 1px solid #4a4845;
+  color: #f1eee8;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.journal-products a:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+.journal-products img {
+  width: 34px;
+  height: 42px;
+  object-fit: cover;
+  display: block;
+}
+
+@media (max-width: 1024px) {
+  .product-shelf-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .product-shelf-4 {
+    display: flex;
+  }
+
+  .split-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .split-primary {
+    min-height: 420px;
+  }
+
+  .split-secondary {
+    grid-template-rows: none;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .split-card {
+    min-height: 220px;
+  }
+
+  .journal-desk .review-layout > div:first-child {
+    margin-bottom: 50px;
+  }
+
+  .journal-entry {
+    grid-template-columns: 28px 1fr;
+  }
+}

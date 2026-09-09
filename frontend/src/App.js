@@ -40,6 +40,7 @@ import CatalogPage from "./pages/CatalogPage";
 import Wishlist from "./pages/Wishlist";
 import "./App.css";
 import "./styles/shopify-buy-button.css";
+import "./styles/theme-bridge.css";
 import * as fbPixel from "./utils/fbPixel";
 
 // Shopify Customer Account PKCE — OAuth SSO hint handler

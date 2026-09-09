@@ -101,3 +101,59 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Develop the existing Fitgearzzz React storefront into a finished, premium warm-editorial fitness lifestyle brand. Establish a cohesive brand system, make the whole shopping journey work in DEMO MODE without Shopify credentials, and keep it responsive/accessible. No backend changes."
+
+frontend:
+  - task: "Demo-mode catalogue + data service (no Shopify creds)"
+    implemented: true
+    working: "NA"
+    file: "src/data/mockProducts.js, src/data/mockCollections.js, src/services/shopifyService.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "main"
+        -comment: "Created central flat-shape mock catalogue (14 products across Train/Carry/Recover/Wear pillars incl. sale, new, bestseller, low-stock, out-of-stock, and an unavailable variant). shopifyService now serves mock data in demo mode and normalises real Shopify to the same flat shape. Verified products render on Home/Shop/PDP."
+  - task: "Cart flow (add/update/remove/persist) - fixed shape bug"
+    implemented: true
+    working: "NA"
+    file: "src/context/CartContext.js, src/components/ProductCard.js, src/pages/CartPage.js, src/pages/ProductDetail.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "main"
+        -comment: "Fixed prior bug where ProductCard called addToCart(variantId,1) against addToCart(product,variant,qty). CartContext now reads flat shape, adds aria-live announcements. Verified add-to-cart from card + PDP populates /cart, qty controls and remove work, localStorage persists."
+  - task: "Brand system + core pages restyle (paper editorial)"
+    implemented: true
+    working: "NA"
+    file: "src/index.css, src/styles/brand.css, src/components/Navbar.js, src/components/AnnouncementBar.js, src/components/Footer.js, src/pages/Products.js, src/pages/ProductDetail.js, src/pages/CartPage.js, src/pages/Home.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "main"
+        -comment: "Replaced dark-zinc gym look on core commerce chrome/pages with the warm paper editorial system (Comfortaa, paper #f1eee8, ink, orange #f15a24). Added FitgearzzzLogo, pillar navigation, skip link, semantic landmarks, size guide dialog, PDP gallery/variants/accordions, mobile sticky buy bar. Build compiles, ESLint clean."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Demo-mode catalogue + data service (no Shopify creds)"
+    - "Cart flow (add/update/remove/persist) - fixed shape bug"
+    - "Brand system + core pages restyle (paper editorial)"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+    -agent: "main"
+    -message: "Phase 1 value addition complete: whole storefront now works in demo mode with a cohesive premium brand. No backend changes were made. Awaiting user go-ahead to run automated frontend QA and to prioritise next enhancements."

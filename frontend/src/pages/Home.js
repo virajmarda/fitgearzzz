@@ -12,33 +12,41 @@ import ProductCard from '../components/ProductCard';
 import { fetchProducts } from '../services/shopifyService';
 import './Home.css';
 
-const FALLBACK_IMAGE =
-  'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1600&q=85';
+const HERO_IMAGE =
+  'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1400&q=85';
 
 const CATEGORIES = [
   {
     number: '01',
-    name: 'Build strength',
-    text: 'Dumbbells, kettlebells and bars for the work that compounds.',
-    query: 'Equipment',
+    name: 'Train',
+    text: 'Dumbbells, kettlebells, bars and bands for the work that compounds.',
+    query: 'train',
     image:
       'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=85',
   },
   {
     number: '02',
-    name: 'Move better',
-    text: 'Bands, ropes and small tools for the sessions between sessions.',
-    query: 'Accessories',
+    name: 'Carry',
+    text: 'Bags, bottles and daily essentials that move with you.',
+    query: 'carry',
     image:
-      'https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=900&q=85',
+      'https://images.unsplash.com/photo-1581605405669-fcdf81165afa?auto=format&fit=crop&w=900&q=85',
   },
   {
     number: '03',
-    name: 'Recover properly',
+    name: 'Recover',
     text: 'Rollers, mats and recovery pieces that earn their space.',
-    query: 'Recovery',
+    query: 'recover',
     image:
-      'https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?auto=format&fit=crop&w=900&q=85',
+      'https://images.unsplash.com/photo-1552196563-55cd4e45efb3?auto=format&fit=crop&w=900&q=85',
+  },
+  {
+    number: '04',
+    name: 'Wear',
+    text: 'Training wear and athletic streetwear built for repeat wear.',
+    query: 'wear',
+    image:
+      'https://images.unsplash.com/photo-1554139844-af2fc8ad3a3a?auto=format&fit=crop&w=900&q=85',
   },
 ];
 
@@ -159,7 +167,7 @@ export default function Home() {
     };
   }, []);
 
-  const heroImage = products[0]?.image || FALLBACK_IMAGE;
+  const heroImage = HERO_IMAGE;
   const featured = products.slice(0, 6);
 
   const subscribe = (event) => {
@@ -171,7 +179,7 @@ export default function Home() {
   };
 
   return (
-    <main className="home-artifact">
+    <main className="home-artifact" id="main">
       <section className="hero-desk" id="top">
         <div className="hero-index">
           FITGEARZZZ / 2026
@@ -243,7 +251,7 @@ export default function Home() {
               <Link
                 className="category-row"
                 key={category.number}
-                to={`/products?category=${category.query}`}
+                to={`/products?pillar=${category.query}`}
               >
                 <span className="category-number">{category.number}</span>
 

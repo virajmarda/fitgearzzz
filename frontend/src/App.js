@@ -89,6 +89,7 @@ const AppContent = () => {
   return (
     <>
       <ScrollToTop />
+      <a href="#main" className="fg-skip-link">Skip to content</a>
       {!isBare && <AnnouncementBar />}
       {!isBare && <Navbar />}
       <Routes>

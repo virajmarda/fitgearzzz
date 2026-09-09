@@ -1,0 +1,93 @@
+/* src/styles/brand.css
+ * Shared brand primitives for the warm editorial storefront.
+ * Palette (kept in sync with Home.css .home-artifact):
+ *   paper #f1eee8 · ink #171717 · muted #77736d · orange #f15a24 · line #d4d0c8
+ */
+
+:root {
+  --fg2-paper:   #f1eee8;
+  --fg2-paper-2: #e4e0d8;
+  --fg2-paper-3: #ddd8ce;
+  --fg2-ink:     #171717;
+  --fg2-ink-2:   #2d2d2d;
+  --fg2-muted:   #77736d;
+  --fg2-muted-2: #96918a;
+  --fg2-orange:  #f15a24;
+  --fg2-line:    #d4d0c8;
+  --fg2-line-ink: #171717;
+}
+
+/* Store surface: apply to page wrappers to get the paper world + brand font */
+.fg-surface {
+  background: var(--fg2-paper);
+  color: var(--fg2-ink);
+  font-family: 'Comfortaa', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.fg-surface * { font-family: inherit; }
+
+/* Uppercase editorial label */
+.fg-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg2-orange);
+}
+
+/* Primary ink button — matches Home.css .ink-button */
+.fg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--fg2-ink);
+  color: #fff;
+  border: 1px solid var(--fg2-ink);
+  text-decoration: none;
+  padding: 14px 18px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+  min-height: 44px;
+}
+.fg-btn:hover:not(:disabled) { background: var(--fg2-orange); border-color: var(--fg2-orange); transform: translate(2px, -2px); }
+.fg-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.fg-btn-outline {
+  background: transparent;
+  color: var(--fg2-ink);
+}
+.fg-btn-outline:hover:not(:disabled) { background: var(--fg2-ink); color: #fff; transform: none; }
+
+:focus-visible { outline: none; }
+.fg-surface a:focus-visible,
+.fg-surface button:focus-visible,
+.fg-surface input:focus-visible,
+.fg-surface select:focus-visible {
+  outline: 2px solid var(--fg2-orange);
+  outline-offset: 2px;
+}
+
+/* Skip link */
+.fg-skip-link {
+  position: absolute;
+  left: 12px;
+  top: -60px;
+  z-index: 1000;
+  background: var(--fg2-ink);
+  color: #fff;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: top 0.2s ease;
+}
+.fg-skip-link:focus { top: 12px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fg-btn { transition: none; }
+}

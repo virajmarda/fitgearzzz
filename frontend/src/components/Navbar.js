@@ -1,307 +1,155 @@
 // src/components/Navbar.js
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import {
-  ShoppingCart,
-  Search,
-  Menu,
-  X,
-  Heart,
-  ChevronDown,
-  Dumbbell,
-  BookOpen,
-  Mail,
-} from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { ShoppingBag, Search, Menu, X, Heart } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
+import { PRIMARY_NAV } from '../config/siteConfig';
+import FitgearzzzLogo from './brand/FitgearzzzLogo';
 import AuthModal from './AuthModal';
-
-const categories = [
-  {
-    name: 'Gym Equipment',
-    slug: 'Gym Equipment',
-    description: 'Strength and training essentials',
-  },
-  {
-    name: 'Supplements',
-    slug: 'Supplements',
-    description: 'Protein, performance, and recovery',
-  },
-  {
-    name: 'Apparel',
-    slug: 'Apparel',
-    description: 'Training wear built for movement',
-  },
-  {
-    name: 'Accessories',
-    slug: 'Accessories',
-    description: 'Daily fitness support and add-ons',
-  },
-];
-
-const featuredShopLinks = [
-  {
-    name: 'All Products',
-    to: '/products',
-    description: 'Browse the full collection',
-  },
-  {
-    name: 'New Arrivals',
-    to: '/products?tag=new',
-    description: 'Fresh drops and latest launches',
-  },
-  {
-    name: 'Best Sellers',
-    to: '/products?tag=bestseller',
-    description: 'Most loved by customers',
-  },
-];
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const { getCartCount } = useCart();
+  const { wishlistCount } = useWishlist();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [showShopMegaMenu, setShowShopMegaMenu] = useState(false);
-
-  const megaMenuRef = useRef(null);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (megaMenuRef.current && !megaMenuRef.current.contains(e.target)) {
-        setShowShopMegaMenu(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
-      setShowMenu(false);
-      setShowShopMegaMenu(false);
-    }
-  };
-
-  const handleLogout = () => {
-    logout();
-    setShowMenu(false);
-  };
+  const [showSearch, setShowSearch] = useState(false);
+  const [query, setQuery] = useState('');
+  const menuRef = useRef(null);
 
   const cartCount = getCartCount();
 
-  return (
-    <>
-      <nav
-        className={`sticky top-0 z-50 bg-zinc-900 border-b border-zinc-800 transition-shadow ${
-          scrolled ? 'shadow-lg shadow-black/40' : ''
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+  // Close mobile menu on route change
+  useEffect(() => {
+    setShowMenu(false);
+    setShowSearch(false);
+  }, [location.pathname, location.search]);
 
-            {/* ── Logo ── */}
-            <Link to="/" className="flex items-center space-x-2 shrink-0">
-              <Dumbbell className="w-8 h-8 text-orange-500" />
-              <span className="font-oswald text-2xl font-bold tracking-tight text-white">
-                FITGEARZZZ
-              </span>
+  // Escape closes the mobile menu; lock body scroll while open
+  useEffect(() => {
+    const onKey = (e) => e.key === 'Escape' && setShowMenu(false);
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = showMenu ? 'hidden' : '';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [showMenu]);
+
+  const submitSearch = (e) => {
+    e.preventDefault();
+    if (query.trim()) {
+      navigate(`/products?search=${encodeURIComponent(query.trim())}`);
+      setQuery('');
+      setShowSearch(false);
+    }
+  };
+
+  const isActive = (to) =>
+    to === '/products'
+      ? location.pathname === '/products' && !location.search
+      : location.pathname + location.search === to;
+
+  return (
+    <header className="fg-surface sticky top-0 z-50 bg-[#f1eee8]/95 backdrop-blur border-b border-[#171717]">
+      <nav className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10" aria-label="Primary">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link to="/" className="shrink-0 text-[#171717]" aria-label="Fitgearzzz home">
+            <FitgearzzzLogo />
+          </Link>
+
+          {/* Desktop nav */}
+          <div className="hidden lg:flex items-center gap-7">
+            {PRIMARY_NAV.map((item) => (
+              <Link
+                key={item.name}
+                to={item.to}
+                className={`text-[12px] font-semibold uppercase tracking-[0.08em] transition-colors ${
+                  isActive(item.to)
+                    ? 'text-[#f15a24]'
+                    : 'text-[#171717] hover:text-[#f15a24]'
+                }`}
+              >
+                {item.name}
+              </Link>
+            ))}
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center gap-1 sm:gap-2">
+            {/* Desktop search */}
+            <form onSubmit={submitSearch} className="hidden md:block relative">
+              <label htmlFor="nav-search" className="sr-only">Search products</label>
+              <input
+                id="nav-search"
+                type="search"
+                placeholder="Search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="w-40 xl:w-52 bg-transparent border-b border-[#c9c4ba] focus:border-[#171717] text-[#171717] placeholder-[#96918a] text-sm py-2 pr-7 focus:outline-none"
+                data-testid="search-input"
+              />
+              <button
+                type="submit"
+                className="absolute right-0 top-1/2 -translate-y-1/2 text-[#77736d] hover:text-[#f15a24]"
+                aria-label="Search"
+              >
+                <Search className="w-4 h-4" />
+              </button>
+            </form>
+
+            {/* Mobile search toggle */}
+            <button
+              type="button"
+              onClick={() => setShowSearch((s) => !s)}
+              className="md:hidden p-2.5 text-[#171717] hover:text-[#f15a24]"
+              aria-label="Toggle search"
+              aria-expanded={showSearch}
+            >
+              <Search className="w-5 h-5" />
+            </button>
+
+            <Link
+              to="/wishlist"
+              className="relative p-2.5 text-[#171717] hover:text-[#f15a24] transition-colors"
+              aria-label={`Wishlist${wishlistCount ? `, ${wishlistCount} items` : ''}`}
+            >
+              <Heart className="w-5 h-5" />
+              {wishlistCount > 0 && (
+                <span className="absolute top-0.5 right-0.5 bg-[#f15a24] text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">
+                  {wishlistCount}
+                </span>
+              )}
             </Link>
 
-            {/* ── Desktop nav links ── */}
-            <div className="hidden md:flex items-center space-x-6">
-              <Link
-                to="/"
-                className="text-zinc-300 hover:text-orange-500 transition-colors font-manrope"
-              >
-                Home
-              </Link>
-
-              {/* Shop mega menu */}
-              <div className="relative" ref={megaMenuRef}>
-                <button
-                  type="button"
-                  onClick={() => setShowShopMegaMenu((prev) => !prev)}
-                  className="flex items-center gap-1 text-zinc-300 hover:text-orange-500 transition-colors font-manrope"
-                >
-                  Shop
-                  <ChevronDown
-                    className={`w-4 h-4 transition-transform ${
-                      showShopMegaMenu ? 'rotate-180' : ''
-                    }`}
-                  />
-                </button>
-
-                {showShopMegaMenu && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[760px] max-w-[90vw] rounded-2xl border border-zinc-800 bg-zinc-900 shadow-2xl shadow-black/40 overflow-hidden z-50">
-                    <div className="grid grid-cols-3">
-                      {/* Left intro panel */}
-                      <div className="col-span-1 bg-gradient-to-br from-orange-500/10 via-zinc-900 to-zinc-900 border-r border-zinc-800 p-6">
-                        <p className="text-xs uppercase tracking-[0.2em] text-orange-400 font-semibold mb-3">
-                          Shop FitGearzzz
-                        </p>
-                        <h3 className="text-white text-2xl font-bold mb-3">
-                          Premium fitness gear for everyday champions
-                        </h3>
-                        <p className="text-zinc-400 text-sm leading-relaxed mb-5">
-                          Explore categories, trending products, and high-converting
-                          collections from one place.
-                        </p>
-                        <Link
-                          to="/products"
-                          onClick={() => setShowShopMegaMenu(false)}
-                          className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 transition-colors"
-                        >
-                          Shop All Products
-                        </Link>
-                      </div>
-
-                      {/* Right links grid */}
-                      <div className="col-span-2 p-6">
-                        <div className="grid grid-cols-2 gap-6">
-                          <div>
-                            <p className="text-xs uppercase tracking-[0.2em] text-zinc-500 font-semibold mb-3">
-                              Categories
-                            </p>
-                            <div className="space-y-2">
-                              {categories.map((cat) => (
-                                <Link
-                                  key={cat.slug}
-                                  to={`/products?category=${encodeURIComponent(cat.slug)}`}
-                                  onClick={() => setShowShopMegaMenu(false)}
-                                  className="block rounded-xl border border-zinc-800 bg-zinc-950/60 px-4 py-3 hover:border-orange-500/40 hover:bg-zinc-800 transition-colors"
-                                >
-                                  <p className="text-white font-medium">{cat.name}</p>
-                                  <p className="text-sm text-zinc-400">{cat.description}</p>
-                                </Link>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div>
-                            <p className="text-xs uppercase tracking-[0.2em] text-zinc-500 font-semibold mb-3">
-                              Featured
-                            </p>
-                            <div className="space-y-2">
-                              {featuredShopLinks.map((item) => (
-                                <Link
-                                  key={item.name}
-                                  to={item.to}
-                                  onClick={() => setShowShopMegaMenu(false)}
-                                  className="block rounded-xl border border-zinc-800 bg-zinc-950/60 px-4 py-3 hover:border-orange-500/40 hover:bg-zinc-800 transition-colors"
-                                >
-                                  <p className="text-white font-medium">{item.name}</p>
-                                  <p className="text-sm text-zinc-400">{item.description}</p>
-                                </Link>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <Link
-                to="/about"
-                className="text-zinc-300 hover:text-orange-500 transition-colors font-manrope"
-              >
-                About Us
-              </Link>
-
-              <Link
-                to="/blog"
-                className="text-zinc-300 hover:text-orange-500 transition-colors"
-                aria-label="Blog"
-                title="Blog"
-              >
-                <BookOpen className="w-5 h-5" />
-              </Link>
-
-              <Link
-                to="/contact"
-                className="flex items-center gap-1 text-zinc-300 hover:text-orange-500 transition-colors font-manrope"
-              >
-                <Mail className="w-4 h-4" />
-                Contact
-              </Link>
-
-              {user?.role === 'admin' && (
-                <Link
-                  to="/admin"
-                  className="text-zinc-300 hover:text-orange-500 transition-colors font-manrope"
-                >
-                  Admin
-                </Link>
+            <button
+              type="button"
+              onClick={() => navigate('/cart')}
+              className="relative p-2.5 text-[#171717] hover:text-[#f15a24] transition-colors"
+              data-testid="cart-button"
+              aria-label={`Cart${cartCount ? `, ${cartCount} items` : ', empty'}`}
+            >
+              <ShoppingBag className="w-5 h-5" />
+              {cartCount > 0 && (
+                <span className="absolute top-0.5 right-0.5 bg-[#171717] text-[#f1eee8] text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">
+                  {cartCount}
+                </span>
               )}
-            </div>
+            </button>
 
-            {/* ── Desktop actions ── */}
-            <div className="hidden md:flex items-center space-x-3">
-              {/* Search */}
-              <form onSubmit={handleSearch} className="relative">
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-56 bg-zinc-800/50 border border-zinc-700 text-white placeholder-zinc-500 focus:border-orange-500 rounded-full px-4 py-2 text-sm focus:outline-none"
-                  data-testid="search-input"
-                />
-                <button
-                  type="submit"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-orange-500"
-                  aria-label="Search"
-                >
-                  <Search className="w-4 h-4" />
-                </button>
-              </form>
-
-              {/* Wishlist */}
-              <Link
-                to="/wishlist"
-                className="relative p-2 text-zinc-300 hover:text-orange-500 transition-colors"
-                title="Wishlist"
-                aria-label="Wishlist"
-              >
-                <Heart className="w-5 h-5" />
-              </Link>
-
-              {/* ✅ Cart — navigates to /cart page, no drawer */}
-              <button
-                type="button"
-                onClick={() => navigate('/cart')}
-                className="relative p-2 text-zinc-300 hover:text-orange-500 transition-colors"
-                data-testid="cart-button"
-                aria-label="Open cart"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                    {cartCount}
-                  </span>
-                )}
-              </button>
-
-              {/* Auth */}
+            {/* Auth (desktop) */}
+            <div className="hidden lg:block ml-1">
               {user ? (
                 <button
                   type="button"
-                  onClick={handleLogout}
-                  className="text-sm text-zinc-300 hover:text-red-400 transition-colors border border-zinc-700 rounded-full px-4 py-2"
+                  onClick={logout}
+                  className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#171717] hover:text-[#f15a24] border border-[#171717] px-4 py-2"
                 >
                   Logout
                 </button>
@@ -309,165 +157,83 @@ const Navbar = () => {
                 <button
                   type="button"
                   onClick={() => setShowAuthModal(true)}
-                  className="bg-orange-500 hover:bg-orange-600 text-white font-oswald uppercase tracking-wider rounded-full px-5 py-2 text-sm transition-colors"
+                  className="fg-btn text-[11px] px-4 py-2"
                   data-testid="login-button"
                 >
-                  Login / Register
+                  Account
                 </button>
               )}
             </div>
 
-            {/* ── Mobile actions ── */}
-            <div className="md:hidden flex items-center gap-2">
-              {/* Wishlist */}
-              <Link
-                to="/wishlist"
-                className="relative p-2 text-zinc-300"
-                aria-label="Wishlist"
-              >
-                <Heart className="w-5 h-5" />
-              </Link>
-
-              {/* ✅ Cart — navigates to /cart page, no drawer */}
-              <button
-                type="button"
-                onClick={() => navigate('/cart')}
-                className="relative p-2 text-zinc-300 hover:text-orange-500 transition-colors"
-                aria-label="Open cart"
-              >
-                <ShoppingCart className="w-6 h-6" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                    {cartCount}
-                  </span>
-                )}
-              </button>
-
-              {/* Hamburger */}
-              <button
-                type="button"
-                onClick={() => setShowMenu(!showMenu)}
-                className="p-2 text-zinc-300"
-                data-testid="mobile-menu-button"
-                aria-label={showMenu ? 'Close menu' : 'Open menu'}
-              >
-                {showMenu ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-            </div>
+            {/* Hamburger */}
+            <button
+              type="button"
+              onClick={() => setShowMenu((m) => !m)}
+              className="lg:hidden p-2.5 text-[#171717]"
+              data-testid="mobile-menu-button"
+              aria-label={showMenu ? 'Close menu' : 'Open menu'}
+              aria-expanded={showMenu}
+            >
+              {showMenu ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
         </div>
 
-        {/* ── Mobile menu ── */}
-        {showMenu && (
-          <div className="md:hidden bg-zinc-900 border-t border-zinc-800 px-4 py-4 space-y-3">
-            <form onSubmit={handleSearch} className="pb-2">
-              <input
-                type="text"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-orange-500"
-              />
-            </form>
-
-            <Link
-              to="/"
-              onClick={() => setShowMenu(false)}
-              className="block py-2 text-zinc-300 hover:text-orange-500"
-            >
-              Home
-            </Link>
-
-            <Link
-              to="/products"
-              onClick={() => setShowMenu(false)}
-              className="block py-2 text-zinc-300 hover:text-orange-500"
-            >
-              Shop
-            </Link>
-
-            <div className="pl-4 space-y-2">
-              {categories.map((cat) => (
-                <Link
-                  key={cat.slug}
-                  to={`/products?category=${encodeURIComponent(cat.slug)}`}
-                  onClick={() => setShowMenu(false)}
-                  className="block py-1.5 text-zinc-400 hover:text-orange-500"
-                >
-                  {cat.name}
-                </Link>
-              ))}
-              <Link
-                to="/products?tag=new"
-                onClick={() => setShowMenu(false)}
-                className="block py-1.5 text-zinc-400 hover:text-orange-500"
-              >
-                New Arrivals
-              </Link>
-            </div>
-
-            <Link
-              to="/about"
-              onClick={() => setShowMenu(false)}
-              className="block py-2 text-zinc-300 hover:text-orange-500"
-            >
-              About Us
-            </Link>
-
-            <Link
-              to="/blog"
-              onClick={() => setShowMenu(false)}
-              className="block py-2 text-zinc-300 hover:text-orange-500"
-            >
-              Blog
-            </Link>
-
-            <Link
-              to="/contact"
-              onClick={() => setShowMenu(false)}
-              className="block py-2 text-zinc-300 hover:text-orange-500"
-            >
-              Contact
-            </Link>
-
-            {user?.role === 'admin' && (
-              <Link
-                to="/admin"
-                onClick={() => setShowMenu(false)}
-                className="block py-2 text-zinc-300 hover:text-orange-500"
-              >
-                Admin
-              </Link>
-            )}
-
-            <div className="pt-2 border-t border-zinc-800">
-              {user ? (
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="block w-full text-left py-2 text-zinc-300 hover:text-red-400"
-                >
-                  Logout
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowAuthModal(true);
-                    setShowMenu(false);
-                  }}
-                  className="block w-full text-left py-2 text-zinc-300 hover:text-orange-500"
-                >
-                  Login / Register
-                </button>
-              )}
-            </div>
-          </div>
+        {/* Mobile inline search */}
+        {showSearch && (
+          <form onSubmit={submitSearch} className="md:hidden pb-3">
+            <label htmlFor="nav-search-m" className="sr-only">Search products</label>
+            <input
+              id="nav-search-m"
+              type="search"
+              autoFocus
+              placeholder="Search products…"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="w-full bg-transparent border-b border-[#171717] text-[#171717] placeholder-[#96918a] py-2 focus:outline-none"
+            />
+          </form>
         )}
       </nav>
 
+      {/* Mobile menu */}
+      {showMenu && (
+        <div
+          ref={menuRef}
+          className="lg:hidden fg-surface bg-[#f1eee8] border-t border-[#d4d0c8] px-5 py-6"
+        >
+          <ul className="flex flex-col">
+            {PRIMARY_NAV.map((item) => (
+              <li key={item.name} className="border-b border-[#d4d0c8]">
+                <Link
+                  to={item.to}
+                  className="block py-3.5 text-[15px] font-semibold text-[#171717] hover:text-[#f15a24]"
+                >
+                  {item.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-5">
+            {user ? (
+              <button type="button" onClick={logout} className="fg-btn fg-btn-outline w-full">
+                Logout
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => { setShowAuthModal(true); setShowMenu(false); }}
+                className="fg-btn w-full"
+              >
+                Login / Register
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       <AuthModal open={showAuthModal} onClose={() => setShowAuthModal(false)} />
-    </>
+    </header>
   );
 };
 

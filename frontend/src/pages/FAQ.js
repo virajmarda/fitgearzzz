@@ -248,11 +248,11 @@ const FAQ = () => {
           transition={{ duration: 0.5, delay: 0.8 }}
           className="glass-card rounded-3xl p-8 mt-12 text-center shadow-lg"
         >
-          <h2 className="font-oswald text-2xl font-bold text-white mb-4 uppercase">
+          <h2 className="font-oswald text-2xl font-bold text-zinc-900 mb-4 uppercase">
             Still Have Questions?
           </h2>
 
-          <p className="text-zinc-300 font-manrope mb-6">
+          <p className="text-zinc-600 font-manrope mb-6">
             Our customer support team is here to help you with any questions or
             concerns.
           </p>

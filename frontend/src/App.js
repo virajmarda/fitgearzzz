@@ -32,6 +32,7 @@ import About from "./pages/About";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
+import ShippingReturns from "./pages/ShippingReturns";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import FAQ from "./pages/FAQ";
 import FeaturesIndex from "./pages/FeaturesIndex";
@@ -107,14 +108,12 @@ const AppContent = () => {
         <Route path="/admin" element={<Admin />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/customer_identity/logout" element={<CustomerLogout />} />
-        <Route
-          path="/customer_authentication/sso_hint"
-          element={<CustomerSSOCallback />}
-        />
+        <Route path="/customer_authentication/sso_hint" element={<CustomerSSOCallback />} />
         <Route path="/about" element={<About />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/shipping" element={<ShippingReturns />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/features" element={<FeaturesIndex />} />

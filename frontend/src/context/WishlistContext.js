@@ -14,13 +14,16 @@ export const useWishlist = () => {
 export const WishlistProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState(() => {
     // Load wishlist from localStorage on initialization
-    const savedWishlist = localStorage.getItem('fitgearzzz_wishlist');
-    return savedWishlist ? JSON.parse(savedWishlist) : [];
+    try {
+      const savedWishlist = JSON.parse(localStorage.getItem('fitgearzzz_wishlist') || '[]');
+      return Array.isArray(savedWishlist) ? savedWishlist.filter(item => item && item.id) : [];
+    } catch { return []; }
   });
 
   // Save wishlist to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('fitgearzzz_wishlist', JSON.stringify(wishlist));
+    try { localStorage.setItem('fitgearzzz_wishlist', JSON.stringify(wishlist)); }
+    catch { toast.error('This browser could not save your wishlist.'); }
   }, [wishlist]);
 
   const addToWishlist = (product) => {

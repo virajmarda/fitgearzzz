@@ -1,0 +1,182 @@
+{
+  "summary": "Baseline connectivity test completed. CRITICAL BLOCKER: Both Shopify stores (fitgearzzz.myshopify.com and gnzuhe-en.myshopify.com) return 402 Payment Required - stores are unavailable/paused. Frontend loads successfully in demo/fallback mode. Backend API structure is correct but cannot connect to real Shopify. No /api/auth/login endpoint exists - only PKCE OAuth flow implemented.",
+  
+  "backend_issues": {
+    "critical_bugs": [
+      {
+        "issue": "Shopify store 'fitgearzzz.myshopify.com' returns 402 Payment Required - Unavailable Shop",
+        "impact": "BLOCKS all real Shopify connectivity - products, cart, checkout, auth",
+        "fix_priority": "CRITICAL",
+        "details": "Store is paused/deactivated. Need active Shopify store with valid subscription.",
+        "affected_endpoints": [
+          "/api/products",
+          "/api/cart/create",
+          "/api/cart/guest-checkout",
+          "/api/shopify-auth/callback"
+        ]
+      },
+      {
+        "issue": "Alternative store 'gnzuhe-en.myshopify.com' (hardcoded in ShopifyBuyButton.js) also returns 402",
+        "impact": "ShopifyBuyButton widget cannot function",
+        "fix_priority": "CRITICAL",
+        "details": "Both store references in codebase point to unavailable stores"
+      }
+    ],
+    "configuration_issues": [
+      {
+        "issue": "SHOPIFY_STOREFRONT_ACCESS_TOKEN is empty/None in backend/.env",
+        "impact": "Even with active store, API calls would fail without valid token",
+        "fix_priority": "HIGH",
+        "current_value": "None"
+      },
+      {
+        "issue": "Multiple conflicting store domains in codebase",
+        "impact": "Confusion about which store to use",
+        "fix_priority": "MEDIUM",
+        "details": "fitgearzzz.myshopify.com (backend default) vs gnzuhe-en.myshopify.com (ShopifyBuyButton hardcoded)"
+      }
+    ],
+    "working_endpoints": [
+      {
+        "endpoint": "/ (internal)",
+        "status": "200 OK",
+        "note": "Health check works on localhost:8001"
+      },
+      {
+        "endpoint": "/api/shopify-auth/callback",
+        "status": "Exists",
+        "note": "PKCE OAuth endpoint present but untestable without active store"
+      }
+    ]
+  },
+  
+  "frontend_issues": {
+    "critical_bugs": [],
+    "configuration_issues": [
+      {
+        "issue": "All Shopify environment variables missing from frontend/.env",
+        "impact": "Frontend correctly falls back to demo mode, but cannot connect to real Shopify",
+        "fix_priority": "HIGH",
+        "missing_vars": [
+          "REACT_APP_SHOPIFY_STORE_DOMAIN",
+          "REACT_APP_SHOPIFY_STOREFRONT_ACCESS_TOKEN",
+          "REACT_APP_SHOPIFY_CLIENT_ID",
+          "REACT_APP_SHOPIFY_ACCOUNT_DOMAIN"
+        ]
+      },
+      {
+        "issue": "ShopifyBuyButton.js has hardcoded store domain",
+        "impact": "Not using environment variables, points to unavailable store",
+        "fix_priority": "MEDIUM",
+        "hardcoded_value": "gnzuhe-en.myshopify.com"
+      }
+    ],
+    "working_features": [
+      {
+        "feature": "Frontend loads successfully",
+        "status": "✓ WORKING",
+        "note": "Homepage renders correctly with demo content"
+      },
+      {
+        "feature": "Demo/fallback mode",
+        "status": "✓ WORKING",
+        "note": "shopifyService.js correctly falls back to mock products when SHOPIFY_CONFIGURED=false"
+      },
+      {
+        "feature": "Navigation and UI",
+        "status": "✓ WORKING",
+        "note": "5 product elements visible, navigation present, no visible errors"
+      }
+    ],
+    "design_issues": []
+  },
+  
+  "passed_tests": [
+    "Backend health check (internal localhost:8001)",
+    "Frontend loading and rendering",
+    "Demo/fallback mode functionality",
+    "Navigation and UI structure",
+    "Confirmed /api/auth/login does NOT exist (PKCE-only as expected)",
+    "Environment configuration audit completed"
+  ],
+  
+  "test_report_links": [
+    "/app/test_core.py",
+    "/app/test_reports/iteration_1.json"
+  ],
+  
+  "success_percentage": {
+    "backend": "25% (1/4 testable endpoints working - health check only)",
+    "frontend": "100% (in demo mode)",
+    "overall": "50% (4/8 baseline tests passed)"
+  },
+  
+  "action_item_for_main_agent": {
+    "critical_blockers": [
+      "MUST obtain access to an ACTIVE Shopify store (current stores return 402 Payment Required)",
+      "MUST obtain valid SHOPIFY_STOREFRONT_ACCESS_TOKEN for the active store",
+      "MUST decide which store to use: fitgearzzz.myshopify.com OR gnzuhe-en.myshopify.com (currently conflicting)"
+    ],
+    "configuration_required": [
+      "Add to backend/.env: SHOPIFY_STOREFRONT_ACCESS_TOKEN=<valid_token>",
+      "Add to backend/.env: SHOPIFY_STORE_DOMAIN=<active_store_domain>",
+      "Add to frontend/.env: REACT_APP_SHOPIFY_STORE_DOMAIN=<active_store_domain>",
+      "Add to frontend/.env: REACT_APP_SHOPIFY_STOREFRONT_ACCESS_TOKEN=<valid_token>",
+      "Add to frontend/.env: REACT_APP_SHOPIFY_CLIENT_ID=<client_id>",
+      "Add to frontend/.env: REACT_APP_SHOPIFY_ACCOUNT_DOMAIN=<account_domain>",
+      "Update ShopifyBuyButton.js to use environment variables instead of hardcoded domain"
+    ],
+    "cannot_test_until_fixed": [
+      "Real product fetching from Shopify",
+      "Cart creation and management",
+      "Checkout URL generation",
+      "Shopify PKCE authentication flow",
+      "ShopifyBuyButton widget functionality",
+      "Order history and customer data"
+    ],
+    "currently_working": [
+      "Frontend demo mode with mock products",
+      "UI/UX and navigation",
+      "Backend API structure and routing"
+    ]
+  },
+  
+  "updated_files": [
+    "/app/test_core.py"
+  ],
+  
+  "should_call_test_agent_after_fix": "true",
+  "should_main_agent_test_itself": "false",
+  
+  "detailed_findings": {
+    "shopify_store_status": {
+      "fitgearzzz.myshopify.com": "402 Payment Required - Unavailable Shop",
+      "gnzuhe-en.myshopify.com": "402 Payment Required - Store unavailable page"
+    },
+    "auth_implementation": {
+      "type": "PKCE OAuth only",
+      "endpoint": "/api/shopify-auth/callback",
+      "traditional_login": "NOT IMPLEMENTED (/api/auth/login does not exist)",
+      "duplicate_implementations": [
+        "FastAPI endpoint in server.py",
+        "Vercel serverless function in backend/api/shopify-auth/callback.py"
+      ]
+    },
+    "embedded_configuration": {
+      "ShopifyBuyButton.js": {
+        "domain": "gnzuhe-en.myshopify.com",
+        "token_var": "REACT_APP_SHOPIFY_CLIENT_KEY (not set)"
+      },
+      "backend_defaults": {
+        "SHOPIFY_STORE_DOMAIN": "fitgearzzz.myshopify.com",
+        "SHOPIFY_CLIENT_ID": "49163ae9-7e32-4d93-a29c-d9fb330124c5",
+        "SHOPIFY_ACCOUNT_DOMAIN": "https://account.fitgearzzz.com"
+      }
+    },
+    "demo_mode_behavior": {
+      "trigger": "SHOPIFY_CONFIGURED = false (missing env vars)",
+      "fallback": "mockProducts from src/data/mockProducts.js",
+      "status": "WORKING CORRECTLY"
+    }
+  }
+}

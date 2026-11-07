@@ -1,154 +1,103 @@
 import React from 'react';
-import {
-  Truck,
-  PackageCheck,
-  RefreshCcw,
-  Clock3,
-  ShieldCheck,
-  Globe2,
-  ArrowRight,
-  Info,
-  BadgeCheck,
-  Wallet,
-  PackageOpen,
-  MapPinned,
-  Headphones,
-  ChevronRight,
-  FileText,
-} from 'lucide-react';
+import { Truck, PackageCheck, RefreshCcw, Clock3, ShieldCheck, Globe2, ArrowRight, Info, BadgeCheck, Wallet, PackageOpen, MapPinned, Headphones, ChevronRight, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-
-const promiseCards = [
-  {
-    title: 'Free Shipping',
-    subtitle: 'Across India',
-    description:
-      'We keep delivery simple and transparent with free shipping across India so customers can buy with more confidence and fewer surprises.',
-    icon: Truck,
-    accent: 'orange',
-  },
-  {
-    title: 'Fast Processing',
-    subtitle: 'Quick dispatch flow',
-    description:
-      'Orders are reviewed, packed, and moved into dispatch as quickly as possible so the post-purchase experience feels reliable and sharp.',
-    icon: PackageCheck,
-    accent: 'blue',
-  },
-  {
-    title: 'Easy Returns',
-    subtitle: '7-day policy window',
-    description:
-      'If something is not right, we want the return process to feel clear, structured, and customer-friendly instead of frustrating.',
-    icon: RefreshCcw,
-    accent: 'orange',
-  },
-  {
-    title: 'Refund Clarity',
-    subtitle: 'Visible timeline',
-    description:
-      'Refunds are processed after return review, and we communicate timelines clearly so customers know what to expect.',
-    icon: Wallet,
-    accent: 'blue',
-  },
-];
-
-const shippingSteps = [
-  {
-    title: 'Order Confirmed',
-    desc: 'Once your purchase is placed, the order enters our processing flow and a confirmation is generated.',
-    icon: BadgeCheck,
-  },
-  {
-    title: 'Processing & Packing',
-    desc: 'Orders are reviewed, packed securely, and prepared for courier handoff during working cycles.',
-    icon: PackageOpen,
-  },
-  {
-    title: 'Dispatched with Tracking',
-    desc: 'After dispatch, tracking details are shared so you can monitor movement and expected delivery progress.',
-    icon: MapPinned,
-  },
-  {
-    title: 'Delivered to You',
-    desc: 'Delivery timelines may vary by destination, but our goal is a smooth and dependable final-mile experience.',
-    icon: Truck,
-  },
-];
-
-const returnBlocks = [
-  {
-    title: 'Return Window',
-    desc: 'Most eligible items can be returned within 7 days of delivery.',
-  },
-  {
-    title: 'Item Condition',
-    desc: 'Returned items should be unused, in original condition, and include packaging, tags, and accessories where applicable.',
-  },
-  {
-    title: 'Proof of Purchase',
-    desc: 'Order ID, invoice reference, or other valid purchase proof may be required to process the return correctly.',
-  },
-  {
-    title: 'Review Before Refund',
-    desc: 'Each return is inspected after it reaches us so refunds can be approved accurately and fairly.',
-  },
-];
-
-const returnExclusions = [
-  'Opened supplements or nutrition products, where hygiene or safety concerns apply.',
-  'Customized or personalized items made specifically for the customer.',
-  'Products clearly marked as final sale or non-returnable.',
-  'Gift cards, digital goods, or any category specifically stated as exempt.',
-];
-
-const supportCards = [
-  {
-    title: 'Contact Support',
-    value: 'fitgearzzz@gmail.com',
-    sub: 'For returns, delays, delivery help, or refund questions.',
-    href: 'mailto:fitgearzzz@gmail.com',
-    icon: Headphones,
-  },
-  {
-    title: 'Call Us',
-    value: '+91 8668623252',
-    sub: 'For direct support during business hours.',
-    href: 'tel:+918668623252',
-    icon: PhoneFallback,
-  },
-];
-
+const promiseCards = [{
+  title: 'Free Shipping',
+  subtitle: 'Across India',
+  description: 'We keep delivery simple and transparent with free shipping across India so customers can buy with more confidence and fewer surprises.',
+  icon: Truck,
+  accent: 'orange'
+}, {
+  title: 'Fast Processing',
+  subtitle: 'Quick dispatch flow',
+  description: 'Orders are reviewed, packed, and moved into dispatch as quickly as possible so the post-purchase experience feels reliable and sharp.',
+  icon: PackageCheck,
+  accent: 'blue'
+}, {
+  title: 'Easy Returns',
+  subtitle: '7-day policy window',
+  description: 'If something is not right, we want the return process to feel clear, structured, and customer-friendly instead of frustrating.',
+  icon: RefreshCcw,
+  accent: 'orange'
+}, {
+  title: 'Refund Clarity',
+  subtitle: 'Visible timeline',
+  description: 'Refunds are processed after return review, and we communicate timelines clearly so customers know what to expect.',
+  icon: Wallet,
+  accent: 'blue'
+}];
+const shippingSteps = [{
+  title: 'Order Confirmed',
+  desc: 'Once your purchase is placed, the order enters our processing flow and a confirmation is generated.',
+  icon: BadgeCheck
+}, {
+  title: 'Processing & Packing',
+  desc: 'Orders are reviewed, packed securely, and prepared for courier handoff during working cycles.',
+  icon: PackageOpen
+}, {
+  title: 'Dispatched with Tracking',
+  desc: 'After dispatch, tracking details are shared so you can monitor movement and expected delivery progress.',
+  icon: MapPinned
+}, {
+  title: 'Delivered to You',
+  desc: 'Delivery timelines may vary by destination, but our goal is a smooth and dependable final-mile experience.',
+  icon: Truck
+}];
+const returnBlocks = [{
+  title: 'Return Window',
+  desc: 'Most eligible items can be returned within 7 days of delivery.'
+}, {
+  title: 'Item Condition',
+  desc: 'Returned items should be unused, in original condition, and include packaging, tags, and accessories where applicable.'
+}, {
+  title: 'Proof of Purchase',
+  desc: 'Order ID, invoice reference, or other valid purchase proof may be required to process the return correctly.'
+}, {
+  title: 'Review Before Refund',
+  desc: 'Each return is inspected after it reaches us so refunds can be approved accurately and fairly.'
+}];
+const returnExclusions = ['Opened supplements or nutrition products, where hygiene or safety concerns apply.', 'Customized or personalized items made specifically for the customer.', 'Products clearly marked as final sale or non-returnable.', 'Gift cards, digital goods, or any category specifically stated as exempt.'];
+const supportCards = [{
+  title: 'Contact Support',
+  value: 'fitgearzzz@gmail.com',
+  sub: 'For returns, delays, delivery help, or refund questions.',
+  href: 'mailto:fitgearzzz@gmail.com',
+  icon: Headphones
+}, {
+  title: 'Call Us',
+  value: '+91 8668623252',
+  sub: 'For direct support during business hours.',
+  href: 'tel:+918668623252',
+  icon: PhoneFallback
+}];
 function PhoneFallback(props) {
   return <Headphones {...props} />;
 }
-
 const ShippingReturns = () => {
-  return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+  return <div className="min-h-screen bg-zinc-950 text-white">
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-zinc-900">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.12),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.04),transparent_22%)]" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-18">
           <div className="grid lg:grid-cols-12 gap-10 items-end">
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="lg:col-span-7"
-            >
+            <motion.div initial={{
+            opacity: 0,
+            y: 18
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.5
+          }} className="lg:col-span-7">
               <p className="text-sm uppercase tracking-[0.28em] text-orange-400 font-semibold mb-5">
                 Shipping & Returns
               </p>
 
-              <h1
-                className="font-oswald text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight uppercase leading-none"
-                data-testid="shipping-title"
-              >
-                Premium delivery confidence.
-                <span className="block text-orange-500">Clear return protection.</span>
+              <h1 className="font-oswald text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight uppercase leading-none" data-testid="shipping-title">
+                Shipping &amp; returns.
+                <span className="block text-orange-500">Know what to expect.</span>
               </h1>
 
               <p className="text-lg sm:text-xl text-zinc-300 font-manrope max-w-2xl leading-relaxed">
@@ -172,12 +121,15 @@ const ShippingReturns = () => {
               </div>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 22 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 }}
-              className="lg:col-span-5"
-            >
+            <motion.div initial={{
+            opacity: 0,
+            y: 22
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            delay: 0.15
+          }} className="lg:col-span-5">
               <div className="rounded-3xl border border-zinc-800 bg-zinc-900/75 backdrop-blur-sm p-6 lg:p-8">
                 <p className="text-xs uppercase tracking-[0.22em] text-zinc-500 font-semibold mb-5">
                   Policy Snapshot
@@ -218,21 +170,19 @@ const ShippingReturns = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-5">
             {promiseCards.map((item, index) => {
-              const Icon = item.icon;
-              const accent =
-                item.accent === 'blue'
-                  ? 'border-blue-500/20 bg-blue-500/10 text-blue-400'
-                  : 'border-orange-500/20 bg-orange-500/10 text-orange-400';
-
-              return (
-                <motion.div
-                  key={item.title}
-                  initial={{ opacity: 0, y: 18 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.08 }}
-                  className="rounded-[1.8rem] border border-zinc-800 bg-zinc-900 p-6"
-                >
+            const Icon = item.icon;
+            const accent = item.accent === 'blue' ? 'border-blue-500/20 bg-blue-500/10 text-blue-400' : 'border-orange-500/20 bg-orange-500/10 text-orange-400';
+            return <motion.div key={item.title} initial={{
+              opacity: 0,
+              y: 18
+            }} whileInView={{
+              opacity: 1,
+              y: 0
+            }} viewport={{
+              once: true
+            }} transition={{
+              delay: index * 0.08
+            }} className="rounded-[1.8rem] border border-zinc-800 bg-zinc-900 p-6">
                   <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center mb-5 ${accent}`}>
                     <Icon className="w-6 h-6" />
                   </div>
@@ -245,9 +195,8 @@ const ShippingReturns = () => {
                   <p className="text-zinc-400 leading-relaxed text-sm">
                     {item.description}
                   </p>
-                </motion.div>
-              );
-            })}
+                </motion.div>;
+          })}
           </div>
         </div>
       </section>
@@ -274,16 +223,18 @@ const ShippingReturns = () => {
 
                 <div className="lg:col-span-8 grid sm:grid-cols-2 gap-5">
                   {shippingSteps.map((step, index) => {
-                    const Icon = step.icon;
-                    return (
-                      <motion.div
-                        key={step.title}
-                        initial={{ opacity: 0, y: 18 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: index * 0.06 }}
-                        className="rounded-3xl border border-zinc-800 bg-zinc-950 p-5"
-                      >
+                  const Icon = step.icon;
+                  return <motion.div key={step.title} initial={{
+                    opacity: 0,
+                    y: 18
+                  }} whileInView={{
+                    opacity: 1,
+                    y: 0
+                  }} viewport={{
+                    once: true
+                  }} transition={{
+                    delay: index * 0.06
+                  }} className="rounded-3xl border border-zinc-800 bg-zinc-950 p-5">
                         <div className="flex items-center justify-between mb-4">
                           <div className="w-11 h-11 rounded-2xl border border-orange-500/20 bg-orange-500/10 flex items-center justify-center">
                             <Icon className="w-5 h-5 text-orange-400" />
@@ -298,9 +249,8 @@ const ShippingReturns = () => {
                         <p className="text-zinc-400 leading-relaxed text-sm">
                           {step.desc}
                         </p>
-                      </motion.div>
-                    );
-                  })}
+                      </motion.div>;
+                })}
                 </div>
               </div>
 
@@ -311,17 +261,10 @@ const ShippingReturns = () => {
                     <h3 className="text-white text-xl font-semibold">Domestic Shipping (India)</h3>
                   </div>
                   <ul className="space-y-3">
-                    {[
-                      'Free shipping is available on all orders across India.',
-                      'Most domestic deliveries are expected within 3–7 business days after dispatch, depending on destination and courier movement.',
-                      'Orders placed after 2:00 PM IST may move into the next working-day processing cycle.',
-                      'Remote or courier-limited service areas may experience extended delivery timelines.',
-                    ].map((item) => (
-                      <li key={item} className="flex items-start gap-3">
+                    {['Free shipping is available on all orders across India.', 'Most domestic deliveries are expected within 3–7 business days after dispatch, depending on destination and courier movement.', 'Orders placed after 2:00 PM IST may move into the next working-day processing cycle.', 'Remote or courier-limited service areas may experience extended delivery timelines.'].map(item => <li key={item} className="flex items-start gap-3">
                         <BadgeCheck className="w-5 h-5 text-orange-500 mt-0.5 shrink-0" />
                         <span className="text-zinc-300 leading-relaxed">{item}</span>
-                      </li>
-                    ))}
+                      </li>)}
                   </ul>
                 </div>
 
@@ -331,17 +274,10 @@ const ShippingReturns = () => {
                     <h3 className="text-white text-xl font-semibold">International Shipping</h3>
                   </div>
                   <ul className="space-y-3">
-                    {[
-                      'International shipping may be available to selected countries.',
-                      'Shipping charges are calculated at checkout based on destination, serviceability, and package weight.',
-                      'Estimated international delivery timeline can range between 7–21 business days.',
-                      'Customs duties, taxes, or local import charges, where applicable, are the responsibility of the customer.',
-                    ].map((item) => (
-                      <li key={item} className="flex items-start gap-3">
+                    {['International shipping may be available to selected countries.', 'Shipping charges are calculated at checkout based on destination, serviceability, and package weight.', 'Estimated international delivery timeline can range between 7–21 business days.', 'Customs duties, taxes, or local import charges, where applicable, are the responsibility of the customer.'].map(item => <li key={item} className="flex items-start gap-3">
                         <BadgeCheck className="w-5 h-5 text-orange-500 mt-0.5 shrink-0" />
                         <span className="text-zinc-300 leading-relaxed">{item}</span>
-                      </li>
-                    ))}
+                      </li>)}
                   </ul>
                 </div>
               </div>
@@ -355,11 +291,11 @@ const ShippingReturns = () => {
                     </p>
                     <p className="text-zinc-300 leading-relaxed">
                       Once your order is dispatched, tracking information is shared by email. If your shipment appears delayed beyond the expected timeframe, contact us at{' '}
-                      <a href="mailto:fitgearzzz@gmail.com" className="text-orange-400 hover:text-orange-300 font-semibold">
+                      <a href="mailto:fitgearzzz@gmail.com" className="text-orange-400 hover:text-orange-300 font-semibold" data-testid="shipping-returns-a-1">
                         fitgearzzz@gmail.com
                       </a>{' '}
                       or call{' '}
-                      <a href="tel:+918668623252" className="text-orange-400 hover:text-orange-300 font-semibold">
+                      <a href="tel:+918668623252" className="text-orange-400 hover:text-orange-300 font-semibold" data-testid="shipping-returns-a-2">
                         +91 8668623252
                       </a>{' '}
                       and we will help investigate the shipment status.
@@ -403,15 +339,10 @@ const ShippingReturns = () => {
                   </div>
 
                   <div className="grid sm:grid-cols-2 gap-5 mb-6">
-                    {returnBlocks.map((item) => (
-                      <div
-                        key={item.title}
-                        className="rounded-3xl border border-zinc-800 bg-zinc-950 p-5"
-                      >
+                    {returnBlocks.map(item => <div key={item.title} className="rounded-3xl border border-zinc-800 bg-zinc-950 p-5">
                         <h3 className="text-white text-lg font-semibold mb-2">{item.title}</h3>
                         <p className="text-zinc-400 leading-relaxed text-sm">{item.desc}</p>
-                      </div>
-                    ))}
+                      </div>)}
                   </div>
 
                   <div className="grid lg:grid-cols-2 gap-6">
@@ -421,19 +352,12 @@ const ShippingReturns = () => {
                         <h3 className="text-white text-xl font-semibold">How to start a return</h3>
                       </div>
                       <ol className="space-y-3">
-                        {[
-                          'Contact our support team with your order ID and the reason for your return request.',
-                          'Our team reviews the request and confirms eligibility under the applicable return conditions.',
-                          'If approved, we share the return instructions and next-step guidance.',
-                          'After the return reaches us and is reviewed, the refund process is initiated where applicable.',
-                        ].map((item) => (
-                          <li key={item} className="flex items-start gap-3">
+                        {['Contact our support team with your order ID and the reason for your return request.', 'Our team reviews the request and confirms eligibility under the applicable return conditions.', 'If approved, we share the return instructions and next-step guidance.', 'After the return reaches us and is reviewed, the refund process is initiated where applicable.'].map(item => <li key={item} className="flex items-start gap-3">
                             <span className="w-7 h-7 rounded-full bg-orange-500/15 text-orange-400 text-sm font-semibold flex items-center justify-center shrink-0 mt-0.5">
                               •
                             </span>
                             <span className="text-zinc-300 leading-relaxed">{item}</span>
-                          </li>
-                        ))}
+                          </li>)}
                       </ol>
                     </div>
 
@@ -443,12 +367,10 @@ const ShippingReturns = () => {
                         <h3 className="text-white text-xl font-semibold">Items not eligible</h3>
                       </div>
                       <ul className="space-y-3">
-                        {returnExclusions.map((item) => (
-                          <li key={item} className="flex items-start gap-3">
+                        {returnExclusions.map(item => <li key={item} className="flex items-start gap-3">
                             <BadgeCheck className="w-5 h-5 text-orange-500 mt-0.5 shrink-0" />
                             <span className="text-zinc-300 leading-relaxed">{item}</span>
-                          </li>
-                        ))}
+                          </li>)}
                       </ul>
                     </div>
                   </div>
@@ -499,28 +421,19 @@ const ShippingReturns = () => {
               </p>
 
               <div className="flex flex-wrap gap-4">
-                <Link
-                  to="/contact"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 font-semibold transition-colors"
-                >
+                <Link to="/contact" className="inline-flex items-center justify-center gap-2 rounded-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 font-semibold transition-colors" data-testid="shipping-returns-link-3">
                   Contact Support
                   <ArrowRight className="w-4 h-4" />
                 </Link>
 
-                <Link
-                  to="/faq"
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-zinc-700 hover:border-zinc-500 text-white px-6 py-3 font-semibold transition-colors"
-                >
+                <Link to="/faq" className="inline-flex items-center justify-center gap-2 rounded-full border border-zinc-700 hover:border-zinc-500 text-white px-6 py-3 font-semibold transition-colors" data-testid="shipping-returns-link-4">
                   View FAQs
                 </Link>
               </div>
             </div>
 
             <div className="lg:col-span-5 grid sm:grid-cols-2 lg:grid-cols-1 gap-5">
-              <a
-                href="mailto:fitgearzzz@gmail.com"
-                className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6 hover:border-zinc-700 transition-colors"
-              >
+              <a href="mailto:fitgearzzz@gmail.com" className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6 hover:border-zinc-700 transition-colors" data-testid="shipping-returns-a-5">
                 <Headphones className="w-6 h-6 text-orange-500 mb-4" />
                 <p className="text-xs uppercase tracking-[0.18em] text-zinc-500 font-semibold mb-2">
                   Support Email
@@ -533,10 +446,7 @@ const ShippingReturns = () => {
                 </p>
               </a>
 
-              <a
-                href="tel:+918668623252"
-                className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6 hover:border-zinc-700 transition-colors"
-              >
+              <a href="tel:+918668623252" className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6 hover:border-zinc-700 transition-colors" data-testid="shipping-returns-a-6">
                 <Headphones className="w-6 h-6 text-orange-500 mb-4" />
                 <p className="text-xs uppercase tracking-[0.18em] text-zinc-500 font-semibold mb-2">
                   Call Us
@@ -552,8 +462,6 @@ const ShippingReturns = () => {
           </div>
         </div>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default ShippingReturns;

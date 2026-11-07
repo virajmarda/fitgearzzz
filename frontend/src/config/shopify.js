@@ -37,7 +37,7 @@ export const ACCOUNT_DOMAIN =
 // ---------------------------------------------------------------------------
 
 export const BACKEND_URL =
-  process.env.REACT_APP_BACKEND_URL || 'https://fitgearzzz-backend.onrender.com';
+  process.env.REACT_APP_BACKEND_URL || '';
 
 // ---------------------------------------------------------------------------
 // Feature flags — controlled gracefully when Shopify is not yet configured

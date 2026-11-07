@@ -6,7 +6,7 @@ import os
 import logging
 import httpx
 from pathlib import Path
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, Dict, List
 import json
 import base64
@@ -29,7 +29,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=[
+    allow_origins=[origin.strip() for origin in os.environ.get("CORS_ORIGINS", "").split(",") if origin.strip()] + [
         "https://fitgearzzz.com",
         "https://www.fitgearzzz.com",
         "https://account.fitgearzzz.com",
@@ -77,40 +77,11 @@ SHOPIFY_STOREFRONT_API = (
     f"https://{SHOPIFY_STORE_DOMAIN}/api/2024-10/graphql.json"
 )
 
-logger.info(
-    "Storefront token configured (first 10): "
-    f"{SHOPIFY_STOREFRONT_ACCESS_TOKEN[:10] if SHOPIFY_STOREFRONT_ACCESS_TOKEN else None}"
-)
+logger.info("Storefront configured: %s", bool(SHOPIFY_STOREFRONT_ACCESS_TOKEN))
 
 # ========================
 # Helpers
 # ========================
-
-# JWT Decoding Helper
-def decode_jwt(token: str) -> dict:
-    """Decode JWT token without verification (for id_token from Shopify)"""
-    try:
-        parts = token.split(".")
-        if len(parts) != 3:
-            raise ValueError("Invalid JWT format")
-
-        payload = parts
-        padding = len(payload) % 4
-        if padding:
-            payload += "=" * (4 - padding)
-
-        decoded_bytes = base64.urlsafe_b64decode(payload)
-        decoded_payload = json.loads(decoded_bytes.decode("utf-8"))
-
-        return decoded_payload
-    except Exception as e:
-        logger.error(f"Error decoding JWT: {str(e)}")
-        raise
-
-
-# Cache for customer data by access token
-customer_cache: Dict[str, dict] = {}
-
 
 # Dynamic endpoint discovery
 async def get_customer_api_endpoint():
@@ -134,116 +105,26 @@ async def get_customer_api_endpoint():
 
 
 # Verify Shopify token and decode id_token for customer data
-async def verify_shopify_token(
-    access_token: str, id_token: Optional[str] = None
-):
-    """Verify Shopify customer access token and decode id_token for real customer data"""
+async def verify_shopify_token(access_token: str, id_token: Optional[str] = None):
+    """Only Shopify's authenticated API can establish a customer identity."""
+    if not access_token or not SHOPIFY_STORE_DOMAIN or not os.environ.get('SHOPIFY_CLIENT_ID'):
+        return None
     try:
-        # Check cache first
-        if access_token in customer_cache:
-            logger.info("Returning cached customer data")
-            return customer_cache[access_token]
-
-        if not access_token.startswith("shcat_"):
-            logger.warning("Token doesn't start with shcat_")
+        result = await shopify_customer_request(access_token, """
+            query { customer { id emailAddress { emailAddress } firstName lastName displayName } }
+        """)
+        customer = (result.get('data') or {}).get('customer')
+        if result.get('errors') or not customer or not customer.get('id'):
             return None
-
-        logger.info("Token format verified (shcat_)")
-
-        # If we have id_token, decode it to get real customer data
-        if id_token:
-            try:
-                decoded_payload = decode_jwt(id_token)
-                logger.info(
-                    f"Decoded id_token payload: {json.dumps(decoded_payload, indent=2)}"
-                )
-
-                customer_data = {
-                    "id": decoded_payload.get(
-                        "sub", "gid://shopify/Customer/unknown"
-                    ),
-                    "email": decoded_payload.get(
-                        "email", "customer@example.com"
-                    ),
-                    "displayName": decoded_payload.get(
-                        "email", "Customer"
-                    ).split("@"),
-                    "firstName": decoded_payload.get("given_name", ""),
-                    "lastName": decoded_payload.get("family_name", ""),
-                }
-
-                # Cache the customer data
-                customer_cache[access_token] = customer_data
-
-                return customer_data
-            except Exception as e:
-                logger.error(f"Error decoding id_token: {str(e)}")
-
-        # Fallback: Use Customer Account API to fetch customer data
-        try:
-            customer_api_url = await get_customer_api_endpoint()
-
-            query = """
-            query {
-                customer {
-                    id
-                    emailAddress {
-                        emailAddress
-                    }
-                    firstName
-                    lastName
-                    displayName
-                }
-            }
-            """
-
-            async with httpx.AsyncClient() as client:
-                response = await client.post(
-                    customer_api_url,
-                    headers={
-                        "Content-Type": "application/json",
-                        "Authorization": access_token,
-                    },
-                    json={"query": query},
-                    timeout=10.0,
-                )
-
-                if response.status_code == 200:
-                    data = response.json()
-                    customer = data.get("data", {}).get("customer", {})
-
-                    if customer:
-                        customer_data = {
-                            "id": customer.get(
-                                "id", "gid://shopify/Customer/unknown"
-                            ),
-                            "email": customer.get("emailAddress", {}).get(
-                                "emailAddress", "customer@example.com"
-                            ),
-                            "displayName": customer.get(
-                                "displayName", "Customer"
-                            ),
-                            "firstName": customer.get("firstName", ""),
-                            "lastName": customer.get("lastName", ""),
-                        }
-
-                        # Cache the customer data
-                        customer_cache[access_token] = customer_data
-
-                        return customer_data
-        except Exception as e:
-            logger.error(f"Error fetching customer from API: {str(e)}")
-
-        # Final fallback
         return {
-            "id": "gid://shopify/Customer/verified",
-            "displayName": "Customer",
-            "email": "customer@example.com",
-            "firstName": "Valued",
-            "lastName": "Customer",
+            'id': customer['id'],
+            'email': (customer.get('emailAddress') or {}).get('emailAddress', ''),
+            'displayName': customer.get('displayName') or '',
+            'firstName': customer.get('firstName') or '',
+            'lastName': customer.get('lastName') or '',
         }
-    except Exception as e:
-        logger.error(f"Error verifying token: {str(e)}")
+    except Exception:
+        logger.warning('Shopify customer validation could not be completed')
         return None
 
 
@@ -251,6 +132,8 @@ async def shopify_storefront_request(
     query: str, variables: Optional[Dict] = None
 ):
     """Make a request to Shopify Storefront API"""
+    if not SHOPIFY_STOREFRONT_ACCESS_TOKEN or not SHOPIFY_STORE_DOMAIN:
+        raise HTTPException(status_code=503, detail="Store connection temporarily unavailable")
     headers = {"Content-Type": "application/json"}
 
     if SHOPIFY_STOREFRONT_ACCESS_TOKEN:
@@ -269,11 +152,14 @@ async def shopify_storefront_request(
         if response.status_code != 200:
             logger.error(f"Shopify Storefront API error: {response.text}")
             raise HTTPException(
-                status_code=response.status_code,
-                detail="Shopify API error",
+                status_code=503,
+                detail="Store temporarily unavailable",
             )
 
-        return response.json()
+        result = response.json()
+        if result.get("errors"):
+            raise HTTPException(status_code=503, detail="Store request could not be completed")
+        return result
 
 
 # Use dynamic endpoint for Customer Account API
@@ -300,10 +186,13 @@ async def shopify_customer_request(
             )
             raise HTTPException(
                 status_code=response.status_code,
-                detail=f"Shopify Customer API error: {response.text}",
+                detail="Account information temporarily unavailable",
             )
 
-        return response.json()
+        result = response.json()
+        if result.get("errors"):
+            raise HTTPException(status_code=503, detail="Store request could not be completed")
+        return result
 
 # ========================
 # Models
@@ -324,8 +213,8 @@ class ShopifyOAuthTokenResponse(BaseModel):
 
 
 class CartLineInput(BaseModel):
-    merchandiseId: str
-    quantity: int
+    merchandiseId: str = Field(pattern=r"^gid://shopify/ProductVariant/[0-9]+$")
+    quantity: int = Field(ge=1, le=99)
 
 
 class CartCreateInput(BaseModel):
@@ -359,12 +248,12 @@ class ReviewSubmitInput(BaseModel):
 
 
 class GuestCartLine(BaseModel):
-    merchandiseId: str
-    quantity: int
+    merchandiseId: str = Field(pattern=r"^gid://shopify/ProductVariant/[0-9]+$")
+    quantity: int = Field(ge=1, le=99)
 
 
 class GuestCheckoutRequest(BaseModel):
-    lines: List[GuestCartLine]
+    lines: List[GuestCartLine] = Field(max_length=100)
 
 # ========================
 # Auth routes
@@ -376,9 +265,7 @@ async def get_current_user(
 ):
     """Get current user from Shopify access token"""
     token = credentials.credentials
-    logger.info(
-        f"Token from Authorization header (first 25): {token[:25]}"
-    )
+
 
     customer = await verify_shopify_token(token)
 
@@ -405,10 +292,12 @@ async def shopify_oauth_callback(request: ShopifyOAuthCallbackRequest):
     Uses PKCE flow (no client secret required)
     """
 
+    if not os.environ.get("SHOPIFY_CLIENT_ID") or not os.environ.get("SHOPIFY_ACCOUNT_DOMAIN"):
+        raise HTTPException(status_code=503, detail="Account sign-in temporarily unavailable")
     logger.info("=== OAuth Callback Started ===")
     logger.info(f"Code length: {len(request.code)}")
     logger.info(f"Code verifier length: {len(request.codeVerifier)}")
-    logger.info(f"Code (first 20 chars): {request.code[:20]}...")
+
 
     redirect_uri = f"{FRONTEND_URL}/auth/callback"
 
@@ -436,8 +325,8 @@ async def shopify_oauth_callback(request: ShopifyOAuthCallbackRequest):
             )
 
             logger.info(f"Shopify Response Status: {response.status_code}")
-            logger.info(f"Shopify Response Headers: {dict(response.headers)}")
-            logger.info(f"Shopify Response Body: {response.text}")
+
+
 
             if response.status_code != 200:
                 error_detail = response.text
@@ -505,7 +394,6 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         "name": current_user["name"],
         "firstName": current_user["firstName"],
         "lastName": current_user["lastName"],
-        "created_at": "2024-01-01T00:00:00Z",
         "role": "customer",
     }
 
@@ -577,12 +465,12 @@ async def get_products(
             "images": [
                 img["node"]["url"] for img in p["node"]["images"]["edges"]
             ],
-            "stock": p["node"]["variants"]["edges"]["node"].get(
+            "stock": p["node"]["variants"]["edges"][0]["node"].get(
                 "quantityAvailable", 0
             )
             if p["node"]["variants"]["edges"]
             else 0,
-            "availableForSale": p["node"]["variants"]["edges"]["node"].get(
+            "availableForSale": p["node"]["variants"]["edges"][0]["node"].get(
                 "availableForSale", False
             )
             if p["node"]["variants"]["edges"]
@@ -623,7 +511,7 @@ async def get_product(product_id: str):
                         title
                         availableForSale
                         quantityAvailable
-                        priceV2 {
+                        price {
                             amount
                         }
                     }
@@ -655,7 +543,7 @@ async def get_product(product_id: str):
                 "title": v["node"]["title"],
                 "availableForSale": v["node"]["availableForSale"],
                 "stock": v["node"].get("quantityAvailable", 0),
-                "price": float(v["node"]["priceV2"]["amount"]),
+                "price": float(v["node"]["price"]["amount"]),
             }
             for v in product["variants"]["edges"]
         ],
@@ -765,7 +653,7 @@ async def submit_review(review_data: ReviewSubmitInput):
             "api_token": JUDGE_ME_API_TOKEN,
         }
 
-        logger.info(f"Submitting review to Judge.me: {payload}")
+        logger.info("Submitting product review")
 
         async with httpx.AsyncClient() as client:
             response = await client.post(
@@ -830,7 +718,7 @@ mutation cartCreate($input: CartInput!) {
                             ... on ProductVariant {
                                 id
                                 title
-                                priceV2 {
+                                price {
                                     amount
                                     currencyCode
                                 }
@@ -887,7 +775,7 @@ async def guest_checkout(payload: GuestCheckoutRequest):
     if user_errors:
         raise HTTPException(
             status_code=400,
-            detail=user_errors.get("message", "Cart error"),
+            detail="; ".join(e.get("message", "Cart error") for e in user_errors),
         )
 
     cart = cart_create.get("cart") or {}
@@ -994,7 +882,7 @@ async def add_to_cart(cart_data: CartLinesAddInput):
                   ... on ProductVariant {
                     id
                     title
-                    priceV2 { amount currencyCode }
+                    price { amount currencyCode }
                     product {
                       title
                       featuredImage { url }
@@ -1037,7 +925,7 @@ async def add_to_cart(cart_data: CartLinesAddInput):
         logger.error(f"cartLinesAdd userErrors: {user_errors}")
         raise HTTPException(
             status_code=400,
-            detail=user_errors.get("message", "Cart update failed"),
+            detail="; ".join(e.get("message", "Cart update failed") for e in user_errors),
         )
 
     cart = cart_lines_add.get("cart")
@@ -1067,7 +955,7 @@ async def update_cart_lines(data: CartLinesUpdateInput):
                                 ... on ProductVariant {
                                     id
                                     title
-                                    priceV2 {
+                                    price {
                                         amount
                                         currencyCode
                                     }
@@ -1136,7 +1024,7 @@ async def remove_cart_lines(data: CartLinesRemoveInput):
                                 ... on ProductVariant {
                                     id
                                     title
-                                    priceV2 {
+                                    price {
                                         amount
                                         currencyCode
                                     }
@@ -1216,7 +1104,7 @@ async def get_cart_by_id(cart_id: str):
                             ... on ProductVariant {
                                 id
                                 title
-                                priceV2 {
+                                price {
                                     amount
                                     currencyCode
                                 }
@@ -1257,6 +1145,8 @@ async def get_cart_by_id(cart_id: str):
             )
 
         return cart
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error fetching cart: {str(e)}")
         raise HTTPException(
@@ -1346,16 +1236,17 @@ async def get_orders(current_user: dict = Depends(get_current_user)):
                 "id": order["node"]["id"],
                 "orderNumber": order["node"]["name"],
                 "created_at": order["node"]["processedAt"],
-                "status": order["node"]["fulfillments"]["nodes"]["status"]
+                "status": order["node"]["fulfillments"]["nodes"][0]["status"]
                 if order["node"]["fulfillments"]["nodes"]
                 else "PENDING",
                 "total": float(order["node"]["totalPrice"]["amount"]),
+                "currency": order["node"]["totalPrice"]["currencyCode"],
                 "items": [
                     {
                         "product_name": item["title"],
                         "quantity": item["quantity"],
                         "price": float(item["price"]["amount"]),
-                        "product_image": item.get("image", {}).get(
+                        "product_image": (item.get("image") or {}).get(
                             "url", ""
                         ),
                     }
@@ -1440,17 +1331,18 @@ async def get_order(
             "id": order["id"],
             "orderNumber": order["name"],
             "date": order["processedAt"],
-            "status": order["fulfillments"]["nodes"]["status"]
+            "status": order["fulfillments"]["nodes"][0]["status"]
             if order["fulfillments"]["nodes"]
             else "PENDING",
             "total": float(order["totalPrice"]["amount"]),
+            "currency": order["totalPrice"]["currencyCode"],
             "shippingAddress": order.get("shippingAddress"),
             "items": [
                 {
                     "name": item["title"],
                     "quantity": item["quantity"],
                     "price": float(item["price"]["amount"]),
-                    "image": item.get("image", {}).get("url", ""),
+                    "image": (item.get("image") or {}).get("url", ""),
                 }
                 for item in order["lineItems"]["nodes"]
             ],

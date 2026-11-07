@@ -3,19 +3,13 @@ import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 
 // Founder note — short editorial strip with a portrait and a signature.
-const FounderManifesto = () => (
-  <section className="bg-zinc-950">
+const FounderManifesto = () => <section className="bg-zinc-950">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24">
       <div className="grid lg:grid-cols-12 gap-12 items-center">
         {/* Portrait */}
         <div className="lg:col-span-5">
           <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-zinc-900">
-            <img
-              src="https://images.unsplash.com/photo-1709315957145-a4bad1feef28?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200"
-              alt="Aniket Joshi, Founder of FitGearzzz, in the workshop"
-              loading="lazy"
-              className="absolute inset-0 w-full h-full object-cover grayscale contrast-[1.05]"
-            />
+            <img src="https://images.unsplash.com/photo-1709315957145-a4bad1feef28?crop=entropy&cs=srgb&fm=jpg&q=85&w=1200" alt="Aniket Joshi, Founder of FitGearzzz, in the workshop" loading="lazy" className="absolute inset-0 w-full h-full object-cover grayscale contrast-[1.05]" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
             <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between text-white">
               <div>
@@ -69,10 +63,7 @@ const FounderManifesto = () => (
                 aniket@fitgearzzz.com
               </p>
             </div>
-            <Link
-              to="/stories/built-in-the-heat"
-              className="inline-flex items-center gap-2 text-orange-400 hover:text-orange-300 text-sm font-semibold uppercase tracking-[0.22em] transition-colors"
-            >
+            <Link to="/stories/built-in-the-heat" className="inline-flex items-center gap-2 text-orange-400 hover:text-orange-300 text-sm font-semibold uppercase tracking-[0.22em] transition-colors" data-testid="founder-manifesto-link-1">
               Read the founder story
               <ArrowUpRight className="w-4 h-4" />
             </Link>
@@ -80,7 +71,5 @@ const FounderManifesto = () => (
         </div>
       </div>
     </div>
-  </section>
-);
-
+  </section>;
 export default FounderManifesto;

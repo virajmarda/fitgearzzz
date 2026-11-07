@@ -22,7 +22,7 @@ except Exception as e:
     async def root():
         return JSONResponse(
             status_code=500,
-            content={"error": "Backend initialization failed", "details": str(e)}
+            content={"error": "Backend initialization failed"}
         )
     
     handler = app

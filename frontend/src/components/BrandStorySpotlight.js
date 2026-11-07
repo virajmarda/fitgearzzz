@@ -2,13 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, BookOpen } from 'lucide-react';
 import { features } from '../data/features';
-
 const BrandStorySpotlight = () => {
   const feature = features[0];
   const supporting = features.slice(1, 4);
-
-  return (
-    <section className="border-y border-zinc-900 bg-zinc-950">
+  return <section className="border-y border-zinc-900 bg-zinc-950">
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
         <div className="mb-12 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -18,27 +15,16 @@ const BrandStorySpotlight = () => {
             </p>
           </div>
 
-          <Link
-            to="/features"
-            className="hidden items-center gap-1.5 text-xs uppercase tracking-[0.2em] text-zinc-500 transition-colors hover:text-white sm:inline-flex"
-          >
+          <Link to="/features" className="hidden items-center gap-1.5 text-xs uppercase tracking-[0.2em] text-zinc-500 transition-colors hover:text-white sm:inline-flex" data-testid="brand-story-spotlight-link-1">
             All features
             <ArrowUpRight className="h-3.5 w-3.5" />
           </Link>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-12 lg:gap-14">
-          <Link
-            to={`/features/${feature.slug}`}
-            className="group relative overflow-hidden rounded-[2rem] border border-zinc-900 lg:col-span-7"
-            aria-label={`Open feature: ${feature.title}`}
-          >
+          <Link to={`/features/${feature.slug}`} className="group relative overflow-hidden rounded-[2rem] border border-zinc-900 lg:col-span-7" aria-label={`Open feature: ${feature.title}`} data-testid="brand-story-spotlight-link-2">
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent z-10" />
-            <img
-              src={feature.heroImage}
-              alt={feature.heroAlt}
-              className="h-[420px] w-full object-cover transition duration-700 group-hover:scale-[1.03] sm:h-[520px]"
-            />
+            <img src={feature.heroImage} alt={feature.heroAlt} className="h-[420px] w-full object-cover transition duration-700 group-hover:scale-[1.03] sm:h-[520px]" />
 
             <div className="absolute inset-x-0 bottom-0 z-20 p-6 sm:p-8 lg:p-10">
               <div className="mb-4 flex flex-wrap items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-zinc-300">
@@ -81,12 +67,7 @@ const BrandStorySpotlight = () => {
             </div>
 
             <div className="space-y-4">
-              {supporting.map((item, index) => (
-                <Link
-                  key={item.id}
-                  to={`/features/${item.slug}`}
-                  className="group flex items-start gap-4 rounded-2xl border border-zinc-900 bg-zinc-950/70 p-4 transition-colors hover:border-zinc-700 hover:bg-zinc-900/70"
-                >
+              {supporting.map((item, index) => <Link key={item.id} to={`/features/${item.slug}`} className="group flex items-start gap-4 rounded-2xl border border-zinc-900 bg-zinc-950/70 p-4 transition-colors hover:border-zinc-700 hover:bg-zinc-900/70" data-testid="brand-story-spotlight-link-3">
                   <div className="pt-0.5 text-[11px] uppercase tracking-[0.24em] text-zinc-500">
                     {String(index + 2).padStart(2, '0')}
                   </div>
@@ -108,22 +89,16 @@ const BrandStorySpotlight = () => {
                   </div>
 
                   <ArrowUpRight className="mt-1 h-4 w-4 shrink-0 text-zinc-600 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
-                </Link>
-              ))}
+                </Link>)}
             </div>
 
-            <Link
-              to="/features"
-              className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-zinc-300 transition-colors hover:text-white sm:hidden"
-            >
+            <Link to="/features" className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-zinc-300 transition-colors hover:text-white sm:hidden" data-testid="brand-story-spotlight-link-4">
               Browse all features
               <ArrowUpRight className="h-4 w-4" />
             </Link>
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default BrandStorySpotlight;

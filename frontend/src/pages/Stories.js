@@ -8,9 +8,7 @@ import { stories } from '../data/storiesData';
 
 const Stories = () => {
   const [feature, ...rest] = stories;
-
-  return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+  return <div className="min-h-screen bg-zinc-950 text-white">
       {/* Editorial header */}
       <section className="border-b border-zinc-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-14">
@@ -45,18 +43,10 @@ const Stories = () => {
 
       {/* Featured story — cinematic */}
       <section className="border-b border-zinc-900">
-        <Link
-          to={`/stories/${feature.slug}`}
-          className="group block max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14"
-        >
+        <Link to={`/stories/${feature.slug}`} className="group block max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14" data-testid="stories-link-1">
           <div className="grid lg:grid-cols-12 gap-10 items-center">
             <div className="lg:col-span-7 relative overflow-hidden rounded-sm aspect-[16/10] bg-zinc-900">
-              <img
-                src={feature.heroImage}
-                alt={feature.title}
-                loading="lazy"
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.025]"
-              />
+              <img src={feature.heroImage} alt={feature.title} loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.025]" />
               <div className="absolute inset-0 bg-gradient-to-tr from-black/70 via-black/10 to-transparent" />
               <div className="absolute top-4 left-4 flex items-center gap-2 bg-black/50 backdrop-blur-sm border border-white/15 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-white">
                 <Play className="w-3 h-3" /> Featured story
@@ -97,28 +87,15 @@ const Stories = () => {
                 Four more long reads.
               </h3>
             </div>
-            <Link
-              to="/products"
-              className="hidden sm:inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-zinc-400 hover:text-orange-400 transition-colors"
-            >
+            <Link to="/products" className="hidden sm:inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-zinc-400 hover:text-orange-400 transition-colors" data-testid="stories-link-2">
               Shop the catalogue <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
 
           <div className="grid md:grid-cols-2 gap-x-10 gap-y-14">
-            {rest.map((story, i) => (
-              <Link
-                key={story.id}
-                to={`/stories/${story.slug}`}
-                className="group block"
-              >
+            {rest.map((story, i) => <Link key={story.id} to={`/stories/${story.slug}`} className="group block" data-testid="stories-link-3">
                 <div className="relative overflow-hidden rounded-sm aspect-[4/3] bg-zinc-900 mb-6">
-                  <img
-                    src={story.coverImage}
-                    alt={story.title}
-                    loading="lazy"
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                  />
+                  <img src={story.coverImage} alt={story.title} loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                   <div className="absolute top-4 left-4 text-[10px] font-mono text-white/70 tracking-[0.22em]">
                     NO. 0{i + 2}
@@ -137,8 +114,7 @@ const Stories = () => {
                   Continue reading
                   <ArrowUpRight className="w-3.5 h-3.5" />
                 </span>
-              </Link>
-            ))}
+              </Link>)}
           </div>
         </div>
       </section>
@@ -153,15 +129,13 @@ const Stories = () => {
             Stories are reported and written in-house. Photography is captured on location.
             No press release was used in the making of this issue. If you have a story you
             think we should tell next,{' '}
-            <Link to="/contact" className="text-orange-400 hover:text-orange-300 underline-offset-4 hover:underline">
+            <Link to="/contact" className="text-orange-400 hover:text-orange-300 underline-offset-4 hover:underline" data-testid="stories-link-4">
               write to the editor
             </Link>
             .
           </p>
         </div>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default Stories;

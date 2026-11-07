@@ -51,28 +51,35 @@ const CATEGORIES = [
   },
 ];
 
+/*
+ * Keep these statements limited to what the storefront can actually
+ * support. Do not restore inspection, COD, delivery-time or guarantee
+ * claims until the relevant operating process is confirmed.
+ */
 const JOURNEY = [
   [
     '01',
     'Choose with context',
-    'Short descriptions, useful specs and products grouped around how you train.',
+    'Short descriptions and useful specifications help you compare options.',
   ],
   [
     '02',
-    'We check it',
-    'Each item is inspected and packed before dispatch. If it is not right, it does not leave.',
+    'See what is included',
+    'Product details and images are intended to make the choice clearer.',
   ],
   [
     '03',
-    'Pay your way',
-    'COD or encrypted online payment. Same price, same clear rules.',
+    'Choose how to pay',
+    'Available payment methods and any applicable charges are shown at checkout.',
   ],
   [
     '04',
     'Train with it',
-    'If something feels wrong after delivery, message us and we will help resolve it.',
+    'If something needs attention after delivery, message us through the contact page.',
   ],
 ];
+
+const NEWSLETTER_ENDPOINT = '/api/newsletter';
 
 function Reveal({ children, className = '' }) {
   const ref = useRef(null);
@@ -81,6 +88,14 @@ function Reveal({ children, className = '' }) {
     const node = ref.current;
 
     if (!node) {
+      return undefined;
+    }
+
+    if (
+      typeof IntersectionObserver === 'undefined' ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      node.classList.add('is-visible');
       return undefined;
     }
 
@@ -129,44 +144,214 @@ function SectionBreak({ left, children, right }) {
   );
 }
 
+function ShelfState({ title, message, action }) {
+  return (
+    <div
+      className="shelf-state"
+      role="status"
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        gap: '16px',
+        padding: 'clamp(24px, 5vw, 48px)',
+        border: '1px solid rgba(0, 0, 0, 0.12)',
+        borderRadius: '4px',
+        background: 'rgba(255, 255, 255, 0.55)',
+      }}
+    >
+      <h3
+        style={{
+          margin: 0,
+          fontSize: 'clamp(20px, 2.5vw, 24px)',
+          lineHeight: 1.3,
+        }}
+      >
+        {title}
+      </h3>
+
+      <p
+        style={{
+          margin: 0,
+          maxWidth: '52ch',
+          fontSize: '15px',
+          lineHeight: 1.7,
+        }}
+      >
+        {message}
+      </p>
+
+      {action}
+    </div>
+  );
+}
+
+function ProductShelf({ products, status, onRetry, limit = 4 }) {
+  if (status === 'loading') {
+    return (
+      <div
+        className="product-shelf product-shelf-4"
+        aria-busy="true"
+        aria-live="polite"
+      >
+        {[0, 1, 2, 3].map((index) => (
+          <div key={index} className="shelf-skeleton" />
+        ))}
+      </div>
+    );
+  }
+
+  if (status === 'error') {
+    return (
+      <ShelfState
+        title="We couldn’t load this shelf."
+        message="This looks like a connection or catalog issue—not an empty collection. Please try again in a moment."
+        action={
+          <button
+            className="ink-button"
+            type="button"
+            onClick={onRetry}
+          >
+            Try again
+            <ArrowRight size={16} />
+          </button>
+        }
+      />
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <ShelfState
+        title="No featured pieces are available right now."
+        message="Visit the full catalog to explore the current selection."
+        action={
+          <Link className="ink-button" to="/products">
+            Explore the catalog
+            <ArrowRight size={16} />
+          </Link>
+        }
+      />
+    );
+  }
+
+  return (
+    <div className="product-shelf product-shelf-4">
+      {products.slice(0, limit).map((product, index) => (
+        <ProductCard
+          key={product.id}
+          product={product}
+          index={index}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function Home() {
   const [products, setProducts] = useState([]);
+  const [shelfStatus, setShelfStatus] = useState('loading');
+  const [reloadKey, setReloadKey] = useState(0);
+
   const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
+  const [newsletterStatus, setNewsletterStatus] = useState('idle');
+  const [newsletterMessage, setNewsletterMessage] = useState('');
 
   useEffect(() => {
     let active = true;
 
-    fetchProducts()
+    setShelfStatus('loading');
+
+    fetchProducts(50)
       .then((items) => {
-        if (active) {
-          setProducts(items || []);
+        if (!active) {
+          return;
         }
+
+        const safeItems = Array.isArray(items) ? items : [];
+        setProducts(safeItems);
+        setShelfStatus('ready');
       })
       .catch(() => {
-        if (active) {
-          setProducts([]);
+        if (!active) {
+          return;
         }
+
+        setProducts([]);
+        setShelfStatus('error');
       });
 
     return () => {
       active = false;
     };
-  }, []);
+  }, [reloadKey]);
 
   const heroImage = HERO_IMAGE;
-  const drop = products
-    .filter((p) => p.tags?.includes('bestseller') || p.tags?.includes('new'))
-    .slice(0, 4);
-  const dropIds = new Set(drop.map((p) => p.id));
-  const splitShelf = products.filter((p) => !dropIds.has(p.id)).slice(0, 4);
-  const byHandle = Object.fromEntries(products.map((p) => [p.handle, p]));
 
-  const subscribe = (event) => {
+  const featured = products
+    .filter(
+      (product) =>
+        product.tags?.includes('bestseller') ||
+        product.tags?.includes('new')
+    )
+    .slice(0, 4);
+
+  const featuredIds = new Set(featured.map((product) => product.id));
+
+  const splitShelf = products
+    .filter((product) => !featuredIds.has(product.id))
+    .slice(0, 4);
+
+  const byHandle = Object.fromEntries(
+    products.map((product) => [product.handle, product])
+  );
+
+  const retryShelf = () => {
+    setReloadKey((current) => current + 1);
+  };
+
+  const subscribe = async (event) => {
     event.preventDefault();
 
-    if (email.trim()) {
-      setSubscribed(true);
+    const normalizedEmail = email.trim();
+
+    if (!normalizedEmail || newsletterStatus === 'submitting') {
+      return;
+    }
+
+    setNewsletterStatus('submitting');
+    setNewsletterMessage('');
+
+    try {
+      const response = await fetch(NEWSLETTER_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({ email: normalizedEmail }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Newsletter request failed: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (result?.accepted !== true) {
+        throw new Error('Newsletter signup was not confirmed.');
+      }
+
+      setNewsletterStatus('success');
+      setNewsletterMessage(
+        'Your signup was accepted. Check your inbox for confirmation.'
+      );
+      setEmail('');
+    } catch {
+      setNewsletterStatus('error');
+      setNewsletterMessage(
+        'We couldn’t confirm your signup. Please try again, or use the contact page.'
+      );
     }
   };
 
@@ -191,8 +376,8 @@ export default function Home() {
           </h1>
 
           <p className="hero-description">
-            Equipment and everyday training essentials, selected for real rooms,
-            real budgets and the work you actually plan to do.
+            Equipment and everyday training essentials, selected for real
+            rooms, real budgets and the work you actually plan to do.
           </p>
 
           <a className="ink-button" href="#shop">
@@ -202,7 +387,14 @@ export default function Home() {
         </div>
 
         <div className="hero-image-wrap">
-          <img src={heroImage} alt="Fitness equipment ready for training" />
+          <img
+            src={heroImage}
+            alt="Fitness equipment arranged for a home training session"
+            width="1400"
+            height="933"
+            fetchpriority="high"
+            decoding="async"
+          />
 
           <span className="image-stamp">
             FIELD
@@ -213,7 +405,7 @@ export default function Home() {
 
         <div className="hero-foot">
           <span>Scroll to build your setup</span>
-          <span>COD / Pan-India / Support</span>
+          <span>Clear rules / Support</span>
         </div>
       </section>
 
@@ -237,8 +429,8 @@ export default function Home() {
 
             <div>
               <p>
-                Bestsellers and new arrivals. No staged ranking — just the
-                pieces people keep reaching for.
+                A short shelf of new arrivals and pieces marked for rotation.
+                No invented rankings—just a place to begin.
               </p>
 
               <Link to="/products?tag=new" className="text-link">
@@ -248,19 +440,11 @@ export default function Home() {
             </div>
           </div>
 
-          {drop.length ? (
-            <div className="product-shelf product-shelf-4">
-              {drop.map((product, i) => (
-                <ProductCard key={product.id} product={product} index={i} />
-              ))}
-            </div>
-          ) : (
-            <div className="product-shelf product-shelf-4" aria-busy="true">
-              {[0, 1, 2, 3].map((i) => (
-                <div key={i} className="shelf-skeleton" />
-              ))}
-            </div>
-          )}
+          <ProductShelf
+            products={featured}
+            status={shelfStatus}
+            onRetry={retryShelf}
+          />
         </Reveal>
       </section>
 
@@ -290,7 +474,14 @@ export default function Home() {
               >
                 <span className="category-number">{category.number}</span>
 
-                <img src={category.image} alt="" />
+                <img
+                  src={category.image}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  width="900"
+                  height="600"
+                />
 
                 <span className="category-main">
                   <strong>{category.name}</strong>
@@ -324,13 +515,19 @@ export default function Home() {
                 src={COLLECTION_SPLIT.primary.image}
                 alt="Free weights in a training room"
                 loading="lazy"
+                decoding="async"
                 width="1400"
                 height="1000"
               />
+
               <div className="split-copy">
-                <span className="split-label">01 / {COLLECTION_SPLIT.primary.title}</span>
+                <span className="split-label">
+                  01 / {COLLECTION_SPLIT.primary.title}
+                </span>
+
                 <h3>{COLLECTION_SPLIT.primary.line}</h3>
                 <p>{COLLECTION_SPLIT.primary.text}</p>
+
                 <span className="text-link text-link-light">
                   Shop {COLLECTION_SPLIT.primary.title}
                   <ArrowRight size={15} />
@@ -339,14 +536,30 @@ export default function Home() {
             </Link>
 
             <div className="split-secondary">
-              {COLLECTION_SPLIT.secondary.map((s, i) => (
-                <Link key={s.pillar} to={`/products?pillar=${s.pillar}`} className="split-card">
-                  <img src={s.image} alt="" loading="lazy" width="900" height="600" />
+              {COLLECTION_SPLIT.secondary.map((item, index) => (
+                <Link
+                  key={item.pillar}
+                  to={`/products?pillar=${item.pillar}`}
+                  className="split-card"
+                >
+                  <img
+                    src={item.image}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    width="900"
+                    height="600"
+                  />
+
                   <div className="split-copy">
-                    <span className="split-label">0{i + 2} / {s.title}</span>
-                    <h3>{s.line}</h3>
+                    <span className="split-label">
+                      0{index + 2} / {item.title}
+                    </span>
+
+                    <h3>{item.line}</h3>
+
                     <span className="text-link text-link-light">
-                      Shop {s.title}
+                      Shop {item.title}
                       <ArrowRight size={15} />
                     </span>
                   </div>
@@ -355,13 +568,16 @@ export default function Home() {
             </div>
           </div>
 
-          {splitShelf.length > 0 && (
+          {shelfStatus === 'ready' && splitShelf.length > 0 ? (
             <div className="product-shelf product-shelf-4 split-shelf">
               {splitShelf.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                />
               ))}
             </div>
-          )}
+          ) : null}
 
           <Note align="right">real stock, not theatre</Note>
         </Reveal>
@@ -385,10 +601,12 @@ export default function Home() {
                 <br />
                 <em>the life you live.</em>
               </h2>
+
               <p className="journal-intro">
                 Practical notes on training, recovery and choosing gear. Each
                 one links to the pieces it talks about.
               </p>
+
               <Link to="/blog" className="ink-button ink-button-light">
                 Read the journal
                 <ArrowRight size={17} />
@@ -396,29 +614,55 @@ export default function Home() {
             </div>
 
             <div className="journal-stack">
-              {JOURNAL.map((entry) => (
-                <article key={entry.number} className="journal-entry">
-                  <span className="journal-num">{entry.number}</span>
-                  <div>
-                    <p className="journal-cat">{entry.category}</p>
-                    <h3>
-                      <Link to={`/blog/${entry.slug}`}>{entry.title}</Link>
-                    </h3>
-                    <p className="journal-excerpt">{entry.excerpt}</p>
-                    <div className="journal-products">
-                      {entry.products
-                        .map((h) => byHandle[h])
-                        .filter(Boolean)
-                        .map((p) => (
-                          <Link key={p.id} to={`/products/${p.handle}`}>
-                            <img src={p.image} alt="" loading="lazy" width="48" height="60" />
-                            <span>{p.title}</span>
-                          </Link>
-                        ))}
+              {JOURNAL.map((entry) => {
+                const linkedProducts = entry.products
+                  .map((handle) => byHandle[handle])
+                  .filter(Boolean);
+
+                return (
+                  <article
+                    key={entry.number}
+                    className="journal-entry"
+                  >
+                    <span className="journal-num">{entry.number}</span>
+
+                    <div>
+                      <p className="journal-cat">{entry.category}</p>
+
+                      <h3>
+                        <Link to={`/blog/${entry.slug}`}>
+                          {entry.title}
+                        </Link>
+                      </h3>
+
+                      <p className="journal-excerpt">
+                        {entry.excerpt}
+                      </p>
+
+                      {linkedProducts.length > 0 && (
+                        <div className="journal-products">
+                          {linkedProducts.map((product) => (
+                            <Link
+                              key={product.id}
+                              to={`/products/${product.handle}`}
+                            >
+                              <img
+                                src={product.image}
+                                alt=""
+                                loading="lazy"
+                                decoding="async"
+                                width="48"
+                                height="60"
+                              />
+                              <span>{product.title}</span>
+                            </Link>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  </div>
-                </article>
-              ))}
+                  </article>
+                );
+              })}
             </div>
           </div>
         </Reveal>
@@ -444,8 +688,7 @@ export default function Home() {
 
             <p>
               Here is the part most storefronts hide: what happens after the
-              click. We keep it visible because trust is built in the boring
-              details.
+              click. We keep the practical details visible.
             </p>
           </div>
 
@@ -467,17 +710,17 @@ export default function Home() {
           <div className="proof-line">
             <span>
               <Truck size={17} />
-              Pan-India delivery
+              Delivery options at checkout
             </span>
 
             <span>
               <ShieldCheck size={17} />
-              Inspected before dispatch
+              Clear product information
             </span>
 
             <span>
               <Package size={17} />
-              COD available
+              Support through contact
             </span>
           </div>
         </Reveal>
@@ -532,7 +775,7 @@ export default function Home() {
         Useful updates, only when they matter.
       </SectionBreak>
 
-      <section className="newsletter-desk section-pad">
+      <section className="newsletter-desk section-pad" id="newsletter">
         <Reveal>
           <div className="newsletter-grid">
             <div>
@@ -553,36 +796,72 @@ export default function Home() {
                 when there is something worth opening.
               </p>
 
-              {subscribed ? (
-                <p className="success-line">
-                  You are in. Check your inbox.
+              {newsletterStatus === 'success' ? (
+                <p
+                  className="success-line"
+                  role="status"
+                >
+                  {newsletterMessage}
                 </p>
               ) : (
-                <form onSubmit={subscribe}>
+                <form onSubmit={subscribe} noValidate={false}>
                   <label htmlFor="home-email">Email address</label>
 
                   <div className="email-row">
                     <input
                       id="home-email"
+                      name="email"
                       type="email"
+                      autoComplete="email"
                       value={email}
-                      onChange={(event) => setEmail(event.target.value)}
+                      onChange={(event) => {
+                        setEmail(event.target.value);
+
+                        if (newsletterStatus === 'error') {
+                          setNewsletterStatus('idle');
+                          setNewsletterMessage('');
+                        }
+                      }}
                       placeholder="you@example.com"
                       required
+                      aria-describedby={
+                        newsletterStatus === 'error'
+                          ? 'home-email-error'
+                          : undefined
+                      }
                     />
 
-                    <button type="submit">
-                      Join
+                    <button
+                      type="submit"
+                      disabled={newsletterStatus === 'submitting'}
+                    >
+                      {newsletterStatus === 'submitting'
+                        ? 'Joining…'
+                        : 'Join'}
+
                       <ArrowRight size={16} />
                     </button>
                   </div>
+
+                  {newsletterStatus === 'error' && (
+                    <p
+                      id="home-email-error"
+                      role="alert"
+                      style={{
+                        margin: '12px 0 0',
+                        fontSize: '14px',
+                        lineHeight: 1.6,
+                      }}
+                    >
+                      {newsletterMessage}
+                    </p>
+                  )}
                 </form>
               )}
             </div>
           </div>
         </Reveal>
       </section>
-
     </main>
   );
 }

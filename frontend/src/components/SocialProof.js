@@ -1,57 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
-
-const testimonials = [
-  {
-    name: 'Raj Sharma',
-    role: 'Fitness Enthusiast',
-    image: 'https://i.pravatar.cc/150?img=12',
-    rating: 5,
-    text: "Best fitness equipment I've ever purchased! Quality is exceptional and delivery was super fast.",
-    location: 'Mumbai',
-  },
-  {
-    name: 'Priya Patel',
-    role: 'Yoga Instructor',
-    image: 'https://i.pravatar.cc/150?img=25',
-    rating: 5,
-    text: 'Authentic products at great prices. The customer service team is incredibly helpful!',
-    location: 'Bangalore',
-  },
-  {
-    name: 'Arjun Mehta',
-    role: 'Gym Owner',
-    image: 'https://i.pravatar.cc/150?img=33',
-    rating: 5,
-    text: 'Equipped my entire gym from FitGearzzz. Professional quality at unbeatable prices.',
-    location: 'Delhi',
-  },
-];
-
+const testimonials = [{
+  name: 'Raj Sharma',
+  role: 'Fitness Enthusiast',
+  image: 'https://i.pravatar.cc/150?img=12',
+  rating: 5,
+  text: "Best fitness equipment I've ever purchased! Quality is exceptional and delivery was super fast.",
+  location: 'Mumbai'
+}, {
+  name: 'Priya Patel',
+  role: 'Yoga Instructor',
+  image: 'https://i.pravatar.cc/150?img=25',
+  rating: 5,
+  text: 'Authentic products at great prices. The customer service team is incredibly helpful!',
+  location: 'Bangalore'
+}, {
+  name: 'Arjun Mehta',
+  role: 'Gym Owner',
+  image: 'https://i.pravatar.cc/150?img=33',
+  rating: 5,
+  text: 'Equipped my entire gym from FitGearzzz. Professional quality at unbeatable prices.',
+  location: 'Delhi'
+}];
 const SocialProof = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+      setCurrentIndex(prev => (prev + 1) % testimonials.length);
     }, 5000);
-
     return () => clearInterval(timer);
   }, []);
-
   const nextTestimonial = () => {
-    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+    setCurrentIndex(prev => (prev + 1) % testimonials.length);
   };
-
   const prevTestimonial = () => {
-    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+    setCurrentIndex(prev => (prev - 1 + testimonials.length) % testimonials.length);
   };
-
   const currentTestimonial = testimonials[currentIndex];
-
-  return (
-    <section className="py-20 bg-black relative overflow-hidden">
+  return <section className="py-20 bg-black relative overflow-hidden">
       {/* Background Decoration */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 left-0 w-96 h-96 bg-orange-500 rounded-full blur-3xl" />
@@ -60,12 +47,15 @@ const SocialProof = () => {
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} whileInView={{
+        opacity: 1,
+        y: 0
+      }} viewport={{
+        once: true
+      }} className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 text-orange-400 text-sm font-medium mb-4">
             <Quote className="w-4 h-4" />
             <span>TRUSTED BY THOUSANDS</span>
@@ -84,14 +74,18 @@ const SocialProof = () => {
         <div className="max-w-4xl mx-auto">
           <div className="relative">
             <AnimatePresence mode="wait">
-              <motion.div
-                key={currentIndex}
-                initial={{ opacity: 0, x: 100 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -100 }}
-                transition={{ duration: 0.5 }}
-                className="bg-gradient-to-br from-zinc-900 to-zinc-800 rounded-3xl p-8 lg:p-12 border border-zinc-700/50 shadow-2xl"
-              >
+              <motion.div key={currentIndex} initial={{
+              opacity: 0,
+              x: 100
+            }} animate={{
+              opacity: 1,
+              x: 0
+            }} exit={{
+              opacity: 0,
+              x: -100
+            }} transition={{
+              duration: 0.5
+            }} className="bg-gradient-to-br from-zinc-900 to-zinc-800 rounded-3xl p-8 lg:p-12 border border-zinc-700/50 shadow-2xl">
                 <Quote className="w-12 h-12 text-orange-500 mb-6" />
 
                 <p className="text-xl lg:text-2xl text-zinc-100 mb-8 leading-relaxed italic">
@@ -99,20 +93,11 @@ const SocialProof = () => {
                 </p>
 
                 <div className="flex gap-1 mb-6">
-                  {[...Array(currentTestimonial.rating)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="w-5 h-5 text-orange-400 fill-orange-400"
-                    />
-                  ))}
+                  {[...Array(currentTestimonial.rating)].map((_, i) => <Star key={i} className="w-5 h-5 text-orange-400 fill-orange-400" />)}
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <img
-                    src={currentTestimonial.image}
-                    alt={currentTestimonial.name}
-                    className="w-16 h-16 rounded-full border-2 border-orange-500 object-cover"
-                  />
+                  <img src={currentTestimonial.image} alt={currentTestimonial.name} className="w-16 h-16 rounded-full border-2 border-orange-500 object-cover" />
                   <div>
                     <div className="text-white font-bold text-lg">
                       {currentTestimonial.name}
@@ -127,43 +112,22 @@ const SocialProof = () => {
 
             {/* Navigation Buttons */}
             <div className="flex items-center justify-center gap-4 mt-8">
-              <button
-                onClick={prevTestimonial}
-                className="w-12 h-12 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
-                aria-label="Previous testimonial"
-              >
+              <button onClick={prevTestimonial} className="w-12 h-12 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 flex items-center justify-center text-white transition-all duration-300 hover:scale-110" aria-label="Previous testimonial" data-testid="social-proof-button-1">
                 <ChevronLeft className="w-5 h-5" />
               </button>
 
               {/* Dots Indicator */}
               <div className="flex gap-2">
-                {testimonials.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentIndex(index)}
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      index === currentIndex
-                        ? 'w-8 bg-orange-500'
-                        : 'w-2 bg-zinc-600 hover:bg-zinc-500'
-                    }`}
-                    aria-label={`Go to testimonial ${index + 1}`}
-                  />
-                ))}
+                {testimonials.map((_, index) => <button key={index} onClick={() => setCurrentIndex(index)} className={`h-2 rounded-full transition-all duration-300 ${index === currentIndex ? 'w-8 bg-orange-500' : 'w-2 bg-zinc-600 hover:bg-zinc-500'}`} aria-label={`Go to testimonial ${index + 1}`} data-testid="social-proof-button-2" />)}
               </div>
 
-              <button
-                onClick={nextTestimonial}
-                className="w-12 h-12 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 flex items-center justify-center text-white transition-all duration-300 hover:scale-110"
-                aria-label="Next testimonial"
-              >
+              <button onClick={nextTestimonial} className="w-12 h-12 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 flex items-center justify-center text-white transition-all duration-300 hover:scale-110" aria-label="Next testimonial" data-testid="social-proof-button-3">
                 <ChevronRight className="w-5 h-5" />
               </button>
             </div>
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default SocialProof;

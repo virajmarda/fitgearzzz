@@ -3,39 +3,32 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 
 // Replace placeholder Unsplash images with brand photography before launch.
-const CATEGORIES = [
-  {
-    name: 'Gym Equipment',
-    sub: 'Barbells, dumbbells, racks, benches',
-    note: 'Free delivery on orders ₹999+',
-    image: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2070&fit=crop',
-    to: '/products?category=Gym%20Equipment',
-  },
-  {
-    name: 'Supplements',
-    sub: 'Protein, creatine, pre-workout',
-    note: 'Lab-tested, authentic brands',
-    image: 'https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?q=80&w=2071&fit=crop',
-    to: '/products?category=Supplements',
-  },
-  {
-    name: 'Apparel',
-    sub: 'Dry-fit, compression, everyday training',
-    note: 'Ships same day',
-    image: 'https://images.unsplash.com/photo-1556906781-9cba4a6bc3c3?q=80&w=2787&fit=crop',
-    to: '/products?category=Apparel',
-  },
-  {
-    name: 'Accessories',
-    sub: 'Straps, belts, gloves, grips',
-    note: 'COD available',
-    image: 'https://images.unsplash.com/photo-1526367790999-0150786686a2?q=80&w=2071&fit=crop',
-    to: '/products?category=Accessories',
-  },
-];
-
-const CategoryShowcase = () => (
-  <section className="bg-zinc-950 py-16">
+const CATEGORIES = [{
+  name: 'Gym Equipment',
+  sub: 'Barbells, dumbbells, racks, benches',
+  note: 'Free delivery on orders ₹999+',
+  image: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2070&fit=crop',
+  to: '/products?category=Gym%20Equipment'
+}, {
+  name: 'Supplements',
+  sub: 'Protein, creatine, pre-workout',
+  note: 'Lab-tested, authentic brands',
+  image: 'https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?q=80&w=2071&fit=crop',
+  to: '/products?category=Supplements'
+}, {
+  name: 'Apparel',
+  sub: 'Dry-fit, compression, everyday training',
+  note: 'Ships same day',
+  image: 'https://images.unsplash.com/photo-1556906781-9cba4a6bc3c3?q=80&w=2787&fit=crop',
+  to: '/products?category=Apparel'
+}, {
+  name: 'Accessories',
+  sub: 'Straps, belts, gloves, grips',
+  note: 'COD available',
+  image: 'https://images.unsplash.com/photo-1526367790999-0150786686a2?q=80&w=2071&fit=crop',
+  to: '/products?category=Accessories'
+}];
+const CategoryShowcase = () => <section className="bg-zinc-950 py-16">
     <div className="max-w-7xl mx-auto px-4 sm:px-6">
 
       {/* Header */}
@@ -54,10 +47,7 @@ const CategoryShowcase = () => (
             Four categories. Every one of them sourced, inspected, and delivered pan-India.
           </p>
         </div>
-        <Link
-          to="/products"
-          className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-400 hover:text-orange-500 transition-colors"
-        >
+        <Link to="/products" className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-400 hover:text-orange-500 transition-colors" data-testid="category-showcase-link-1">
           See all
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
@@ -65,19 +55,14 @@ const CategoryShowcase = () => (
 
       {/* Category grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        {CATEGORIES.map(({ name, sub, note, image, to }) => (
-          <Link
-            key={name}
-            to={to}
-            className="group relative block overflow-hidden bg-zinc-900 aspect-[3/4] rounded-sm border border-zinc-800 hover:border-zinc-600 transition-colors"
-          >
-            <img
-              src={image}
-              alt={name}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-              loading="lazy"
-              decoding="async"
-            />
+        {CATEGORIES.map(({
+        name,
+        sub,
+        note,
+        image,
+        to
+      }) => <Link key={name} to={to} className="group relative block overflow-hidden bg-zinc-900 aspect-[3/4] rounded-sm border border-zinc-800 hover:border-zinc-600 transition-colors" data-testid="category-showcase-link-2">
+            <img src={image} alt={name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]" loading="lazy" decoding="async" />
             {/* Bottom-up vignette */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
 
@@ -95,11 +80,8 @@ const CategoryShowcase = () => (
                 </span>
               </div>
             </div>
-          </Link>
-        ))}
+          </Link>)}
       </div>
     </div>
-  </section>
-);
-
+  </section>;
 export default CategoryShowcase;

@@ -1,64 +1,29 @@
-/* src/styles/theme-bridge.css
- * Blends the About-page editorial structure (12-col grids, bordered cards,
- * eyebrow labels, motion reveals) with the warm paper brand on EVERY page by
- * remapping the dark Tailwind utilities used across legacy pages to paper
- * tokens. Imported after Tailwind (via App.js) so it wins the cascade.
- */
-
-/* ── Surfaces ─────────────────────────────────────────────────────────── */
-html .bg-zinc-950, html .bg-black, html .bg-zinc-950\/60, html .bg-zinc-950\/80,
-html .bg-zinc-950\/90, html .bg-zinc-950\/95 { background-color: #f1eee8; }
-html .bg-zinc-900, html .bg-zinc-900\/70, html .bg-zinc-900\/50, html .bg-zinc-900\/60,
-html .bg-zinc-900\/80, html .bg-zinc-900\/40, html .bg-zinc-900\/30 { background-color: #e8e4dc; }
-html .bg-zinc-800, html .bg-zinc-800\/50, html .bg-zinc-800\/60, html .bg-zinc-800\/40,
-html .bg-zinc-800\/30, html .bg-zinc-700 { background-color: #ddd8ce; }
-html .hover\:bg-zinc-800:hover, html .hover\:bg-zinc-700:hover { background-color: #d4cfc4; }
-
-/* flatten dark gradients */
-html .from-zinc-900, html .from-zinc-950, html .from-zinc-800 { --tw-gradient-from: #e8e4dc var(--tw-gradient-from-position); --tw-gradient-to: rgb(232 228 220 / 0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
-html .to-zinc-950, html .to-zinc-900, html .via-zinc-900 { --tw-gradient-to: #f1eee8 var(--tw-gradient-to-position); }
-
-/* ── Text ─────────────────────────────────────────────────────────────── */
-html .text-white, html .text-zinc-50, html .text-zinc-100, html .text-zinc-200 { color: #171717; }
-html .text-zinc-300 { color: #4f4c47; }
-html .text-zinc-400 { color: #6b675f; }
-html .text-zinc-500 { color: #8b867d; }
-html .text-zinc-600 { color: #a09b92; }
-html .placeholder-zinc-500::placeholder, html .placeholder-zinc-400::placeholder { color: #96918a; }
-html .hover\:text-white:hover { color: #171717; }
-
-/* keep white text on solid brand fills */
-html .bg-orange-500.text-white, html .bg-orange-600.text-white,
-html .bg-orange-500 .text-white, html .bg-\[\#171717\].text-white { color: #ffffff; }
-
-/* ── Borders ──────────────────────────────────────────────────────────── */
-html .border-zinc-900, html .border-zinc-800, html .border-zinc-700, html .border-zinc-600 { border-color: #d4d0c8; }
-html .hover\:border-zinc-500:hover, html .hover\:border-zinc-700:hover, html .hover\:border-zinc-600:hover { border-color: #171717; }
-html .divide-zinc-800 > :not([hidden]) ~ :not([hidden]) { border-color: #d4d0c8; }
-
-/* ── Brand orange (unify on #f15a24) ──────────────────────────────────── */
-html .text-orange-500, html .text-orange-400 { color: #f15a24; }
-html .hover\:text-orange-500:hover, html .hover\:text-orange-400:hover { color: #f15a24; }
-html .bg-orange-500 { background-color: #f15a24; }
-html .hover\:bg-orange-600:hover { background-color: #d94d1c; }
-html .border-orange-500 { border-color: #f15a24; }
-html .focus\:border-orange-500:focus { border-color: #171717; }
-html .bg-orange-500\/10, html .bg-orange-500\/8, html .bg-orange-500\/20 { background-color: rgba(241, 90, 36, 0.08); }
-html .border-orange-500\/20, html .border-orange-500\/30, html .border-orange-500\/40 { border-color: rgba(241, 90, 36, 0.35); }
-
-/* soften dark shadows on paper */
-html .shadow-black\/40, html .shadow-2xl, html .shadow-lg { --tw-shadow-color: rgba(23, 23, 23, 0.10); --tw-shadow: var(--tw-shadow-colored); }
-
-/* ── Typography: bring display headings onto the brand face ───────────── */
-html .font-oswald { font-family: 'Comfortaa', sans-serif; letter-spacing: -0.03em; font-weight: 700; }
-html .font-manrope { font-family: 'Comfortaa', sans-serif; }
-
-/* ── Radius: About-style soft cards on editorial pages ────────────────── */
-html .rounded-3xl, html .rounded-\[2rem\] { border-radius: 1.25rem; }
-html .rounded-2xl { border-radius: 1rem; }
-
-/* editorial pages get comfortable body size */
-html .text-zinc-300.text-lg, html .text-zinc-400.text-lg { font-size: 1.0625rem; line-height: 1.75; }
-
-/* Editorial headings read as sentence case in the paper brand (Home sets the tone) */
-html h1.font-oswald.uppercase, html h2.font-oswald.uppercase, html h3.font-oswald.uppercase { text-transform: none; }
+/* Compatibility layer for retained policy, administration and product views. All opaque surfaces share the same tokens. */
+:root { --fg-bg:#f5f2eb; --fg-surface:#fcfaf6; --fg-surface-2:#ede8df; --fg-surface-3:#e3ddd1; --fg-orange:#b84b2a; --fg-orange-hover:#963c21; --fg-text-primary:#22231f; --fg-text-secondary:#625f56; --fg-text-muted:#625f56; --fg-text-disabled:#716c62; --fg-text-inverse:#fff; --fg-text-orange:#b84b2a; --fg-border:#dcd7cc; --fg-border-strong:#c9c1b2; --fg-font-sans:'Comfortaa',sans-serif; --fg-font-display:'Comfortaa',sans-serif; --fg-weight-black:700; --fg-shadow-lg:0 5px 20px #22231f08; }
+html [class~="bg-zinc-950"],html [class~="bg-black"],html [class*="bg-zinc-950/"],html [class~="bg-[#f1eee8]"]{background-color:var(--fg2-paper)}
+html [class~="bg-zinc-900"],html [class*="bg-zinc-900/"],html [class~="bg-white"]{background-color:#fcfaf6}
+html [class~="bg-zinc-800"],html [class*="bg-zinc-800/"],html [class~="bg-zinc-700"],html [class~="bg-[#e4e0d8]"],html [class~="bg-[#e8e4dc]"]{background-color:var(--fg2-paper-2)}
+html [class*="bg-[radial-gradient"],html [class*="bg-gradient-to-"]{background-image:none;background-color:var(--fg2-paper-2)}
+html .text-white,html .text-zinc-50,html .text-zinc-100,html .text-zinc-200{color:var(--fg2-ink)}
+html .text-zinc-300,html .text-zinc-400,html .text-zinc-500,html .text-zinc-600,html .text-zinc-700,html [class~="text-[#77736d]"],html [class~="text-[#96918a]"]{color:var(--fg2-muted)}
+html .text-orange-400,html .text-orange-500,html .text-orange-600,html [class~="text-[#f15a24]"]{color:var(--fg2-orange)}
+html .bg-orange-500,html .bg-orange-600,html [class~="bg-[#f15a24]"]{background-color:var(--fg2-orange);color:white}
+html .bg-orange-500.text-white,html .bg-orange-600.text-white,html [class~="bg-[#f15a24]"].text-white{color:white}
+html .hover\:bg-orange-600:hover{background-color:#963c21}
+html [class*="bg-orange-500/"],html [class*="bg-blue-500/"]{background-color:#f0e5d9}
+html [class*="text-blue-"],html [class*="text-green-"]{color:#526445}
+html [class*="border-zinc-"],html [class~="border-[#171717]"],html [class~="border-[#d4d0c8]"]{border-color:var(--fg2-line)}
+html .font-oswald,html .font-manrope{font-family:'Comfortaa',sans-serif}
+html h1.font-oswald,html h2.font-oswald,html h3.font-oswald{text-transform:none;letter-spacing:-.035em;font-weight:600;line-height:1.25}
+html h1.font-oswald{font-size:clamp(32px,4.2vw,54px)}html h2.font-oswald{font-size:clamp(23px,2.7vw,33px)}
+html .rounded-3xl,html .rounded-2xl,html [class~="rounded-[2rem]"],html [class~="rounded-[1.8rem]"]{border-radius:8px}
+html .shadow-lg,html .shadow-xl,html .shadow-2xl{box-shadow:0 6px 22px #22231f09}
+html .backdrop-blur,html .backdrop-blur-sm{backdrop-filter:none}
+html [class~="pt-28"]{padding-top:55px}html .pb-18{padding-bottom:48px}
+html [role=dialog]{background:#fcfaf6;color:var(--fg2-ink);border-color:var(--fg2-line)}
+html [data-sonner-toast]{background:#fcfaf6!important;border-color:var(--fg2-line)!important;color:var(--fg2-ink)!important;font-family:'Comfortaa',sans-serif}
+html [data-sonner-toast] [data-description]{color:var(--fg2-muted)!important}
+html [role=tab][data-state=active]{background:var(--fg2-ink);color:#fff}
+#fg-route-content{min-height:50vh;outline:none}
+#fg-route-content h2[id],#fg-route-content section[id]{scroll-margin-top:110px}
+@media(max-width:640px){html .pt-24{padding-top:36px}html [class~="pt-28"]{padding-top:36px}html [class~="p-8"],html [class~="p-10"]{padding:24px}html [class~="text-xl"].font-manrope{font-size:15px}}

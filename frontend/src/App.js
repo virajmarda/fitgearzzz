@@ -33,6 +33,9 @@ import FeaturesIndex from "./pages/FeaturesIndex";
 import FeatureDetail from "./pages/FeatureDetail";
 import CatalogPage from "./pages/CatalogPage";
 import Wishlist from "./pages/Wishlist";
+import Journal from "./pages/Journal";
+import ArticleDetail from "./pages/ArticleDetail";
+import CollectionDetail from "./pages/CollectionDetail";
 import * as fbPixel from "./utils/fbPixel";
 import "./App.css";
 import "./styles/shopify-buy-button.css";
@@ -44,15 +47,6 @@ function isBarePath(pathname) {
   return BARE_PATHS.some(path => normalizedPath === path || normalizedPath.startsWith(`${path}/`));
 }
 
-/**
- * Forward Shopify's SSO hint to the existing callback handler.
- *
- * Preserve the original query string so encoded values are not
- * accidentally changed by string interpolation.
- *
- * OAuth state validation, PKCE verification and token exchange
- * remain the responsibility of AuthCallback and the auth service.
- */
 function CustomerSSOCallback() {
   const navigate = useNavigate();
   const {
@@ -80,13 +74,6 @@ function CustomerSSOCallback() {
     </div>;
 }
 
-/**
- * Reset scroll on pathname changes.
- *
- * Query-only changes do not force customers to the top while
- * filtering or sorting. Hash navigation scrolls to its target
- * when that target is already rendered.
- */
 function ScrollToTop() {
   const {
     pathname,
@@ -121,15 +108,6 @@ function ScrollToTop() {
   return null;
 }
 
-/**
- * One explicit page-view call per consecutive storefront URL.
- *
- * Hash changes, including the skip link, are not new page views.
- * Account callbacks and administrative routes are excluded here.
- *
- * This does not implement consent management or control events
- * emitted internally by fbPixel.init() or other scripts.
- */
 function useStorefrontPageViews(isBare) {
   const {
     pathname,
@@ -154,7 +132,6 @@ function useStorefrontPageViews(isBare) {
       fbPixel.pageview();
       lastPageKey.current = pageKey;
     } catch {
-      // Optional analytics must not prevent customers from shopping.
       console.warn("[FitGearzzz] Optional page-view tracking could not be sent.");
     }
   }, [isBare, pathname, search]);
@@ -242,10 +219,6 @@ function AppContent() {
           <Navbar />
         </>}
 
-      {/*
-        A focusable skip-link target without adding another <main>
-        around pages that may already provide their own landmark.
-       */}
       <div id={CONTENT_ID} tabIndex={-1}>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -259,13 +232,7 @@ function AppContent() {
           <Route path="/wishlist" element={<Wishlist />} />
 
           <Route path="/orders" element={<Orders />} />
-
-          {/*
-            Compatibility destination for existing tracking links.
-            This opens order history; it is not live parcel tracking.
-           */}
           <Route path="/track-order" element={<Navigate to="/orders" replace />} />
-
           <Route path="/order-success" element={<OrderSuccess />} />
 
           <Route path="/profile" element={<Profile />} />
@@ -288,6 +255,10 @@ function AppContent() {
 
           <Route path="/features" element={<FeaturesIndex />} />
           <Route path="/features/:slug" element={<FeatureDetail />} />
+
+          <Route path="/journal" element={<Journal />} />
+          <Route path="/journal/:slug" element={<ArticleDetail />} />
+          <Route path="/collections/:slug" element={<CollectionDetail />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>
